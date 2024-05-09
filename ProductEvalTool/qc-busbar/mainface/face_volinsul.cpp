@@ -49,7 +49,7 @@ void Face_Volinsul::resultSlot()
     mPacket->updatePro(str1);
 
     bool res = false;
-    QString str = tr("最终结果 ");
+    QString str = tr("测试结果 ");
     if(!p)
     {
         if(mItem->work_mode == 0) ui->progressBar->setStyleSheet("QProgressBar {border:2px solid;background-color:transparent;border-radius: 5px;text-align: center;color:red;}" );

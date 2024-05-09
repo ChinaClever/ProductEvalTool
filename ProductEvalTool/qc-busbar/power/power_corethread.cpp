@@ -262,7 +262,7 @@ void Power_CoreThread::workResult(bool)
     mPro->itemContent << "设备类型:" + mPro->productType;
 
     bool res = false;
-    QString str = tr("最终结果 ");
+    QString str = tr("测试结果 ");
     if(mPro->result != Test_Fail) {
         res = true;
         str += tr("通过");
@@ -272,11 +272,9 @@ void Power_CoreThread::workResult(bool)
         str += tr("失败");
         mPro->uploadPassResult = 0;
     }
-    mPacket->updatePro(str, res);
-    sleep(1);
+    mPacket->updatePro(str, res); sleep(1);
     Json_Pack::bulid()->http_post("busbarreport/add","192.168.1.171");//全流程才发送记录(http)
-    emit finshSig(res);
-    mPro->step = Test_Over;
+    emit finshSig(res); mPro->step = Test_Over;
 }
 
 bool Power_CoreThread::stepVolTest()
@@ -288,13 +286,13 @@ bool Power_CoreThread::stepVolTest()
     str = tr("拨开电压控制开关L1，拨下控制开关L2");  //b1,b2,b3
     mLogs->updatePro(str, ret); msleep(2000);
 
-    ret = mRead->readDevData();
+    ret = mRead->readData();
     if(ret) ret = checkVolErrRange();
 
     str = tr("拨开电压控制开关L2，拨下控制开关L3");//c1,c2,c3
     mLogs->updatePro(str, ret); msleep(2000);
 
-    ret = mRead->readDevData();
+    ret = mRead->readData();
     checkVolErrRange();
 
     return ret;
@@ -306,7 +304,7 @@ bool Power_CoreThread::stepLoadTest()
     QString str = tr("拨下电流控制开关L1");  //三相回路电流、功率
     mLogs->updatePro(str, ret); msleep(2000);
 
-    ret = mRead->readDevData();
+    ret = mRead->readData();
     for(int i=0; i<mBusData->box[mItem->addr-1].loopNum; ++i) {
         curErrRange(i); powErrRange(i);
     }
@@ -314,7 +312,7 @@ bool Power_CoreThread::stepLoadTest()
     str = tr("拨下电流控制开关L2");
     mLogs->updatePro(str, ret); msleep(2000);
 
-    ret = mRead->readDevData();
+    ret = mRead->readData();
     for(int i=0; i<mBusData->box[mItem->addr-1].loopNum; ++i) {
         curErrRange(i); powErrRange(i);
     }
@@ -322,13 +320,14 @@ bool Power_CoreThread::stepLoadTest()
     str = tr("拨下电流控制开关L3");
     mLogs->updatePro(str, ret); msleep(2000);
 
-    ret = mRead->readDevData();
+    ret = mRead->readData();
     for(int i=0; i<mBusData->box[mItem->addr-1].loopNum; ++i) {
         curErrRange(i); powErrRange(i);
     }
 
     return ret;
 }
+
 bool Power_CoreThread::stepBreakerTest(int sum)
 {
     bool ret = false;
@@ -336,7 +335,7 @@ bool Power_CoreThread::stepBreakerTest(int sum)
     for(int i =0;i<sum;i++){
         str = tr("拨下断路器开关%1").arg(i+1);  //三相回路电压都为0
         mLogs->updatePro(str, ret); msleep(2000);
-        ret = mRead->readDevData();
+        ret = mRead->readData();
         checkVolErrRange();
     }
 
@@ -373,7 +372,7 @@ void Power_CoreThread::workDown()
     bool ret = false; QString str = tr("1.3.6.1.4.1.30966.12.1.1.2.10.0");
     ret = initDev(); if(ret) ret = mRead->readDev();
     if(ret) {
-        if(mItem->modeId == START_BUSBAR) ret = Dev_IpSnmp::bulid()->SetInfo(str, "0");
+        if(mItem->modeId == START_BUSBAR) ret = mRead->SetInfo(mRead->getFilterOid(),"0");
         else ret = Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0);  //设置滤波=0
 
         if(mCfg->work_mode == 2) {
@@ -386,7 +385,7 @@ void Power_CoreThread::workDown()
             int sum = mBusData->box[mItem->addr-1].loopNum /3;
             if(ret) ret = stepBreakerTest(sum);
         }
-        if(mItem->modeId == START_BUSBAR) ret = Dev_IpSnmp::bulid()->SetInfo(str, "5");
+        if(mItem->modeId == START_BUSBAR) ret = mRead->SetInfo(mRead->getFilterOid(), "5");
         else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(5);  //设置滤波=5
         if(ret) ret = factorySet();
     }

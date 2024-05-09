@@ -36,7 +36,7 @@ bool Power_Logs::appendLogItem(const QString &str, bool pass)
 
     QString str1 = mPro->itemContent.join("; ");
     it.memo = str1;
-    // if(it.sn.size())
+
     mLogItems << it;
 
     return pass;
@@ -80,10 +80,9 @@ bool Power_Logs::writeLog()
 
     QString str1 = mPro->itemContent.join("; ");
     it.memo = str1;
-    // if(it.sn.size())
-    mLogItems << it;
+    if(it.QRcode.size()) mLogItems << it;
+    if(it.QRcode.isEmpty()) return false;
 
-    // if(it.sn.isEmpty()) return false;
     return DbLogs::bulid()->insertItem(it);
 }
 
@@ -99,7 +98,7 @@ bool Power_Logs::updatePro(const QString &str, bool pass, int sec)
 {
     if(mPro->step < Test_End) {
         mPacket->updatePro(str, pass, sec);
-        // if(!pass)appendLogItem(str, pass);
+        if(!pass) mPro->itemContent << str;
         // appendLogItem(str, pass);
 
     }

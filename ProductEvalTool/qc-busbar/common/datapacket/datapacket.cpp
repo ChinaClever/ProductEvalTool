@@ -35,8 +35,6 @@ void sDataPacket::clear(int id)
     pro->startTime = QTime::currentTime();
 
     pro->productType.clear();
-
-    // pro->testStartTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
     pro->no.clear();
     pro->itemName.clear();
     pro->uploadPass.clear();

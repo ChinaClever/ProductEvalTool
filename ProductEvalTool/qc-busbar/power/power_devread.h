@@ -16,7 +16,9 @@ public:
     bool readNet();
     bool checkNet();
     bool readDevData();
+    bool readData();
     QString getConnectModeOid();
+    QString getFilterOid();
     bool SetInfo(QString o , QString val);
 
 protected:

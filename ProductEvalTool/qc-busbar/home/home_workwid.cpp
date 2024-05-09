@@ -46,7 +46,7 @@ void Home_WorkWid::initWid()
     connect(mVolInsul, &Face_Volinsul::StatusSig, this, &Home_WorkWid::StatusSlot);
 
     connect(this, &Home_WorkWid::startSig, this, &Home_WorkWid::updateWidSlot);
-    // connect(Json_Pack::bulid(this), SIGNAL(httpSig), this, SLOT(insertTextslots);
+    connect(Json_Pack::bulid(this), &Json_Pack::httpSig, this, &Home_WorkWid::insertTextslots);
 
     mPowThread = new Power_CoreThread(this);
     connect(this , SIGNAL(clearStartEleSig()), mPowThread, SLOT(clearStartEleSlot()));
@@ -71,7 +71,7 @@ void Home_WorkWid::TextSlot(QString str)
 void Home_WorkWid::overSlot()
 {
     QString str = tr("请去掉被测试产品线缆。");
-    bool ret = MsgBox::information(this,str);
+    MsgBox::information(this,str);
     mItem->mode = Test_Over;
     mVolInsul->resultSlot();
     mDataSave->saveTestData();
@@ -339,11 +339,9 @@ void Home_WorkWid::on_vol_insulBtn_clicked()//耐压/绝缘
             emit startSig(mode);
         }
     }else {
-        bool ret = MsgBox::question(this, tr("确定需要提前结束？"));
-        if(ret) {
-            AcwStatus(!ret); mPro->result = Test_Fail;
-            updateResult(); mPro->step = Test_End;
-        }
+        overTest();
+        AcwStatus(false); mPro->result = Test_Fail;
+        updateResult(); mPro->step = Test_End;
     }
 }
 
@@ -365,11 +363,9 @@ void Home_WorkWid::on_groundBtn_clicked()//接地
             emit startSig(mode);
         }
     }else {
-        bool ret = MsgBox::question(this, tr("确定需要提前结束？"));
-        if(ret) {
-            GndStatus(!ret); mPro->result = Test_Fail;
-            updateResult(); mPro->step = Test_End;
-        }
+        overTest();
+        GndStatus(false); mPro->result = Test_Fail;
+        updateResult(); mPro->step = Test_End;
     }
 }
 

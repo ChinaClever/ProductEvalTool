@@ -31,7 +31,8 @@ bool TestDataSave::saveDb()
 
     QString str1 = mPro->itemContent.join("; ");
     item.memo = str1;
-    mLogItems << item;
+    if(item.QRcode.size()) mLogItems << item;
+    if(item.QRcode.isEmpty()) return false;
 
     return DbLogs::bulid()->insertItem(item);
 }

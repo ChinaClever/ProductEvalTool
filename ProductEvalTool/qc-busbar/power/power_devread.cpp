@@ -39,6 +39,30 @@ bool Power_DevRead::readSn()
     return ret;
 }
 
+bool Power_DevRead::readData()
+{
+    bool ret = true;
+    if( mItem->modeId == START_BUSBAR ){
+        for(int i=0; i<6; ++i) {
+            if(mItem->ip.ip_mode == 1){//RTU模式地址为1
+                ret = mSiRtu->readPduData();
+            }else ret = mSiRtu->readRtuData();
+            if(ret) break; else if(!mPacket->delay(1)) break;
+        }
+        if(ret) {
+            ret = checkNet();
+            if(ret) ret = mIpSnmp->readPduData();
+            }
+    }else{
+        for(int i=0; i<6; ++i) {
+            ret = mSiRtu->readPduData();
+            if(ret) break; else if(!mPacket->delay(1)) break;
+        }
+    }
+
+    return ret;
+}
+
 bool Power_DevRead::readDev()
 {
     bool ret = mPacket->delay(5);
@@ -84,6 +108,11 @@ bool Power_DevRead::readDev()
 QString Power_DevRead::getConnectModeOid()
 {
     return mIpSnmp->getConnectModeOid();
+}
+
+QString Power_DevRead::getFilterOid()
+{
+    return mIpSnmp->getFilterOid();
 }
 
 bool Power_DevRead::SetInfo(QString o , QString val)
@@ -202,6 +231,7 @@ bool Power_DevRead::readNet()
 bool Power_DevRead::readDevData()
 {
     bool ret = true;
+
     switch (mItem->modeId) {
     case START_BUSBAR:  mRtu = mIpSnmp; break;
     case INSERT_BUSBAR:  mRtu = mSiRtu; break;

@@ -78,6 +78,7 @@ bool Dev_Source::readRk9901()
         obj->size = 3;
     } else {
         QString str = tr("比对源PK9901数据读取失败，质检结束");
+        mPro->itemContent << str;
         mPacket->updatePro(str, ret);
     }
 #endif

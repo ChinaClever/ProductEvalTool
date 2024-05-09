@@ -29,7 +29,7 @@ bool TestDataSave::saveDb()
     if(mItem->progress.errNum) str = tr("失败");
     item.passed = str;  // 结果
 
-    QString str1 = mPro->itemContent.join(";");
+    QString str1 = mPro->itemContent.join("; ");
     item.memo = str1;
     mLogItems << item;
 

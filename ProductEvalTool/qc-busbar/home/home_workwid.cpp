@@ -40,7 +40,6 @@ void Home_WorkWid::initWid()
     ui->stackedWid2->addWidget(mPower);
 
     mDataSave = new TestDataSave(this);
-    mWebSocket = new TestWebSocket(this);
     mSafrtyThread = new Test_safety(this);
     connect(mSafrtyThread, SIGNAL(overSig()), this, SLOT(overSlot()));
     connect(mSafrtyThread, &Test_safety::dataSig, this, &Home_WorkWid::TextSlot);
@@ -379,9 +378,9 @@ void Home_WorkWid::on_volBtn_clicked()
     ui->stackedWid->hide();
     mItem->work_mode = 2;
     mPro->test_item = ui->volBtn->text();
-    if(mPro->step == Test_End){
+    if(mPro->step == Test_End) {
         bool ret = initSerial();
-        if(ret){
+        if(ret) {
             mPacket->init();
             mPro->test_item = ui->volBtn->text(); mPro->test_step = "电力测试";
             ui->volLab->setStyleSheet("background-color:yellow;color:rgb(0, 0, 0);");
@@ -400,9 +399,9 @@ void Home_WorkWid::on_loadBtn_clicked()
 {
     ui->stackedWid->hide();
     mItem->work_mode = 3; 
-    if(mPro->step == Test_End){
+    if(mPro->step == Test_End) {
         bool ret = initSerial();
-        if(ret){
+        if(ret) {
             mPacket->init();
             mPro->test_step = "电力测试";  mPro->test_item = ui->loadBtn->text();
             ui->loadLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
@@ -421,15 +420,15 @@ void Home_WorkWid::on_breakerBtn_clicked()
 {
     ui->stackedWid->hide();
     mItem->work_mode = 4;
-    if(mPro->step == Test_End){
+    if(mPro->step == Test_End) {
         bool ret = initSerial();
-        if(ret){
+        if(ret) {
             mPacket->init();
             mPro->test_step = "电力测试"; mPro->test_item = ui->breakerBtn->text();
             ui->breakLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
             mPowThread->start();
         }
-    }else{
+    }else {
         bool ret = MsgBox::question(this, tr("确定需要提前结束？"));
         if(ret) {
             BreakerStatus(!ret); mPro->result = Test_Fail;

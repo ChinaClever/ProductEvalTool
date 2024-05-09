@@ -4,7 +4,6 @@
 #include "power_devread.h"
 #include "json_pack.h"
 #include "testconfig.h"
-#include "home_datawid.h"
 
 
 class Power_CoreThread : public Power_Object
@@ -82,7 +81,6 @@ private:
     int mRet;
     int mCurBoxNum;
     sTestConfigItem  *mCfg;
-    Home_DataWid *mData;
     Ad_Modbus *mModbus;
 };
 

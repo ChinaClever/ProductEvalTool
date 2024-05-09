@@ -168,7 +168,6 @@ bool Test_safety::testGND( QString & recv)//acw
         recv = mTrans->sentStep(mStep , mTestStep , sendStr , i+1);//RD?+回车 连接命令 1
         item.subItem = tr("第%1次接地测试读取测试结果").arg(i+1);
 
-        //qDebug()<<recv<<"         "<<i;
         if(!recv.isEmpty()){
             if(!recv.contains("PASS")){
                 mTestStep = Reset;

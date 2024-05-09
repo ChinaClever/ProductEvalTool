@@ -109,8 +109,7 @@ private:
     Test_safety *mSafrtyThread;
     Face_Volinsul *mVolInsul;
     Home_LoopTabWid *mLineTabWid;
-    TestWebSocket *mWebSocket;
-    TestItemTableWid *mItemWid;
+
     sTestConfigItem  *mItem;
     TestDataSave *mDataSave;
 

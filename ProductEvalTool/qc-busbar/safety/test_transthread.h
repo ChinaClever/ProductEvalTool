@@ -1,7 +1,7 @@
 ﻿#ifndef TEST_TRANSTHREAD_H
 #define TEST_TRANSTHREAD_H
 
-#include "testresultwid.h"
+#include "testdatasave.h"
 
 enum TestResisEnum {
     ConnectReady = 1,//1

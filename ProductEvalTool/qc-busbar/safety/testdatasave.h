@@ -2,7 +2,10 @@
 #define TESTDATASAVE_H
 
 #include "excel_savethread.h"
-#include "testitemtablewid.h"
+#include "comtablewid.h"
+#include "testconfig.h"
+#include "common.h"
+#include "datapacket.h"
 #include "dbstates.h"
 
 class TestDataSave : public QObject

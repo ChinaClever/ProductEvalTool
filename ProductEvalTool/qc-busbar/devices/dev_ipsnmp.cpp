@@ -446,7 +446,6 @@ bool Dev_IpSnmp::devDataV1()
 bool Dev_IpSnmp::readPduData()
 {
     bool ret = true;
-    qDebug()<<"devDataV3";
     ret = devDataV3();
     return ret;
 }

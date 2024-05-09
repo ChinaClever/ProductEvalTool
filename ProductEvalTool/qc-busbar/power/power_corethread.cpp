@@ -234,12 +234,14 @@ void Power_CoreThread::clearStartEleSlot()
     mCtrl->eleClean();
     bool ret = true , res = true;
     ret = mRead->readDevData();
+
     int i = 0;
     for(; i<mBusData->box[mItem->addr-1].loopNum; ++i) {
         ret = eleErrRange0(i); if(!ret) res = false;
     }
     QString str = tr("清除电能");
     if(res) str += tr("成功"); else str += tr("L%1 失败").arg(i);
+    mPro->step = Test_Over;
     mLogs->updatePro(str, res);
     emit StepSig(str);
 
@@ -306,7 +308,7 @@ bool Power_CoreThread::stepLoadTest()
 
     ret = mRead->readDevData();
     for(int i=0; i<mBusData->box[mItem->addr-1].loopNum; ++i) {
-        curErrRange(i); eleErrRange(i);
+        curErrRange(i); powErrRange(i);
     }
 
     str = tr("拨下电流控制开关L2");
@@ -314,7 +316,7 @@ bool Power_CoreThread::stepLoadTest()
 
     ret = mRead->readDevData();
     for(int i=0; i<mBusData->box[mItem->addr-1].loopNum; ++i) {
-        curErrRange(i); eleErrRange(i);
+        curErrRange(i); powErrRange(i);
     }
 
     str = tr("拨下电流控制开关L3");
@@ -322,7 +324,7 @@ bool Power_CoreThread::stepLoadTest()
 
     ret = mRead->readDevData();
     for(int i=0; i<mBusData->box[mItem->addr-1].loopNum; ++i) {
-        curErrRange(i); eleErrRange(i);
+        curErrRange(i); powErrRange(i);
     }
 
     return ret;
@@ -372,7 +374,7 @@ void Power_CoreThread::workDown()
     ret = initDev(); if(ret) ret = mRead->readDev();
     if(ret) {
         if(mItem->modeId == START_BUSBAR) ret = Dev_IpSnmp::bulid()->SetInfo(str, "0");
-        else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0);  //设置滤波=0
+        else ret = Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0);  //设置滤波=0
 
         if(mCfg->work_mode == 2) {
             mModbus->autoSetAddress();                       //自动分配地址

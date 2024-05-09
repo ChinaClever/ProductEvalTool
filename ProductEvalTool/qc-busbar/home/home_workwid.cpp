@@ -13,6 +13,7 @@ Home_WorkWid::Home_WorkWid(QWidget *parent) :
     ui(new Ui::Home_WorkWid)
 {
     ui->setupUi(this);
+    mId = 1;
     initWid();
     initLayout();
 }

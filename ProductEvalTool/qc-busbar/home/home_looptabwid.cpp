@@ -46,7 +46,7 @@ void Home_LoopTabWid::timeoutDone()
 {
     clearTable();
     initTableWid(header, mBusData->box[mItem->addr-1].loopNum, "回路数据列表");
-    mBusData->box[mItem->addr-1].loopNum = 6;
+    // mBusData->box[mItem->addr-1].loopNum = 6;
     if(mBusData->box[mItem->addr-1].loopNum) {
         appendItem(&(mBusData->box[mItem->addr-1]));
     }

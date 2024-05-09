@@ -1,0 +1,387 @@
+/*
+ *
+ *  Created on: 2020年10月1日
+ *      Author: Lzy
+ */
+#include "ad_modbus.h"
+
+extern QString user_land_name();
+
+Ad_Modbus::Ad_Modbus(QObject *parent) : QThread(parent)
+{
+    mSerial = nullptr;
+}
+
+
+Ad_Modbus *Ad_Modbus::bulid(QObject *parent)
+{
+    static Ad_Modbus* sington = nullptr;
+    if(sington == nullptr)
+        sington = new Ad_Modbus(parent);
+    return sington;
+}
+
+void Ad_Modbus::writeLogs()
+{
+    Db_Tran db;
+    for(int i=0; i<mLogItems.size(); ++i) {
+        DbStates::bulid()->insertItem(mLogItems.at(i));
+    }
+    mLogItems.clear();
+}
+
+void Ad_Modbus::initSerial()
+{
+    if(!mSerial) {
+        // mSerial = mItem->serial;
+    }
+}
+
+int Ad_Modbus::readSerial(quint8 *cmd, int secs)
+{
+    int rtn = 0;
+
+    if(!mSerial) return rtn;
+    for(int i=0; i<=secs; ++i) {      
+            rtn = mSerial->read(cmd, 1);
+            if(rtn > 0) break;
+    }
+
+    return rtn;
+}
+
+bool Ad_Modbus::writeSerial(quint8 *cmd, int len)
+{
+    bool ret = false;
+    if(mSerial) {
+        ret = mSerial->isOpened();
+        if(ret) {
+            mSerial->write(cmd, len);
+        } else {
+            qDebug() << "Rtu_Serial writeSerial err !" << ret;
+        }
+    } else {
+        qDebug() << "Rtu_Serial is nullptr !" ;
+    }
+
+    return ret;
+}
+
+int Ad_Modbus::transmit(uchar *sent, int len, uchar *recv, int secs)
+{
+    int rtn = 0;
+    bool ret = writeSerial(sent, len);
+    if(ret) {
+        rtn = readSerial(recv, secs);
+    }
+
+    return rtn;
+}
+
+bool Ad_Modbus::rtuRecvCrc(uchar *buf, int len)
+{
+    bool ret = true;
+    int rtn = len-2; uchar *ptr = buf+rtn;
+    if(rtn < 0) return false;
+
+    ushort crc = (ptr[1]*256) + ptr[0]; // 获取校验码
+    ushort res = rtu_crc(buf, rtn);
+    if(crc != res) {
+        ret = false;
+        qDebug() << "Rtu Recv rtu recv crc Err!";
+    }
+
+    return ret;
+}
+
+
+bool Ad_Modbus::rtuRecvCrc(uchar *buf, int len, sRtuReplyItemRK *msg)
+{
+    bool ret = rtuRecvCrc(buf, len);
+    if(ret) {
+        int rtn = len-2; uchar *ptr = buf+rtn;
+        msg->crc = (ptr[1]*256) + ptr[0]; // 获取校验码
+    }
+
+    return ret;
+}
+
+int Ad_Modbus::rtuRecvData(uchar *ptr, sRtuReplyItemRK *pkt)
+{
+    pkt->addr = *(ptr++);// 从机地址码
+    pkt->fn = *(ptr++);  /*功能码*/
+    pkt->len = *(ptr++); /*数据长度*/
+    if(0 == pkt->len) pkt->len = *(ptr++); /*SI-PDU数据长度是二个字节*/
+    if(pkt->len < MODBUS_RTU_SIZE) {
+        for(int i=0; i<pkt->len; ++i) {
+            pkt->data[i] = *(ptr++);
+        }
+    } else {
+        pkt->len = 0;
+    }
+
+    return pkt->len;
+}
+
+int Ad_Modbus::rtuRecvIPData(uchar *ptr, sRtuReplyItemRK *pkt)
+{
+    pkt->addr = *(ptr++);// 从机地址码
+    pkt->fn = *(ptr++);  /*功能码*/
+    pkt->len = *(ptr++); /*数据长度*/
+    pkt->len = *(ptr++); /*IP-PDU数据长度*/
+    pkt->len = *(ptr++); /*IP-PDU数据长度*/
+    if(pkt->len < MODBUS_RTU_SIZE) {
+        for(int i=0; i<pkt->len; ++i) {
+            pkt->data[i] = *(ptr++);
+        }
+    } else {
+        pkt->len = 0;
+    }
+
+    return pkt->len;
+}
+
+
+
+int Ad_Modbus::rtuRead(sRtuItemRK *pkt, sRtuReplyItemRK *recv)
+{
+    uchar sendBuf[64]={0}, recvBuf[1024]={0};
+    int rtn = rtu_sent_packet(pkt, sendBuf);
+    rtn = transmit(sendBuf, rtn, recvBuf, 3);
+    if(rtn > 0) {
+        bool ret = rtuRecvCrc(recvBuf, rtn, recv);
+        if(ret) {
+                rtn = rtuRecvData(recvBuf, recv);          
+        } else {
+            rtn = 0;
+        }
+    }
+    return rtn;
+}
+
+int Ad_Modbus::read(sRtuItemRK &pkt, uchar *recv)
+{
+    sRtuReplyItemRK item;
+    int ret = rtuRead(&pkt, &item);
+    if(ret > 0) {
+        for(int i=0; i<ret; ++i) {
+            recv[i] = item.data[i];
+        }
+    }
+
+    return ret;
+}
+
+bool Ad_Modbus::rtuWrites(sRtuSetItemsRK *pkt)
+{
+    bool ret = false;
+    static uchar sendBuf[256]={0}, recvBuf[128]={0};
+    int rtn = rtu_write_packets(pkt, sendBuf);
+    rtn = transmit(sendBuf, rtn, recvBuf, 2);
+    if(rtn > 0) {
+        ret = rtuRecvCrc(recvBuf, rtn);
+        if(ret) {
+            uchar fn = recvBuf[1];
+            if(fn < 0x80) { // 设置正常
+                ret = true;
+            }
+        }
+    }
+    return ret;
+}
+
+bool Ad_Modbus::rtuWrite(sRtuSetItemRK *pkt)
+{
+    bool ret = false;
+    static uchar sendBuf[256]={0}, recvBuf[128]={0};
+    int rtn = rtu_write_packet(pkt, sendBuf);
+    rtn = transmit(sendBuf, rtn, recvBuf, 2);
+    if(rtn > 0) {
+        ret = rtuRecvCrc(recvBuf, rtn);
+        if(ret) {
+            uchar fn = recvBuf[1];
+            if(fn < 0x80) { // 设置正常
+                ret = true;
+            }
+        }
+    }
+    return ret;
+}
+
+int Ad_Modbus::rtu_write_packet(sRtuSetItemRK *pkt, uchar *ptr)
+{
+    uchar *buf = ptr;
+    *(ptr++) = pkt->addr;  /*地址码*/
+    *(ptr++) = pkt->fn; /*功能码*/
+
+    /*填入寄存器首地址*/
+    *(ptr++) = ((pkt->reg) >> 8); /*高8位*/
+    *(ptr++) = (0xff)&(pkt->reg); /*低8位*/
+
+    *(ptr++) = ((pkt->data) >> 8);
+    *(ptr++) = (0xff)&(pkt->data);
+
+    /*填入CRC*/
+    pkt->crc = rtu_crc(buf, 6);
+    *(ptr++) = (0xff)&(pkt->crc); /*低8位*/
+    *(ptr++) = ((pkt->crc) >> 8); /*高8位*/
+
+    return 8;
+}
+
+int Ad_Modbus::rtu_write_packets(sRtuSetItemsRK *pkt, uchar *ptr)
+{
+    uchar *buf = ptr;
+    *(ptr++) = pkt->addr;  /*地址码*/
+    *(ptr++) = pkt->fn; /*功能码*/
+
+    /*填入寄存器首地址*/
+    *(ptr++) = ((pkt->reg) >> 8); /*高8位*/
+    *(ptr++) = (0xff)&(pkt->reg); /*低8位*/
+
+    *(ptr++) = ((pkt->num) >> 8); /*长度高8位*/
+    *(ptr++) = (0xff)&(pkt->num); /*低8位*/
+    *(ptr++) = pkt->len;
+
+    for(int i=0; i<pkt->len; ++i) {
+        *(ptr++) = pkt->data[i];
+    }
+
+    /*填入CRC*/
+    pkt->crc = rtu_crc(buf, 7+pkt->len);
+    *(ptr++) = (0xff)&(pkt->crc); /*低8位*/
+    *(ptr++) = ((pkt->crc) >> 8); /*高8位*/
+
+    return 9 + pkt->len;
+}
+
+
+
+/**
+  * 功　能：发送数据打包
+  * 入口参数：pkt -> 发送结构体
+  * 出口参数：ptr -> 缓冲区
+  * 返回值：打包后的长度
+  */
+int Ad_Modbus::rtu_sent_packet(sRtuItemRK *pkt, uchar *ptr)
+{
+    uchar *buf = ptr;
+    *(ptr++) = pkt->addr;  /*地址码*/
+    *(ptr++) = pkt->fn; /*功能码*/
+
+    /*填入寄存器首地址*/
+    *(ptr++) = ((pkt->reg) >> 8); /*高8位*/
+    *(ptr++) = (0xff)&(pkt->reg); /*低8位*/
+
+    /*填入数据长度*/
+    *(ptr++) = ((pkt->num) >> 8); /*长度高8位*/
+    *(ptr++) = (0xff)&(pkt->num); /*低8位*/
+
+    /*填入CRC*/
+    pkt->crc = rtu_crc(buf, 6);
+    *(ptr++) = (0xff)&(pkt->crc); /*低8位*/
+    *(ptr++) = ((pkt->crc) >> 8); /*高8位*/
+
+    return 8;
+}
+
+ushort Ad_Modbus::calccrc (ushort crc, uchar crcbuf)
+{
+    uchar x, kkk=0;
+    crc = crc^crcbuf;
+    for(x=0;x<8;x++)
+    {
+        kkk = crc&1;
+        crc >>= 1;
+        crc &= 0x7FFF;
+        if(kkk == 1)
+            crc = crc^0xa001;
+        crc=crc&0xffff;
+    }
+    return crc;
+}
+
+/**
+  * 功　能：CRC校验
+  * 入口参数：buf -> 缓冲区  len -> 长度
+  * 返回值：CRC
+  */
+ushort Ad_Modbus::rtu_crc(uchar *buf, int len)
+{
+    ushort crc = 0xffff;
+    for(int i=0; i<len; i++)
+        crc = calccrc(crc, buf[i]);
+    return crc;
+}
+
+/**
+  * 功　能：XOR和校验
+  * 入口参数：buf -> 缓冲区  len -> 长度
+  * 返回值：XOR
+  */
+uchar Ad_Modbus::getXorNumber(uchar *buf, int len)
+{
+    uchar xorsum = 0x00;
+    for(int i=0; i<len; i++)
+        xorsum ^= buf[i];
+    return xorsum;
+}
+
+
+bool Ad_Modbus::changeBaudRate()
+{
+    int br = mSerial->baudRate();
+    switch (br) {
+    case 9600: br = 19200; break;
+    case 19200: br = 9600; break;
+    default: br = 19200; break;
+    }
+    return mSerial->setBaudRate(br);;
+}
+
+void Ad_Modbus::autoSetAddress()
+{
+    static uchar buffer[11]={0x01, 0x10 , 0x00 , 0x1F , 0x00, 0x01 , 0x02 , 0x00 ,0x01 , 0x65 , 0xFF};
+    buffer[8] = 0x01;//打开自动设置地址模式
+    ushort cr = rtu_crc(buffer, sizeof(buffer)-2);
+    buffer[sizeof(buffer)-2] = (0xff)&(cr); /*低8位*/
+    buffer[sizeof(buffer)-1] = ((cr) >> 8); /*高8位*/
+    int rtn = writeSerial(buffer, sizeof(buffer));//打开自动设置地址模式
+
+    sleep(2);
+    uchar recvbuffer[1024];
+    memset(recvbuffer,0,sizeof(recvbuffer));
+    rtn = readSerial(recvbuffer,10);
+
+    int count = 30;
+    if(rtn > 0){
+        static uchar buffer1[13]={0x01, 0x6A , 0x12 , 0x22 , 0x06, 0x00 , 0x00 , 0x00 ,0x00 , 0x00 , 0x00 , 0x10 , 0xe7};
+        buffer1[2] = 2;
+        ushort crc = rtu_crc(buffer1, sizeof(buffer1)-2);
+        buffer1[sizeof(buffer1)-2] = (0xff)&(crc); /*低8位*/
+        buffer1[sizeof(buffer1)-1] = ((crc) >> 8); /*高8位*/
+        rtn = writeSerial(buffer1, sizeof(buffer1));
+        while(count--){
+            memset(recvbuffer,0,sizeof(recvbuffer));
+            rtn = readSerial(recvbuffer,10);
+            QByteArray array2;
+            QString strArray2;
+            array2.append((char *)recvbuffer, rtn);
+            strArray2 = array2.toHex(); // 十六进制
+            for(int i=0; i<array2.size(); ++i)
+                strArray2.insert(2+3*i, " "); // 插入空格
+            if(rtn % 8 == 0 && strArray2.contains("ff 7b"))emit sendNumAndIndexSig(recvbuffer[5]);
+            if(recvbuffer[0]==0x01 && recvbuffer[1]==0x6a){ emit sendDelaySig();break;}
+            if(recvbuffer[5] == 4) break;
+            if(recvbuffer[5] == 0xCC){count=-1;break;}
+        }
+    }else { emit sendDelaySig(); }
+    if(count == -1){ emit sendDelaySig(); }
+    buffer[8] = 0x00;//关闭自动设置地址模式
+    cr = rtu_crc(buffer, sizeof(buffer)-2);
+    buffer[sizeof(buffer)-2] = (0xff)&(cr); /*低8位*/
+    buffer[sizeof(buffer)-1] = ((cr) >> 8); /*高8位*/
+    rtn = writeSerial(buffer, sizeof(buffer));
+    memset(recvbuffer,0,sizeof(recvbuffer));
+    rtn = readSerial(recvbuffer,10);
+}

@@ -34,7 +34,6 @@ public:
 
     int transmit(const QByteArray &witeArray, QByteArray &readArray, int msecs=1);
     int transmit(uchar *sent, int len, uchar *recv, int msecs=1);
-    int Safetytransmit(const QByteArray &witeArray, QByteArray &readArray, int msecs);
     qint32 baudRate();
     bool setBaudRate(qint32 baudRate);
     bool loopTest();

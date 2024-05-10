@@ -23,22 +23,48 @@ void Home_LoopTabWid::initWid()
 void Home_LoopTabWid::appendItem(sBoxData *box)
 {
     sObjectData *dev = &(box->data);
-    for(int i=0; i<box->loopNum; ++i) {
-        QStringList listStr;
+    if(box->loopNum > 3) {
+        for(int i=0; i<box->loopNum; ++i) {
+            QStringList listStr;
 
-        listStr << QString::number(dev->cur.value[i]/COM_RATE_CUR,'f',3);
-        listStr << QString::number(dev->vol.value[i]/COM_RATE_VOL,'f',1);
-        listStr << QString::number(dev->pow.value[i]/COM_RATE_POW,'f',3);
-        listStr << QString::number(dev->pf[i]/COM_RATE_PF,'f',2);
-        listStr << QString::number(dev->ele[i]/COM_RATE_ELE,'f',2);
-        if(i<4) listStr << QString::number(box->env.tem.value[i]/COM_RATE_TEM,'f',1);
+            listStr << QString::number(dev->cur.value[i]/COM_RATE_CUR,'f',3);
+            listStr << QString::number(dev->vol.value[i]/COM_RATE_VOL,'f',1);
+            listStr << QString::number(dev->pow.value[i]/COM_RATE_POW,'f',3);
+            listStr << QString::number(dev->pf[i]/COM_RATE_PF,'f',2);
+            listStr << QString::number(dev->ele[i]/COM_RATE_ELE,'f',2);
+            if(i<4) listStr << QString::number(box->env.tem.value[i]/COM_RATE_TEM,'f',1);
 
-        setTableRow(i, listStr);
-        if(i<4) setItemColor(i, 5, box->env.tem.status[i]);
+            setTableRow(i, listStr);
+            if(i<4) setItemColor(i, 5, box->env.tem.status[i]);
 
-        if(dev->cur.value[i] == 0) setItemColor(i, 0, 3);
-        if(dev->vol.value[i] == 0) setItemColor(i, 1, 3);
-        if(dev->pow.value[i] == 0) setItemColor(i, 2, 3);
+            if(dev->cur.value[i] == 0) setItemColor(i, 0, 3);
+            if(dev->vol.value[i] == 0) setItemColor(i, 1, 3);
+            if(dev->pow.value[i] == 0) setItemColor(i, 2, 3);
+        }
+    }else {
+        for(int i=0; i<box->loopNum + 1; ++i) {
+            QStringList listStr;
+            if(i == 3) {
+                listStr << "---"<< "---"<< "---"<< "---"<< "---";
+                listStr << QString::number(box->env.tem.value[i]/COM_RATE_TEM,'f',1);
+            }else{
+                listStr << QString::number(dev->cur.value[i]/COM_RATE_CUR,'f',3);
+                listStr << QString::number(dev->vol.value[i]/COM_RATE_VOL,'f',1);
+                listStr << QString::number(dev->pow.value[i]/COM_RATE_POW,'f',3);
+                listStr << QString::number(dev->pf[i]/COM_RATE_PF,'f',2);
+                listStr << QString::number(dev->ele[i]/COM_RATE_ELE,'f',2);
+                listStr << QString::number(box->env.tem.value[i]/COM_RATE_TEM,'f',1);
+            }
+
+            setTableRow(i, listStr);
+            setItemColor(i, 5, box->env.tem.status[i]);
+
+            if(i < 3) {
+                if(dev->cur.value[i] == 0) setItemColor(i, 0, 3);
+                if(dev->vol.value[i] == 0) setItemColor(i, 1, 3);
+                if(dev->pow.value[i] == 0) setItemColor(i, 2, 3);
+            }
+        }
     }
 }
 
@@ -46,7 +72,6 @@ void Home_LoopTabWid::timeoutDone()
 {
     clearTable();
     initTableWid(header, mBusData->box[mItem->addr-1].loopNum, "回路数据列表");
-    // mBusData->box[mItem->addr-1].loopNum = 6;
     if(mBusData->box[mItem->addr-1].loopNum) {
         appendItem(&(mBusData->box[mItem->addr-1]));
     }

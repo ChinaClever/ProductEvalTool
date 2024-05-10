@@ -183,11 +183,7 @@ bool Sn_SerialNum::snEnter()
     bool ret = mTypeId->readDevType();
     if(ret) {
         initDevType(mSnItem);
-        ret = readSn(mSnItem);
-        if(!ret && mSnItem.sn.size()) {
-            ret = writeSn(mSnItem);
-            writeStatus(ret);
-        }
+        // ret = readSn(mSnItem);
         if(ret) mDev->devType.sn = mSnItem.sn;
     }
 

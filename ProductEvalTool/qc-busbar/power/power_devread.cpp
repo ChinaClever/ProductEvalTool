@@ -18,7 +18,6 @@ void Power_DevRead::initFunSlot()
     mLogs = Power_Logs::bulid(this);
     mSn = Sn_SerialNum::bulid(this);
     mIpSnmp = Dev_IpSnmp::bulid(this);
-    mSource = Dev_Source::bulid(this);
     mItem = Cfg::bulid()->item;
 }
 
@@ -34,7 +33,7 @@ bool Power_DevRead::readSn()
 {
     bool ret = true;
     ret = mSn->snEnter();
-    if(ret) ret = readDevData();
+    // if(ret) ret = readDevData();
 
     return ret;
 }
@@ -51,7 +50,9 @@ bool Power_DevRead::readData()
         }
         if(ret) {
             ret = checkNet();
-            if(ret) ret = mIpSnmp->readPduData();
+            for(int i=0; i<4; ++i) {
+                if(ret) ret = mIpSnmp->readPduData();
+            }
             }
     }else{
         for(int i=0; i<6; ++i) {
@@ -66,8 +67,6 @@ bool Power_DevRead::readData()
 bool Power_DevRead::readDev()
 {
     bool ret = mPacket->delay(5);
-    if(ret) ret = mSource->read();///////////////////////////
-    else mPro->result = Test_Fail;
     if(ret) {
         if( mItem->modeId == START_BUSBAR ){
             QString str = tr("始端箱串口RTU通讯");
@@ -135,7 +134,8 @@ bool Power_DevRead::checkNet()
     }
 
     if(ret) str += tr("正常");else str += tr("异常");
-    return mLogs->updatePro(str, ret);
+    // return mLogs->updatePro(str, ret);
+    return ret;
 }
 
 bool Power_DevRead::readSnmp()

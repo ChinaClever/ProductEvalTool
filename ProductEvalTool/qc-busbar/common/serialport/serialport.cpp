@@ -36,7 +36,6 @@ SerialPort::~SerialPort()
 bool SerialPort::open(const QString &name,qint32 baudRate)
 {
     bool ret=false;
-
     if(!isOpen)
     {
         mSerial = new QSerialPort(name);       //串口号，一定要对应好，大写！！！
@@ -287,21 +286,6 @@ int SerialPort::transmit(const QByteArray &witeArray, QByteArray &readArray, int
     int ret = write(witeArray);
     if(ret > 0) {
         ret = read(readArray, msecs);
-        if((ret < 0) || (ret > SERIAL_LEN)) {
-            qDebug() << "SerialPort transmit read err"  << ret;
-            ret = 0;
-        } else if(ret == 0) {
-            // qDebug() << "SerialPort transmit read no data"  << ret;
-        }
-    }
-
-    return ret;
-}
-int SerialPort::Safetytransmit(const QByteArray &witeArray, QByteArray &readArray, int msecs)
-{
-    int ret = Safetywrite(witeArray);
-    if(ret > 0) {
-        ret = Safetyread(readArray, msecs);
         if((ret < 0) || (ret > SERIAL_LEN)) {
             qDebug() << "SerialPort transmit read err"  << ret;
             ret = 0;

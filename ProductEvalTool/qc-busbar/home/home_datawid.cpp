@@ -12,7 +12,7 @@ Home_DataWid::Home_DataWid(QWidget *parent) : ComTableWid(parent)
 void Home_DataWid::initWid()
 {
     header << tr("回路")<< tr("A1")<< tr("A2")<< tr("A3")<< tr("B1")<< tr("B2")<< tr("B3")<< tr("C1")<< tr("C2")<< tr("C3");
-    initDataWid(header, 9, "测试数据");
+    initDataWid(header, 1, "测试数据");
     mBusData = get_share_mem();
 }
 
@@ -48,7 +48,6 @@ void Home_DataWid::timeoutDone()
 {
     clearTable();
 
-    mBusData->box[mItem->addr-1].loopNum = 6;
     if(mBusData->box[mItem->addr-1].loopNum) {
         appendItem(&(mBusData->box[mItem->addr-1]));
     }

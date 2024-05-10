@@ -15,7 +15,6 @@ public:
 signals:
     void overSig();
 
-    void dataSig(QString str);
 protected:
     void run();
     void stopThread();

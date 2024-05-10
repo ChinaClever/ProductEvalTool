@@ -38,7 +38,6 @@ private:
     Dev_IpRtu *mIpRtu;
     Sn_SerialNum *mSn;
     Dev_IpSnmp *mIpSnmp;
-    Dev_Source *mSource;
     Power_Logs *mLogs;
     sCfgItem *mItem;
 };

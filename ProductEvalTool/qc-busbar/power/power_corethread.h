@@ -82,6 +82,7 @@ private:
     int mCurBoxNum;
     sTestConfigItem  *mCfg;
     Ad_Modbus *mModbus;
+    Dev_Source *mSource;
 };
 
 #endif // POWER_CORETHREAD_H

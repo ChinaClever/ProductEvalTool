@@ -43,19 +43,11 @@ void Json_Pack::pduInfo(QJsonObject &obj)
 int Json_Pack::objData(QJsonObject &obj)
 {
     QJsonArray jsonArray;
+    QJsonObject DataObj;
     int num = mPro->uploadPass.size();
 
-    // jsonArray.append("软件版本为:" + mPro->softwareVersion);
-    // jsonArray.append("模块序列号:" + mPro->moduleSN);
-    // jsonArray.append("设备类型:" + mPro->productType);
-    // jsonArray.append("相数:" + QString::number(mBusData->box[mItem->addr-1].phaseFlag));
-    // jsonArray.append("回路数量:" + QString::number(mBusData->box[mItem->addr-1].loopNum));
-
-    for (int i = 0; i < mPro->itemContent.size(); ++i) {
-        QString item = mPro->itemContent.at(i);
-        jsonArray.append(item);
-    }
-    obj.insert("test_process" ,QJsonValue(jsonArray));
+    QString str1 = mPro->itemContent.join(";");
+    obj.insert("test_process" ,str1);
 
     return num;
 }

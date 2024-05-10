@@ -20,7 +20,8 @@ Sn_DevId *Sn_DevId::bulid(QObject *parent)
 
 void Sn_DevId::initReadType(sRtuItem &it)
 {
-    it.addr = mDev->id;
+    // it.addr = mDev->id;
+    it.addr = 2;
     it.fn = 0x03;
     it.reg = 0xA001;
     it.num = 2;
@@ -56,7 +57,6 @@ bool Sn_DevId::readDevId()
     for(int i=0; i<5; ++i) {
         len = mModbus->readSn(it, recv);
         if(len) break; else if(!mPacket->delay(1)) break;
-        if(i>1) mModbus->changeBaudRate();
     }   
 
     return analysDevType(recv, len);

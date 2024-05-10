@@ -78,9 +78,11 @@ bool Power_Logs::writeLog()
         it.passed = tr("失败");
     }
 
-    QString str1 = mPro->itemContent.join("; ");
+    QString str1 = mPro->itemContent.join(";");
     it.memo = str1;
-    if(it.QRcode.size()) mLogItems << it;
+    qDebug()<<"itemContent"<<str1;
+    // if(it.QRcode.size())
+    mLogItems << it;
     if(it.QRcode.isEmpty()) return false;
 
     return DbLogs::bulid()->insertItem(it);

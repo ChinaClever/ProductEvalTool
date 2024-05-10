@@ -42,7 +42,6 @@ void Home_WorkWid::initWid()
     mDataSave = new TestDataSave(this);
     mSafrtyThread = new Test_safety(this);
     connect(mSafrtyThread, SIGNAL(overSig()), this, SLOT(overSlot()));
-    connect(mSafrtyThread, &Test_safety::dataSig, this, &Home_WorkWid::TextSlot);
     connect(mVolInsul, &Face_Volinsul::StatusSig, this, &Home_WorkWid::StatusSlot);
 
     connect(this, &Home_WorkWid::startSig, this, &Home_WorkWid::updateWidSlot);
@@ -50,7 +49,7 @@ void Home_WorkWid::initWid()
 
     mPowThread = new Power_CoreThread(this);
     connect(this , SIGNAL(clearStartEleSig()), mPowThread, SLOT(clearStartEleSlot()));
-    connect(mPowThread, &Power_CoreThread::StepSig , this, &Home_WorkWid::TextSlot);
+    connect(mPowThread, &Power_CoreThread::StepSig , mPower, &Face_Power::TextSlot);
     connect(mPowThread,&Power_CoreThread::finshSig, this, &Home_WorkWid::StatusSlot);
 
     mModbus = Ad_Modbus::bulid(this);
@@ -62,11 +61,7 @@ void Home_WorkWid::initWid()
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
 }
 
-void Home_WorkWid::TextSlot(QString str)
-{
-    QString str1 = QString::number(mFirst++) + "、"+ str;
-    mPro->itemContent << str1;
-}
+
 
 void Home_WorkWid::overSlot()
 {

@@ -28,9 +28,9 @@ RtuRw *Rtu_Modbus::get(int id)
     sSerial *com = &(Cfg::bulid()->item->coms);
 
     switch (id) {
-    case 0:  ser = com->ser3; break;
-    case 1:  ser = com->ser1; break;
-    case 2:  ser = com->ser2; break;
+    case 0:  ser = com->ser1; break;
+    case 1:  ser = com->ser2; break;
+    case 2:  ser = com->ser3; break;
     }
     res->init(ser);
     ser->reflush();

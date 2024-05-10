@@ -185,8 +185,8 @@ bool Test_safety::testGND( QString & recv)//acw
         }else{item.measured = tr("读取测试结果失败");item.status = false;}
         item.expect = tr("大于20MΩ");
         mPro->gnd = mItem->sn.gnd;
-        emit dataSig("接地测试结果："+ mPro->gnd);
         appendResult(item);
+        mPro->itemContent << "接地测试结果："+ mPro->gnd;
     }
     return ret;
 }
@@ -225,8 +225,8 @@ bool Test_safety::testIR(QString & recv)
         }else{item.measured = tr("读取测试结果失败");item.status = false;}
         item.expect = tr("大于500MΩ");
         mPro->ir = mItem->sn.ir;
-        emit dataSig("绝缘测试结果："+ mPro->ir);
         appendResult(item);
+        mPro->itemContent << "绝缘测试结果："+ mPro->ir;
     }
     return ret;
 }
@@ -264,8 +264,8 @@ bool Test_safety::testACW(QString & recv)
         }else{item.measured = tr("读取测试结果失败");item.status = false;}
         item.expect = tr("小于10mA");
         mPro->acw = mItem->sn.acw;
-        emit dataSig("交流耐压测试结果："+ mPro->acw);
         appendResult(item);
+        mPro->itemContent << "交流耐压测试结果："+ mPro->acw;
     }
 
     return ret;

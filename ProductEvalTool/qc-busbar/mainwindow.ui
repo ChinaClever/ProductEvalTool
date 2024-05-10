@@ -36,9 +36,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>6</x>
-      <y>6</y>
-      <width>1908</width>
+      <x>0</x>
+      <y>0</y>
+      <width>1918</width>
       <height>75</height>
      </rect>
     </property>
@@ -58,10 +58,10 @@
    <widget class="QStackedWidget" name="stackedWid">
     <property name="geometry">
      <rect>
-      <x>6</x>
-      <y>79</y>
-      <width>1910</width>
-      <height>950</height>
+      <x>0</x>
+      <y>75</y>
+      <width>1918</width>
+      <height>981</height>
      </rect>
     </property>
     <property name="minimumSize">

@@ -20,12 +20,16 @@ public:
 
 protected:
     void initWid();
+    void initLayout();
+public slots:
+    void TextSlot(QString str);
 
 private:
     Ui::Face_Power *ui;
     Home_LoopTabWid *mLineTabWid;
     Home_Loadwid *mLoadWid;
     Home_DataWid *mDataWid;
+    int mFirst;
 };
 
 #endif // TEST_POWER_H

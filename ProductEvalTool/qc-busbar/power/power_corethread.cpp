@@ -287,7 +287,7 @@ bool Power_CoreThread::stepVolTest()
             if(!ret) break;
         }else {
             ret = mRead->readDevData();
-            if(!ret) { str = tr("L1成功");mLogs->updatePro(str, !ret);break;}
+            if(!ret) { str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
         }
     }
 
@@ -296,7 +296,6 @@ bool Power_CoreThread::stepVolTest()
     while(1)
     {
         int a, b, c;
-        ret = mRead->checkNet();
         if(ret) ret = mRead->readData();
         if(mBusData->box[mItem->addr - 1].phaseFlag) {  //三相
             for(int i =0;i<3;i++)
@@ -305,12 +304,12 @@ bool Power_CoreThread::stepVolTest()
                 b = mBusData->box[mItem->addr - 1].data.vol.value[3+i];
                 c = mBusData->box[mItem->addr - 1].data.vol.value[6+i];
             }
-            if((!b)&&(a)&&(c)) { ret = true; break;}
+            if((!b)&&(a)&&(c)) { ret = true; str = tr("电压控制L2");mLogs->updatePro(str, !ret); break;}
         }else {
                 a = mBusData->box[mItem->addr - 1].data.vol.value[0];
                 b = mBusData->box[mItem->addr - 1].data.vol.value[1];
                 c = mBusData->box[mItem->addr - 1].data.vol.value[2];
-            if((!b)&&(a)&&(c)) { ret = true; break;}
+            if((!b)&&(a)&&(c)) { ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
         }
     }
 
@@ -319,7 +318,6 @@ bool Power_CoreThread::stepVolTest()
     while(1)
     {
         int a, b, c;
-        ret = mRead->checkNet();
         if(ret) ret = mRead->readData();
         if(mBusData->box[mItem->addr - 1].phaseFlag) {  //三相
             for(int i =0;i<3;i++)
@@ -328,12 +326,12 @@ bool Power_CoreThread::stepVolTest()
                 b = mBusData->box[mItem->addr - 1].data.vol.value[3+i];
                 c = mBusData->box[mItem->addr - 1].data.vol.value[6+i];
             }
-            if((!c)&&(a)&&(b)) { ret = true; break;}
+            if((!c)&&(a)&&(b)) { ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
         }else {
             a = mBusData->box[mItem->addr - 1].data.vol.value[0];
             b = mBusData->box[mItem->addr - 1].data.vol.value[1];
             c = mBusData->box[mItem->addr - 1].data.vol.value[2];
-            if((!c)&&(a)&&(b)) { ret = true; break;}
+            if((!c)&&(a)&&(b)) { ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
         }
     }
 
@@ -344,27 +342,108 @@ bool Power_CoreThread::stepLoadTest()
 {
     bool ret = false;
     QString str = tr("拨下电流控制开关L1");  //三相回路电流、功率
-    mLogs->updatePro(str, ret); sleep(5);
+    emit StepSig(str);
 
-    ret = mRead->readData();
-    for(int i=0; i<mBusData->box[mItem->addr-1].loopNum; ++i) {
-        curErrRange(i); powErrRange(i);
+    while(1)
+    {
+        int a, b, c = 1; int d, e ,f = 1;
+        if(ret) ret = mRead->readData();
+        if(mBusData->box[mItem->addr - 1].phaseFlag) {  //三相
+            for(int i =0;i<3;i++)
+            {
+                a = mBusData->box[mItem->addr - 1].data.cur.value[i];
+                b = mBusData->box[mItem->addr - 1].data.cur.value[3+i];
+                if(mBusData->box[mItem->addr-1].loopNum > 6) {
+                    c = 0; c = mBusData->box[mItem->addr - 1].data.cur.value[6+i];}
+
+                d = mBusData->box[mItem->addr - 1].data.pow.value[i];
+                e = mBusData->box[mItem->addr - 1].data.pow.value[3+i];
+                if(mBusData->box[mItem->addr-1].loopNum > 6) {
+                    f = 0; f = mBusData->box[mItem->addr - 1].data.pow.value[6+i];}
+            }
+            if((!a)&&(b)&&(c)) {
+                if((!d)&&(e)&&(f)) ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
+        }else {
+            a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+            b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+            c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+            d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+            e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+            f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+            if((!a)&&(b)&&(c)) {
+                if((!d)&&(e)&&(f)) ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
+        }
     }
 
     str = tr("拨下电流控制开关L2");
-    mLogs->updatePro(str, ret); sleep(5);
+    emit StepSig(str);
 
-    ret = mRead->readData();
-    for(int i=0; i<mBusData->box[mItem->addr-1].loopNum; ++i) {
-        curErrRange(i); powErrRange(i);
+    while(1)
+    {
+        int a, b, c = 1; int d, e ,f = 1;
+        if(ret) ret = mRead->readData();
+        if(mBusData->box[mItem->addr - 1].phaseFlag) {  //三相
+            for(int i =0;i<3;i++)
+            {
+                a = mBusData->box[mItem->addr - 1].data.cur.value[i];
+                b = mBusData->box[mItem->addr - 1].data.cur.value[3+i];
+                if(mBusData->box[mItem->addr-1].loopNum > 6) {
+                    c = 0; c = mBusData->box[mItem->addr - 1].data.cur.value[6+i];}
+
+                d = mBusData->box[mItem->addr - 1].data.pow.value[i];
+                e = mBusData->box[mItem->addr - 1].data.pow.value[3+i];
+                if(mBusData->box[mItem->addr-1].loopNum > 6) {
+                    f = 0; f = mBusData->box[mItem->addr - 1].data.pow.value[6+i];}
+            }
+            if((!b)&&(a)&&(c)) {
+                if((!e)&&(d)&&(f)) ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
+        }else {
+            a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+            b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+            c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+            d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+            e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+            f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+            if((!b)&&(a)&&(c)) {
+                if((!e)&&(d)&&(f)) ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
+        }
     }
 
     str = tr("拨下电流控制开关L3");
-    mLogs->updatePro(str, ret); sleep(5);
+    emit StepSig(str);
 
-    ret = mRead->readData();
-    for(int i=0; i<mBusData->box[mItem->addr-1].loopNum; ++i) {
-        curErrRange(i); powErrRange(i);
+    while(1)
+    {
+        int a, b, c = 1; int d, e ,f = 1;
+        if(ret) ret = mRead->readData();
+        if(mBusData->box[mItem->addr - 1].phaseFlag) {  //三相
+            for(int i =0;i<3;i++)
+            {
+                a = mBusData->box[mItem->addr - 1].data.cur.value[i];
+                b = mBusData->box[mItem->addr - 1].data.cur.value[3+i];
+                if(mBusData->box[mItem->addr-1].loopNum > 6) {
+                    c = 0; c = mBusData->box[mItem->addr - 1].data.cur.value[6+i];}
+
+                d = mBusData->box[mItem->addr - 1].data.pow.value[i];
+                e = mBusData->box[mItem->addr - 1].data.pow.value[3+i];
+                if(mBusData->box[mItem->addr-1].loopNum > 6) {
+                    f = 0; f = mBusData->box[mItem->addr - 1].data.pow.value[6+i];}
+            }
+            if((!c)&&(a)&&(b)) {
+                if((!f)&&(d)&&(e)) ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
+        }else {
+            a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+            b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+            c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+            d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+            e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+            f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+            if((!c)&&(a)&&(b)) {
+                if((!f)&&(d)&&(e)) ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
+        }
     }
 
     return ret;
@@ -372,16 +451,96 @@ bool Power_CoreThread::stepLoadTest()
 
 bool Power_CoreThread::stepBreakerTest(int sum)
 {
-    bool ret = false;
-    QString str;
-    for(int i =0;i<sum;i++){
-        str = tr("拨下断路器开关%1").arg(i+1);  //三相回路电压都为0
-        mLogs->updatePro(str, ret); sleep(5);
-        ret = mRead->readData();
-        checkVolErrRange();
+    bool ret = true;
+    QString str = tr("拨下断路器开关1");
+    emit StepSig(str);
+    while(1)
+    {
+        int a, b, c;
+        if(ret) ret = mRead->readData();
+        if(mBusData->box[mItem->addr - 1].phaseFlag) {  //三相
+            if(mBusData->box[mItem->addr-1].loopNum == 9)
+            {
+                for(int i =0;i<9;i+3)
+                {
+                    a = mBusData->box[mItem->addr - 1].data.cur.value[i];
+                    b = mBusData->box[mItem->addr - 1].data.cur.value[1+i];
+                    c = mBusData->box[mItem->addr - 1].data.cur.value[2+i];
+                }
+                if((!a)&&(b)&&(c)) { ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
+            }else if(mBusData->box[mItem->addr-1].loopNum == 6)
+            {
+                for(int i =0;i<6;i+2)
+                {
+                    a = mBusData->box[mItem->addr - 1].data.cur.value[i];
+                    b = mBusData->box[mItem->addr - 1].data.cur.value[1+i];
+                }
+                if((!a)&&(b)) { ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
+            }
+        }else {
+            a = mBusData->box[mItem->addr - 1].data.vol.value[0];
+            b = mBusData->box[mItem->addr - 1].data.vol.value[1];
+            c = mBusData->box[mItem->addr - 1].data.vol.value[2];
+            if((!a)&&(b)&&(c)) { ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
+        }
     }
 
-    return ret;
+        str = tr("打开断路器开关1，拨下断路器开关2");  //b1,b2,b3
+        emit StepSig(str);
+        while(1)
+        {
+            int a, b, c;
+            if(ret) ret = mRead->readData();
+            if(mBusData->box[mItem->addr - 1].phaseFlag) {  //三相
+                if(mBusData->box[mItem->addr-1].loopNum == 9)
+                {
+                    for(int i =0;i<9;i+3)
+                    {
+                        a = mBusData->box[mItem->addr - 1].data.cur.value[i];
+                        b = mBusData->box[mItem->addr - 1].data.cur.value[1+i];
+                        c = mBusData->box[mItem->addr - 1].data.cur.value[2+i];
+                    }
+                    if((!b)&&(a)&&(c)) { ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
+                }else if(mBusData->box[mItem->addr-1].loopNum == 6)
+                {
+                    for(int i =0;i<6;i+2)
+                    {
+                        a = mBusData->box[mItem->addr - 1].data.cur.value[i];
+                        b = mBusData->box[mItem->addr - 1].data.cur.value[1+i];
+                    }
+                    if((!b)&&(a)) { ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
+                }
+            }else {
+                a = mBusData->box[mItem->addr - 1].data.vol.value[0];
+                b = mBusData->box[mItem->addr - 1].data.vol.value[1];
+                c = mBusData->box[mItem->addr - 1].data.vol.value[2];
+                if((!b)&&(a)&&(c)) { ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
+            }
+        }
+
+        str = tr("打开断路器开关2，拨下断路器开关3");//c1,c2,c3
+        emit StepSig(str);
+        while(1)
+        {
+            int a, b, c;
+            if(ret) ret = mRead->readData();
+            if(mBusData->box[mItem->addr - 1].phaseFlag) {  //三相
+                for(int i =0;i<3;i++)
+                {
+                    a = mBusData->box[mItem->addr - 1].data.vol.value[i];
+                    b = mBusData->box[mItem->addr - 1].data.vol.value[3+i];
+                    c = mBusData->box[mItem->addr - 1].data.vol.value[6+i];
+                }
+                if((!c)&&(a)&&(b)) { ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
+            }else {
+                a = mBusData->box[mItem->addr - 1].data.vol.value[0];
+                b = mBusData->box[mItem->addr - 1].data.vol.value[1];
+                c = mBusData->box[mItem->addr - 1].data.vol.value[2];
+                if((!c)&&(a)&&(b)) { ret = true; str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
+            }
+        }
+
+        return ret;
 }
 
 void Power_CoreThread::getDelaySlot()

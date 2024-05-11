@@ -8,6 +8,7 @@
 Sn_DevId::Sn_DevId(QObject *parent) : Dev_Object(parent)
 {
     mTypeDef = Sn_DevType::bulid();
+    mItem = Cfg::bulid()->item;
 }
 
 Sn_DevId *Sn_DevId::bulid(QObject *parent)
@@ -20,8 +21,8 @@ Sn_DevId *Sn_DevId::bulid(QObject *parent)
 
 void Sn_DevId::initReadType(sRtuItem &it)
 {
-    // it.addr = mDev->id;
-    it.addr = 2;
+    it.addr = mItem->addr;
+    // it.addr = 2;
     it.fn = 0x03;
     it.reg = 0xA001;
     it.num = 2;

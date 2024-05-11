@@ -18,6 +18,7 @@ protected:
 
 private:
     Sn_DevType *mTypeDef;
+    sCfgItem *mItem;
 };
 
 #endif // DEV_TYPEID_H

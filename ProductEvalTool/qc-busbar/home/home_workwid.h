@@ -117,6 +117,7 @@ private:
     Power_Logs *mLogs;
     Home_DataWid *mData;
     Ad_Modbus *mModbus;
+    Power_DevRead *mPowDev;
 };
 
 #endif // HOME_WORKWID_H

@@ -25,7 +25,7 @@
      <property name="font">
       <font>
        <family>微软雅黑</family>
-       <pointsize>48</pointsize>
+       <pointsize>32</pointsize>
       </font>
      </property>
      <property name="readOnly">

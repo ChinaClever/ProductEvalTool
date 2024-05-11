@@ -69,7 +69,7 @@ protected:
 
     bool stepVolTest();
     bool stepLoadTest();
-    bool stepBreakerTest(int sum);
+    bool stepBreakerTest();
     QString changeMode(int index);
     void autoSetAddress();
 

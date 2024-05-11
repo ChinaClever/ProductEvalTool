@@ -42,23 +42,15 @@ bool Power_DevRead::readData()
 {
     bool ret = true;
     if( mItem->modeId == START_BUSBAR ){
-        for(int i=0; i<6; ++i) {
             if(mItem->ip.ip_mode == 1){//RTU模式地址为1
                 ret = mSiRtu->readPduData();
-            }else ret = mSiRtu->readRtuData();
-            if(ret) break; else if(!mPacket->delay(1)) break;
-        }
+            }else ret = mSiRtu->readRtuData();        
         if(ret) {
             ret = checkNet();
-            for(int i=0; i<4; ++i) {
-                if(ret) ret = mIpSnmp->readPduData();
-            }
+            if(ret) ret = mIpSnmp->readPduData();
             }
     }else{
-        for(int i=0; i<6; ++i) {
-            ret = mSiRtu->readPduData();
-            if(ret) break; else if(!mPacket->delay(1)) break;
-        }
+        ret = mSiRtu->readPduData();
     }
 
     return ret;
@@ -239,6 +231,730 @@ bool Power_DevRead::readDevData()
     default: ret = false; break;
     }
     ret = mRtu->readPduData();
+    return ret;
+}
+
+bool Power_DevRead::Load_NineLoop()
+{
+    bool ret = true; int flag = 0; QString str;
+    str = tr("请准备插接位1");  //三相回路电流、功率
+    emit StepSig(str);
+
+    while(1){
+        int a=0; int d=0;
+        if(ret) {
+            ret = readData();
+            a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+            d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+            if(a) {
+                   if(d) ret = true; break;
+             }
+        }
+    }
+    str = tr("拨下电流控制开关L1");  //三相回路电流、功率
+    emit StepSig(str);
+
+    while(1)
+    {
+        int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+        ret = readData();
+
+        a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+        b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+        c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+        d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+        e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+        f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+
+        if((!a) &&b &&c) {
+            if((!d) &&e &&f) ret = true; str = tr("插接位1-电流控制L1成功");mLogs->updatePro(str, ret);break;}
+
+        flag++;
+        if(flag >100) {
+            ret = false; str = tr("插接位1-电流控制L1失败");mLogs->updatePro(str, ret);break;
+        }
+    }
+
+    flag = 0;
+    str = tr("拨下电流控制开关L2");
+    emit StepSig(str);
+    while(1)
+    {
+        int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+        ret = readData();
+
+        a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+        b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+        c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+        d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+        e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+        f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+
+        if(((!b)&&(c)&&(a)) &&((!e)&&(f)&&(d))) {
+            ret = true; str = tr("插接位1-电流控制L2成功");mLogs->updatePro(str, ret);break;}
+
+        flag++;
+        if(flag >100) {
+             ret = false; str = tr("插接位1-电流控制L2失败");mLogs->updatePro(str, ret);break;
+        }
+    }
+
+    flag = 0;
+    str = tr("拨下电流控制开关L3");
+    emit StepSig(str);
+    while(1)
+    {
+        int a=0, b=0, c = 1; int d=0 ,e=0 ,f = 1;
+        ret = readData();
+
+        a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+        b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+        c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+        d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+        e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+        f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+
+        if((!c)&&(b)&&(a)) {
+            if((!f)&&(e)&&(d)) ret = true; str = tr("插接位1-电流控制L3成功");mLogs->updatePro(str, ret);break;}
+        flag++;
+        if(flag >100) {
+            ret = false; str = tr("插接位1-电流控制L3失败");mLogs->updatePro(str, ret);break;
+        }
+    }
+
+    str = tr("请准备插接位2");  //三相回路电流、功率
+    emit StepSig(str);
+    while(1){
+        int a=0; int d=0;
+        if(ret) {
+            ret = readData();
+
+            a = mBusData->box[mItem->addr - 1].data.cur.value[3];
+            d = mBusData->box[mItem->addr - 1].data.pow.value[3];
+            if(a) {
+                if(d) ret = true; break;
+            }
+        }
+    }
+
+    str = tr("拨下电流控制开关L1");  //三相回路电流、功率
+    emit StepSig(str);
+    while(1)
+    {
+        int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+
+        ret = readData();
+        a = mBusData->box[mItem->addr - 1].data.cur.value[3];
+        b = mBusData->box[mItem->addr - 1].data.cur.value[4];
+        c = mBusData->box[mItem->addr - 1].data.cur.value[5];
+
+        d = mBusData->box[mItem->addr - 1].data.pow.value[3];
+        e = mBusData->box[mItem->addr - 1].data.pow.value[4];
+        f = mBusData->box[mItem->addr - 1].data.pow.value[5];
+
+        if((!a) &&b &&c) {
+            if((!d) &&e &&f) ret = true; str = tr("插接位2-电流控制L1成功");mLogs->updatePro(str, ret);break;}
+
+        flag++;
+        if(flag >200) {
+            ret = false; str = tr("插接位2-电流控制L1失败");mLogs->updatePro(str, ret);break;
+        }
+    }
+
+    flag = 0;
+    str = tr("拨下电流控制开关L2");
+    emit StepSig(str);
+    while(1)
+    {
+        int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+        ret = readData();
+        a = mBusData->box[mItem->addr - 1].data.cur.value[3];
+        b = mBusData->box[mItem->addr - 1].data.cur.value[4];
+        c = mBusData->box[mItem->addr - 1].data.cur.value[5];
+
+        d = mBusData->box[mItem->addr - 1].data.pow.value[3];
+        e = mBusData->box[mItem->addr - 1].data.pow.value[4];
+        f = mBusData->box[mItem->addr - 1].data.pow.value[5];
+
+        if(((!b)&&(c)&&(a)) &&((!e)&&(f)&&(d))) {
+        ret = true; str = tr("插接位2-电流控制L2成功");mLogs->updatePro(str, ret);break;}
+
+        flag++;
+        if(flag >100) {
+            ret = false; str = tr("插接位2-电流控制L2失败");mLogs->updatePro(str, ret);break;
+        }
+    }
+
+    flag = 0;
+    str = tr("拨下电流控制开关L3");
+    emit StepSig(str);
+    while(1)
+    {
+        int a=0, b=0, c = 1; int d=0 ,e=0 ,f = 1;
+        ret = readData();
+        a = mBusData->box[mItem->addr - 1].data.cur.value[3];
+        b = mBusData->box[mItem->addr - 1].data.cur.value[4];
+        c = mBusData->box[mItem->addr - 1].data.cur.value[5];
+
+        d = mBusData->box[mItem->addr - 1].data.pow.value[3];
+        e = mBusData->box[mItem->addr - 1].data.pow.value[4];
+        f = mBusData->box[mItem->addr - 1].data.pow.value[5];
+
+        if((!c)&&(b)&&(a)) {
+            if((!f)&&(e)&&(d)) ret = true; str = tr("插接位2-电流控制L3成功");mLogs->updatePro(str, ret);break;}
+        flag++;
+        if(flag >100) {
+            ret = false; str = tr("插接位2-电流控制L3失败");mLogs->updatePro(str, ret);break;
+        }
+    }
+
+    str = tr("请准备插接位3");  //三相回路电流、功率
+    emit StepSig(str);
+    while(1){
+        int a=0; int d=0;
+        if(ret) {
+            ret = readData();
+            a = mBusData->box[mItem->addr - 1].data.cur.value[6];
+            d = mBusData->box[mItem->addr - 1].data.pow.value[6];
+            if(a) {
+                if(d) ret = true; break;
+            }
+        }
+    }
+    str = tr("拨下电流控制开关L1");  //三相回路电流、功率
+    emit StepSig(str);
+
+    while(1)
+    {
+        int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+        ret = readData();
+        a = mBusData->box[mItem->addr - 1].data.cur.value[6];
+        b = mBusData->box[mItem->addr - 1].data.cur.value[7];
+        c = mBusData->box[mItem->addr - 1].data.cur.value[8];
+
+        d = mBusData->box[mItem->addr - 1].data.pow.value[6];
+        e = mBusData->box[mItem->addr - 1].data.pow.value[7];
+        f = mBusData->box[mItem->addr - 1].data.pow.value[8];
+
+        if((!a) &&b &&c) {
+            if((!d) &&e &&f) ret = true; str = tr("插接位3-电流控制L1成功");mLogs->updatePro(str, ret);break;}
+        flag++;
+        if(flag >200) {
+            ret = false; str = tr("插接位3电流控制L1失败");mLogs->updatePro(str, ret);break;
+        }
+    }
+
+    flag = 0;
+    str = tr("拨下电流控制开关L2");
+    emit StepSig(str);
+    while(1)
+    {
+        int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+        ret = readData();
+        a = mBusData->box[mItem->addr - 1].data.cur.value[6];
+        b = mBusData->box[mItem->addr - 1].data.cur.value[7];
+        c = mBusData->box[mItem->addr - 1].data.cur.value[8];
+
+        d = mBusData->box[mItem->addr - 1].data.pow.value[6];
+        e = mBusData->box[mItem->addr - 1].data.pow.value[7];
+        f = mBusData->box[mItem->addr - 1].data.pow.value[8];
+
+        if((!b) &&(c) &&(a)) {
+        if((!e) &&(f) &&(d)) {
+            ret = true; str = tr("插接位3电流控制L2成功");mLogs->updatePro(str, ret);break;}}
+
+        flag++;
+        if(flag >200) {
+            ret = false; str = tr("插接位3电流控制L2失败");mLogs->updatePro(str, ret);break;
+        }
+    }
+
+    flag = 0;
+    str = tr("拨下电流控制开关L3");
+    emit StepSig(str);
+    while(1)
+    {
+        int a=0, b=0, c = 1; int d=0 ,e=0 ,f = 1;
+        ret = readData();
+        a = mBusData->box[mItem->addr - 1].data.cur.value[6];
+        b = mBusData->box[mItem->addr - 1].data.cur.value[7];
+        c = mBusData->box[mItem->addr - 1].data.cur.value[8];
+
+        d = mBusData->box[mItem->addr - 1].data.pow.value[6];
+        e = mBusData->box[mItem->addr - 1].data.pow.value[7];
+        f = mBusData->box[mItem->addr - 1].data.pow.value[8];
+
+        if((!c)&&(b)&&(a)) {
+        if((!f)&&(e)&&(d)) ret = true; str = tr("插接位3电流控制L3成功");mLogs->updatePro(str, ret);break;}
+
+        flag++;
+        if(flag >200) {
+            ret = false; str = tr("插接位3电流控制L3失败");mLogs->updatePro(str, ret);break;
+        }
+    }
+
+    return ret;
+}
+
+bool Power_DevRead::Load_SixLoop()
+{
+    bool ret = true; int flag = 0; QString str;
+    str = tr("请准备插接位1");  //三相回路电流、功率
+    emit StepSig(str);
+
+    while(1){
+        int a=0; int d=0;
+        if(ret) {
+            ret = readData();
+            a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+            d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+            if(a) {
+                if(d) ret = true; break;
+            }
+        }
+    }
+
+    str = tr("拨下电流控制开关L1");  //三相回路电流、功率
+    emit StepSig(str);
+    while(1)
+    {
+        int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+         ret = readData();
+        a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+        b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+        c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+        d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+        e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+        f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+
+        if((!a) &&b &&c) {
+        if((!d) &&e &&f) ret = true; str = tr("插接位1-电流控制L1成功");mLogs->updatePro(str, ret);break;}
+
+        flag++;
+        if(flag >100) {
+            ret = false; str = tr("插接位1-电流控制L1失败");mLogs->updatePro(str, ret);break;
+        }
+    }
+
+    flag = 0;
+    str = tr("拨下电流控制开关L2");
+    emit StepSig(str);
+    while(1)
+    {
+        int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+        ret = readData();
+
+        a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+        b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+        c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+        d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+        e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+        f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+
+        if(((!b)&&(c)&&(a)) &&((!e)&&(f)&&(d))) {
+        ret = true; str = tr("插接位1-电流控制L2成功");mLogs->updatePro(str, ret);break;}
+
+        flag++;
+        if(flag >200) {
+        ret = false; str = tr("插接位1-电流控制L2失败");mLogs->updatePro(str, ret);break;
+        }
+
+    }
+
+    flag = 0;
+    str = tr("拨下电流控制开关L3");
+    emit StepSig(str);
+    while(1)
+    {
+        int a=0, b=0, c = 1; int d=0 ,e=0 ,f = 1;
+        ret = readData();
+        a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+        b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+        c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+        d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+        e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+        f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+
+        if((!c)&&(b)&&(a)) {
+        if((!f)&&(e)&&(d)) ret = true; str = tr("插接位1-电流控制L3成功");mLogs->updatePro(str, ret);break;}
+        flag++;
+        if(flag >200) {
+        ret = false; str = tr("插接位1-电流控制L3失败");mLogs->updatePro(str, ret);break;
+        }
+    }
+
+    str = tr("请准备插接位2");  //三相回路电流、功率
+    emit StepSig(str);
+    while(1){
+        int a=0; int d=0;
+        if(ret) {
+            ret = readData();
+            a = mBusData->box[mItem->addr - 1].data.cur.value[3];
+            d = mBusData->box[mItem->addr - 1].data.pow.value[3];
+            if(a) {
+                if(d) ret = true; break;
+            }
+        }
+    }
+
+    str = tr("拨下电流控制开关L1");  //三相回路电流、功率
+    emit StepSig(str);
+    while(1)
+    {
+        int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+        ret = readData();
+
+        a = mBusData->box[mItem->addr - 1].data.cur.value[3];
+        b = mBusData->box[mItem->addr - 1].data.cur.value[4];
+        c = mBusData->box[mItem->addr - 1].data.cur.value[5];
+
+        d = mBusData->box[mItem->addr - 1].data.pow.value[3];
+        e = mBusData->box[mItem->addr - 1].data.pow.value[4];
+        f = mBusData->box[mItem->addr - 1].data.pow.value[5];
+
+        if((!a) &&b &&c) {
+        if((!d) &&e &&f) ret = true; str = tr("插接位2-电流控制L1成功");mLogs->updatePro(str, ret);break;}
+
+        flag++;
+        if(flag >200) {
+            ret = false; str = tr("插接位2-电流控制L1失败");mLogs->updatePro(str, ret);break;
+        }
+    }
+
+    flag = 0;
+    str = tr("拨下电流控制开关L2");
+    emit StepSig(str);
+    while(1)
+    {
+        int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+        ret = readData();
+
+        a = mBusData->box[mItem->addr - 1].data.cur.value[3];
+        b = mBusData->box[mItem->addr - 1].data.cur.value[4];
+        c = mBusData->box[mItem->addr - 1].data.cur.value[5];
+
+        d = mBusData->box[mItem->addr - 1].data.pow.value[3];
+        e = mBusData->box[mItem->addr - 1].data.pow.value[4];
+        f = mBusData->box[mItem->addr - 1].data.pow.value[5];
+
+        if(((!b)&&(c)&&(a)) &&((!e)&&(f)&&(d))) {
+        ret = true; str = tr("插接位2-电流控制L2成功");mLogs->updatePro(str, ret);break;}
+
+        flag++;
+        if(flag >200) {
+            ret = false; str = tr("插接位2-电流控制L2失败");mLogs->updatePro(str, ret);break;
+        }
+    }
+
+    flag = 0;
+    str = tr("拨下电流控制开关L3");
+    emit StepSig(str);
+    while(1)
+    {
+        int a=0, b=0, c = 1; int d=0 ,e=0 ,f = 1;
+        ret = readData();
+        a = mBusData->box[mItem->addr - 1].data.cur.value[3];
+        b = mBusData->box[mItem->addr - 1].data.cur.value[4];
+        c = mBusData->box[mItem->addr - 1].data.cur.value[5];
+
+        d = mBusData->box[mItem->addr - 1].data.pow.value[3];
+        e = mBusData->box[mItem->addr - 1].data.pow.value[4];
+        f = mBusData->box[mItem->addr - 1].data.pow.value[5];
+
+        if((!c)&&(b)&&(a)) {
+        if((!f)&&(e)&&(d)) ret = true; str = tr("插接位2-电流控制L3成功");mLogs->updatePro(str, ret);break;}
+
+        flag++;
+        if(flag >200) {
+        ret = false; str = tr("插接位2-电流控制L3失败");mLogs->updatePro(str, ret);break;
+        }
+    }
+
+    return ret;
+}
+
+bool Power_DevRead::Load_ThreeLoop()
+{
+    bool ret = true; int flag = 0; QString str;
+    if(mItem->modeId == START_BUSBAR) {
+        str = tr("请准备插接位");  //三相回路电流、功率
+        emit StepSig(str);
+        while(1){
+            int a=0; int d=0;
+            ret = readData();
+            a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+            d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+            if(a) {
+                if(d) ret = true; break;
+            }
+        }
+
+        flag = 0;
+        str = tr("拨下电流控制开关L1");  //三相回路电流、功率
+        emit StepSig(str);
+        while(1)
+        {
+            int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+            ret = readData();
+            a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+            b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+            c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+            d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+            e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+            f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+
+            if((!a) &&b &&c) {
+                if((!d) &&e &&f) ret = true; str = tr("电流控制L1成功");mLogs->updatePro(str, ret);break;}
+
+            flag++;
+            if(flag >100) {
+                ret = false; str = tr("电流控制L1失败");mLogs->updatePro(str, ret);break;
+            }
+        }
+
+        flag = 0;
+        str = tr("拨下电流控制开关L2");  //三相回路电流、功率
+        emit StepSig(str);
+        while(1)
+        {
+            int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+            ret = readData();
+            a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+            b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+            c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+            d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+            e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+            f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+
+            if((!b) &&a &&c) {
+                if((!e) &&d &&f) ret = true; str = tr("电流控制L2成功");mLogs->updatePro(str, ret);break;}
+
+            flag++;
+            if(flag >100) {
+                ret = false; str = tr("电流控制L2失败");mLogs->updatePro(str, ret);break;
+            }
+        }
+
+        flag = 0;
+        str = tr("拨下电流控制开关L3");  //三相回路电流、功率
+        emit StepSig(str);
+        while(1)
+        {
+            int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+            ret = readData();
+            a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+            b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+            c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+            d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+            e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+            f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+
+            if((!c) &&b &&a) {
+                if((!f) &&e &&d) ret = true; str = tr("电流控制L3成功");mLogs->updatePro(str, ret);break;}
+
+            flag++;
+            if(flag >100) {
+                ret = false; str = tr("电流控制L3失败");mLogs->updatePro(str, ret);break;
+            }
+        }
+    }else{
+        if(mBusData->box[mItem->addr-1].phaseFlag) {    //三相
+            str = tr("请准备插接位");  //三相回路电流、功率
+            emit StepSig(str);
+            while(1){
+                int a=0; int d=0;
+                ret = readData();
+                a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+                d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+                if(a) {
+                    if(d) ret = true; break;
+                }
+            }
+
+            str = tr("拨下电流控制开关L1");  //三相回路电流、功率
+            emit StepSig(str);
+            while(1)
+            {
+                int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+                ret = readData();
+                a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+                b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+                c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+                d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+                e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+                f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+
+                if((!a) &&b &&c) {
+                    if((!d) &&e &&f) ret = true; str = tr("电流控制L1成功");mLogs->updatePro(str, ret);break;}
+
+                flag++;
+                if(flag >100) {
+                    ret = false; str = tr("电流控制L1失败");mLogs->updatePro(str, ret);break;
+                }
+            }
+
+            flag = 0;
+            str = tr("拨下电流控制开关L2");  //三相回路电流、功率
+            emit StepSig(str);
+            while(1)
+            {
+                int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+                ret = readData();
+                a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+                b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+                c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+                d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+                e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+                f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+
+                if((!b) &&a &&c) {
+                    if((!e) &&d &&f) ret = true; str = tr("电流控制L2成功");mLogs->updatePro(str, ret);break;}
+
+                flag++;
+                if(flag >100) {
+                    ret = false; str = tr("电流控制L2失败");mLogs->updatePro(str, ret);break;
+                }
+            }
+
+            flag = 0;
+            str = tr("拨下电流控制开关L3");  //三相回路电流、功率
+            emit StepSig(str);
+            while(1)
+            {
+                int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+                ret = readData();
+                a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+                b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+                c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+                d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+                e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+                f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+
+                if((!c) &&b &&a) {
+                    if((!f) &&e &&d) ret = true; str = tr("电流控制L3成功");mLogs->updatePro(str, ret);break;}
+
+                flag++;
+                if(flag >100) {
+                    ret = false; str = tr("电流控制L3失败");mLogs->updatePro(str, ret);break;
+                }
+            }
+        }else{  //单相三回路三个输出位
+            str = tr("请准备插接位1");  //三相回路电流、功率
+            emit StepSig(str);
+            while(1)
+            {
+                int a=0; int d=0;
+                if(ret) {
+                    ret = readData();
+                    a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+                    d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+                    if(!a) {
+                        if(!d) ret = true; break;}
+                }
+            }
+
+            flag = 0;
+            str = tr("拨下电流控制开关L1");  //三相回路电流、功率
+            emit StepSig(str);
+
+            while(1)
+            {
+                int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+                ret = readData();
+                a = mBusData->box[mItem->addr - 1].data.cur.value[0];
+                b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+                c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+
+                d = mBusData->box[mItem->addr - 1].data.pow.value[0];
+                e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+                f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+
+                if(!a) {
+                    if(!d) ret = true; str = tr("电流控制L1成功");mLogs->updatePro(str, ret);break;}
+
+                flag++;
+                if(flag >100) {
+                    ret = false; str = tr("电流控制L1失败");mLogs->updatePro(str, ret);break;
+                }
+            }
+
+            flag = 0;
+            str = tr("请准备插接位2");  //三相回路电流、功率
+            emit StepSig(str);
+            while(1)
+            {
+                int a=0; int d=0;
+                if(ret) { ret = readData();
+                        a = mBusData->box[mItem->addr - 1].data.cur.value[1];
+                        d = mBusData->box[mItem->addr - 1].data.pow.value[1];
+                        if(!a) {
+                            if(!d) ret = true; break;}
+                    }
+            }
+
+            str = tr("拨下电流控制开关L2");  //三相回路电流、功率
+            emit StepSig(str);
+            while(1)
+            {
+                int b=0; int e=0;
+                ret = readData();
+                b = mBusData->box[mItem->addr - 1].data.cur.value[1];
+                e = mBusData->box[mItem->addr - 1].data.pow.value[1];
+                if(!b) {
+                    if(!e) ret = true; str = tr("电流控制L2成功");mLogs->updatePro(str, ret);break;}
+
+                flag++;
+                if(flag >100) {
+                    ret = false; str = tr("电流控制L2失败");mLogs->updatePro(str, ret);break;
+                }
+            }
+
+            flag = 0;
+            str = tr("请准备插接位3");  //三相回路电流、功率
+            emit StepSig(str);
+            while(1)
+            {
+                int a=0; int d=0;
+                if(ret) { ret = readData();
+                        a = mBusData->box[mItem->addr - 1].data.cur.value[2];
+                        d = mBusData->box[mItem->addr - 1].data.pow.value[2];
+                        if(!a) {
+                            if(!d) ret = true; break;}
+                    }
+            }
+
+            str = tr("拨下电流控制开关L3");  //三相回路电流、功率
+            emit StepSig(str);
+            while(1)
+            {
+                int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
+                ret = readData();
+                c = mBusData->box[mItem->addr - 1].data.cur.value[2];
+                f = mBusData->box[mItem->addr - 1].data.pow.value[2];
+
+                if(!c) {
+                    if(!f) ret = true; str = tr("电流控制L3成功");mLogs->updatePro(str, ret);break;}
+
+                flag++;
+                if(flag >100) {
+                    ret = false; str = tr("电流控制L3失败");mLogs->updatePro(str, ret);break;
+                }
+            }
+        }
+    }
+
     return ret;
 }
 

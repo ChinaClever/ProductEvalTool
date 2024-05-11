@@ -11,7 +11,7 @@ Home_DataWid::Home_DataWid(QWidget *parent) : ComTableWid(parent)
 
 void Home_DataWid::initWid()
 {
-    header << tr("回路")<< tr("A1")<< tr("A2")<< tr("A3")<< tr("B1")<< tr("B2")<< tr("B3")<< tr("C1")<< tr("C2")<< tr("C3");
+    header << tr("回路")<< tr("A1")<< tr("B1")<< tr("C1")<< tr("A2")<< tr("B2")<< tr("C2")<< tr("A3")<< tr("B3")<< tr("C3");
     initDataWid(header, 1, "测试数据");
     mBusData = get_share_mem();
 }

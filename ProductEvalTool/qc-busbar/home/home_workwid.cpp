@@ -49,7 +49,9 @@ void Home_WorkWid::initWid()
 
     mPowThread = new Power_CoreThread(this);
     connect(this , SIGNAL(clearStartEleSig()), mPowThread, SLOT(clearStartEleSlot()));
-    connect(mPowThread, &Power_CoreThread::StepSig , mPower, &Face_Power::TextSlot);
+
+    mPowDev = new Power_DevRead(this);
+    connect(mPowDev, &Power_DevRead::StepSig , mPower, &Face_Power::TextSlot);
     connect(mPowThread,&Power_CoreThread::finshSig, this, &Home_WorkWid::StatusSlot);
 
     mModbus = Ad_Modbus::bulid(this);

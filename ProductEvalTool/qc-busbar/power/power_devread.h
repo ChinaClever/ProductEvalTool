@@ -6,6 +6,7 @@
 class Power_DevRead : public Power_Object
 {
     Q_OBJECT
+public:
     explicit Power_DevRead(QObject *parent = nullptr);
 public:
     static Power_DevRead *bulid(QObject *parent = nullptr);
@@ -21,6 +22,9 @@ public:
     QString getFilterOid();
     bool SetInfo(QString o , QString val);
 
+    bool Load_NineLoop();
+    bool Load_SixLoop();
+    bool Load_ThreeLoop();
 protected:
     void run();
     bool readSnmp();
@@ -31,7 +35,8 @@ protected:
 
 protected slots:
     void initFunSlot();
-
+signals:
+    void StepSig(QString str);
 private:
     Dev_Object *mRtu;
     Dev_SiRtu *mSiRtu;

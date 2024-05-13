@@ -80,9 +80,8 @@ bool Power_Logs::writeLog()
 
     QString str1 = mPro->itemContent.join(";");
     it.memo = str1;
-    qDebug()<<"itemContent"<<str1;
-    // if(it.QRcode.size())
-    mLogItems << it;
+
+    if(it.QRcode.size()) mLogItems << it;
     if(it.QRcode.isEmpty()) return false;
 
     return DbLogs::bulid()->insertItem(it);

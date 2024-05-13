@@ -71,7 +71,7 @@ void Home_LoopTabWid::appendItem(sBoxData *box)
 void Home_LoopTabWid::timeoutDone()
 {
     clearTable();
-    initTableWid(header, mBusData->box[mItem->addr-1].loopNum, "回路数据列表");
+    // initTableWid(header, mBusData->box[mItem->addr-1].loopNum, "回路数据列表");
     if(mBusData->box[mItem->addr-1].loopNum) {
         appendItem(&(mBusData->box[mItem->addr-1]));
     }

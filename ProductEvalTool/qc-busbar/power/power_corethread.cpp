@@ -47,7 +47,7 @@ bool Power_CoreThread::initDev()
     // else
     ret = mRead->readSn();
     mItem->modeId = mDt->devType;
-    qDebug()<<"mItem->modeId"<<mItem->modeId;
+
     return ret;
 }
 
@@ -286,11 +286,11 @@ bool Power_CoreThread::stepVolTest()
             ret = mRead->checkNet();
             if(!ret) break;
         }else {
-            ret = mRead->readDevData();
+            ret = mRead->readData();
             if(!ret) { str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);break;}
         }
         flag++;
-        if(flag >15) {
+        if(flag >20) {
             ret = false; str = tr("电压控制L1失败");mLogs->updatePro(str, ret);break;
         }
     }
@@ -562,26 +562,28 @@ bool Power_CoreThread::stepBreakerTest()
 
 void Power_CoreThread::getDelaySlot()
 {
-    QString str;
+    QString str; bool ret = false;
     if(mCurBoxNum == 0){
         str = (tr("始端箱未发出命令"));
-       mLogs->updatePro(str, true);
+        ret = true;
     }else if(mCurBoxNum >= 4 && mCurBoxNum <= 20 ){
         str = tr("设置地址%1失败").arg(mCurBoxNum);
+        ret = false;
     }
-    emit StepSig(str);
+    mLogs->updatePro(str, ret);
     mCurBoxNum = 0;
 }
 
 void Power_CoreThread::getNumAndIndexSlot(int curnum)
 {
     int num = curnum >= 2 ? curnum : 2;
-    QString str;
+    QString str; bool ret = false;
     mCurBoxNum = num;
     if(num > 2){
         QString str = tr("设置地址%1成功").arg(num-1);
+        ret = false;
     }
-    emit StepSig(str);
+    mLogs->updatePro(str, ret);
 }
 
 void Power_CoreThread::workDown()

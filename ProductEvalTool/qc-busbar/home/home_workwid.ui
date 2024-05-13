@@ -33,7 +33,7 @@
     <rect>
      <x>310</x>
      <y>0</y>
-     <width>641</width>
+     <width>511</width>
      <height>261</height>
     </rect>
    </property>
@@ -55,7 +55,7 @@
    <widget class="QLabel" name="timeLab">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>80</x>
       <y>30</y>
       <width>321</width>
       <height>181</height>
@@ -77,7 +77,7 @@
    <widget class="QLabel" name="startLab">
     <property name="geometry">
      <rect>
-      <x>108</x>
+      <x>20</x>
       <y>230</y>
       <width>180</width>
       <height>20</height>
@@ -105,7 +105,7 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>294</x>
+      <x>240</x>
       <y>230</y>
       <width>20</width>
       <height>20</height>
@@ -133,7 +133,7 @@
    <widget class="QLabel" name="endLab">
     <property name="geometry">
      <rect>
-      <x>320</x>
+      <x>280</x>
       <y>230</y>
       <width>179</width>
       <height>20</height>
@@ -466,7 +466,7 @@
     <rect>
      <x>310</x>
      <y>260</y>
-     <width>641</width>
+     <width>511</width>
      <height>661</height>
     </rect>
    </property>
@@ -516,9 +516,9 @@
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>960</x>
+     <x>830</x>
      <y>0</y>
-     <width>941</width>
+     <width>1071</width>
      <height>921</height>
     </rect>
    </property>

@@ -61,6 +61,7 @@ private:
     void addItemContent(int row, int column, const QString &content);
     void addRowContent(int row, QStringList &list);
     void addInitRow(int row);
+    void addInitRowData(int row);
     void addTableRows(int line);
     void delTableRows(int line);
     void initWidget(QStringList &header);

@@ -39,7 +39,7 @@ void Home_WorkWid::initWid()
     mPower = new Face_Power(ui->stackedWid2);
     ui->stackedWid2->addWidget(mPower);
 
-    mDataSave = new TestDataSave(this);
+
     mSafrtyThread = new Test_safety(this);
     connect(mSafrtyThread, SIGNAL(overSig()), this, SLOT(overSlot()));
     connect(mVolInsul, &Face_Volinsul::StatusSig, this, &Home_WorkWid::StatusSlot);
@@ -73,7 +73,7 @@ void Home_WorkWid::overSlot()
     MsgBox::information(this,str);
     mItem->mode = Test_Over;
     mVolInsul->resultSlot();
-    mDataSave->saveTestData();
+
 }
 
 void Home_WorkWid::overTest()

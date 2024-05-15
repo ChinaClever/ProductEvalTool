@@ -78,7 +78,7 @@ bool Test_safety::appendResult(sTestDataItem &item)
     item.result = str;
     mItem->dataItem.append(item);
     conditionExec(item.status);
-    QString statusStr = item.subItem + "  结果: " + str;
+    QString statusStr = item.subItem + " 结果: " + str;
 
     updateProgress(item.status, statusStr);
 
@@ -188,6 +188,7 @@ bool Test_safety::testGND( QString & recv)//acw
         QString str = tr("接地测试结果：%1").arg(mPro->gnd);
         mPacket->updatePro(str, true);
     }
+    mItem->sn.gnd.clear();
 
     return ret;
 }
@@ -226,6 +227,7 @@ bool Test_safety::testIR(QString & recv)
         QString str = tr("绝缘测试结果：%1").arg(mPro->ir);
         mPacket->updatePro(str, true);
     }
+    mItem->sn.ir.clear();
 
     return ret;
 }
@@ -263,6 +265,7 @@ bool Test_safety::testACW(QString & recv)
         QString str = tr("交流耐压测试结果：%1").arg(mPro->acw);
         mPacket->updatePro(str, true);
     }
+    mItem->sn.acw.clear();
 
     return ret;
 }
@@ -271,12 +274,12 @@ void Test_safety::run()
 {
     testReady();
     if(!mItem->work_mode) {
-        mItem->progress.allNum = 27;
+        mItem->progress.allNum = 22;
         QString recv = "";
         testACW(recv); testIR(recv);    //先耐压再绝缘
         emit overSig();
     } else {
-        mItem->progress.allNum = 27;
+        mItem->progress.allNum = 9;
         QString recv = "";
         testGND(recv);
         emit overSig();

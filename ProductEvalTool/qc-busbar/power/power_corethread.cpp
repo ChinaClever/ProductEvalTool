@@ -46,18 +46,6 @@ bool Power_CoreThread::initDev()
     ret = mRead->readSn();
     mItem->modeId = mDt->devType;
 
-    mPro->loopNum = QString::number(mBusData->box[mItem->addr-1].loopNum);
-
-    mPro->itemContent << "回路数量:" + mPro->loopNum;
-    mPro->itemContent << "软件版本为:" + mPro->softwareVersion;
-    mPro->itemContent << "模块序列号:" + mPro->moduleSN;
-    mPro->itemContent << "设备类型:" + mPro->productType;
-
-    if(mItem->modeId != START_BUSBAR) {
-        mPro->phase = QString::number(mBusData->box[mItem->addr-1].phaseFlag);
-        mPro->itemContent << "相数:" + mPro->phase;
-    }
-
     return ret;
 }
 
@@ -268,8 +256,21 @@ void Power_CoreThread::workResult(bool)
     }
     mPacket->updatePro(str, res);
     mLogs->saveLogs();
+    mPro->loopNum = QString::number(mBusData->box[mItem->addr-1].loopNum);
+
+    mPro->itemContent << "回路数量:" + mPro->loopNum;
+    mPro->itemContent << "软件版本为:" + mPro->softwareVersion;
+    mPro->itemContent << "模块序列号:" + mPro->moduleSN;
+    mPro->itemContent << "设备类型:" + mPro->productType;
+
+    if(mItem->modeId != START_BUSBAR) {
+        mPro->phase = QString::number(mBusData->box[mItem->addr-1].phaseFlag);
+        if(mBusData->box[mItem->addr-1].phaseFlag) mPro->itemContent << "相数:三相";
+        else mPro->itemContent << "相数:单相";
+    }
+
     sleep(1);
-    Json_Pack::bulid()->http_post("busbarreport/add","192.168.1.42");//全流程才发送记录(http)
+    Json_Pack::bulid()->http_post("busbarreport/add","192.168.1.15");//全流程才发送记录(http)
     if(mPro->result == Test_Fail) res = false;
     emit finshSig(res); mPro->step = Test_Over;
 }
@@ -279,6 +280,7 @@ bool Power_CoreThread::stepVolTest()
     bool ret = true;int flag = 0;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
+
     QString str = tr("关闭电压控制L1"); QString str1;
     emit TipSig(str);
     while(1)
@@ -322,7 +324,7 @@ bool Power_CoreThread::stepVolTest()
                     c += Obj->vol.value[2+i];
                 }
 //              if((!b)&&(a)&&(c)) { ret = true; str = tr("电压控制L2");mLogs->updatePro(str, !ret); break;}
-                if((b < 300)&&(a >6600)&&(c >6600)) {
+                if((!b)&&(a >6600)&&(c >6600)) {
                     ret = true;
                     for(int i =0;i<loop;i++)
                     {
@@ -341,7 +343,7 @@ bool Power_CoreThread::stepVolTest()
                     c += Obj->vol.value[2+i];
                 }
 //                if((!b)&&(a)&&(c)) { ret = true; str = tr("电压控制L2");mLogs->updatePro(str, !ret); break;}
-                if((b < 300)&&(a >6600)&&(c >6600)) {
+                if((!b)&&(a >4400)&&(c >4400)) {
                     ret = true;
                     for(int i =0;i<loop;i++)
                     {
@@ -355,7 +357,7 @@ bool Power_CoreThread::stepVolTest()
                 b = Obj->vol.value[1];
                 c = Obj->vol.value[2];
 //            if((!b)&&(a)&&(c)) { ret = true; str = tr("电压控制L2成功");mLogs->updatePro(str, !ret);break;}
-                if((b < 300)&&(a >6600)&&(c >6600)) {
+                if((!b)&&(a >2200)&&(c >2200)) {
                     ret = true;
                     for(int i =0;i<loop;i++)
                     {
@@ -394,8 +396,7 @@ bool Power_CoreThread::stepVolTest()
                     b += Obj->vol.value[1+i];
                     c += Obj->vol.value[2+i];
                 }
-                qDebug()<<"b"<<b<<c<<a;
-                if((c < 300)&&(a >6600)&&(b >6600)) {
+                if((!c)&&(a >6600)&&(b >6600)) {
                     ret = true;
                     for(int i =0;i<loop;i++)
                     {
@@ -411,7 +412,7 @@ bool Power_CoreThread::stepVolTest()
                     b += Obj->vol.value[1+i];
                     c += Obj->vol.value[2+i];
                 }
-                if((c < 300)&&(a> 6600)&&(c >6600)) {
+                if((!c)&&(a> 4400)&&(c >4400)) {
                     ret = true;
                     for(int i =0;i<loop;i++)
                     {
@@ -424,7 +425,7 @@ bool Power_CoreThread::stepVolTest()
                 a = Obj->vol.value[0];
                 b = Obj->vol.value[1];
                 c = Obj->vol.value[2];
-                if((c < 300)&&(a >6600)&&(b>6600)) {
+                if((!c)&&(a >2200)&&(b>2200)) {
                     ret = true;
                     for(int i =0;i<loop;i++)
                     {

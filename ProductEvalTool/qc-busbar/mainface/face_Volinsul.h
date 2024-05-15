@@ -30,6 +30,7 @@ private:
     sProgress *mPro;
     sDataPacket *mPacket;
     QTimer *timer;
+    TestDataSave *mDataSave;
 };
 
 #endif // VOL_INSUL_H

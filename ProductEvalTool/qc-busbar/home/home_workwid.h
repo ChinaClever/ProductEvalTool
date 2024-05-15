@@ -112,7 +112,6 @@ private:
     Home_LoopTabWid *mLineTabWid;
 
     sTestConfigItem  *mItem;
-    TestDataSave *mDataSave;
 
     Power_CoreThread *mPowThread;
     Power_Logs *mLogs;

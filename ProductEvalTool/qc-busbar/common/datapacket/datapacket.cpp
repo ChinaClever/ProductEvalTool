@@ -60,6 +60,9 @@ void sDataPacket::init()
     pro->test_item.clear();
     pro->itemContent.clear();
     pro->num = 0;
+    pro->ir.clear();
+    pro->acw.clear();
+    pro->gnd.clear();
 }
 
 bool sDataPacket::updatePro(const QString &str, bool pass, int sec)
@@ -71,7 +74,7 @@ bool sDataPacket::updatePro(const QString &str, bool pass, int sec)
     pro->itemName << str;
     pro->status << str;
 
-    QString str1 = QString::number(pro->num) + str;
+    QString str1 = QString::number(pro->num) + "、"+ str;
     pro->itemContent << str1;
 
     if(pass) pass = delay(sec);

@@ -9,6 +9,7 @@ Face_Volinsul::Face_Volinsul(QWidget *parent)
     mItem = TestConfig::bulid()->item;
     mPacket = sDataPacket::bulid();
     mPro = mPacket->getPro();
+    mDataSave = new TestDataSave(this);
 
     timer = new QTimer(this);
     timer->start(500);
@@ -61,8 +62,10 @@ void Face_Volinsul::resultSlot()
         res = true; str += tr("通过");
         mPro->uploadPassResult = 1;
     }
-    mPacket->updatePro(str, res); mPacket->delay(1);
-    Json_Pack::bulid()->http_post("busbarreport/add","192.168.1.171");
+    mPacket->updatePro(str, res);
+    mDataSave->saveTestData(); mPacket->delay(1);
+    Json_Pack::bulid()->http_post("busbarreport/add","192.168.1.15");
+    if(mPro->result == Test_Fail) res = false;
     emit StatusSig(res); mPro->step = Test_Over;
 }
 

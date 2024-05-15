@@ -641,6 +641,7 @@ struct sProgress
     QList<bool> pass, itPass;
     QStringList status, item;
 
+    int num;
     uchar result;    // 最终结果
     QTime startTime;
     QString testStartTime;
@@ -654,6 +655,7 @@ struct sProgress
     QString softwareVersion;
     QStringList no, itemName;
     QStringList itemContent;
+    QStringList itemData;
     QList<bool> uploadPass;
     uchar uploadPassResult;
     QString product_sn;

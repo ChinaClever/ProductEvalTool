@@ -121,8 +121,6 @@ int Rtu_Read::rtuReadSn(sRtuItem *pkt, sRtuReplyItem *recv)
     uchar sendBuf[64]={0}, recvBuf[MODBUS_RTU_SIZE]={0};
     int rtn = rtuPacket(pkt, sendBuf);
     rtn = transmit(sendBuf, rtn, recvBuf, 3);
-    // QByteArray array = QByteArray::fromRawData((const char*)recvBuf,10);
-    // qDebug()<<"cm_ByteArrayToHexStr"<< cm_ByteArrayToHexStr(array);
     if(rtn > 0) {
         bool ret = recvCrc(recvBuf, rtn, recv);
         if(ret) {

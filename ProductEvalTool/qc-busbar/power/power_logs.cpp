@@ -35,7 +35,7 @@ bool Power_Logs::appendLogItem(const QString &str, bool pass)
     }
 
     QString str1 = mPro->itemContent.join("; ");
-    it.memo = str1;
+    it.memo = str;
 
     mLogItems << it;
 
@@ -78,8 +78,7 @@ bool Power_Logs::writeLog()
         it.passed = tr("失败");
     }
 
-    QString str1 = mPro->itemContent.join(";");
-    it.memo = str1;
+    it.memo = mPro->itemData.join("; ");
 
     if(it.QRcode.size()) mLogItems << it;
     if(it.QRcode.isEmpty()) return false;
@@ -99,10 +98,16 @@ bool Power_Logs::updatePro(const QString &str, bool pass, int sec)
 {
     if(mPro->step < Test_End) {
         mPacket->updatePro(str, pass, sec);
-        if(!pass) mPro->itemContent << str;
-        // appendLogItem(str, pass);
+        // if(!pass) appendLogItem(str, pass);
 
     }
 
     return pass;
+}
+
+void Power_Logs::writeData(const QString &str)
+{
+    if(mPro->step < Test_End) {
+        mPro->itemData << str;
+    }
 }

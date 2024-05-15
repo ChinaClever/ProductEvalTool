@@ -59,16 +59,20 @@ void sDataPacket::init()
     pro->product_sn.clear();
     pro->test_item.clear();
     pro->itemContent.clear();
+    pro->num = 0;
 }
 
 bool sDataPacket::updatePro(const QString &str, bool pass, int sec)
 {
+    pro->num ++;
     pro->pass << pass;
     pro->itPass << pass;
 
     pro->itemName << str;
     pro->status << str;
 
+    QString str1 = QString::number(pro->num) + str;
+    pro->itemContent << str1;
 
     if(pass) pass = delay(sec);
     else pro->result = Test_Fail;

@@ -6,7 +6,7 @@ Face_Power::Face_Power(QWidget *parent)
     , ui(new Ui::Face_Power)
 {
     ui->setupUi(this);
-    mFirst = 0;
+    mFirst = 1;
     initLayout();
     initWid();
 }

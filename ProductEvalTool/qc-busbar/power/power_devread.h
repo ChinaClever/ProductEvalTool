@@ -25,6 +25,10 @@ public:
     bool Load_NineLoop();
     bool Load_SixLoop();
     bool Load_ThreeLoop();
+
+    bool Break_NineLoop();
+    bool Break_SixLoop();
+    bool Break_ThreeLoop();
 protected:
     void run();
     bool readSnmp();

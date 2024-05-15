@@ -79,7 +79,6 @@ bool Test_safety::appendResult(sTestDataItem &item)
     mItem->dataItem.append(item);
     conditionExec(item.status);
     QString statusStr = item.subItem + "  结果: " + str;
-    if(!item.status) mPro->itemContent << statusStr;
 
     updateProgress(item.status, statusStr);
 
@@ -186,8 +185,10 @@ bool Test_safety::testGND( QString & recv)//acw
         item.expect = tr("大于20MΩ");
         mPro->gnd = mItem->sn.gnd;
         appendResult(item);
-        mPro->itemContent << "接地测试结果："+ mPro->gnd;
+        QString str = tr("接地测试结果：%1").arg(mPro->gnd);
+        mPacket->updatePro(str, true);
     }
+
     return ret;
 }
 
@@ -210,10 +211,6 @@ bool Test_safety::testIR(QString & recv)
 
         if(!recv.isEmpty()){
             if(!recv.contains("PASS")){
-                // mTestStep = Reset;
-                // mTrans->sentStep(mStep , mTestStep , sendStr);//RESET+回车 连接命令 1
-                // mTestStep = Reset;
-                // mTrans->sentStep(mStep , mTestStep , sendStr);//RESET+回车 连接命令 1
                 item.status = false;
             }else{
                 item.status = true;
@@ -226,8 +223,10 @@ bool Test_safety::testIR(QString & recv)
         item.expect = tr("大于500MΩ");
         mPro->ir = mItem->sn.ir;
         appendResult(item);
-        mPro->itemContent << "绝缘测试结果："+ mPro->ir;
+        QString str = tr("绝缘测试结果：%1").arg(mPro->ir);
+        mPacket->updatePro(str, true);
     }
+
     return ret;
 }
 
@@ -249,11 +248,7 @@ bool Test_safety::testACW(QString & recv)
         item.subItem = tr("第%1次交流耐压测试读取测试结果").arg(i+1);
         if(!recv.isEmpty()){
             if(!recv.contains("PASS")){
-                // mTestStep = Reset;
-                // mTrans->sentStep(mStep , mTestStep , sendStr);//RESET+回车 连接命令 1
-                // mTestStep = Reset;
-                // mTrans->sentStep(mStep , mTestStep , sendStr);//RESET+回车 连接命令 1
-                item.status = false;
+               item.status = false;
             }else{
                 item.status = true;
             }
@@ -265,7 +260,8 @@ bool Test_safety::testACW(QString & recv)
         item.expect = tr("小于10mA");
         mPro->acw = mItem->sn.acw;
         appendResult(item);
-        mPro->itemContent << "交流耐压测试结果："+ mPro->acw;
+        QString str = tr("交流耐压测试结果：%1").arg(mPro->acw);
+        mPacket->updatePro(str, true);
     }
 
     return ret;
@@ -273,21 +269,16 @@ bool Test_safety::testACW(QString & recv)
 
 void Test_safety::run()
 {
-    mItem->progress.allNum = 18;
-    bool ret = false;
+    testReady();
     if(!mItem->work_mode) {
-        if(mItem->sn.isAcw) mItem->progress.allNum = 18;
-        if(mItem->sn.isIr) mItem->progress.allNum += 9;
-        ret = testReady();
+        mItem->progress.allNum = 27;
         QString recv = "";
-        if(ret) ret = testACW(recv);    //先耐压再绝缘
-        if(ret) ret = testIR(recv);
+        testACW(recv); testIR(recv);    //先耐压再绝缘
         emit overSig();
     } else {
-        if(mItem->sn.isGnd) mItem->progress.allNum += 9;
-        ret = testReady();
+        mItem->progress.allNum = 27;
         QString recv = "";
-        if(ret) ret = testGND(recv);
+        testGND(recv);
         emit overSig();
     }
 }

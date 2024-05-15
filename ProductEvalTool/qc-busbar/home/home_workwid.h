@@ -82,6 +82,7 @@ protected:
     void initWid();
     void startTest();
     void overTest();
+    void ItemStatus();
 signals:
     void noloadHomeSig(int ret);
 

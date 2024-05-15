@@ -50,9 +50,9 @@ void Home_WorkWid::initWid()
     mPowThread = new Power_CoreThread(this);
     connect(this , SIGNAL(clearStartEleSig()), mPowThread, SLOT(clearStartEleSlot()));
     connect(mPowThread,&Power_CoreThread::finshSig, this, &Home_WorkWid::StatusSlot);
-    connect(mPowThread, &Power_CoreThread::StepSig , mPower, &Face_Power::TextSlot);
+    connect(mPowThread, &Power_CoreThread::TipSig , mPower, &Face_Power::TextSlot);
 
-    mPowDev = new Power_DevRead(this);
+    mPowDev = Power_DevRead::bulid(this);
     connect(mPowDev, &Power_DevRead::StepSig , mPower, &Face_Power::TextSlot);
 
 
@@ -318,6 +318,34 @@ void Home_WorkWid::StatusSlot(bool ret)
     }
 }
 
+void Home_WorkWid::ItemStatus()
+{
+    switch (mItem->work_mode) {
+    case 0: {mPro->test_step = "安规测试"; mPro->test_item = ui->vol_insulBtn->text();
+            ui->acwLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
+            break;
+    }
+    case 1: {mPro->test_step = "安规测试"; mPro->test_item = ui->groundBtn->text();
+            ui->gndLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
+            break;
+    }
+    case 2: {mPro->test_step = "电力测试"; mPro->test_item = ui->volBtn->text();
+            ui->volLab->setStyleSheet("background-color:yellow;color:rgb(0, 0, 0);");
+            break;
+    }
+    case 3: {mPro->test_step = "电力测试";  mPro->test_item = ui->loadBtn->text();
+            ui->loadLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
+            break;
+    }
+    case 4: {mPro->test_step = "电力测试"; mPro->test_item = ui->breakerBtn->text();
+            ui->breakLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
+            break;
+    }
+    default:
+        break;
+    }
+}
+
 void Home_WorkWid::on_vol_insulBtn_clicked()//耐压/绝缘
 {
     ui->stackedWid->show();
@@ -325,12 +353,7 @@ void Home_WorkWid::on_vol_insulBtn_clicked()//耐压/绝缘
     if(mPro->step == Test_End){
         bool ret = initSerialVol();
         if(ret) {
-            mPacket->init();
-            mPro->test_step = "安规测试"; mPro->test_item = ui->vol_insulBtn->text();
-            ui->acwLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
-            mItem->sn.isAcw = true;
-            mItem->sn.isIr = true;
-
+            mPacket->init(); ItemStatus();
             int mode = Test_Over;
             if(mItem->mode != Test_Start) {
                 mode = Test_Start;
@@ -339,8 +362,9 @@ void Home_WorkWid::on_vol_insulBtn_clicked()//耐压/绝缘
         }
     }else {
         overTest();
-        AcwStatus(false); mPro->result = Test_Fail;
-        updateResult(); mPro->step = Test_End;
+        AcwStatus(false);
+        mPro->result = Test_Fail;
+        updateResult();
     }
 }
 
@@ -351,10 +375,7 @@ void Home_WorkWid::on_groundBtn_clicked()//接地
     if(mPro->step == Test_End){
         bool ret = initSerialGND();
         if(ret) {
-            mPacket->init();
-            mPro->test_step = "安规测试"; mPro->test_item = ui->groundBtn->text();
-            ui->gndLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
-            mItem->sn.isGnd = true;
+            mPacket->init(); ItemStatus();
             int mode = Test_Over;
             if(mItem->mode != Test_Start) {
                 mode = Test_Start;
@@ -363,8 +384,9 @@ void Home_WorkWid::on_groundBtn_clicked()//接地
         }
     }else {
         overTest();
-        GndStatus(false); mPro->result = Test_Fail;
-        updateResult(); mPro->step = Test_End;
+        GndStatus(false);
+        mPro->result = Test_Fail;
+        updateResult();
     }
 }
 
@@ -372,20 +394,18 @@ void Home_WorkWid::on_volBtn_clicked()
 {
     ui->stackedWid->hide();
     mItem->work_mode = 2;
-    mPro->test_item = ui->volBtn->text();
     if(mPro->step == Test_End) {
         bool ret = initSerial();
         if(ret) {
             mPacket->init();
-            mPro->test_item = ui->volBtn->text(); mPro->test_step = "电力测试";
-            ui->volLab->setStyleSheet("background-color:yellow;color:rgb(0, 0, 0);");
+            ItemStatus();
             mPowThread->start();
         }
     }else {
         bool ret = MsgBox::question(this, tr("确定需要提前结束？"));
         if(ret) {
             VolStatus(!ret); mPro->result = Test_Fail;
-            updateResult(); mPro->step = Test_End;
+            updateResult();
         }
     }
 }
@@ -398,15 +418,14 @@ void Home_WorkWid::on_loadBtn_clicked()
         bool ret = initSerial();
         if(ret) {
             mPacket->init();
-            mPro->test_step = "电力测试";  mPro->test_item = ui->loadBtn->text();
-            ui->loadLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
+            ItemStatus();
             mPowThread->start();
         }
     }else{
         bool ret = MsgBox::question(this, tr("确定需要提前结束？"));
         if(ret) {
             LoadStatus(!ret); mPro->result = Test_Fail;
-            updateResult(); mPro->step = Test_End;
+            updateResult();
         }
     }
 }
@@ -419,15 +438,14 @@ void Home_WorkWid::on_breakerBtn_clicked()
         bool ret = initSerial();
         if(ret) {
             mPacket->init();
-            mPro->test_step = "电力测试"; mPro->test_item = ui->breakerBtn->text();
-            ui->breakLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
+            ItemStatus();
             mPowThread->start();
         }
     }else {
         bool ret = MsgBox::question(this, tr("确定需要提前结束？"));
         if(ret) {
             BreakerStatus(!ret); mPro->result = Test_Fail;
-            updateResult(); mPro->step = Test_End;
+            updateResult();
         }
     }
 }

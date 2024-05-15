@@ -17,7 +17,7 @@ protected slots:
 
 signals:
     void noLoadSig();
-    void StepSig(QString str);
+    void TipSig(QString str);
     void finshSig(bool ret);
 
 private slots:

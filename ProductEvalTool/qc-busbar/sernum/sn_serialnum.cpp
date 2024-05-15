@@ -20,7 +20,7 @@ Sn_SerialNum *Sn_SerialNum::bulid(QObject *parent)
 
 void Sn_SerialNum::initReadCmd(sRtuItem &item)
 {
-    item.addr = mDev->id;
+    item.addr = mItem->addr;
     item.fn = 0x03;
     item.reg = 0xA003;
     item.num = 4;
@@ -82,7 +82,6 @@ void Sn_SerialNum::toSnStr(sSnItem &it)
 
     it.sn = sn.toUpper();
 }
-
 bool Sn_SerialNum::readSn(sSnItem &itSn)
 {
     sRtuItem itRtu;
@@ -90,10 +89,10 @@ bool Sn_SerialNum::readSn(sSnItem &itSn)
     static uchar buf[256] = {0};
     QString str = tr("序列号读取成功");
 
-    // mPacket->delay(2);
     initReadCmd(itRtu);
     int len = mModbus->readSn(itRtu, buf);
     if(8 != len) len = mModbus->readSn(itRtu, buf);
+
     if(len == 8) {
         ret = analySn(buf, len, itSn); toSnStr(itSn);
         if(!ret) str = tr("序列号分析错误：%1").arg(itSn.sn);
@@ -183,7 +182,7 @@ bool Sn_SerialNum::snEnter()
     bool ret = mTypeId->readDevType();
     if(ret) {
         initDevType(mSnItem);
-        // ret = readSn(mSnItem);
+        ret = readSn(mSnItem);
         if(ret) mDev->devType.sn = mSnItem.sn;
     }
 

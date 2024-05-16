@@ -193,6 +193,7 @@ void Home_WorkWid::updateResult()
     ui->timeLab->setText(str);
     ui->timeLab->setStyleSheet(style);
 
+    mPower->ClearText();
     str = QTime::currentTime().toString("hh:mm:ss");
     ui->endLab->setText(str);
     mPro->step = Test_End;
@@ -457,6 +458,7 @@ void Home_WorkWid::on_clearBtn_clicked()
 
 void Home_WorkWid::on_codeEit_textChanged(const QString &arg1)
 {
+    ui->textEdit->clear();
     ui->codeEit->setClearButtonEnabled(1);
 }
 

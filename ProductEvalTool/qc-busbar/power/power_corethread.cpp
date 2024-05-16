@@ -485,9 +485,11 @@ void Power_CoreThread::getDelaySlot()
     if(mCurBoxNum == 0){
         str = (tr("始端箱未发出命令"));
         ret = true;
-    }else if(mCurBoxNum >= 4 && mCurBoxNum <= 20 ){
+    }else if(mCurBoxNum >= 2 && mCurBoxNum <= 3 ){
         str = tr("设置地址%1失败").arg(mCurBoxNum);
         ret = false;
+        if(mCurBoxNum == 2) str = tr("插接箱左侧串口接错");
+        if(mCurBoxNum == 3) str = tr("插接箱右侧串口接错");
     }
     mLogs->updatePro(str, ret);
     mCurBoxNum = 0;
@@ -515,11 +517,15 @@ void Power_CoreThread::workDown()
         else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0);  //设置滤波=0
 
         if(mCfg->work_mode == 2) {
-            // mModbus->autoSetAddress();                       //自动分配地址
+            QString str = tr("请打开自动分配地址夹具");
+            emit TipSig(str);
+            mModbus->autoSetAddress();                       //自动分配地址
+            str = tr("请关闭自动分配地址夹具");
+            emit TipSig(str);
             if(ret) ret = stepVolTest();                     //电压测试
         }else if(mCfg->work_mode == 3) {                     //负载测试
           // if(ret) ret = mSource->read();
-//            else mPro->result = Test_Fail;
+//           else mPro->result = Test_Fail;
 //            if(ret) ret = checkLoadErrRange();
             if(ret) ret = stepLoadTest();
             if(ret) ret = factorySet();

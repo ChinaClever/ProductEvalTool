@@ -47,3 +47,9 @@ void Face_Power::TextSlot(QString str)
     QString str1 = QString::number(mFirst++) + "、"+ str;
     ui->textEdit->setText(str1);
 }
+
+void Face_Power::ClearText()
+{
+    mFirst = 1;
+    ui->textEdit->clear();
+}

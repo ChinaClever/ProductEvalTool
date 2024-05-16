@@ -18,6 +18,7 @@ public:
     explicit Face_Power(QWidget *parent = nullptr);
     ~Face_Power();
 
+    void ClearText();
 protected:
     void initWid();
     void initLayout();

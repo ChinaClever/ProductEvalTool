@@ -338,26 +338,3 @@ bool Ad_Modbus::changeBaudRate()
     }
     return mSerial->setBaudRate(br);;
 }
-
-void Ad_Modbus::autoSetAddress()
-{
-    uchar recvbuffer[1024];
-    memset(recvbuffer,0,sizeof(recvbuffer));
-    int count = 30;
-
-    while(count--){
-        memset(recvbuffer,0,sizeof(recvbuffer));
-        int rtn = readSerial(recvbuffer,10);
-        QByteArray array2;
-        QString strArray2;
-        array2.append((char *)recvbuffer, rtn);
-        strArray2 = array2.toHex(); // 十六进制
-        for(int i=0; i<array2.size(); ++i)
-            strArray2.insert(2+3*i, " "); // 插入空格
-        if(rtn % 8 == 0 && strArray2.contains("ff 7b"))emit sendNumAndIndexSig(recvbuffer[5]);
-        if(recvbuffer[0]==0x01 && recvbuffer[1]==0x6a){ emit sendDelaySig();break;}
-        if(recvbuffer[5] == 4) break;
-        if(recvbuffer[5] == 0xCC){count=-1;break;}
-    }
-    if(count == -1){ emit sendDelaySig(); }
-}

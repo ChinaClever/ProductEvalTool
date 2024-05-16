@@ -20,7 +20,9 @@ void Power_CoreThread::initFunSlot()
     Printer_BarTender::bulid(this);
     mSource = Dev_Source::bulid(this);
     mCfg = TestConfig::bulid()->item;
-    mModbus = Ad_Modbus::bulid(this);
+    mModbus = Rtu_Modbus::bulid(this)->get(2);
+    connect(mModbus,&RtuRw::sendNumAndIndexSig, this, &Power_CoreThread::getNumAndIndexSlot);
+    connect(mModbus,&RtuRw::sendDelaySig, this, &Power_CoreThread::getDelaySlot);
 }
 
 bool Power_CoreThread::hubPort()
@@ -484,13 +486,14 @@ void Power_CoreThread::getDelaySlot()
     QString str; bool ret = false;
     if(mCurBoxNum == 0){
         str = (tr("始端箱未发出命令"));
-        ret = true;
     }else if(mCurBoxNum >= 2 && mCurBoxNum <= 3 ){
         str = tr("设置地址%1失败").arg(mCurBoxNum);
-        ret = false;
-        if(mCurBoxNum == 2) str = tr("插接箱左侧串口接错");
-        if(mCurBoxNum == 3) str = tr("插接箱右侧串口接错");
     }
+    emit TipSig(str);
+    mLogs->updatePro(str, ret);
+    if(mCurBoxNum == 2) str = tr("插接箱 IN口接错");
+    if(mCurBoxNum == 3) str = tr("插接箱 OUT口接错");
+    emit TipSig(str);
     mLogs->updatePro(str, ret);
     mCurBoxNum = 0;
 }
@@ -498,13 +501,14 @@ void Power_CoreThread::getDelaySlot()
 void Power_CoreThread::getNumAndIndexSlot(int curnum)
 {
     int num = curnum >= 2 ? curnum : 2;
-    QString str; bool ret = false;
+    bool ret = false;
     mCurBoxNum = num;
-    if(num > 2){
-        QString str = tr("设置地址%1成功").arg(num-1);
-        ret = false;
+    QString str = tr("设置地址%1成功").arg(num-1);
+    if(num > 3){
+        ret = true;
+        emit TipSig(str);
+        mLogs->updatePro(str, ret);
     }
-    mLogs->updatePro(str, ret);
 }
 
 void Power_CoreThread::workDown()
@@ -518,10 +522,10 @@ void Power_CoreThread::workDown()
 
         if(mCfg->work_mode == 2) {
             QString str = tr("请打开自动分配地址夹具");
-            emit TipSig(str);
+            emit TipSig(str); sleep(15);
             mModbus->autoSetAddress();                       //自动分配地址
             str = tr("请关闭自动分配地址夹具");
-            emit TipSig(str);
+            emit TipSig(str); sleep(3);
             if(ret) ret = stepVolTest();                     //电压测试
         }else if(mCfg->work_mode == 3) {                     //负载测试
           // if(ret) ret = mSource->read();

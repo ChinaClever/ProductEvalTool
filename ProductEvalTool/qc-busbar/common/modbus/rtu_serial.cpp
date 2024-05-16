@@ -109,3 +109,4 @@ bool Rtu_Serial::changeBaudRate()
     return mSerial->setBaudRate(br);;
 }
 
+

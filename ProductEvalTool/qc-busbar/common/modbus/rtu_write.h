@@ -76,7 +76,10 @@ public:
     bool write(Rtu_Sent_Single_Ushort_V3 &pkt);
     bool write(Rtu_Sent_Ushort_V3 &pkt);
     bool write(Rtu_Sent_Uint_V3 &pkt);
-
+    void autoSetAddress();
+signals:
+    void sendNumAndIndexSig(int curnum);
+    void sendDelaySig();
 protected:
     int rtu_write_packet(Rtu_Sent_Single_Ushort_V3 *pkt, uchar *ptr);
     int rtu_write_packets(sRtuSetItems *pkt, uchar *ptr);

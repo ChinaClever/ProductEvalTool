@@ -242,7 +242,7 @@ bool Test_safety::testACW(QString & recv)
     item.item = tr("交流耐压测试");
     ret = startTest(item, recv , tr("交流耐压") , ACWFile , stepTotal);
 
-    delayItem(item, 60*1000);//25
+    delayItem(item, 30*1000);//25
     for(int i = 0; i < stepTotal ; i++)
     {
         mTestStep = ReadData;

@@ -81,7 +81,7 @@ private:
     int mRet;
     int mCurBoxNum;
     sTestConfigItem  *mCfg;
-    Ad_Modbus *mModbus;
+    RtuRw *mModbus;
     Dev_Source *mSource;
 };
 

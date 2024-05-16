@@ -37,4 +37,3 @@ RtuRw *Rtu_Modbus::get(int id)
 
     return res;
 }
-

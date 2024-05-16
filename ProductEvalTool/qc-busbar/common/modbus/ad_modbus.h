@@ -77,9 +77,7 @@ public:
     bool changeBaudRate();
     void writeLogs();
     void autoSetAddress();
-signals:
-    void sendNumAndIndexSig(int curnum);
-    void sendDelaySig();
+
 
 protected:
     void initSerial();

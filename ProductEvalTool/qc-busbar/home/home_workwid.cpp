@@ -56,9 +56,9 @@ void Home_WorkWid::initWid()
     connect(mPowDev, &Power_DevRead::StepSig , mPower, &Face_Power::TextSlot);
 
 
-    mModbus = Ad_Modbus::bulid(this);
-    connect(mModbus,&Ad_Modbus::sendNumAndIndexSig, mPowThread, &Power_CoreThread::getNumAndIndexSlot);
-    connect(mModbus,&Ad_Modbus::sendDelaySig, mPowThread, &Power_CoreThread::getDelaySlot);
+//    mModbus = Rtu_Modbus::bulid(this)->get(2);
+//    connect(mModbus,&RtuRw::sendNumAndIndexSig, mPowThread, &Power_CoreThread::getNumAndIndexSlot);
+//    connect(mModbus,&RtuRw::sendDelaySig, mPowThread, &Power_CoreThread::getDelaySlot);
 
     timer = new QTimer(this);
     timer->start(100);

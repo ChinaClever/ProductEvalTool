@@ -116,7 +116,7 @@ private:
     Power_CoreThread *mPowThread;
     Power_Logs *mLogs;
     Home_DataWid *mData;
-    Ad_Modbus *mModbus;
+    RtuRw *mModbus;
     Power_DevRead *mPowDev;
 };
 

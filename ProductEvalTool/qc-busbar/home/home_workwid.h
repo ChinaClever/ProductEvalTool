@@ -101,6 +101,7 @@ private:
 
     uint mId, mFirst;
     QTimer *timer;
+    QTimer *timer1;
     sDevData * mDev;
     sProgress *mPro;
     sCfgItem *mCfgm;

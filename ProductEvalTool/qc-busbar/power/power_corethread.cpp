@@ -257,24 +257,27 @@ void Power_CoreThread::workResult(bool)
         mPro->uploadPassResult = 0;
     }
     mPacket->updatePro(str, res);
-    mLogs->saveLogs();
     mPro->loopNum = QString::number(mBusData->box[mItem->addr-1].loopNum);
 
     mPro->itemContent << "回路数量:" + mPro->loopNum;
     mPro->itemContent << "软件版本为:" + mPro->softwareVersion;
     mPro->itemContent << "模块序列号:" + mPro->moduleSN;
     mPro->itemContent << "设备类型:" + mPro->productType;
+    mPro->itemContent << "告警滤波:" + QString::number(mBusData->box[mItem->addr-1].alarmTime);
+    if(mBusData->box[mItem->addr-1].iOF) mPro->itemContent << "断路器IOF触点: 有";
+    else mPro->itemContent << "断路器IOF触点: 无";
 
     if(mItem->modeId != START_BUSBAR) {
         mPro->phase = QString::number(mBusData->box[mItem->addr-1].phaseFlag);
         if(mBusData->box[mItem->addr-1].phaseFlag) mPro->itemContent << "相数:三相";
         else mPro->itemContent << "相数:单相";
+        if(mBusData->box[mItem->addr-1].iOF) mPro->itemContent << "盒子类型: 插接箱";
+        else mPro->itemContent << "盒子类型: 测温模块";
     }
-
+    emit finshSig(res); mLogs->saveLogs();
     sleep(1);
     Json_Pack::bulid()->http_post("busbarreport/add","192.168.1.15");//全流程才发送记录(http)
-    if(mPro->result == Test_Fail) res = false;
-    emit finshSig(res); mPro->step = Test_Over;
+     mPro->step = Test_Over;
 }
 
 bool Power_CoreThread::stepVolTest()
@@ -309,147 +312,151 @@ bool Power_CoreThread::stepVolTest()
             str1 += str; mPro->itemData << str1; str1.clear(); break;
         }
     }
-
-    str = tr("打开电压控制L1，关闭控制L2");  //b1,b2,b3
-    emit TipSig(str);
-    while(1)
-    {
-        int a=0, b=0, c=0;
-        ret = mRead->readData();
-        if(ret) {
-            if(loop == 9)
-            {
-                for(int i =0;i<9;i+=3)
+    if(!ret) {
+        str = tr("打开电压控制L1，关闭控制L2");  //b1,b2,b3
+        emit TipSig(str);
+        while(1)
+        {
+            int a=0, b=0, c=0;
+            ret = mRead->readData();
+            if(ret) {
+                if(loop == 9)
                 {
-                    a += Obj->vol.value[i];
-                    b += Obj->vol.value[1+i];
-                    c += Obj->vol.value[2+i];
-                }
-//              if((!b)&&(a)&&(c)) { ret = true; str = tr("电压控制L2");mLogs->updatePro(str, !ret); break;}
-                if((!b)&&(a >6600)&&(c >6600)) {
-                    ret = true;
-                    for(int i =0;i<loop;i++)
+                    for(int i =0;i<9;i+=3)
                     {
-                        str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        mLogs->updatePro(str, ret);
-                        str1 += str;
+                        a += Obj->vol.value[i];
+                        b += Obj->vol.value[1+i];
+                        c += Obj->vol.value[2+i];
                     }
-                    str = tr("电压控制L2成功"); str1 += str; mPro->itemData << str1;
-                    mLogs->updatePro(str, ret); str1.clear(); break;
+    //              if((!b)&&(a)&&(c)) { ret = true; str = tr("电压控制L2");mLogs->updatePro(str, !ret); break;}
+                    if((!b)&&(a >6600)&&(c >6600)) {
+                        ret = true;
+                        for(int i =0;i<loop;i++)
+                        {
+                            str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                            mLogs->updatePro(str, ret);
+                            str1 += str;
+                        }
+                        str = tr("电压控制L2成功"); str1 += str; mPro->itemData << str1;
+                        mLogs->updatePro(str, ret); str1.clear(); break;
+                    }
+                }else if(loop == 6) {
+                    for(int i =0;i<6;i+=3)
+                    {
+                        a += Obj->vol.value[i];
+                        b += Obj->vol.value[1+i];
+                        c += Obj->vol.value[2+i];
+                    }
+    //                if((!b)&&(a)&&(c)) { ret = true; str = tr("电压控制L2");mLogs->updatePro(str, !ret); break;}
+                    if((!b)&&(a >4400)&&(c >4400)) {
+                        ret = true;
+                        for(int i =0;i<loop;i++)
+                        {
+                            str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                            mLogs->updatePro(str, ret); str1 += str;
+                        }
+                        str = tr("电压控制L2成功");mLogs->updatePro(str, ret);
+                        str1 += str; mPro->itemData << str1; str1.clear();break;}
+                }else if(loop == 3){
+                    a = Obj->vol.value[0];
+                    b = Obj->vol.value[1];
+                    c = Obj->vol.value[2];
+    //            if((!b)&&(a)&&(c)) { ret = true; str = tr("电压控制L2成功");mLogs->updatePro(str, !ret);break;}
+                    if((!b)&&(a >2200)&&(c >2200)) {
+                        ret = true;
+                        for(int i =0;i<loop;i++)
+                        {
+                            str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                            mLogs->updatePro(str, ret); str1 += str;
+                        }
+                        str = tr("电压控制L2成功"); mLogs->updatePro(str, ret);
+                        str1 += str; mPro->itemData << str1; str1.clear();break;}
                 }
-            }else if(loop == 6) {
-                for(int i =0;i<6;i+=3)
-                {
-                    a += Obj->vol.value[i];
-                    b += Obj->vol.value[1+i];
-                    c += Obj->vol.value[2+i];
-                }
-//                if((!b)&&(a)&&(c)) { ret = true; str = tr("电压控制L2");mLogs->updatePro(str, !ret); break;}
-                if((!b)&&(a >4400)&&(c >4400)) {
-                    ret = true;
+                flag++;
+                if(flag >100) {
                     for(int i =0;i<loop;i++)
                     {
                         str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                         mLogs->updatePro(str, ret); str1 += str;
                     }
-                    str = tr("电压控制L2成功");mLogs->updatePro(str, ret);
-                    str1 += str; mPro->itemData << str1; str1.clear();break;}
-            }else if(loop == 3){
-                a = Obj->vol.value[0];
-                b = Obj->vol.value[1];
-                c = Obj->vol.value[2];
-//            if((!b)&&(a)&&(c)) { ret = true; str = tr("电压控制L2成功");mLogs->updatePro(str, !ret);break;}
-                if((!b)&&(a >2200)&&(c >2200)) {
-                    ret = true;
-                    for(int i =0;i<loop;i++)
-                    {
-                        str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        mLogs->updatePro(str, ret); str1 += str;
-                    }
-                    str = tr("电压控制L2成功"); mLogs->updatePro(str, ret);
-                    str1 += str; mPro->itemData << str1; str1.clear();break;}
-            }
-            flag++;
-            if(flag >100) {
-                for(int i =0;i<loop;i++)
-                {
-                    str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                    mLogs->updatePro(str, ret); str1 += str;
+                    ret = false;
+                    str = tr("电压控制L2失败"); mLogs->updatePro(str, ret);
+                    str1 += str; mPro->itemData << str1; str1.clear(); break;
                 }
-                ret = false;
-                str = tr("电压控制L2失败"); mLogs->updatePro(str, ret);
-                str1 += str; mPro->itemData << str1; str1.clear(); break;
             }
         }
     }
-    flag = 0;
-    str = tr("打开电压控制L2，关闭电压控制L3");//c1,c2,c3
-    emit TipSig(str);
-    while(1)
-    {
-        int a=0, b=0, c=0;
-        if(ret) {
-            ret = mRead->readData();
-            if(loop == 9)
-            {
-                for(int i =0;i<9;i+=3)
+    if(ret) {
+        flag = 0;
+        str = tr("打开电压控制L2，关闭电压控制L3");//c1,c2,c3
+        emit TipSig(str);
+        while(1)
+        {
+            int a=0, b=0, c=0;
+            if(ret) {
+                ret = mRead->readData();
+                if(loop == 9)
                 {
-                    a += Obj->vol.value[i];
-                    b += Obj->vol.value[1+i];
-                    c += Obj->vol.value[2+i];
+                    for(int i =0;i<9;i+=3)
+                    {
+                        a += Obj->vol.value[i];
+                        b += Obj->vol.value[1+i];
+                        c += Obj->vol.value[2+i];
+                    }
+                    if((!c)&&(a >6600)&&(b >6600)) {
+                        ret = true;
+                        for(int i =0;i<loop;i++)
+                        {
+                            str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                            mLogs->updatePro(str, ret); str1 += str;
+                        }
+                        str = tr("电压控制L3成功");mLogs->updatePro(str, ret);
+                        str1 += str; mPro->itemData << str1; str1.clear(); break;}
+                }else if(loop == 6) {
+                    for(int i =0;i<6;i+=3)
+                    {
+                        a += Obj->vol.value[i];
+                        b += Obj->vol.value[1+i];
+                        c += Obj->vol.value[2+i];
+                    }
+                    if((!c)&&(a> 4400)&&(c >4400)) {
+                        ret = true;
+                        for(int i =0;i<loop;i++)
+                        {
+                            str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                            mLogs->updatePro(str, ret); str1 += str;
+                        }
+                        str = tr("电压控制L3成功");mLogs->updatePro(str, ret);
+                        str1 += str; mPro->itemData << str1; str1.clear(); break;}
+                }else if(loop == 3){
+                    a = Obj->vol.value[0];
+                    b = Obj->vol.value[1];
+                    c = Obj->vol.value[2];
+                    if((!c)&&(a >2200)&&(b>2200)) {
+                        ret = true;
+                        for(int i =0;i<loop;i++)
+                        {
+                            str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                            mLogs->updatePro(str, ret); str1 += str;
+                        }
+                        str = tr("电压控制L3成功");mLogs->updatePro(str, ret);
+                        str1 += str; mPro->itemData << str1; str1.clear(); break;}
                 }
-                if((!c)&&(a >6600)&&(b >6600)) {
-                    ret = true;
+                flag++;
+                if(flag >100) {
                     for(int i =0;i<loop;i++)
                     {
                         str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                         mLogs->updatePro(str, ret); str1 += str;
                     }
-                    str = tr("电压控制L3成功");mLogs->updatePro(str, ret);
-                    str1 += str; mPro->itemData << str1; str1.clear(); break;}
-            }else if(loop == 6) {
-                for(int i =0;i<6;i+=3)
-                {
-                    a += Obj->vol.value[i];
-                    b += Obj->vol.value[1+i];
-                    c += Obj->vol.value[2+i];
+                    ret = false;
+                    str = tr("电压控制L3失败");mLogs->updatePro(str, ret);
+                    str1 += str; mPro->itemData << str1; str1.clear(); break;
                 }
-                if((!c)&&(a> 4400)&&(c >4400)) {
-                    ret = true;
-                    for(int i =0;i<loop;i++)
-                    {
-                        str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        mLogs->updatePro(str, ret); str1 += str;
-                    }
-                    str = tr("电压控制L3成功");mLogs->updatePro(str, ret);
-                    str1 += str; mPro->itemData << str1; str1.clear(); break;}
-            }else if(loop == 3){
-                a = Obj->vol.value[0];
-                b = Obj->vol.value[1];
-                c = Obj->vol.value[2];
-                if((!c)&&(a >2200)&&(b>2200)) {
-                    ret = true;
-                    for(int i =0;i<loop;i++)
-                    {
-                        str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        mLogs->updatePro(str, ret); str1 += str;
-                    }
-                    str = tr("电压控制L3成功");mLogs->updatePro(str, ret);
-                    str1 += str; mPro->itemData << str1; str1.clear(); break;}
-            }
-            flag++;
-            if(flag >100) {
-                for(int i =0;i<loop;i++)
-                {
-                    str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                    mLogs->updatePro(str, ret); str1 += str;
-                }
-                ret = false;
-                str = tr("电压控制L3失败");mLogs->updatePro(str, ret);
-                str1 += str; mPro->itemData << str1; str1.clear(); break;
-            }
-        }else break;
+            }else break;
+        }
     }
+
     return ret;
 }
 

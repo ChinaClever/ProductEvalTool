@@ -55,11 +55,6 @@ void Home_WorkWid::initWid()
     mPowDev = Power_DevRead::bulid(this);
     connect(mPowDev, &Power_DevRead::StepSig , mPower, &Face_Power::TextSlot);
 
-
-//    mModbus = Rtu_Modbus::bulid(this)->get(2);
-//    connect(mModbus,&RtuRw::sendNumAndIndexSig, mPowThread, &Power_CoreThread::getNumAndIndexSlot);
-//    connect(mModbus,&RtuRw::sendDelaySig, mPowThread, &Power_CoreThread::getDelaySlot);
-
     timer = new QTimer(this);
     timer->start(100);
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
@@ -69,8 +64,6 @@ void Home_WorkWid::initWid()
 
 void Home_WorkWid::overSlot()
 {
-    QString str = tr("请去掉被测试产品线缆。");
-    MsgBox::information(this,str);
     mItem->mode = Test_Over;
     mVolInsul->resultSlot();
 
@@ -88,17 +81,9 @@ void Home_WorkWid::startTest()
 {
     int ret = true;
     if(ret == QDialog::Accepted ) {
-        QString str = tr("\n将测试仪高压线（红色）接产品输入/输出L、N\n线，黑色线接产品输入PE线，另一线缆（红色）接产品机壳。\n");
-        ret = MsgBox::question(this,str);
-        if(ret) {
-            QString str = tr("请确认");
-            ret = MsgBox::question(this,str);
-            if(ret) {
-                mItem->mode = Test_Start;
-                mSafrtyThread->startThread();
-                mVolInsul->startSlot();
-            }
-        }
+        mItem->mode = Test_Start;
+        mSafrtyThread->startThread();
+        mVolInsul->startSlot();
     }
 }
 
@@ -417,7 +402,7 @@ void Home_WorkWid::on_loadBtn_clicked()
     mItem->work_mode = 3; 
     if(mPro->step == Test_End) {
         bool ret = initSerial();
-        if(ret) {
+        if(ret) {       
             mPacket->init();
             ItemStatus();
             mPowThread->start();

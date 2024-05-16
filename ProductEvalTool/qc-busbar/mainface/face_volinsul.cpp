@@ -12,13 +12,18 @@ Face_Volinsul::Face_Volinsul(QWidget *parent)
     mDataSave = new TestDataSave(this);
 
     timer = new QTimer(this);
-    timer->start(500);
-    connect(timer, SIGNAL(timeout()),this, SLOT(progressSlot()));
+    timer->start(100);
+    connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
 }
 
 Face_Volinsul::~Face_Volinsul()
 {
     delete ui;
+}
+
+void Face_Volinsul::timeoutDone()
+{
+    progressSlot();
 }
 
 void Face_Volinsul::startSlot()
@@ -63,11 +68,10 @@ void Face_Volinsul::resultSlot()
         mPro->uploadPassResult = 1;
     }
     mPacket->updatePro(str, res);
+    emit StatusSig(res);
     mDataSave->saveTestData(); mPacket->delay(1);
     Json_Pack::bulid()->http_post("busbarreport/add","192.168.1.15");
-    if(mPro->result == Test_Fail) res = false;
-    else {res = true;}
-    emit StatusSig(res); mPro->step = Test_Over;
+     mPro->step = Test_Over;
 }
 
 void Face_Volinsul::progressSlot()

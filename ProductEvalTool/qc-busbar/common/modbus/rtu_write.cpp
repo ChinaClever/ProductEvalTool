@@ -231,18 +231,16 @@ void Rtu_Write::autoSetAddress()
 {
     uchar recvbuffer[1024];
     memset(recvbuffer,0,sizeof(recvbuffer));
-    int count = 10;
+    int count = 6;
 
     while(count--){
         memset(recvbuffer,0,sizeof(recvbuffer));
-        int rtn = readSerial(recvbuffer,10);
+        int rtn = readSerial(recvbuffer,5);
         QByteArray array2;
         QString strArray2;
         array2.append((char *)recvbuffer, rtn);
         strArray2 = array2.toHex(); // 十六进制
         qDebug()<<" strArray2 "<<strArray2;
-//        for(int i=0; i<array2.size(); ++i)
-//            strArray2.insert(2+3*i, " "); // 插入空格
         if(rtn / 8 == 1 && strArray2.contains("ff7b"))emit sendNumAndIndexSig(recvbuffer[5]);
         if(rtn / 8 == 2 && recvbuffer[8]==0xff && recvbuffer[9]==0x7b)emit sendNumAndIndexSig(recvbuffer[8+5]);
         if(rtn / 8 >= 3 && recvbuffer[16]==0xff && recvbuffer[17]==0x7b){qDebug()<<"sendNumAndIndexSig";emit sendNumAndIndexSig(recvbuffer[16+5]);break;}

@@ -27,6 +27,7 @@ Setup_MainWid::~Setup_MainWid()
 void Setup_MainWid::initFunSlot()
 {
     initPcNum();
+    initAddr();
     initErrData();
     initLogCount();
     mUserWid = new UserMainWid(ui->stackedWid);
@@ -46,6 +47,12 @@ void Setup_MainWid::checkPcNumSlot()
             MsgBox::warning(this, tr("请联系研发部设定电脑号！\n 服务设置 -> 设置功能 \n 需要管理员权限!"));
         else
             MsgBox::warning(this, tr("请自行设定电脑号！\n 服务设置 -> 设置功能 \n 需要管理员权限!"));
+        // QTimer::singleShot(20*1000,this,SLOT(checkPcNumSlot()));
+    }
+
+    QString str = mItem->Service;
+    if(str.isEmpty()) {
+        MsgBox::warning(this, tr("请自行设定服务端IP!"));
         QTimer::singleShot(20*1000,this,SLOT(checkPcNumSlot()));
     }
 }
@@ -80,6 +87,21 @@ void Setup_MainWid::writeLogCount()
     Cfg::bulid()->write("log_count", arg1, "Sys");
 }
 
+void Setup_MainWid::initAddr()
+{
+    Cfg *con = Cfg::bulid();
+    QString value = con->read("service_addr", 0, "Sys").toString();
+
+    mItem->Service = value;
+    ui->addrEdit->setText(value);
+}
+
+void Setup_MainWid::writeAddr()
+{
+    QString arg1 = ui->addrEdit->text();
+    mItem->Service = arg1;
+    Cfg::bulid()->write("service_addr", arg1, "Sys");
+}
 
 void Setup_MainWid::initPcNum()
 {
@@ -111,6 +133,7 @@ void Setup_MainWid::on_pcBtn_clicked()
     if(flg++ %2) {
         ret = false;
         writePcNum();
+        writeAddr();
         writeLogCount();
         Cfg::bulid()->writeCnt();
     } else {
@@ -119,6 +142,7 @@ void Setup_MainWid::on_pcBtn_clicked()
 
     ui->pcBtn->setText(str);
     ui->logCountSpin->setEnabled(ret);
+    ui->addrEdit->setEnabled(ret);
     if(mItem->pcNum) ret = false;
     ui->pcNumSpin->setEnabled(ret);
 }

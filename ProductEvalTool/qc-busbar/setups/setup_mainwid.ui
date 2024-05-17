@@ -30,7 +30,7 @@
      </property>
      <property name="maximumSize">
       <size>
-       <width>200</width>
+       <width>250</width>
        <height>250</height>
       </size>
      </property>
@@ -92,14 +92,57 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="1" rowspan="4">
-    <widget class="QGroupBox" name="groupBox_5">
-     <property name="title">
-      <string>用户管理</string>
+   <item row="3" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="maximumSize">
+      <size>
+       <width>300</width>
+       <height>140</height>
+      </size>
      </property>
-     <layout class="QGridLayout" name="gridLayout_4">
+     <property name="title">
+      <string>版本信息</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_date">
+        <property name="text">
+         <string>2020-08-19</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
-       <widget class="QStackedWidget" name="stackedWid"/>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>版本号：</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>更新日期：</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="verBtn">
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>V0.7</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -108,7 +151,7 @@
     <widget class="QGroupBox" name="groupBox_4">
      <property name="maximumSize">
       <size>
-       <width>200</width>
+       <width>300</width>
        <height>16777215</height>
       </size>
      </property>
@@ -291,6 +334,18 @@
      </layout>
     </widget>
    </item>
+   <item row="0" column="1" rowspan="4">
+    <widget class="QGroupBox" name="groupBox_5">
+     <property name="title">
+      <string>用户管理</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QStackedWidget" name="stackedWid"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item row="2" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="minimumSize">
@@ -301,7 +356,7 @@
      </property>
      <property name="maximumSize">
       <size>
-       <width>200</width>
+       <width>250</width>
        <height>16777215</height>
       </size>
      </property>
@@ -315,17 +370,7 @@
       <string>设置功能</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_5">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_16">
-        <property name="text">
-         <string>电脑号：</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
+      <item row="1" column="2">
        <widget class="QSpinBox" name="pcNumSpin">
         <property name="enabled">
          <bool>false</bool>
@@ -338,30 +383,14 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_15">
+      <item row="3" column="2">
+       <widget class="QPushButton" name="pcBtn">
         <property name="text">
-         <string>日志数目：</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         <string>修改</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="logCountSpin">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="suffix">
-         <string>万条</string>
-        </property>
-        <property name="minimum">
-         <number>10</number>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
+      <item row="3" column="1">
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -375,64 +404,58 @@
        </spacer>
       </item>
       <item row="2" column="1">
-       <widget class="QPushButton" name="pcBtn">
+       <widget class="QLabel" name="label_15">
         <property name="text">
-         <string>修改</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="maximumSize">
-      <size>
-       <width>200</width>
-       <height>140</height>
-      </size>
-     </property>
-     <property name="title">
-      <string>版本信息</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="2">
-       <widget class="QLabel" name="label_date">
-        <property name="text">
-         <string>2020-08-19</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>版本号：</string>
+         <string>日志数目：</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_3">
+      <item row="2" column="2">
+       <widget class="QSpinBox" name="logCountSpin">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="suffix">
+         <string>万条</string>
+        </property>
+        <property name="minimum">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="label_16">
         <property name="text">
-         <string>更新日期：</string>
+         <string>电脑号：</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>服务端IP:</string>
         </property>
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QPushButton" name="verBtn">
-        <property name="minimumSize">
-         <size>
-          <width>100</width>
-          <height>30</height>
-         </size>
+       <widget class="QLineEdit" name="addrEdit">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
         <property name="text">
-         <string>V0.7</string>
+         <string>192.168.1.15</string>
+        </property>
+        <property name="frame">
+         <bool>true</bool>
+        </property>
+        <property name="cursorPosition">
+         <number>12</number>
         </property>
        </widget>
       </item>

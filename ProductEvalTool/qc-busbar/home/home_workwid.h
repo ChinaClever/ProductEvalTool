@@ -70,7 +70,6 @@ protected:
     void GndStatus(bool ret);
     void VolStatus(bool ret);
     void LoadStatus(bool ret);
-    void BreakerStatus(bool ret);
     QString getTime();
     void updateWid();
     void updateTime();
@@ -83,6 +82,8 @@ protected:
     void startTest();
     void overTest();
     void ItemStatus();
+
+    void initTypeComboBox();
 signals:
     void noloadHomeSig(int ret);
 
@@ -92,16 +93,15 @@ private slots:
     void on_groundBtn_clicked();
     void on_volBtn_clicked();
     void on_loadBtn_clicked();
-    void on_breakerBtn_clicked();
     void on_clearBtn_clicked();
-    void on_codeEit_textChanged(const QString &arg1);
-
+    void on_codeEit_textChanged(const QString &arg1); 
+    void on_comBox_currentIndexChanged(int index);
+    void PingSlot();
 private:
     Ui::Home_WorkWid *ui;
 
     uint mId, mFirst;
     QTimer *timer;
-    QTimer *timer1;
     sDevData * mDev;
     sProgress *mPro;
     sCfgItem *mCfgm;

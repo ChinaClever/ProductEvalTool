@@ -17,14 +17,14 @@ public:
     explicit Face_Volinsul(QWidget *parent = nullptr);
     ~Face_Volinsul();
 
-    void progressSlot();
+    void initWid();
 signals:
     void StatusSig(bool ret);
 public slots:
     void startSlot();
-    //void progressSlot();
+    void progressSlot();
     void resultSlot();
-    void timeoutDone();
+
 
 private:
     Ui::Face_Volinsul *ui;

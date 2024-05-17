@@ -6,8 +6,8 @@
 #include "logmainwid.h"
 #include "setup_mainwid.h"
 #include "home_mainwid.h"
-#include "set_mainwid.h"
-#include "test_setting.h"
+// #include "set_mainwid.h"
+// #include "test_setting.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -35,7 +35,7 @@ private:
     NavBarWid *mNavBarWid;
     Setup_MainWid *mSetupWid;
     Home_MainWid *mHomeWid;
-    Set_MainWid *mSet;
-    Test_setting *mTestSet;
+    // Set_MainWid *mSet;
+    // Test_setting *mTestSet;
 };
 #endif // MAINWINDOW_H

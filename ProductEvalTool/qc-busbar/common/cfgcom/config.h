@@ -178,6 +178,7 @@ struct sCfgItem
     sCount cnt;
     int logCount;
 
+    QString Service;
     uchar pcNum;
     QString user; // 客户名称
     QString sw_ver;

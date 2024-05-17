@@ -45,7 +45,7 @@ void Home_LoopTabWid::appendItem(sBoxData *box)
         for(int i=0; i<box->loopNum + 1; ++i) {
             QStringList listStr;
             if(i == 3) {
-                listStr << "---"<< "---"<< "---"<< "---"<< "---";
+                listStr << " "<< " "<< " "<< " "<< " ";
                 listStr << QString::number(box->env.tem.value[i]/COM_RATE_TEM,'f',1);
             }else{
                 listStr << QString::number(dev->cur.value[i]/COM_RATE_CUR,'f',3);

@@ -642,6 +642,7 @@ struct sProgress
     QStringList status, item;
 
     int num;
+    int stopFlag;
     uchar result;    // 最终结果
     QTime startTime;
     QString testStartTime;

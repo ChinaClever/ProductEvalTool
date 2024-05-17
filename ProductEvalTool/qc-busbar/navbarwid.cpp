@@ -20,6 +20,8 @@ NavBarWid::NavBarWid(QWidget *parent) :
 
     QTimer::singleShot(5,this,SLOT(on_loginBtn_clicked()));
     connect(mUserLand,SIGNAL(sendUserNameSig(QString)),this,SLOT(recvUserNameSlot(QString)));
+
+    ui->setDataBtn->hide();
 }
 
 NavBarWid::~NavBarWid()
@@ -34,12 +36,12 @@ void NavBarWid::on_homeBtn_clicked()
 
 void NavBarWid::on_setBtn_clicked()
 {
-    emit navBarSig(2);
+    emit navBarSig(1);
 }
 
 void NavBarWid::on_logBtn_clicked()
 {
-    emit navBarSig(3);
+    emit navBarSig(2);
 }
 
 void NavBarWid::on_loginBtn_clicked()
@@ -66,7 +68,7 @@ void NavBarWid::recvUserNameSlot(QString str)
 
 void NavBarWid::on_setDataBtn_clicked()
 {
-    emit navBarSig(1);
+    // emit navBarSig(1);
 }
 
 

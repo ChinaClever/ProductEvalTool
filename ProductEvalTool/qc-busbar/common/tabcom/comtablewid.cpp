@@ -58,7 +58,8 @@ void ComTableWid::initTableWidget(QStringList &header)
 void ComTableWid::initWidget(QStringList &header)
 {    
     initTableWidget(header);
-    ui->tableWidget->verticalHeader()->setVisible(false);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    // ui->tableWidget->verticalHeader()->setVisible(false);
     ui->tableWidget->setColumnWidth(9,70 );
 }
 
@@ -203,7 +204,7 @@ void ComTableWid::initDataWid(QStringList &header, int line, const QString &titl
     for(int i=0; i<line; ++i) {
         int row = ui->tableWidget->rowCount();
         addInitRow(row);
-        ui->tableWidget->setRowHeight(row, 100);
+        ui->tableWidget->setRowHeight(row, 75);
     }
 }
 /**
@@ -323,7 +324,7 @@ void ComTableWid::clearRow(int row)
 {
     int column = ui->tableWidget->columnCount();
     for(int i=0; i<column; ++i) {
-        setTableItem(row, i, "---");
+        setTableItem(row, i, " ");
         setItemColor(row, i, 0);
     }
 }

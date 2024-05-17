@@ -16,6 +16,8 @@ Home_WorkWid::Home_WorkWid(QWidget *parent) :
     mId = 1;
     initWid();
     initLayout();
+    initTypeComboBox();
+    QTimer::singleShot(20*1000,this,SLOT(PingSlot())); //延时初始化
 }
 
 Home_WorkWid::~Home_WorkWid()
@@ -60,7 +62,22 @@ void Home_WorkWid::initWid()
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
 }
 
-
+void Home_WorkWid::PingSlot()
+{
+    QString ip;
+    bool ret = false;
+    QString str = tr("服务端IP异常");
+    for(int k=0; k<3; ++k) {
+        if(!ret) {
+            mPacket->delay(1);
+            ip = mCfgm->Service;
+            qDebug()<<"ip"<<ip;
+            ret = cm_pingNet(ip);
+        }
+        if(ret) break;
+    }
+    if(!ret) MsgBox::information(this,str);
+}
 
 void Home_WorkWid::overSlot()
 {
@@ -192,6 +209,7 @@ void Home_WorkWid::updateWid()
     mPro->product_sn = ui->codeEit->text();
     str = mDev->devType.dev_type;
     mPro->productType = str;
+    mPro->stopFlag = ui->stopFag->isChecked();
     int ver = get_share_mem()->box[mCfgm->addr-1].version;
     mPro->softwareVersion = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
 
@@ -214,7 +232,6 @@ bool Home_WorkWid::initSerialVol()
 {
     QString str;  mId = 1; mFirst = 1;
     sSerial *coms = &(mCfgm->coms);
-    Cfg::bulid()->setAddr(mCfgm->addr);
     ui->textEdit->clear();
     bool ret = false;
     if(mCfgm->modeId == TEMPER_BUSBAR) {
@@ -231,7 +248,6 @@ bool Home_WorkWid::initSerialGND()
 {
     QString str;  mId = 1; mFirst = 1;
     sSerial *coms = &(mCfgm->coms);
-    Cfg::bulid()->setAddr(mCfgm->addr);
     ui->textEdit->clear();
     bool ret = false;
     if(mCfgm->modeId == TEMPER_BUSBAR){
@@ -248,7 +264,6 @@ bool Home_WorkWid::initSerial()
 {
     QString str;  mId = 1; mFirst = 1;
     sSerial *coms = &(mCfgm->coms);
-    Cfg::bulid()->setAddr(mCfgm->addr);
     ui->textEdit->clear();
     bool ret = false;
     if(mCfgm->modeId == TEMPER_BUSBAR){
@@ -285,11 +300,6 @@ void Home_WorkWid::LoadStatus(bool ret)
     else ui->loadLab->setStyleSheet("background-color:red; color:rgb(0, 0, 0);");
 }
 
-void Home_WorkWid::BreakerStatus(bool ret)
-{
-    if(ret) ui->breakLab->setStyleSheet("background-color:green; color:rgb(0, 0, 0);");
-    else ui->breakLab->setStyleSheet("background-color:red; color:rgb(0, 0, 0);");
-}
 
 void Home_WorkWid::StatusSlot(bool ret)
 {
@@ -298,7 +308,6 @@ void Home_WorkWid::StatusSlot(bool ret)
     case 1: GndStatus(ret); break;
     case 2: VolStatus(ret); break;
     case 3: LoadStatus(ret); break;
-    case 4: BreakerStatus(ret); break;
     default:
         break;
     }
@@ -321,10 +330,6 @@ void Home_WorkWid::ItemStatus()
     }
     case 3: {mPro->test_step = "电力测试";  mPro->test_item = ui->loadBtn->text();
             ui->loadLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
-            break;
-    }
-    case 4: {mPro->test_step = "电力测试"; mPro->test_item = ui->breakerBtn->text();
-            ui->breakLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
             break;
     }
     default:
@@ -416,26 +421,6 @@ void Home_WorkWid::on_loadBtn_clicked()
     }
 }
 
-void Home_WorkWid::on_breakerBtn_clicked()
-{
-    ui->stackedWid->hide();
-    mItem->work_mode = 4;
-    if(mPro->step == Test_End) {
-        bool ret = initSerial();
-        if(ret) {
-            mPacket->init();
-            ItemStatus();
-            mPowThread->start();
-        }
-    }else {
-        bool ret = MsgBox::question(this, tr("确定需要提前结束？"));
-        if(ret) {
-            BreakerStatus(!ret); mPro->result = Test_Fail;
-            updateResult();
-        }
-    }
-}
-
 void Home_WorkWid::on_clearBtn_clicked()
 {
     clearStartEleSig();
@@ -447,3 +432,30 @@ void Home_WorkWid::on_codeEit_textChanged(const QString &arg1)
     ui->codeEit->setClearButtonEnabled(1);
 }
 
+
+void Home_WorkWid::on_comBox_currentIndexChanged(int index)
+{
+    mCfgm->modeId = index;
+    initTypeComboBox();
+
+    switch (index) {
+    case START_BUSBAR:{
+        mCfgm->addr = 1;
+        break;
+    }
+    case INSERT_BUSBAR:{
+        mCfgm->addr = 2;
+        break;
+    }
+    case TEMPER_BUSBAR:{
+        mCfgm->addr = 2;
+        break;
+    }
+    }
+    Cfg::bulid()->writeCfgDev();
+}
+void Home_WorkWid::initTypeComboBox()
+{
+    int index = mCfgm->modeId;
+    ui->comBox->setCurrentIndex(index);
+}

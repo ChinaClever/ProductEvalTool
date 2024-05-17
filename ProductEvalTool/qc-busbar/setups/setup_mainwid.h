@@ -22,7 +22,9 @@ protected:
     void initLogCount();
     void writeLogCount();
     void initPcNum();
+    void initAddr();
     void writePcNum();
+    void writeAddr();
     void initErrData();
     void updateErrData();
 

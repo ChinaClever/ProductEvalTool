@@ -34,7 +34,7 @@
      <x>310</x>
      <y>0</y>
      <width>551</width>
-     <height>261</height>
+     <height>431</height>
     </rect>
    </property>
    <property name="maximumSize">
@@ -55,10 +55,10 @@
    <widget class="QLabel" name="timeLab">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>30</y>
-      <width>321</width>
-      <height>181</height>
+      <x>40</x>
+      <y>40</y>
+      <width>481</width>
+      <height>321</height>
      </rect>
     </property>
     <property name="font">
@@ -78,7 +78,7 @@
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>230</y>
+      <y>390</y>
       <width>180</width>
       <height>20</height>
      </rect>
@@ -106,7 +106,7 @@
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>230</y>
+      <y>390</y>
       <width>20</width>
       <height>20</height>
      </rect>
@@ -134,7 +134,7 @@
     <property name="geometry">
      <rect>
       <x>300</x>
-      <y>230</y>
+      <y>390</y>
       <width>179</width>
       <height>20</height>
      </rect>
@@ -189,7 +189,7 @@
     <property name="font">
      <font>
       <family>微软雅黑</family>
-      <pointsize>14</pointsize>
+      <pointsize>13</pointsize>
      </font>
     </property>
     <property name="text">
@@ -206,7 +206,57 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="breakerBtn">
+   <widget class="QLabel" name="volLab">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>660</y>
+      <width>191</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:rgb(225, 225, 225)</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="gndLab">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>510</y>
+      <width>191</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:rgb(225, 225, 225)</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="loadBtn">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -225,111 +275,14 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>断路器测试</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="volLab">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>510</y>
-      <width>191</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>微软雅黑</family>
-      <pointsize>16</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(96, 194, 255);</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="gndLab">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>360</y>
-      <width>191</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>微软雅黑</family>
-      <pointsize>16</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(96, 194, 255);</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="breakLab">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>800</y>
-      <width>191</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>微软雅黑</family>
-      <pointsize>16</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(96, 194, 255);</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="loadBtn">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>610</y>
-      <width>191</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>微软雅黑</family>
-      <pointsize>16</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true"/>
-    </property>
-    <property name="text">
-     <string>负载测试</string>
+     <string>负载+断路器测试</string>
     </property>
    </widget>
    <widget class="QPushButton" name="vol_insulBtn">
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>170</y>
+      <y>310</y>
       <width>191</width>
       <height>51</height>
      </rect>
@@ -344,14 +297,14 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>耐压绝缘测试</string>
+     <string>耐压+绝缘测试</string>
     </property>
    </widget>
    <widget class="QLabel" name="acwLab">
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>220</y>
+      <y>360</y>
       <width>191</width>
       <height>16</height>
      </rect>
@@ -363,7 +316,7 @@
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(96, 194, 255);</string>
+     <string notr="true">background-color:rgb(225, 225, 225)</string>
     </property>
     <property name="text">
      <string/>
@@ -375,10 +328,10 @@
    <widget class="QPushButton" name="clearBtn">
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>80</x>
       <y>860</y>
-      <width>81</width>
-      <height>31</height>
+      <width>101</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -395,7 +348,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>310</y>
+      <y>460</y>
       <width>191</width>
       <height>51</height>
      </rect>
@@ -417,7 +370,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>660</y>
+      <y>800</y>
       <width>191</width>
       <height>21</height>
      </rect>
@@ -429,7 +382,7 @@
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(96, 194, 255);</string>
+     <string notr="true">background-color:rgb(225, 225, 225)</string>
     </property>
     <property name="text">
      <string/>
@@ -442,7 +395,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>460</y>
+      <y>610</y>
       <width>191</width>
       <height>51</height>
      </rect>
@@ -460,14 +413,75 @@
      <string>电压测试</string>
     </property>
    </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>120</y>
+      <width>181</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>13</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>设备选择:</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comBox">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>150</y>
+      <width>191</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>始端箱</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>插接箱</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QCheckBox" name="stopFag">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>230</y>
+      <width>191</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>  失败不停止测试</string>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>20</width>
+      <height>20</height>
+     </size>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox_5">
    <property name="geometry">
     <rect>
      <x>310</x>
-     <y>260</y>
+     <y>430</y>
      <width>551</width>
-     <height>661</height>
+     <height>491</height>
     </rect>
    </property>
    <property name="font">
@@ -500,7 +514,7 @@
       <property name="font">
        <font>
         <family>微软雅黑</family>
-        <pointsize>16</pointsize>
+        <pointsize>14</pointsize>
        </font>
       </property>
       <property name="styleSheet">

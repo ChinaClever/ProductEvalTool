@@ -249,13 +249,8 @@ bool Power_DevRead::NineInsertOne_CtrlOne()
         int a=0, b=0, c = 1; int d=0, e=0 ,f = 1;
         ret = readData();
 
-        a = Obj->cur.value[0];
-        b = Obj->cur.value[1];
-        c = Obj->cur.value[2];
-
-        d = Obj->pow.value[0];
-        e = Obj->pow.value[1];
-        f = Obj->pow.value[2];
+        a = Obj->cur.value[0]; b = Obj->cur.value[1]; c = Obj->cur.value[2];
+        d = Obj->pow.value[0]; e = Obj->pow.value[1]; f = Obj->pow.value[2];
 
         if((!a) &&b &&c)
             if((!d) &&e &&f) {
@@ -783,7 +778,7 @@ bool Power_DevRead::Load_NineLoop()
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     str = tr("请准备插接位1");  //三相回路电流、功率
     emit StepSig(str);
-    mLogs->updatePro(str, ret);
+
     while(1){
         int a=0; int d=0;
         if(ret) {

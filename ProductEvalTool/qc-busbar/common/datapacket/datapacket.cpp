@@ -38,7 +38,7 @@ void sDataPacket::clear(int id)
     pro->no.clear();
     pro->itemName.clear();
     pro->uploadPass.clear();
-    pro->softwareVersion.clear();
+    pro->softwareVersion.clear();  
 }
 
 
@@ -63,6 +63,17 @@ void sDataPacket::init()
     pro->ir.clear();
     pro->acw.clear();
     pro->gnd.clear();
+    pro->itemData.clear();
+    pro->itemRequest.clear();
+    if(pro->work_mode ==0) {
+        pro->itemRequest = "交流耐压 <5mA,绝缘电阻 >10MΩ";
+    }else if(pro->work_mode ==1) {
+        pro->itemRequest = "接地电阻 <100mΩ";
+    }else if(pro->work_mode ==2) {
+        pro->itemRequest = "级联测试：IN/OUT接口正常通讯,电压测试：测试回路电压值为0,待测回路电压值>220V";
+    }else if(pro->work_mode ==3) {
+        pro->itemRequest = "断路器：测试回路电压值为0，待测回路电压值>220V;负载测试：测试回路电流值为0、功率值为0，待测回路电流值、功率值不为0";
+    }
 }
 
 bool sDataPacket::updatePro(const QString &str, bool pass, int sec)

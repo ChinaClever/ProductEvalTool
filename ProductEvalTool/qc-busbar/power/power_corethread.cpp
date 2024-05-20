@@ -259,24 +259,25 @@ void Power_CoreThread::workResult(bool)
     mPacket->updatePro(str, res);
     mPro->loopNum = QString::number(mBusData->box[mItem->addr-1].loopNum);
 
-    mPro->itemContent << "回路数量:" + mPro->loopNum;
-    mPro->itemContent << "软件版本为:" + mPro->softwareVersion;
-    mPro->itemContent << "模块序列号:" + mPro->moduleSN;
-    mPro->itemContent << "设备类型:" + mPro->productType;
-    mPro->itemContent << "告警滤波:" + QString::number(mBusData->box[mItem->addr-1].alarmTime);
+    mPro->itemData << "回路数量:" + mPro->loopNum;
+    mPro->itemData << "模块序列号:" + mPro->moduleSN;
+    mPro->itemData << "设备类型:" + mPro->productType;
+    mPro->itemData << "告警滤波:" + QString::number(mBusData->box[mItem->addr-1].alarmTime);
     if(mBusData->box[mItem->addr-1].iOF) mPro->itemContent << "断路器IOF触点: 有";
-    else mPro->itemContent << "断路器IOF触点: 无";
+    else mPro->itemData << "断路器IOF触点: 无";
 
     if(mItem->modeId != START_BUSBAR) {
         mPro->phase = QString::number(mBusData->box[mItem->addr-1].phaseFlag);
         if(mBusData->box[mItem->addr-1].phaseFlag) mPro->itemContent << "相数:三相";
-        else mPro->itemContent << "相数:单相";
+        else mPro->itemData << "相数:单相";
         if(mBusData->box[mItem->addr-1].iOF) mPro->itemContent << "盒子类型: 插接箱";
-        else mPro->itemContent << "盒子类型: 测温模块";
+        else mPro->itemData << "盒子类型: 测温模块";
     }
     mLogs->saveLogs();
-    sleep(1);
-    Json_Pack::bulid()->http_post("busbarreport/add",mPro->Service);//全流程才发送记录(http)
+    if(mPro->online) {
+        sleep(1);
+        Json_Pack::bulid()->http_post("busbarreport/add",mPro->Service);//全流程才发送记录(http)
+    }
     if(mPro->result == Test_Fail) res = false;
     else { res = true;}
     emit finshSig(res); mPro->step = Test_Over;
@@ -487,7 +488,8 @@ bool Power_CoreThread::stepVolTest()
 
 bool Power_CoreThread::stepLoadTest()
 {
-    bool ret = true;
+    bool ret = false;
+    mBusData->box[mItem->addr-1].loopNum = 9;
     if(mBusData->box[mItem->addr-1].loopNum == 9) {
         ret = mRead->Load_NineLoop();
     }else if(mBusData->box[mItem->addr-1].loopNum == 6) {
@@ -509,10 +511,12 @@ void Power_CoreThread::getDelaySlot()
     }
     emit TipSig(str);
     mLogs->updatePro(str, ret);
+    mPro->itemData << str;
     if(mCurBoxNum == 2) str = tr("插接箱 IN口接错");
     if(mCurBoxNum == 3) str = tr("插接箱 OUT口接错");
     emit TipSig(str);
     mLogs->updatePro(str, ret);
+    mPro->itemData << str;
     mCurBoxNum = 0;
 }
 
@@ -526,6 +530,7 @@ void Power_CoreThread::getNumAndIndexSlot(int curnum)
         ret = true;
         emit TipSig(str);
         mLogs->updatePro(str, ret);
+        mPro->itemData << str;
     }
 }
 
@@ -533,27 +538,27 @@ void Power_CoreThread::workDown()
 {
     mPro->step = Test_Start;
     bool ret = false; ret = true;
-    // ret = initDev(); if(ret) ret = mRead->readDev();
+    ret = initDev(); if(ret) ret = mRead->readDev();
     if(ret) {
         if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(),"0");
         else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0);  //设置滤波=0
 
-        if(mCfg->work_mode == 2) {
-            // QString str = tr("请打开自动分配地址夹具");
-            // emit TipSig(str); sleep(15);
-            // if(mItem->modeId != START_BUSBAR) mModbus->autoSetAddress();                       //自动分配地址
-            // str = tr("请关闭自动分配地址夹具");
-            // emit TipSig(str); sleep(3);
+        if(mCfg->work_mode == 2) {      
+            QString str = tr("请打开自动分配地址夹具");
+            emit TipSig(str); sleep(15);
+            if(mItem->modeId != START_BUSBAR) mModbus->autoSetAddress();                       //自动分配地址
+            str = tr("请关闭自动分配地址夹具");
+            emit TipSig(str); sleep(3);
             if(ret) ret = stepVolTest();                     //电压测试
         }else if(mCfg->work_mode == 3) {                     //负载测试
           // if(ret) ret = mSource->read();
-//           else mPro->result = Test_Fail;
-//            if(ret) ret = checkLoadErrRange();
-            if(ret) ret = stepLoadTest();
-            if(ret) ret = factorySet();
+          // else mPro->result = Test_Fail;
+          // if(ret) ret = checkLoadErrRange();
+          if(ret) ret = stepLoadTest();
+          if(ret) ret = factorySet();
         }
-        // if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(), "5");
-        // else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(5);  //设置滤波=5
+        if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(), "5");
+        else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(5);  //设置滤波=5
 
     }
     if(!ret) mPro->result = Test_Fail;

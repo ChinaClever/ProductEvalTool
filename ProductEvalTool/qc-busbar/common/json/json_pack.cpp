@@ -26,9 +26,12 @@ Json_Pack *Json_Pack::bulid(QObject *parent)
 void Json_Pack::head(QJsonObject &obj)
 {
     obj.insert("product_sn", mPro->product_sn);
+    obj.insert("soft_version", mPro->softwareVersion);
     obj.insert("start_time", mPro->testStartTime);
+    obj.insert("test_type", "功能测试");
     obj.insert("test_step", mPro->test_step);
     obj.insert("test_item", mPro->test_item);
+    obj.insert("test_request", mPro->itemRequest);
     obj.insert("tool_name", "qc-busbar");
     int num = mPro->pass.size();
     mPro->uploadPassResult = 1;
@@ -55,7 +58,7 @@ int Json_Pack::objData(QJsonObject &obj)
     QJsonObject DataObj;
     int num = mPro->uploadPass.size();
 
-    QString str1 = mPro->itemContent.join(";");
+    QString str1 = mPro->itemData.join(";");
     obj.insert("test_process" ,str1);
 
     return num;

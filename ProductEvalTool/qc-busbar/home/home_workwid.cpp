@@ -34,7 +34,7 @@ void Home_WorkWid::initWid()
     mPro = mPacket->getPro();
     mLogs = Power_Logs::bulid(this);
     mPro->step = Test_End;
-
+    mCfgm->online = false;
     mVolInsul = new Face_Volinsul(ui->stackedWid);
     ui->stackedWid->addWidget(mVolInsul);
 
@@ -75,6 +75,7 @@ void Home_WorkWid::PingSlot()
         }
         if(ret) break;
     }
+    if(ret) mCfgm->online = true;
     if(!ret) MsgBox::information(this,str);
 }
 
@@ -210,6 +211,7 @@ void Home_WorkWid::updateWid()
     mPro->productType = str;
     mPro->Service = mCfgm->Service;
     mPro->stopFlag = ui->stopFag->isChecked();
+    mPro->online = mCfgm->online;
     int ver = get_share_mem()->box[mCfgm->addr-1].version;
     mPro->softwareVersion = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
 
@@ -341,6 +343,7 @@ void Home_WorkWid::on_vol_insulBtn_clicked()//耐压/绝缘
 {
     ui->stackedWid->show();
     mItem->work_mode = 0;
+    mPro->work_mode = 0;
     if(mPro->step == Test_End){
         bool ret = initSerialVol();
         if(ret) {
@@ -363,6 +366,7 @@ void Home_WorkWid::on_groundBtn_clicked()//接地
 {
     ui->stackedWid->show();
     mItem->work_mode = 1;
+    mPro->work_mode = 1;
     if(mPro->step == Test_End){
         bool ret = initSerialGND();
         if(ret) {
@@ -385,6 +389,7 @@ void Home_WorkWid::on_volBtn_clicked()
 {
     ui->stackedWid->hide();
     mItem->work_mode = 2;
+    mPro->work_mode = 2;
     if(mPro->step == Test_End) {
         bool ret = initSerial();
         if(ret) {
@@ -404,7 +409,8 @@ void Home_WorkWid::on_volBtn_clicked()
 void Home_WorkWid::on_loadBtn_clicked()
 {
     ui->stackedWid->hide();
-    mItem->work_mode = 3; 
+    mItem->work_mode = 3;
+    mPro->work_mode = 3;
     if(mPro->step == Test_End) {
         bool ret = initSerial();
         if(ret) {       

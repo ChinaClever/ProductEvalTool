@@ -160,6 +160,7 @@ void Setup_MainWid::on_pcBtn_clicked()
             res = cm_pingNet(ip);
             if(res) break;
         }
+        if(res) mItem->online = true;
         if(!res) MsgBox::information(this,str1);
     }
     if(mItem->pcNum) ret = false;

@@ -186,8 +186,8 @@ bool Test_safety::testGND( QString & recv)//acw
         item.expect = tr("大于20MΩ");
         mPro->gnd = mItem->sn.gnd;
         appendResult(item);
-        QString str = tr("接地测试结果：%1").arg(mPro->gnd);
-        mPacket->updatePro(str, true);
+        QString str = tr("接地测试结果：%1 mΩ").arg(mPro->gnd);
+        mPro->itemData << str;
     }
     mItem->sn.gnd.clear();
 
@@ -225,8 +225,8 @@ bool Test_safety::testIR(QString & recv)
         item.expect = tr("大于500MΩ");
         mPro->ir = mItem->sn.ir;
         appendResult(item);
-        QString str = tr("绝缘测试结果：%1").arg(mPro->ir);
-        mPacket->updatePro(str, true);
+        QString str = tr("绝缘测试结果：%1 MΩ").arg(mPro->ir);
+        mPro->itemData << str;
     }
     mItem->sn.ir.clear();
 
@@ -263,8 +263,8 @@ bool Test_safety::testACW(QString & recv)
         item.expect = tr("小于10mA");
         mPro->acw = mItem->sn.acw;
         appendResult(item);
-        QString str = tr("交流耐压测试结果：%1").arg(mPro->acw);
-        mPacket->updatePro(str, true);
+        QString str = tr("交流耐压测试结果：%1 mA").arg(mPro->acw);
+        mPro->itemData << str;
     }
     mItem->sn.acw.clear();
 
@@ -282,7 +282,7 @@ void Test_safety::run()
     } else {
         mItem->progress.allNum = 9;
         QString recv = "";
-        testGND(recv);
+        testGND(recv);  
         emit overSig();
     }
 }

@@ -29,7 +29,7 @@ bool TestDataSave::saveDb()
     if(mItem->progress.errNum) str = tr("失败");
     item.passed = str;  // 结果
 
-    item.memo = mPro->itemContent.join("; ");
+    item.memo = mPro->itemData.join("; ");
     if(item.QRcode.size()) mLogItems << item;
     if(item.QRcode.isEmpty()) return false;
 

@@ -10,7 +10,6 @@ Face_Volinsul::Face_Volinsul(QWidget *parent)
     mPacket = sDataPacket::bulid();
     mPro = mPacket->getPro();
     mDataSave = new TestDataSave(this);
-
     initWid();
 }
 
@@ -47,10 +46,8 @@ void Face_Volinsul::resultSlot()
 {
     bool p = true;
     if(mItem->progress.errNum)  p = false;
-    timer->stop();
 
     mItem->progress.allNum = mItem->progress.finishNum;
-    // progressSlot();
     int ok = (mItem->progress.okNum * 100.0) / mItem->progress.allNum;
     QString str1 = tr("测试项目数:%1  失败项目数：%2  项目测试通过率：%3%").arg(mItem->progress.allNum).arg(mItem->progress.errNum).arg(ok);
     mPacket->updatePro(str1);
@@ -70,7 +67,7 @@ void Face_Volinsul::resultSlot()
     }
     mPacket->updatePro(str, res);
     mDataSave->saveTestData(); mPacket->delay(1);
-    Json_Pack::bulid()->http_post("busbarreport/add","192.168.1.15");
+    Json_Pack::bulid()->http_post("busbarreport/add",mPro->Service);
     if(mPro->result == Test_Fail) res = false;
     else {res = true;}
     emit StatusSig(res); mPro->step = Test_Over;
@@ -89,7 +86,4 @@ void Face_Volinsul::progressSlot()
         if(mItem->work_mode == 0) ui->progressBar->setStyleSheet("QProgressBar {border:2px solid;background-color:transparent;border-radius: 5px;text-align: center;color:red;}" );
         else if(mItem->work_mode == 1) ui->progressBar2->setStyleSheet("QProgressBar {border:2px solid;background-color:transparent;border-radius: 5px;text-align: center;color:red;}" );
     }
-    // int ok = (arg->okNum * 100.0) / arg->allNum;
-    // QString str = tr("测试项目数:%1  失败项目数：%2  项目测试通过率：%3%").arg(arg->allNum).arg(arg->errNum).arg(ok);
-    // mPacket->updatePro(str);
 }

@@ -22,13 +22,46 @@ public:
     QString getFilterOid();
     bool SetInfo(QString o , QString val);
 
+    //九回路三个输出位
     bool Load_NineLoop();
-    bool Load_SixLoop();
-    bool Load_ThreeLoop();
+    bool NineInsertOne_CtrlOne();
+    bool NineInsertOne_CtrlTwo();
+    bool NineInsertOne_CtrlThree();
+    bool NineInsertTwo_CtrlOne();
+    bool NineInsertTwo_CtrlTwo();
+    bool NineInsertTwo_CtrlThree();
+    bool NineInsertThree_CtrlOne();
+    bool NineInsertThree_CtrlTwo();
+    bool NineInsertThree_CtrlThree();
+    bool NineInsertOne_BreakerOne();
+    bool NineInsertOne_BreakerTwo();
+    bool NineInsertOne_BreakerThree();
 
-    bool Break_NineLoop();
-    bool Break_SixLoop();
-    bool Break_ThreeLoop();
+    //六回路二个输出位
+    bool Load_SixLoop();
+    bool SixInsertOne_CtrlOne();
+    bool SixInsertOne_CtrlTwo();
+    bool SixInsertOne_CtrlThree();
+    bool SixInsertTwo_CtrlOne();
+    bool SixInsertTwo_CtrlTwo();
+    bool SixInsertTwo_CtrlThree();
+    bool SixInsertOne_BreakerOne();
+    bool SixInsertOne_BreakerTwo();
+
+    //始端箱-三相三回路三个输出位
+    bool Load_ThreeLoop();
+    bool Three_CtrlOne();
+    bool Three_CtrlTwo();
+    bool Three_CtrlThree();
+    bool Three_Breaker();
+
+    //单相三回路三个输出位
+    bool Three_One();
+    bool Three_Two();
+    bool Three_Three();
+    bool Three_OneBreaker();
+    bool Three_TwoBreaker();
+    bool Three_ThreeBreaker();
 protected:
     void run();
     bool readSnmp();

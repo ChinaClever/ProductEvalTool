@@ -30,16 +30,19 @@ void Setup_MainWid::initFunSlot()
     initAddr();
     initErrData();
     initLogCount();
+    if(ui->addrEdit->text().isEmpty()) {
+        ui->addrEdit->setText("192.168.1.15");
+        mItem->Service = ui->addrEdit->text();
+    }
     mUserWid = new UserMainWid(ui->stackedWid);
     ui->stackedWid->addWidget(mUserWid);
 
     QDate buildDate = QLocale(QLocale::English ).toDate( QString(__DATE__).replace("  ", " 0"), "MMM dd yyyy");
     ui->label_date->setText(buildDate.toString("yyyy-MM-dd"));
-    QTimer::singleShot(2*1000,this,SLOT(checkPcNumSlot()));
+    QTimer::singleShot(5*1000,this,SLOT(checkPcNumSlot()));
 }
 
-
-void Setup_MainWid::checkPcNumSlot()
+void Setup_MainWid::checkPcNum()
 {
     int num = mItem->pcNum;
     if(num < 1) {
@@ -47,14 +50,20 @@ void Setup_MainWid::checkPcNumSlot()
             MsgBox::warning(this, tr("请联系研发部设定电脑号！\n 服务设置 -> 设置功能 \n 需要管理员权限!"));
         else
             MsgBox::warning(this, tr("请自行设定电脑号！\n 服务设置 -> 设置功能 \n 需要管理员权限!"));
-        // QTimer::singleShot(20*1000,this,SLOT(checkPcNumSlot()));
     }
+}
 
-    QString str = mItem->Service;
-    if(str.isEmpty()) {
-        MsgBox::warning(this, tr("请自行设定服务端IP!"));
-        QTimer::singleShot(20*1000,this,SLOT(checkPcNumSlot()));
-    }
+void Setup_MainWid::checkAddr()
+{
+    QString str = ui->addrEdit->text();
+    if(str.isEmpty() || !str.contains("192.168."))
+        MsgBox::warning(this, tr("请设置正确格式的服务端IP!"));
+}
+
+void Setup_MainWid::checkPcNumSlot()
+{
+    checkPcNum(); checkAddr();
+    QTimer::singleShot(20*1000,this,SLOT(checkPcNumSlot()));
 }
 
 void Setup_MainWid::initSerial()
@@ -143,6 +152,16 @@ void Setup_MainWid::on_pcBtn_clicked()
     ui->pcBtn->setText(str);
     ui->logCountSpin->setEnabled(ret);
     ui->addrEdit->setEnabled(ret);
+    if(!ret) {
+        bool res = true;
+        QString str1 = tr("该服务端IP异常");
+        QString ip = ui->addrEdit->text();
+        for(int k=0; k<2; ++k) {
+            res = cm_pingNet(ip);
+            if(res) break;
+        }
+        if(!res) MsgBox::information(this,str1);
+    }
     if(mItem->pcNum) ret = false;
     ui->pcNumSpin->setEnabled(ret);
 }

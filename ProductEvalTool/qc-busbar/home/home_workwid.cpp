@@ -17,7 +17,7 @@ Home_WorkWid::Home_WorkWid(QWidget *parent) :
     initWid();
     initLayout();
     initTypeComboBox();
-    QTimer::singleShot(20*1000,this,SLOT(PingSlot())); //延时初始化
+    QTimer::singleShot(10*1000,this,SLOT(PingSlot())); //延时初始化
 }
 
 Home_WorkWid::~Home_WorkWid()
@@ -67,11 +67,10 @@ void Home_WorkWid::PingSlot()
     QString ip;
     bool ret = false;
     QString str = tr("服务端IP异常");
-    for(int k=0; k<3; ++k) {
+    for(int k=0; k<2; ++k) {
         if(!ret) {
             mPacket->delay(1);
             ip = mCfgm->Service;
-            qDebug()<<"ip"<<ip;
             ret = cm_pingNet(ip);
         }
         if(ret) break;
@@ -209,6 +208,7 @@ void Home_WorkWid::updateWid()
     mPro->product_sn = ui->codeEit->text();
     str = mDev->devType.dev_type;
     mPro->productType = str;
+    mPro->Service = mCfgm->Service;
     mPro->stopFlag = ui->stopFag->isChecked();
     int ver = get_share_mem()->box[mCfgm->addr-1].version;
     mPro->softwareVersion = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);

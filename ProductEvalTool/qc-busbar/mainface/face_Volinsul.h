@@ -18,12 +18,15 @@ public:
     ~Face_Volinsul();
 
     void initWid();
+    // void progressSlot();
+    void startSlot();
+    void resultSlot();
 signals:
     void StatusSig(bool ret);
 public slots:
-    void startSlot();
+    // void startSlot();
     void progressSlot();
-    void resultSlot();
+    // void resultSlot();
 
 
 private:

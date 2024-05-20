@@ -27,7 +27,8 @@ protected:
     void writeAddr();
     void initErrData();
     void updateErrData();
-
+    void checkPcNum();
+    void checkAddr();
 protected slots:
     void initFunSlot();
     void checkPcNumSlot();

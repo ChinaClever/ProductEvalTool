@@ -147,6 +147,7 @@ bool Test_safety::startTest(sTestDataItem &item,QString & recv , const QString &
     item.subItem = tr("%1测试开始").arg(test);
     item.status = !recv.isEmpty();
     appendResult(item);
+
     return item.status;
 }
 
@@ -159,8 +160,8 @@ bool Test_safety::testGND( QString & recv)//acw
     int stepTotal = 0;
     item.item = tr("接地测试");
     ret = startTest(item,recv , tr("接地") , GNDFile , stepTotal);
+    delayItem(item, 8*1000);
 
-    delayItem(item, 8*1000);//
     for(int i = 0; i < stepTotal ; i++)
     {
         mTestStep = ReadData;
@@ -241,8 +242,8 @@ bool Test_safety::testACW(QString & recv)
     int stepTotal = 0;
     item.item = tr("交流耐压测试");
     ret = startTest(item, recv , tr("交流耐压") , ACWFile , stepTotal);
-
     delayItem(item, 27*1000);//25
+
     for(int i = 0; i < stepTotal ; i++)
     {
         mTestStep = ReadData;

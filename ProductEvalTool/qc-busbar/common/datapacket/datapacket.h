@@ -643,6 +643,7 @@ struct sProgress
 
     int num;
     int stopFlag;
+    QString Service;
     uchar result;    // 最终结果
     QTime startTime;
     QString testStartTime;

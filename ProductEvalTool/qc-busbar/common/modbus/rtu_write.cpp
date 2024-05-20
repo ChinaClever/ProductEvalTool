@@ -240,11 +240,9 @@ void Rtu_Write::autoSetAddress()
         QString strArray2;
         array2.append((char *)recvbuffer, rtn);
         strArray2 = array2.toHex(); // 十六进制
-        qDebug()<<" strArray2 "<<strArray2;
         if(rtn / 8 == 1 && strArray2.contains("ff7b"))emit sendNumAndIndexSig(recvbuffer[5]);
         if(rtn / 8 == 2 && recvbuffer[8]==0xff && recvbuffer[9]==0x7b)emit sendNumAndIndexSig(recvbuffer[8+5]);
-        if(rtn / 8 >= 3 && recvbuffer[16]==0xff && recvbuffer[17]==0x7b){qDebug()<<"sendNumAndIndexSig";emit sendNumAndIndexSig(recvbuffer[16+5]);break;}
-        //if(recvbuffer[0]==0x01 && recvbuffer[1]==0x6a){ emit sendDelaySig();break;}
+        if(rtn / 8 >= 3 && recvbuffer[16]==0xff && recvbuffer[17]==0x7b){emit sendNumAndIndexSig(recvbuffer[16+5]);break;}
         if(recvbuffer[5] == 0xCC){count=-1;break;}
     }
     if(count == -1){ emit sendDelaySig(); }

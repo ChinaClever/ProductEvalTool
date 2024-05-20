@@ -34,6 +34,7 @@ void Json_Pack::head(QJsonObject &obj)
     mPro->uploadPassResult = 1;
     for(int i=0; i<num; ++i)
     {
+        qDebug()<<"mPro->pass.at(i)"<<mPro->pass.at(i);
         if(mPro->pass.at(i) == 0) {
             mPro->uploadPassResult = 0; break;
         }
@@ -77,8 +78,8 @@ void Json_Pack::http_post(const QString &method, const QString &ip, int port)
     http.post(url.arg(ip).arg(port).arg(method))
         .header("content-type", "application/json")
         .onSuccess([&](QString result) {qDebug()<<"result"<<result; mPro->result = Test_Over; emit httpSig("数据发送成功",true);})
-        .onFailed([&](QString error) {qDebug()<<"error"<<error; mPro->result = Test_Fail; emit httpSig("数据发送失败",false); })
-        .onTimeout([&](QNetworkReply *) {qDebug()<<"http_post timeout"; mPro->result = Test_Fail; emit httpSig("http_post timeout",false); }) // 超时处理
+        .onFailed([&](QString error) {qDebug()<<"error"<<error; mPro->result = Test_Fail; emit httpSig("数据发送失败",true); })
+        .onTimeout([&](QNetworkReply *) {qDebug()<<"http_post timeout"; mPro->result = Test_Fail; emit httpSig("http_post timeout",true); }) // 超时处理
         .timeout(1) // 1s超时
         .block()
         .body(json)

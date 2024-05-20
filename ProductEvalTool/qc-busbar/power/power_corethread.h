@@ -68,8 +68,9 @@ protected:
     bool powLoadErrRange(int i);
 
     bool stepVolTest();
+    bool Vol_ctrlOne();
+    bool Vol_ctrlTwo();
     bool stepLoadTest();
-    bool stepBreakerTest();
     QString changeMode(int index);
     void autoSetAddress();
 

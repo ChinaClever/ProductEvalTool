@@ -33,10 +33,6 @@ protected:
 
     bool initDev();
     bool hubPort();
-    bool volErrRange(int i);
-    bool curErrRange(int i);
-    bool powErrRange(int i);
-    bool pfErrRange(int i);
     bool eleErrRange(int i);
     bool eleErrRange0(int i);
     bool envErrRange();

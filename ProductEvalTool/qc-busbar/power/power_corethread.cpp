@@ -51,24 +51,6 @@ bool Power_CoreThread::initDev()
     return ret;
 }
 
-bool Power_CoreThread::volErrRange(int i)
-{
-    bool ret = true;
-    int b = mBusData->box[mItem->addr - 1].data.vol.value[i];
-    QString str = tr("第%1回路，实测电压=%2V ").arg(i+1).arg(b/(COM_RATE_VOL));
-
-    return mLogs->updatePro(str, ret);
-}
-
-bool Power_CoreThread::curErrRange(int i)
-{
-    bool ret = true;
-    int b = mBusData->box[mItem->addr - 1].data.cur.value[i];
-    QString str = tr("第%1回路，实测电流=%2A").arg(i+1).arg(b/COM_RATE_CUR);
-
-    return mLogs->updatePro(str, ret);
-}
-
 bool Power_CoreThread::eleErrRange(int i)
 {
     bool ret = mItem->eleCheck;
@@ -91,23 +73,7 @@ bool Power_CoreThread::eleErrRange0(int i)
 
     return mLogs->updatePro(str, ret);
 }
-bool Power_CoreThread::pfErrRange(int i)
-{
-    bool ret = true;
-    QString str = tr("第%1回路，实测功率因素=%2").arg(i+1).arg(mBusData->box[mItem->addr-1].data.pf[i]/COM_RATE_PF);
 
-    return mLogs->updatePro(str, ret);
-}
-
-bool Power_CoreThread::powErrRange(int i)
-{
-    bool ret = true;
-    int b = mBusData->box[mItem->addr - 1].data.pow.value[i];
-    QString str = tr("第%1回路，实测功率=%2kW").arg(i+1)
-            .arg(b/COM_RATE_POW);
-
-    return mLogs->updatePro(str, ret);
-}
 
 bool Power_CoreThread::envErrRange()
 {
@@ -128,16 +94,7 @@ bool Power_CoreThread::envErrRange()
     return ret;
 }
 
-bool Power_CoreThread::checkVolErrRange()
-{
-    int i = 0;
-    bool res = true, ret = true;
-    for(; i<mBusData->box[mItem->addr-1].loopNum; ++i) {
-        ret = volErrRange(i); if(!ret) res = false;
-    }
 
-    return res;
-}
 
 bool Power_CoreThread::volLoadErrRange(int i)
 {

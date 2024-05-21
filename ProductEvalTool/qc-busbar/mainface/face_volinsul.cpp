@@ -20,7 +20,6 @@ Face_Volinsul::~Face_Volinsul()
 
 void Face_Volinsul::initWid()
 {
-    qDebug()<<"timeoutDone";
     timer = new QTimer(this);
     timer->start(100);
     connect(timer, SIGNAL(timeout()), this, SLOT(progressSlot()));

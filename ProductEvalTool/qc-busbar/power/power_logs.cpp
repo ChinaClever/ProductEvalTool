@@ -34,7 +34,7 @@ bool Power_Logs::appendLogItem(const QString &str, bool pass)
         it.passed = tr("失败");
     }
 
-    QString str1 = mPro->itemContent.join("; ");
+    QString str1 = mPro->itemData.join("; ");
     it.memo = str;
 
     mLogItems << it;

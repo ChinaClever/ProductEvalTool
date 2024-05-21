@@ -111,7 +111,6 @@ struct Rtu_recv {
     uchar curUnbalance;
     uchar buzzerStatus;//蜂鸣器
     uchar dc; // 交直流标志位
-    uchar type;//箱子类型 0：插接箱 1： 始端箱
 
     uchar pl[3]; // 负载百分比
     uchar hc; //谐波通道(00表示A路电压通道，01表示B路电压通道，02表示C路电压通道 03表示A路电流通道，04表示B路电流通道，05表示C路电流通道)

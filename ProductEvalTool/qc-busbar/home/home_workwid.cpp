@@ -17,7 +17,7 @@ Home_WorkWid::Home_WorkWid(QWidget *parent) :
     initWid();
     initLayout();
     initTypeComboBox();
-    QTimer::singleShot(10*1000,this,SLOT(PingSlot())); //延时初始化
+    QTimer::singleShot(5*1000,this,SLOT(PingSlot())); //延时初始化
 }
 
 Home_WorkWid::~Home_WorkWid()
@@ -35,16 +35,17 @@ void Home_WorkWid::initWid()
     mLogs = Power_Logs::bulid(this);
     mPro->step = Test_End;
     mCfgm->online = false;
+
     mVolInsul = new Face_Volinsul(ui->stackedWid);
     ui->stackedWid->addWidget(mVolInsul);
+    connect(mVolInsul, &Face_Volinsul::StatusSig, this, &Home_WorkWid::StatusSlot);
+
+    mSafrtyThread = new Test_safety(this);
+    connect(mSafrtyThread, SIGNAL(overSig()), this, SLOT(overSlot()));
 
     mPower = new Face_Power(ui->stackedWid2);
     ui->stackedWid2->addWidget(mPower);
 
-
-    mSafrtyThread = new Test_safety(this);
-    connect(mSafrtyThread, SIGNAL(overSig()), this, SLOT(overSlot()));
-    connect(mVolInsul, &Face_Volinsul::StatusSig, this, &Home_WorkWid::StatusSlot);
 
     connect(this, &Home_WorkWid::startSig, this, &Home_WorkWid::updateWidSlot);
     connect(Json_Pack::bulid(this), &Json_Pack::httpSig, this, &Home_WorkWid::insertTextslots);
@@ -145,6 +146,7 @@ void Home_WorkWid::insertText()
         ui->textEdit->insertPlainText(str);
         mPro->status.removeFirst();
         mPro->pass.removeFirst();
+        qDebug()<<"mPro->pass"<<mPro->itPass;
     }
 }
 
@@ -264,7 +266,7 @@ bool Home_WorkWid::initSerialGND()
 
 bool Home_WorkWid::initSerial()
 {
-    QString str;  mId = 1; mFirst = 1;
+    mId = 1; mFirst = 1;
     sSerial *coms = &(mCfgm->coms);
     ui->textEdit->clear();
     bool ret = false;
@@ -320,18 +322,22 @@ void Home_WorkWid::ItemStatus()
     switch (mItem->work_mode) {
     case 0: {mPro->test_step = "安规测试"; mPro->test_item = ui->vol_insulBtn->text();
             ui->acwLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
+            mPro->itemRequest = tr("交流耐压 <5mA,绝缘电阻 >10MΩ");
             break;
     }
     case 1: {mPro->test_step = "安规测试"; mPro->test_item = ui->groundBtn->text();
             ui->gndLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
+            mPro->itemRequest = tr("接地电阻 <100mΩ");
             break;
     }
     case 2: {mPro->test_step = "电力测试"; mPro->test_item = ui->volBtn->text();
             ui->volLab->setStyleSheet("background-color:yellow;color:rgb(0, 0, 0);");
+            mPro->itemRequest = tr("级联测试：IN/OUT接口正常通讯,电压测试：测试回路电压值为0,待测回路电压值>220V");
             break;
     }
     case 3: {mPro->test_step = "电力测试";  mPro->test_item = ui->loadBtn->text();
             ui->loadLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
+            mPro->itemRequest = tr("断路器：测试回路电压值为0，待测回路电压值>220V;负载测试：测试回路电流值为0、功率值为0，待测回路电流值、功率值不为0");
             break;
     }
     default:

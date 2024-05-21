@@ -216,18 +216,18 @@ void Power_CoreThread::workResult(bool)
     mPacket->updatePro(str, res);
     mPro->loopNum = QString::number(mBusData->box[mItem->addr-1].loopNum);
 
-    mPro->itemData << "回路数量:" + mPro->loopNum;
-    mPro->itemData << "模块序列号:" + mPro->moduleSN;
-    mPro->itemData << "设备类型:" + mPro->productType;
-    mPro->itemData << "告警滤波:" + QString::number(mBusData->box[mItem->addr-1].alarmTime);
-    if(mBusData->box[mItem->addr-1].iOF) mPro->itemContent << "断路器IOF触点: 有";
+    mPro->itemData << "回路数量：" + mPro->loopNum;
+    mPro->itemData << "模块序列号：" + mPro->moduleSN;
+    mPro->itemData << "设备类型：" + mPro->productType;
+    mPro->itemData << "告警滤波：" + QString::number(mBusData->box[mItem->addr-1].alarmTime);
+    if(mBusData->box[mItem->addr-1].iOF) mPro->itemData << "断路器IOF触点: 有";
     else mPro->itemData << "断路器IOF触点: 无";
 
     if(mItem->modeId != START_BUSBAR) {
         mPro->phase = QString::number(mBusData->box[mItem->addr-1].phaseFlag);
-        if(mBusData->box[mItem->addr-1].phaseFlag) mPro->itemContent << "相数:三相";
-        else mPro->itemData << "相数:单相";
-        if(mBusData->box[mItem->addr-1].iOF) mPro->itemContent << "盒子类型: 插接箱";
+        if(mBusData->box[mItem->addr-1].phaseFlag) mPro->itemData << "相数：三相";
+        else mPro->itemData << "相数：单相";
+        if(mBusData->box[mItem->addr-1].iOF) mPro->itemData << "盒子类型: 插接箱";
         else mPro->itemData << "盒子类型: 测温模块";
     }
     mLogs->saveLogs();
@@ -304,7 +304,7 @@ bool Power_CoreThread::Vol_ctrlOne()
             }            
         }
         flag++;
-        if(flag >80) {
+        if(flag >40) {
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
@@ -383,7 +383,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
             }
         }
         flag++;
-        if(flag >80) {
+        if(flag >40) {
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
@@ -402,9 +402,8 @@ bool Power_CoreThread::stepVolTest()
     bool ret = true;int flag = 0;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-
     QString str = tr("关闭电压控制L1"); QString str1;
-    emit TipSig(str);
+    emit TipSig(str); sleep(1);
     while(1)
     {
         if(mItem->modeId == START_BUSBAR) {
@@ -446,7 +445,6 @@ bool Power_CoreThread::stepVolTest()
 bool Power_CoreThread::stepLoadTest()
 {
     bool ret = false;
-    mBusData->box[mItem->addr-1].loopNum = 9;
     if(mBusData->box[mItem->addr-1].loopNum == 9) {
         ret = mRead->Load_NineLoop();
     }else if(mBusData->box[mItem->addr-1].loopNum == 6) {
@@ -494,17 +492,16 @@ void Power_CoreThread::getNumAndIndexSlot(int curnum)
 void Power_CoreThread::workDown()
 {
     mPro->step = Test_Start;
-    bool ret = false; ret = true;
+    bool ret = false;
     ret = initDev(); if(ret) ret = mRead->readDev();
     if(ret) {
         if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(),"0");
-        else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0);  //设置滤波=0
-
-        if(mCfg->work_mode == 2) {      
-            QString str = tr("请打开自动分配地址夹具");
+        else { Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0);} //设置滤波=0
+        if(mCfg->work_mode == 2) {
+            QString str = tr("请打开插接箱测试治具电源");
             emit TipSig(str); sleep(15);
             if(mItem->modeId != START_BUSBAR) mModbus->autoSetAddress();                       //自动分配地址
-            str = tr("请关闭自动分配地址夹具");
+            str = tr("请关闭插接箱测试治具电源");
             emit TipSig(str); sleep(3);
             if(ret) ret = stepVolTest();                     //电压测试
         }else if(mCfg->work_mode == 3) {                     //负载测试

@@ -14,9 +14,9 @@ Setup_MainWid::Setup_MainWid(QWidget *parent) :
 {
     ui->setupUi(this);
     groupBox_background_icon(this);
-    QTimer::singleShot(rand()%13,this,SLOT(initFunSlot()));
     mItem = Cfg::bulid()->item;
     initSerial();
+    QTimer::singleShot(rand()%13,this,SLOT(initFunSlot()));
 }
 
 Setup_MainWid::~Setup_MainWid()
@@ -99,7 +99,7 @@ void Setup_MainWid::writeLogCount()
 void Setup_MainWid::initAddr()
 {
     Cfg *con = Cfg::bulid();
-    QString value = con->read("service_addr", 0, "Sys").toString();
+    QString value = con->read("service_addr", "", "Sys").toString();
 
     mItem->Service = value;
     ui->addrEdit->setText(value);

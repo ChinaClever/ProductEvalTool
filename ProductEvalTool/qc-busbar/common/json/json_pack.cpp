@@ -33,16 +33,16 @@ void Json_Pack::head(QJsonObject &obj)
     obj.insert("test_item", mPro->test_item);
     obj.insert("test_request", mPro->itemRequest);
     obj.insert("tool_name", "qc-busbar");
-    int num = mPro->pass.size();
+    int num = mPro->itPass.size();
     mPro->uploadPassResult = 1;
     for(int i=0; i<num; ++i)
     {
-        qDebug()<<"mPro->pass.at(i)"<<mPro->pass.at(i);
-        if(mPro->pass.at(i) == 0) {
+        qDebug()<<"mPro->pass.at(i)"<<mPro->itPass.at(i);
+        if(mPro->itPass.at(i) == 0) {
             mPro->uploadPassResult = 0; break;
         }
     }
-
+    qDebug()<<"mPro->uploadPassResult"<<mPro->uploadPassResult;
     obj.insert("test_result", mPro->uploadPassResult);
     pduInfo(obj);
 }

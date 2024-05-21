@@ -514,7 +514,7 @@ typedef struct _sBoxData {
     uint online2;
 
     ushort rtuLen;
-    uchar rtuArray[SRC_DATA_LEN_MAX];
+//    uchar rtuArray[SRC_DATA_LEN_MAX];
     QString mac;
     uchar phaseFlag;// 单相或者三相
 }sBoxData;
@@ -642,7 +642,7 @@ struct sProgress
     QStringList status, item;
 
     int num;
-    int stopFlag;
+    bool stopFlag;
     int work_mode;
     QString Service;
     bool online;
@@ -666,7 +666,6 @@ struct sProgress
     QString product_sn;
     QString test_step;
     QString test_item;
-    QString macAddress;
     QString loopNum;
     QString phase;
 };

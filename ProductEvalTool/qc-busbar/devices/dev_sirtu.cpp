@@ -12,6 +12,7 @@ Dev_SiRtu::Dev_SiRtu(QObject *parent) : Dev_Object(parent)
 {
     mRtuPkt = new Rtu_recv; //传输数据结构
     mBusData = get_share_mem();
+//    mModbus = Rtu_Modbus::bulid(this)->get(2);
 }
 
 Dev_SiRtu *Dev_SiRtu::bulid(QObject *parent)
@@ -165,9 +166,9 @@ void Dev_SiRtu::loopObjData(sObjectData *loop, int id, RtuRecvLine *data)
 void Dev_SiRtu::loopData(sBoxData *box, Rtu_recv *pkt)
 {
     sObjectData *loop = &(box->data);
-    box->loopNum = loop->lineNum = pkt->lineNum;
+    box->loopNum = pkt->lineNum;
 
-    for(int i=0; i<loop->lineNum; i++)
+    for(int i=0; i<box->loopNum; i++)
     {
         RtuRecvLine *data = &(pkt->data[i]);
         loopObjData(loop, i, data);
@@ -244,7 +245,6 @@ bool Dev_SiRtu::readPduData()
     pkt.num = it.len;
     pkt.reg = it.reg;
     pkt.addr = it.addr = mItem->addr;
-
     int len = mModbus->read(pkt, recv);
     sBoxData *box = &(mBusData->box[mItem->addr-1]); //共享内存
     bool ret = rtu_recv_packetV3(recv, len , mRtuPkt);

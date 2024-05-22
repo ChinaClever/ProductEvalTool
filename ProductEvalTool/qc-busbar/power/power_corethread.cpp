@@ -223,7 +223,7 @@ void Power_CoreThread::workResult(bool)
     if(mBusData->box[mItem->addr-1].iOF) mPro->itemContent << "断路器IOF触点：有";
     else mPro->itemContent << "断路器IOF触点：无";
 
-    if(mItem->modeId != START_BUSBAR) {
+    if(mItem->modeId == INSERT_BUSBAR) {
         mPro->phase = QString::number(mBusData->box[mItem->addr-1].phaseFlag);
         if(mBusData->box[mItem->addr-1].phaseFlag) mPro->itemContent << "相数：三相";
         else mPro->itemContent << "相数：单相";
@@ -269,7 +269,7 @@ bool Power_CoreThread::Vol_ctrlOne()
                         mLogs->updatePro(str, ret);
                         str1 += str;
                     }
-                    str = tr("电压控制L2成功"); mLogs->updatePro(str, ret);
+                    str = tr("电压控制L2成功 "); mLogs->updatePro(str, ret);
                     str += str1; mPro->itemData << str;
                     str1.clear(); break;
                 }
@@ -287,7 +287,7 @@ bool Power_CoreThread::Vol_ctrlOne()
                         str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                         mLogs->updatePro(str, ret); str1 += str;
                     }
-                    str = tr("电压控制L2成功");mLogs->updatePro(str, ret);
+                    str = tr("电压控制L2成功 ");mLogs->updatePro(str, ret);
                     str += str1; mPro->itemData << str; str1.clear();break;}
             }else if(loop == 3){
                 a = Obj->vol.value[0];
@@ -300,7 +300,7 @@ bool Power_CoreThread::Vol_ctrlOne()
                         str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                         mLogs->updatePro(str, ret); str1 += str;
                     }
-                    str = tr("电压控制L2成功"); mLogs->updatePro(str, ret);
+                    str = tr("电压控制L2成功 "); mLogs->updatePro(str, ret);
                     str += str1; mPro->itemData << str; str1.clear();break;}
             }            
         }
@@ -350,7 +350,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
                         str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                         mLogs->updatePro(str, ret); str1 += str;
                     }
-                    str = tr("电压控制L3成功");mLogs->updatePro(str, ret);
+                    str = tr("电压控制L3成功 ");mLogs->updatePro(str, ret);
                     str += str1; mPro->itemData << str; str1.clear(); break;}
             }else if(loop == 6) {
                 for(int i =0;i<6;i+=3)
@@ -366,7 +366,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
                         str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                         mLogs->updatePro(str, ret); str1 += str;
                     }
-                    str = tr("电压控制L3成功");mLogs->updatePro(str, ret);
+                    str = tr("电压控制L3成功 ");mLogs->updatePro(str, ret);
                     str += str1; mPro->itemData << str; str1.clear(); break;}
             }else if(loop == 3){
                 a = Obj->vol.value[0];
@@ -379,7 +379,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
                         str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                         mLogs->updatePro(str, ret); str1 += str;
                     }
-                    str = tr("电压控制L3成功");mLogs->updatePro(str, ret);
+                    str = tr("电压控制L3成功 ");mLogs->updatePro(str, ret);
                     str += str1; mPro->itemData << str; str1.clear(); break;}
             }
         }

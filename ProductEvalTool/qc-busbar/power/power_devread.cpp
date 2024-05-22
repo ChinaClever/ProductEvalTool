@@ -258,9 +258,10 @@ bool Power_DevRead::NineInsertOne_CtrlOne()
                 for(int i =0;i<loop;i++)
                 {
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i] /COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
-                    mLogs->updatePro(str, ret); str1 += str;
+                    str1 += str;
                 }
-                str = tr("插接位1-电流控制L1成功");mLogs->updatePro(str, ret);
+                mLogs->updatePro(str1, ret);
+                str = tr("插接位1-电流控制L1成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;}
 
         flag++;
@@ -268,10 +269,10 @@ bool Power_DevRead::NineInsertOne_CtrlOne()
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
-                mLogs->updatePro(str, ret); str1 += str;
+                 str1 += str;
             }
-            ret = false;
-            str = tr("插接位1-电流控制L1失败");mLogs->updatePro(str, ret);
+            mLogs->updatePro(str1, ret); ret = false;
+            str = tr("插接位1-电流控制L1失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -300,9 +301,9 @@ bool Power_DevRead::NineInsertOne_CtrlTwo()
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
-                mLogs->updatePro(str, ret); str1 += str;
+                 str1 += str;
             }
-            str = tr("插接位1-电流控制L2成功");mLogs->updatePro(str, ret);
+            mLogs->updatePro(str, ret); str = tr("插接位1-电流控制L2成功 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;}
 
         flag++;
@@ -313,7 +314,7 @@ bool Power_DevRead::NineInsertOne_CtrlTwo()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位1-电流控制L2失败");mLogs->updatePro(str, ret);
+            str = tr("插接位1-电流控制L2失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -344,7 +345,7 @@ bool Power_DevRead::NineInsertOne_CtrlThree()
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("插接位1-电流控制L3成功");mLogs->updatePro(str, ret);
+                str = tr("插接位1-电流控制L3成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;}
         flag++;
         if(flag >50) {
@@ -354,7 +355,7 @@ bool Power_DevRead::NineInsertOne_CtrlThree()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位1-电流控制L3失败");mLogs->updatePro(str, ret);
+            str = tr("插接位1-电流控制L3失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -387,7 +388,7 @@ bool Power_DevRead::NineInsertOne_BreakerOne()
                 str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 mLogs->updatePro(str, ret); str1 += str;
             }
-            str = tr("断路器控制1成功");mLogs->updatePro(str, ret);
+            str = tr("断路器控制1成功 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
         flag++;
@@ -398,7 +399,7 @@ bool Power_DevRead::NineInsertOne_BreakerOne()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("断路器控制1失败");mLogs->updatePro(str, ret);
+            str = tr("断路器控制1失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -444,7 +445,7 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("插接位2-电流控制L1成功");mLogs->updatePro(str, ret);
+                str = tr("插接位2-电流控制L1成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;}
 
         flag++;
@@ -455,7 +456,7 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位2-电流控制L1失败");mLogs->updatePro(str, ret);
+            str = tr("插接位2-电流控制L1失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -486,7 +487,7 @@ bool Power_DevRead::NineInsertTwo_CtrlTwo()
                 str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 mLogs->updatePro(str, ret); str1 += str;
             }
-            str = tr("插接位2-电流控制L2成功");mLogs->updatePro(str, ret);
+            str = tr("插接位2-电流控制L2成功 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;}
 
         flag++;
@@ -497,7 +498,7 @@ bool Power_DevRead::NineInsertTwo_CtrlTwo()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位2-电流控制L2失败");mLogs->updatePro(str, ret);
+            str = tr("插接位2-电流控制L2失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -528,7 +529,7 @@ bool Power_DevRead::NineInsertTwo_CtrlThree()
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("插接位2-电流控制L3成功");mLogs->updatePro(str, ret);
+                str = tr("插接位2-电流控制L3成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;
             }
         flag++;
@@ -539,7 +540,7 @@ bool Power_DevRead::NineInsertTwo_CtrlThree()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位2-电流控制L3失败");mLogs->updatePro(str, ret);
+            str = tr("插接位2-电流控制L3失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -572,7 +573,7 @@ bool Power_DevRead::NineInsertOne_BreakerTwo()
                 str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 mLogs->updatePro(str, ret); str1 += str;
             }
-            str = tr("断路器控制2成功");mLogs->updatePro(str, ret);
+            str = tr("断路器控制2成功 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
         flag++;
@@ -583,7 +584,7 @@ bool Power_DevRead::NineInsertOne_BreakerTwo()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("断路器控制2失败");mLogs->updatePro(str, ret);
+            str = tr("断路器控制2失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -628,17 +629,17 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("插接位3-电流控制L1成功");mLogs->updatePro(str, ret);
+                str = tr("插接位3-电流控制L1成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;}
         flag++;
-        if(flag >60) {
+        if(flag >80) {
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位3电流控制L1失败");mLogs->updatePro(str, ret);
+            str = tr("插接位3电流控制L1失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -669,18 +670,18 @@ bool Power_DevRead::NineInsertThree_CtrlTwo()
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("插接位3电流控制L2成功");mLogs->updatePro(str, ret);
+                str = tr("插接位3电流控制L2成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;}}
 
         flag++;
-        if(flag >50) {
+        if(flag >80) {
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位3电流控制L2失败");mLogs->updatePro(str, ret);
+            str = tr("插接位3电流控制L2失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -711,18 +712,18 @@ bool Power_DevRead::NineInsertThree_CtrlThree()
                     str = tr("回路%1电流%2A，功率%kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("插接位3电流控制L3成功");mLogs->updatePro(str, ret);
+                str = tr("插接位3电流控制L3成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;}
 
         flag++;
-        if(flag >50) {
+        if(flag >80) {
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位3电流控制L3失败");mLogs->updatePro(str, ret);
+            str = tr("插接位3电流控制L3失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -755,17 +756,17 @@ bool Power_DevRead::NineInsertOne_BreakerThree()
                 str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 mLogs->updatePro(str, ret); str1 += str;
             }
-            str = tr("断路器控制3成功");mLogs->updatePro(str, ret);
+            str = tr("断路器控制3成功 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;}
         flag++;
-        if(flag >50) {
+        if(flag >60) {
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("断路器控制3失败");mLogs->updatePro(str, ret);
+            str = tr("断路器控制3失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -845,7 +846,7 @@ bool Power_DevRead::SixInsertOne_CtrlOne()
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("插接位1-电流控制L1成功");mLogs->updatePro(str, ret);
+                str = tr("插接位1-电流控制L1成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;}
 
         flag++;
@@ -856,7 +857,7 @@ bool Power_DevRead::SixInsertOne_CtrlOne()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位1-电流控制L1失败");mLogs->updatePro(str, ret);
+            str = tr("插接位1-电流控制L1失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -887,7 +888,7 @@ bool Power_DevRead::SixInsertOne_CtrlTwo()
                 str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 mLogs->updatePro(str, ret); str1 += str;
             }
-            str = tr("插接位1-电流控制L2成功");mLogs->updatePro(str, ret);
+            str = tr("插接位1-电流控制L2成功 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
 
@@ -899,7 +900,7 @@ bool Power_DevRead::SixInsertOne_CtrlTwo()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位1-电流控制L2失败");mLogs->updatePro(str, ret);
+            str = tr("插接位1-电流控制L2失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
 
@@ -931,7 +932,7 @@ bool Power_DevRead::SixInsertOne_CtrlThree()
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("插接位1-电流控制L3成功");mLogs->updatePro(str, ret);
+                str = tr("插接位1-电流控制L3成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;
             }
         flag++;
@@ -942,7 +943,7 @@ bool Power_DevRead::SixInsertOne_CtrlThree()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位1-电流控制L3失败");mLogs->updatePro(str, ret);
+            str = tr("插接位1-电流控制L3失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -974,7 +975,7 @@ bool Power_DevRead::SixInsertOne_BreakerOne()
                 str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 mLogs->updatePro(str, ret); str1 += str;
             }
-            str = tr("断路器控制1成功");mLogs->updatePro(str, ret);
+            str = tr("断路器控制1成功 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;}
         flag++;
         if(flag >50) {
@@ -984,7 +985,7 @@ bool Power_DevRead::SixInsertOne_BreakerOne()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("断路器控制1失败");mLogs->updatePro(str, ret);
+            str = tr("断路器控制1失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -1028,7 +1029,7 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("插接位2-电流控制L1成功");mLogs->updatePro(str, ret);
+                str = tr("插接位2-电流控制L1成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;
             }
 
@@ -1040,7 +1041,7 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位2-电流控制L1失败");mLogs->updatePro(str, ret);
+            str = tr("插接位2-电流控制L1失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -1070,7 +1071,7 @@ bool Power_DevRead::SixInsertTwo_CtrlTwo()
                 str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 mLogs->updatePro(str, ret); str1 += str;
             }
-            str = tr("插接位2-电流控制L2成功");mLogs->updatePro(str, ret);
+            str = tr("插接位2-电流控制L2成功 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
 
@@ -1082,7 +1083,7 @@ bool Power_DevRead::SixInsertTwo_CtrlTwo()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位2-电流控制L2失败");mLogs->updatePro(str, ret);
+            str = tr("插接位2-电流控制L2失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -1113,7 +1114,7 @@ bool Power_DevRead::SixInsertTwo_CtrlThree()
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("插接位2-电流控制L3成功");mLogs->updatePro(str, ret);
+                str = tr("插接位2-电流控制L3成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;
             }
 
@@ -1125,7 +1126,7 @@ bool Power_DevRead::SixInsertTwo_CtrlThree()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位2-电流控制L3失败");mLogs->updatePro(str, ret);
+            str = tr("插接位2-电流控制L3失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -1157,7 +1158,7 @@ bool Power_DevRead::SixInsertOne_BreakerTwo()
                 str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 mLogs->updatePro(str, ret); str1 += str;
             }
-            str = tr("断路器控制2成功");mLogs->updatePro(str, ret);
+            str = tr("断路器控制2成功 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;}
         flag++;
         if(flag >50) {
@@ -1167,7 +1168,7 @@ bool Power_DevRead::SixInsertOne_BreakerTwo()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("断路器控制2失败");mLogs->updatePro(str, ret);
+            str = tr("断路器控制2失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -1239,7 +1240,7 @@ bool Power_DevRead::Three_CtrlOne()
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("电流控制L1成功");mLogs->updatePro(str, ret);
+                str = tr("电流控制L1成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;
             }
         flag++;
@@ -1249,7 +1250,7 @@ bool Power_DevRead::Three_CtrlOne()
                 str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 mLogs->updatePro(str, ret); str1 += str;
             }
-            ret = false;
+            ret = false; str = tr("电流控制L1失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -1280,7 +1281,7 @@ bool Power_DevRead::Three_CtrlTwo()
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("电流控制L2成功");mLogs->updatePro(str, ret);
+                str = tr("电流控制L2成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;
             }
         flag++;
@@ -1291,7 +1292,7 @@ bool Power_DevRead::Three_CtrlTwo()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("电流控制L2失败");mLogs->updatePro(str, ret);
+            str = tr("电流控制L2失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -1322,7 +1323,7 @@ bool Power_DevRead::Three_CtrlThree()
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("电流控制L3成功");mLogs->updatePro(str, ret);
+                str = tr("电流控制L3成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;
             }
         flag++;
@@ -1333,7 +1334,7 @@ bool Power_DevRead::Three_CtrlThree()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("电流控制L3失败");mLogs->updatePro(str, ret);
+            str = tr("电流控制L3失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -1359,20 +1360,20 @@ bool Power_DevRead::Three_Breaker()
             ret = true;
             for(int i =0;i<loop;i++)
             {
-                str = tr("A%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 mLogs->updatePro(str, ret); str1 += str;
             }
-            str = tr("断路器控制成功");mLogs->updatePro(str, ret);
+            str = tr("断路器控制成功 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;}
         flag++;
         if(flag >50) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("A%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("断路器控制失败");mLogs->updatePro(str, ret);
+            str = tr("断路器控制失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -1419,7 +1420,7 @@ bool Power_DevRead::Three_One()
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("插接位1-电流控制L1成功");mLogs->updatePro(str, ret);
+                str = tr("插接位1-电流控制L1成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;
             }
 
@@ -1431,7 +1432,7 @@ bool Power_DevRead::Three_One()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位1-电流控制L1失败");mLogs->updatePro(str, ret);
+            str = tr("插接位1-电流控制L1失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -1469,7 +1470,7 @@ bool Power_DevRead::Three_OneBreaker()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("断路器控制1失败");mLogs->updatePro(str, ret);
+            str = tr("断路器控制1失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -1512,7 +1513,7 @@ bool Power_DevRead::Three_Two()
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("插接位2-电流控制L1成功");mLogs->updatePro(str, ret);
+                str = tr("插接位2-电流控制L1成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;
             }
 
@@ -1524,7 +1525,7 @@ bool Power_DevRead::Three_Two()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位2-电流控制L1失败");mLogs->updatePro(str, ret);
+            str = tr("插接位2-电流控制L1失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -1551,7 +1552,7 @@ bool Power_DevRead::Three_TwoBreaker()
                 str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 mLogs->updatePro(str, ret); str1 += str;
             }
-            str = tr("断路器控制2成功");mLogs->updatePro(str, ret);
+            str = tr("断路器控制2成功 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
         flag++;
@@ -1562,7 +1563,7 @@ bool Power_DevRead::Three_TwoBreaker()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("断路器控制2失败");mLogs->updatePro(str, ret);
+            str = tr("断路器控制2失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -1607,7 +1608,7 @@ bool Power_DevRead::Three_Three()
                     str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     mLogs->updatePro(str, ret); str1 += str;
                 }
-                str = tr("插接位3-电流控制L1成功");mLogs->updatePro(str, ret);
+                str = tr("插接位3-电流控制L1成功 ");mLogs->updatePro(str, ret);
                 str += str1; mPro->itemData << str; str1.clear(); break;
             }
 
@@ -1619,7 +1620,7 @@ bool Power_DevRead::Three_Three()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("插接位3-电流控制L1失败");mLogs->updatePro(str, ret);
+            str = tr("插接位3-电流控制L1失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
@@ -1646,7 +1647,7 @@ bool Power_DevRead::Three_ThreeBreaker()
                 str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 mLogs->updatePro(str, ret); str1 += str;
             }
-            str = tr("断路器控制3成功");mLogs->updatePro(str, ret);
+            str = tr("断路器控制3成功 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
         flag++;
@@ -1657,7 +1658,7 @@ bool Power_DevRead::Three_ThreeBreaker()
                 mLogs->updatePro(str, ret); str1 += str;
             }
             ret = false;
-            str = tr("断路器控制3失败");mLogs->updatePro(str, ret);
+            str = tr("断路器控制3失败 ");mLogs->updatePro(str, ret);
             str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }

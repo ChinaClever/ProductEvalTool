@@ -160,7 +160,7 @@ bool Test_safety::testGND( QString & recv)//acw
     int stepTotal = 0;
     item.item = tr("接地测试");
     ret = startTest(item,recv , tr("接地") , GNDFile , stepTotal);
-    delayItem(item, 7*1000);
+    delayItem(item, 6*1000);
 
     for(int i = 0; i < stepTotal ; i++)
     {
@@ -242,7 +242,7 @@ bool Test_safety::testACW(QString & recv)
     int stepTotal = 0;
     item.item = tr("交流耐压测试");
     ret = startTest(item, recv , tr("交流耐压") , ACWFile , stepTotal);
-    delayItem(item, 27*1000);//25
+    delayItem(item, 26*1000);//25
 
     for(int i = 0; i < stepTotal ; i++)
     {

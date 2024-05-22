@@ -331,7 +331,7 @@ void Home_WorkWid::ItemStatus()
     }
     case 2: {mPro->test_step = "电力测试"; mPro->test_item = ui->volBtn->text();
             ui->volLab->setStyleSheet("background-color:yellow;color:rgb(0, 0, 0);");
-            mPro->itemRequest = tr("级联测试：IN/OUT接口正常通讯，电压测试：测试回路电压值为0，待测回路电压值>220V");
+            mPro->itemRequest = tr("级联测试：IN/OUT接口正常通讯；电压测试：测试回路电压值为0，待测回路电压值>220V");
             break;
     }
     case 3: {mPro->test_step = "电力测试";  mPro->test_item = ui->loadBtn->text();

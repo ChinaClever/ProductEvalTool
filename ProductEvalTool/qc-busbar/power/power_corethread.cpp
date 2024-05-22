@@ -216,19 +216,19 @@ void Power_CoreThread::workResult(bool)
     mPacket->updatePro(str, res);
     mPro->loopNum = QString::number(mBusData->box[mItem->addr-1].loopNum);
 
-    mPro->itemData << "回路数量：" + mPro->loopNum;
-    mPro->itemData << "模块序列号：" + mPro->moduleSN;
-    mPro->itemData << "设备类型：" + mPro->productType;
-    mPro->itemData << "告警滤波：" + QString::number(mBusData->box[mItem->addr-1].alarmTime);
-    if(mBusData->box[mItem->addr-1].iOF) mPro->itemData << "断路器IOF触点: 有";
-    else mPro->itemData << "断路器IOF触点: 无";
+    mPro->itemContent << "回路数量：" + mPro->loopNum;
+    mPro->itemContent << "模块序列号：" + mPro->moduleSN;
+    mPro->itemContent << "设备类型：" + mPro->productType;
+    mPro->itemContent << "告警滤波：" + QString::number(mBusData->box[mItem->addr-1].alarmTime);
+    if(mBusData->box[mItem->addr-1].iOF) mPro->itemContent << "断路器IOF触点：有";
+    else mPro->itemContent << "断路器IOF触点：无";
 
     if(mItem->modeId != START_BUSBAR) {
         mPro->phase = QString::number(mBusData->box[mItem->addr-1].phaseFlag);
-        if(mBusData->box[mItem->addr-1].phaseFlag) mPro->itemData << "相数：三相";
-        else mPro->itemData << "相数：单相";
-        if(mBusData->box[mItem->addr-1].iOF) mPro->itemData << "盒子类型: 插接箱";
-        else mPro->itemData << "盒子类型: 测温模块";
+        if(mBusData->box[mItem->addr-1].phaseFlag) mPro->itemContent << "相数：三相";
+        else mPro->itemContent << "相数：单相";
+        if(mBusData->box[mItem->addr-1].boxType) mPro->itemContent << "盒子类型: 测温模块";
+        else mPro->itemContent << "盒子类型：插接箱";
     }
     mLogs->saveLogs();
     if(mPro->online) {
@@ -269,8 +269,9 @@ bool Power_CoreThread::Vol_ctrlOne()
                         mLogs->updatePro(str, ret);
                         str1 += str;
                     }
-                    str = tr("电压控制L2成功"); str1 += str; mPro->itemData << str1;
-                    mLogs->updatePro(str, ret); str1.clear(); break;
+                    str = tr("电压控制L2成功"); mLogs->updatePro(str, ret);
+                    str += str1; mPro->itemData << str;
+                    str1.clear(); break;
                 }
             }else if(loop == 6) {
                 for(int i =0;i<6;i+=3)
@@ -287,7 +288,7 @@ bool Power_CoreThread::Vol_ctrlOne()
                         mLogs->updatePro(str, ret); str1 += str;
                     }
                     str = tr("电压控制L2成功");mLogs->updatePro(str, ret);
-                    str1 += str; mPro->itemData << str1; str1.clear();break;}
+                    str += str1; mPro->itemData << str; str1.clear();break;}
             }else if(loop == 3){
                 a = Obj->vol.value[0];
                 b = Obj->vol.value[1];
@@ -300,7 +301,7 @@ bool Power_CoreThread::Vol_ctrlOne()
                         mLogs->updatePro(str, ret); str1 += str;
                     }
                     str = tr("电压控制L2成功"); mLogs->updatePro(str, ret);
-                    str1 += str; mPro->itemData << str1; str1.clear();break;}
+                    str += str1; mPro->itemData << str; str1.clear();break;}
             }            
         }
         flag++;
@@ -312,7 +313,7 @@ bool Power_CoreThread::Vol_ctrlOne()
             }
             ret = false;
             str = tr("电压控制L2失败"); mLogs->updatePro(str, ret);
-            str1 += str; mPro->itemData << str1; str1.clear(); break;
+            str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
 
@@ -350,7 +351,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
                         mLogs->updatePro(str, ret); str1 += str;
                     }
                     str = tr("电压控制L3成功");mLogs->updatePro(str, ret);
-                    str1 += str; mPro->itemData << str1; str1.clear(); break;}
+                    str += str1; mPro->itemData << str; str1.clear(); break;}
             }else if(loop == 6) {
                 for(int i =0;i<6;i+=3)
                 {
@@ -366,7 +367,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
                         mLogs->updatePro(str, ret); str1 += str;
                     }
                     str = tr("电压控制L3成功");mLogs->updatePro(str, ret);
-                    str1 += str; mPro->itemData << str1; str1.clear(); break;}
+                    str += str1; mPro->itemData << str; str1.clear(); break;}
             }else if(loop == 3){
                 a = Obj->vol.value[0];
                 b = Obj->vol.value[1];
@@ -379,7 +380,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
                         mLogs->updatePro(str, ret); str1 += str;
                     }
                     str = tr("电压控制L3成功");mLogs->updatePro(str, ret);
-                    str1 += str; mPro->itemData << str1; str1.clear(); break;}
+                    str += str1; mPro->itemData << str; str1.clear(); break;}
             }
         }
         flag++;
@@ -391,7 +392,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
             }
             ret = false;
             str = tr("电压控制L3失败");mLogs->updatePro(str, ret);
-            str1 += str; mPro->itemData << str1; str1.clear(); break;
+            str += str1; mPro->itemData << str; str1.clear(); break;
         }
     }
 
@@ -428,7 +429,7 @@ bool Power_CoreThread::stepVolTest()
                 mLogs->updatePro(str, ret);
             }
             ret = false; str = tr("电压控制L1失败");mLogs->updatePro(str, ret);
-            str1 += str; mPro->itemData << str1; str1.clear(); ret = true; break;
+            str += str1; mPro->itemData << str; str1.clear(); ret = true; break;
         }
     }
     if(mPro->stopFlag == 0) {   //失败即停止测试
@@ -480,7 +481,7 @@ void Power_CoreThread::getNumAndIndexSlot(int curnum)
     int num = curnum >= 2 ? curnum : 2;
     bool ret = false;
     mCurBoxNum = num;
-    QString str = tr("设置地址%1成功").arg(num-1);
+    QString str = tr("级联测试成功，设置地址%1成功").arg(num-1);
     if(num > 3){
         ret = true;
         emit TipSig(str);

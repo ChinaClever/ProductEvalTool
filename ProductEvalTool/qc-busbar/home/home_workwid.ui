@@ -410,7 +410,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>电压测试</string>
+     <string>级联+电压测试</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">

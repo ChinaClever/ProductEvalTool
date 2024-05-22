@@ -25,14 +25,19 @@ Json_Pack *Json_Pack::bulid(QObject *parent)
 
 void Json_Pack::head(QJsonObject &obj)
 {
+    QDateTime t = QDateTime::currentDateTime();
+    mPro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
+
     obj.insert("product_sn", mPro->product_sn);
     obj.insert("soft_version", mPro->softwareVersion);
     obj.insert("start_time", mPro->testStartTime);
+    obj.insert("end_time", mPro->testEndTime);
     obj.insert("test_type", "功能测试");
     obj.insert("test_step", mPro->test_step);
     obj.insert("test_item", mPro->test_item);
     obj.insert("test_request", mPro->itemRequest);
     obj.insert("tool_name", "qc-busbar");
+
     int num = mPro->itPass.size();
     mPro->uploadPassResult = 1;
     for(int i=0; i<num; ++i)
@@ -42,9 +47,17 @@ void Json_Pack::head(QJsonObject &obj)
             mPro->uploadPassResult = 0; break;
         }
     }
-    qDebug()<<"mPro->uploadPassResult"<<mPro->uploadPassResult;
     obj.insert("test_result", mPro->uploadPassResult);
-    pduInfo(obj);
+
+    if(mPro->work_mode >=2) {
+        QString str1 = mPro->itemContent.join(";");
+        obj.insert("test_cfg" ,str1);
+    }
+
+    QString str = mPro->itemData.join(";");
+    obj.insert("test_process" ,str);
+
+    // pduInfo(obj);
 }
 
 void Json_Pack::pduInfo(QJsonObject &obj)
@@ -54,8 +67,6 @@ void Json_Pack::pduInfo(QJsonObject &obj)
 
 int Json_Pack::objData(QJsonObject &obj)
 {
-    QJsonArray jsonArray;
-    QJsonObject DataObj;
     int num = mPro->uploadPass.size();
 
     QString str1 = mPro->itemData.join(";");

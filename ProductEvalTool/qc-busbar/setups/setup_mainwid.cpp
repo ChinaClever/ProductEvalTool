@@ -28,7 +28,6 @@ void Setup_MainWid::initFunSlot()
 {
     initPcNum();
     initAddr();
-    initErrData();
     initLogCount();
     if(ui->addrEdit->text().isEmpty()) {
         ui->addrEdit->setText("192.168.1.15");
@@ -171,47 +170,4 @@ void Setup_MainWid::on_verBtn_clicked()
 {
     VersionDlg dlg(this);
     dlg.exec();
-}
-
-
-void Setup_MainWid::updateErrData()
-{
-    sCfgItem *item = mItem;
-    item->err.volErr = ui->volErrBox->value() * 10;
-    item->err.curErr = ui->curErrBox->value() * 10;
-    item->err.powErr = ui->powErrBox->value() * 10;
-    Cfg::bulid()->writeErrData();
-}
-
-void Setup_MainWid::initErrData()
-{
-    sCfgItem *item = mItem;
-    ui->volErrBox->setValue(item->err.volErr / 10.0);
-    ui->curErrBox->setValue(item->err.curErr / 10.0);
-    ui->powErrBox->setValue(item->err.powErr / 10.0);
-}
-
-
-void Setup_MainWid::on_saveBtn_clicked()
-{
-    static int flg = 0;
-    QString str = tr("修改");
-
-    bool ret = usr_land_jur();
-    if(!ret) {
-        MsgBox::critical(this, tr("你无权进行此操作"));
-        return;
-    }
-
-    if(flg++ %2) {
-        ret = false;
-        updateErrData();
-    } else {
-        str = tr("保存");
-    }
-
-    ui->saveBtn->setText(str);
-    ui->volErrBox->setEnabled(ret);
-    ui->curErrBox->setEnabled(ret);
-    ui->powErrBox->setEnabled(ret);
 }

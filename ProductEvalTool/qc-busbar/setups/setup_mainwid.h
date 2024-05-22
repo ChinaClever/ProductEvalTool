@@ -25,8 +25,6 @@ protected:
     void initAddr();
     void writePcNum();
     void writeAddr();
-    void initErrData();
-    void updateErrData();
     void checkPcNum();
     void checkAddr();
 protected slots:
@@ -34,7 +32,6 @@ protected slots:
     void checkPcNumSlot();
     void on_pcBtn_clicked();
     void on_verBtn_clicked();
-    void on_saveBtn_clicked();
 
 private:
     Ui::Setup_MainWid *ui;

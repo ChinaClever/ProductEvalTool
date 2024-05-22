@@ -649,6 +649,7 @@ struct sProgress
     uchar result;    // 最终结果
     QTime startTime;
     QString testStartTime;
+    QString testEndTime;
     QString productType;
     QString moduleSN;
     QString gnd;

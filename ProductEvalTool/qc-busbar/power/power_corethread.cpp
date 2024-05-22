@@ -160,7 +160,7 @@ bool Power_CoreThread::factorySet()
         ret = eleErrRange0(i); if(!ret) res = false;
     }
     QString str = tr("清除电能");
-    if(res) str += tr("成功"); else str += tr("L%1 失败").arg(i);
+    if(res) str += tr("成功"); else str += tr("失败");
     mLogs->updatePro(str, res);
 
     if(mItem->modeId == START_BUSBAR && mItem->ip.addr == SNMP){

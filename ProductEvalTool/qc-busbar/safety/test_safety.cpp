@@ -203,7 +203,7 @@ bool Test_safety::testIR(QString & recv)
     int stepTotal = 0;
     item.item = tr("绝缘测试");
     ret = startTest(item, recv , tr("绝缘") , IRFile , stepTotal);
-    delayItem(item, 10*1000);
+    delayItem(item, 7*1000);
 
     for(int i = 0; i < stepTotal ; i++)
     {

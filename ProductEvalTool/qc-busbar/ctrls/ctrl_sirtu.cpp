@@ -78,12 +78,12 @@ void Ctrl_SiRtu::eleClean()
     if(mItem->modeId == START_BUSBAR){
         for(int i = 0 ; i < START_LINE_NUM ; i++){
             setBusbarStartEle(i+1); // 清除电能
-            mPacket->delay(6);//12
+            mPacket->delay(4);//12
         }
     }else{
         for(int i = 0 ; i < mBusData->box[mItem->addr - 1].loopNum ; i++){
             setBusbarInsertEle(i+1); // 清除电能
-            mPacket->delay(7);
+            mPacket->delay(4);
         }
     }
 }

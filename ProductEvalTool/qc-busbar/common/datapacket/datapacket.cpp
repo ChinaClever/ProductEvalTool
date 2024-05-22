@@ -29,6 +29,7 @@ void sDataPacket::clear(int id)
     pro->step = 0;
     pro->result = 0;
     pro->pass.clear();
+    pro->stepResult.clear();
     pro->itPass.clear();
     pro->item.clear();
     pro->status.clear();
@@ -73,7 +74,6 @@ void sDataPacket::init()
 
 bool sDataPacket::updatePro(const QString &str, bool pass, int sec)
 {
-    pro->num ++;
     pro->pass << pass;
     pro->itPass << pass;
 

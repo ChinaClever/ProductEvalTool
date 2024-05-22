@@ -12,7 +12,7 @@ public:
 
     void saveLogs();
     bool updatePro(const QString &str, bool pass=true, int sec=1);
-    void writeData(const QString &str);
+    void writeData(const QString &str, const QString &str2, bool pass=true);
 protected:
     bool writeLog();
     void writeLogs();

@@ -105,9 +105,11 @@ bool Power_Logs::updatePro(const QString &str, bool pass, int sec)
     return pass;
 }
 
-void Power_Logs::writeData(const QString &str)
+void Power_Logs::writeData(const QString &str1,const QString &str2, bool pass)
 {
     if(mPro->step < Test_End) {
-        mPro->itemData << str;
+        mPro->stepResult << pass;
+        mPro->itemRequest << str1; mPro->itemData << str2;
+
     }
 }

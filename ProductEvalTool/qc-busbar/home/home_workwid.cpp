@@ -321,22 +321,20 @@ void Home_WorkWid::ItemStatus()
     switch (mItem->work_mode) {
     case 0: {mPro->test_step = "安规测试"; mPro->test_item = ui->vol_insulBtn->text();
             ui->acwLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
-            mPro->itemRequest = tr("交流耐压 <5mA，绝缘电阻 >10MΩ");
+            mPro->itemRequest << "交流耐压 <5mA，绝缘电阻 >10MΩ";
             break;
     }
     case 1: {mPro->test_step = "安规测试"; mPro->test_item = ui->groundBtn->text();
             ui->gndLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
-            mPro->itemRequest = tr("接地电阻 <100mΩ");
+            mPro->itemRequest << "接地电阻 <100mΩ";
             break;
     }
     case 2: {mPro->test_step = "电力测试"; mPro->test_item = ui->volBtn->text();
             ui->volLab->setStyleSheet("background-color:yellow;color:rgb(0, 0, 0);");
-            mPro->itemRequest = tr("级联测试：IN/OUT接口正常通讯；电压测试：测试回路电压值为0，待测回路电压值>220V");
             break;
     }
     case 3: {mPro->test_step = "电力测试";  mPro->test_item = ui->loadBtn->text();
             ui->loadLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
-            mPro->itemRequest = tr("断路器：测试回路电压值为0，待测回路电压值>220V；负载测试：测试回路电流值为0、功率值为0，待测回路电流值、功率值不为0");
             break;
     }
     default:

@@ -638,7 +638,7 @@ struct sProgress
 {
     sProgress() {step=0;}
     uchar step; // 步骤
-    QList<bool> pass, itPass;
+    QList<bool> pass, itPass,stepResult;
     QStringList status, item;
 
     int num;
@@ -661,7 +661,7 @@ struct sProgress
     QStringList no, itemName;
     QStringList itemContent;
     QStringList itemData;
-    QString itemRequest;
+    QStringList itemRequest;
     QList<bool> uploadPass;
     uchar uploadPassResult;
     QString product_sn;

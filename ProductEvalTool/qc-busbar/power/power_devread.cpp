@@ -58,7 +58,8 @@ bool Power_DevRead::readData()
 
 bool Power_DevRead::readDev()
 {
-    bool ret = mPacket->delay(2);
+    bool ret = mPacket->delay(4);
+    qDebug()<<"START_BUSBAR"<<mItem->modeId;
     if(ret) {
         if( mItem->modeId == START_BUSBAR ){
             QString str = tr("始端箱串口RTU通讯");

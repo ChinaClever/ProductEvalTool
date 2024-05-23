@@ -11,7 +11,7 @@ class Power_CoreThread : public Power_Object
     Q_OBJECT
 public:
     explicit Power_CoreThread(QObject *parent = nullptr);
-
+    void clearStartEleSlot();
 protected slots:
     void initFunSlot();
 
@@ -24,7 +24,7 @@ private slots:
     void noloadHomeSlot(int ret);
 
 public slots:
-    void clearStartEleSlot();
+//    void clearStartEleSlot();
     void getNumAndIndexSlot(int curnum);
     void getDelaySlot();
 protected:

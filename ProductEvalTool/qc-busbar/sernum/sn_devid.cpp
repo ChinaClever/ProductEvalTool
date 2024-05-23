@@ -22,6 +22,7 @@ Sn_DevId *Sn_DevId::bulid(QObject *parent)
 void Sn_DevId::initReadType(sRtuItem &it)
 {
     it.addr = mItem->addr;
+    qDebug()<<"mItem->addr"<<mItem->addr;
     // it.addr = 2;
     it.fn = 0x03;
     it.reg = 0xA001;

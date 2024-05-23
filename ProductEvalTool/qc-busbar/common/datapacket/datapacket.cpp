@@ -82,12 +82,9 @@ bool sDataPacket::updatePro(const QString &str, bool pass, int sec)
     pro->itemName << str;
     pro->status << str;
 
-//    QString str1 = QString::number(pro->num) + "、"+ str;
-//    pro->itemContent << str1;
-
     if(pass) pass = delay(sec);
     else pro->result = Test_Fail;
-    // if(!pass) BaseLogs::bulid()->appendLogItem(str, pass);
+
     return pass;
 }
 

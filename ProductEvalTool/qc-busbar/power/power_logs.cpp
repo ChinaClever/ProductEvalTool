@@ -77,7 +77,6 @@ bool Power_Logs::writeLog()
         mItem->cnt.err += 1;
         it.passed = tr("失败");
     }
-
     it.memo = mPro->itemData.join("; ");
 
     if(it.QRcode.size()) mLogItems << it;
@@ -98,8 +97,6 @@ bool Power_Logs::updatePro(const QString &str, bool pass, int sec)
 {
     if(mPro->step < Test_End) {
         mPacket->updatePro(str, pass, sec);
-        // if(!pass) appendLogItem(str, pass);
-
     }
 
     return pass;

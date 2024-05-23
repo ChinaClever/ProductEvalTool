@@ -21,7 +21,6 @@ void Home_DataWid::appendItem(sBoxData *box)
     sObjectData *dev = &(box->data);
     initDataWid(header,box->loopNum,"测试数据");
 
-
     if(mCfgm->work_mode == 2) {
         for(int i=0; i<box->loopNum; ++i) {
             QStringList listStr;

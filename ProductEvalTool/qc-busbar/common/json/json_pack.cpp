@@ -139,9 +139,9 @@ void Json_Pack::stephttp_post(const QString &method, const QString &ip,QJsonObje
     QString url = "http://%1:%2/%3";
     http.post(url.arg(ip).arg(port).arg(method))
         .header("content-type", "application/json")
-        .onSuccess([&](QString result) {qDebug()<<"result"<<result; mPro->result = Test_Over; emit httpSig("数据发送成功",true);})
-        .onFailed([&](QString error) {qDebug()<<"error"<<error; mPro->result = Test_Fail; emit httpSig("数据发送失败",true); })
-        .onTimeout([&](QNetworkReply *) {qDebug()<<"http_post timeout"; mPro->result = Test_Fail; emit httpSig("http_post timeout",true); }) // 超时处理
+        .onSuccess([&](QString result) {qDebug()<<"result"<<result; mPro->result = Test_Over;})
+        .onFailed([&](QString error) {qDebug()<<"error"<<error; mPro->result = Test_Fail;})
+        .onTimeout([&](QNetworkReply *) {qDebug()<<"http_post timeout"; mPro->result = Test_Fail;}) // 超时处理
         .timeout(1) // 1s超时
         .block()
         .body(json)

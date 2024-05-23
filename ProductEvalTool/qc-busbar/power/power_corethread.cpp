@@ -207,11 +207,9 @@ void Power_CoreThread::workResult(bool)
     if(mPro->result != Test_Fail) {
         res = true;
         str += tr("通过");
-        mPro->uploadPassResult = 1;
     } else {
         res = false;
         str += tr("失败");
-        mPro->uploadPassResult = 0;
     }
     mPacket->updatePro(str, res);
     mPro->loopNum = QString::number(mBusData->box[mItem->addr-1].loopNum);
@@ -220,6 +218,7 @@ void Power_CoreThread::workResult(bool)
     mPro->itemContent << "模块序列号：" + mPro->moduleSN;
     mPro->itemContent << "设备类型：" + mPro->productType;
     mPro->itemContent << "告警滤波：" + QString::number(mBusData->box[mItem->addr-1].alarmTime);
+
     if(mBusData->box[mItem->addr-1].iOF) mPro->itemContent << "断路器IOF触点：有";
     else mPro->itemContent << "断路器IOF触点：无";
 
@@ -235,8 +234,15 @@ void Power_CoreThread::workResult(bool)
         sleep(1);
         Json_Pack::bulid()->stepData();//全流程才发送记录(http)
     }
-    if(mPro->result == Test_Fail) res = false;
-    else { res = true;}
+    if(mPro->result == Test_Fail) {
+        str = tr("数据发送失败");
+        res = false;
+
+    }else {
+        str = tr("数据发送成功");
+        res = true;
+    }
+    mPacket->updatePro(str, res);
     emit finshSig(res); mPro->step = Test_Over;
 }
 
@@ -266,9 +272,9 @@ bool Power_CoreThread::Vol_ctrlOne()
                     for(int i =0;i<loop;i++)
                     {
                         str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        mLogs->updatePro(str, ret);
                         str1 += str;
                     }
+                    mLogs->updatePro(str1, ret);
                     str2 = tr("回路2、5、8电压值等于0，回路1、3、4、6、7、9电压值各大于220V");
                     str = tr("电压控制L2成功 "); mLogs->updatePro(str, ret);
                     str += str1; mLogs->writeData(str2,str,ret);
@@ -286,8 +292,9 @@ bool Power_CoreThread::Vol_ctrlOne()
                     for(int i =0;i<loop;i++)
                     {
                         str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        mLogs->updatePro(str, ret); str1 += str;
+                        str1 += str;
                     }
+                    mLogs->updatePro(str1, ret);
                     str2 = tr("回路2、5电压值等于0，回路1、3、4、6电压值各大于220V");
                     str = tr("电压控制L2成功 ");mLogs->updatePro(str, ret);
                     str += str1; mLogs->writeData(str2,str,ret); str1.clear();break;}
@@ -300,8 +307,9 @@ bool Power_CoreThread::Vol_ctrlOne()
                     for(int i =0;i<loop;i++)
                     {
                         str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        mLogs->updatePro(str, ret); str1 += str;
+                        str1 += str;
                     }
+                    mLogs->updatePro(str1, ret);
                     str2 = tr("回路2电压值等于0，回路1、3电压值各大于220V");
                     str = tr("电压控制L2成功 "); mLogs->updatePro(str, ret);
                     str += str1; mLogs->writeData(str2,str,ret); str1.clear();break;}
@@ -312,8 +320,9 @@ bool Power_CoreThread::Vol_ctrlOne()
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                mLogs->updatePro(str, ret); str1 += str;
+                str1 += str;
             }
+            mLogs->updatePro(str, ret);
             str2 = tr("不满足测试要求"); ret = false;
             str = tr("电压控制L2失败"); mLogs->updatePro(str, ret);
             str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;
@@ -325,13 +334,11 @@ bool Power_CoreThread::Vol_ctrlOne()
 
 bool Power_CoreThread::Vol_ctrlTwo()
 {
-    bool ret = true;int flag = 0;
+    bool ret = true; int flag = 0; QString str1,str2;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str; QString str1,str2;
 
-    flag = 0;
-    str = tr("打开电压控制L2，关闭电压控制L3");//c1,c2,c3
+    QString str = tr("打开电压控制L2，关闭电压控制L3");//c1,c2,c3
     emit TipSig(str);
     while(1)
     {
@@ -351,11 +358,13 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     for(int i =0;i<loop;i++)
                     {
                         str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        mLogs->updatePro(str, ret); str1 += str;
+                        str1 += str;
                     }
+                    mLogs->updatePro(str, ret);
                     str2 = tr("回路3、6、9电压值等于0，回路1、2、4、5、7、8电压值各大于220V");
                     str = tr("电压控制L3成功 ");mLogs->updatePro(str, ret);
-                    str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;}
+                    str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;
+                }
             }else if(loop == 6) {
                 for(int i =0;i<6;i+=3)
                 {
@@ -368,11 +377,13 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     for(int i =0;i<loop;i++)
                     {
                         str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        mLogs->updatePro(str, ret); str1 += str;
+                        str1 += str;
                     }
+                    mLogs->updatePro(str1, ret);
                     str2 = tr("回路3、6电压值等于0，回路1、2、4、5电压值各大于220V");
                     str = tr("电压控制L3成功 ");mLogs->updatePro(str, ret);
-                    str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;}
+                    str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;
+                }
             }else if(loop == 3){
                 a = Obj->vol.value[0];
                 b = Obj->vol.value[1];
@@ -382,11 +393,13 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     for(int i =0;i<loop;i++)
                     {
                         str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        mLogs->updatePro(str, ret); str1 += str;
+                        str1 += str;
                     }
+                    mLogs->updatePro(str1, ret);
                     str2 = tr("回路3电压值等于0，回路1、2电压值各大于220V");
                     str = tr("电压控制L3成功 ");mLogs->updatePro(str, ret);
-                    str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;}
+                    str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;
+                }
             }
         }
         flag++;
@@ -394,8 +407,9 @@ bool Power_CoreThread::Vol_ctrlTwo()
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                mLogs->updatePro(str, ret); str1 += str;
+                str1 += str;
             }
+            mLogs->updatePro(str1, ret);
             ret = false; str2 = tr("不满足测试要求");
             str = tr("电压控制L3失败");mLogs->updatePro(str, ret);
             str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;
@@ -406,12 +420,12 @@ bool Power_CoreThread::Vol_ctrlTwo()
 }
 bool Power_CoreThread::stepVolTest()
 {
-    bool ret = true;int flag = 0;
+    bool ret = true;int flag = 0; QString str1, str2;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str = tr("关闭电压控制L1"); QString str1, str2;
-
+    QString str = tr("关闭电压控制L1");
     emit TipSig(str); sleep(1);
+
     while(1)
     {
         if(mItem->modeId == START_BUSBAR) {
@@ -426,7 +440,8 @@ bool Power_CoreThread::stepVolTest()
             if(!ret) {
                 str2 = tr("电压控制L1关闭，串口通信异常");
                 str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);
-                mLogs->writeData(str2,str,!ret); str1.clear(); ret = true; break;
+                mLogs->writeData(str2,str,!ret);
+                str1.clear(); ret = true; break;
             }
         }
         flag++;
@@ -434,12 +449,13 @@ bool Power_CoreThread::stepVolTest()
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                str1 += str;
-                mLogs->updatePro(str, !ret);
+                str1 += str;                
             }
+            mLogs->updatePro(str1, !ret); ret = false;
             str2 = tr("电压控制L1断电不成功异常");
-            ret = false; str = tr("电压控制L1失败");mLogs->updatePro(str, ret);
-            str += str1; mLogs->writeData(str2,str,ret); str1.clear(); ret = true; break;
+            str = tr("电压控制L1失败");mLogs->updatePro(str, ret);
+            str += str1; mLogs->writeData(str2,str,ret); str1.clear();
+            ret = true; break;
         }
     }
     if(mPro->stopFlag == 0) {   //失败即停止测试
@@ -473,7 +489,7 @@ void Power_CoreThread::getDelaySlot()
     if(mCurBoxNum == 0){
         str = (tr("始端箱未发出命令"));
     }else if(mCurBoxNum >= 2 && mCurBoxNum <= 3 ){
-        str = tr("设置地址%1失败").arg(mCurBoxNum);
+        str = tr("设置地址失败");
     }
     emit TipSig(str);
     mLogs->updatePro(str, ret);
@@ -507,20 +523,28 @@ void Power_CoreThread::workDown()
     ret = initDev(); if(ret) ret = mRead->readDev();
     if(ret) {
         if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(),"0");
-        else { Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0);} //设置滤波=0
+        else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
+
         if(mCfg->work_mode == 2) {
             QString str = tr("请打开插接箱测试治具电源");
             emit TipSig(str); sleep(15);
-            if(mItem->modeId != START_BUSBAR) mModbus->autoSetAddress();                       //自动分配地址
+
+            if(mItem->modeId != START_BUSBAR)
+                mModbus->autoSetAddress();                       //自动分配地址
+
             str = tr("请关闭插接箱测试治具电源");
             emit TipSig(str); sleep(3);
+
             if(ret) ret = stepVolTest();                     //电压测试
-        }else if(mCfg->work_mode == 3) {                     //负载测试
+
+        }else if(mCfg->work_mode == 3) {
           // if(ret) ret = mSource->read();
           // else mPro->result = Test_Fail;
           // if(ret) ret = checkLoadErrRange();
-          if(ret) ret = stepLoadTest();
-          if(ret) ret = factorySet();
+
+          if(ret) ret = stepLoadTest();                       //负载+断路器测试
+          if(ret) ret = factorySet();                         //清除电能
+
         }
         if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(), "5");
         else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(5);  //设置滤波=5

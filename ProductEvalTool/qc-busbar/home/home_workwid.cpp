@@ -321,12 +321,12 @@ void Home_WorkWid::ItemStatus()
     switch (mItem->work_mode) {
     case 0: {mPro->test_step = "安规测试"; mPro->test_item = ui->vol_insulBtn->text();
             ui->acwLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
-            mPro->itemRequest << "交流耐压 <5mA，绝缘电阻 >10MΩ";
+            mPro->itemRequest = "交流耐压 <5mA，绝缘电阻 >10MΩ";
             break;
     }
     case 1: {mPro->test_step = "安规测试"; mPro->test_item = ui->groundBtn->text();
             ui->gndLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
-            mPro->itemRequest << "接地电阻 <100mΩ";
+            mPro->itemRequest = "接地电阻 <100mΩ";
             break;
     }
     case 2: {mPro->test_step = "电力测试"; mPro->test_item = ui->volBtn->text();

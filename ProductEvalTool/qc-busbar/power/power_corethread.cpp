@@ -233,7 +233,7 @@ void Power_CoreThread::workResult(bool)
     mLogs->saveLogs();
     if(mPro->online) {
         sleep(1);
-        Json_Pack::bulid()->http_post("busbarreport/add",mPro->Service);//全流程才发送记录(http)
+        Json_Pack::bulid()->stepData();//全流程才发送记录(http)
     }
     if(mPro->result == Test_Fail) res = false;
     else { res = true;}
@@ -417,14 +417,14 @@ bool Power_CoreThread::stepVolTest()
         if(mItem->modeId == START_BUSBAR) {
             ret = mRead->checkNet();
             if(!ret) {
-                str2 = tr("网络异常");
+                str2 = tr("电压控制L1关闭，网络异常");
                 str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);
                 mLogs->writeData(str2,str,ret); str1.clear(); ret = true; break;
             }
         }else {
             ret = mRead->readData();
             if(!ret) {
-                str2 = tr("串口通信异常");
+                str2 = tr("电压控制L1关闭，串口通信异常");
                 str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);
                 mLogs->writeData(str2,str,ret); str1.clear(); ret = true; break;
             }
@@ -437,7 +437,7 @@ bool Power_CoreThread::stepVolTest()
                 str1 += str;
                 mLogs->updatePro(str, ret);
             }
-            str2 = tr("L1断电不成功异常");
+            str2 = tr("电压控制L1断电不成功异常");
             ret = false; str = tr("电压控制L1失败");mLogs->updatePro(str, ret);
             str += str1; mLogs->writeData(str2,str,ret); str1.clear(); ret = true; break;
         }
@@ -477,12 +477,12 @@ void Power_CoreThread::getDelaySlot()
     }
     emit TipSig(str);
     mLogs->updatePro(str, ret);
-    mPro->itemData << str;
+
     if(mCurBoxNum == 2) str = tr("插接箱 IN口接错");
     if(mCurBoxNum == 3) str = tr("插接箱 OUT口接错");
     emit TipSig(str);
     mLogs->updatePro(str, ret);
-    mPro->itemData << str;
+    mLogs->writeData("测试插接箱地址设成2",str,ret);
     mCurBoxNum = 0;
 }
 
@@ -496,7 +496,7 @@ void Power_CoreThread::getNumAndIndexSlot(int curnum)
         ret = true;
         emit TipSig(str);
         mLogs->updatePro(str, ret);
-        mPro->itemData << str;
+        mLogs->writeData("测试插接箱地址设成2",str,ret);
     }
 }
 

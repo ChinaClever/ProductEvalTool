@@ -12,7 +12,9 @@ class Json_Pack:public QObject
 public:
     static Json_Pack *bulid(QObject *parent = nullptr);
     void http_post(const QString &method, const QString &ip, int port=8000);
+    void stephttp_post(const QString &method, const QString &ip,QJsonObject &json, int port=8000);
     void getJson(QJsonObject &json, QByteArray &ba);
+    void stepData();
 signals:
     void httpSig(const QString &msg, bool pass);
 protected:

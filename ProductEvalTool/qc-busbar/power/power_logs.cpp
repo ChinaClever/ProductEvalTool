@@ -108,8 +108,9 @@ bool Power_Logs::updatePro(const QString &str, bool pass, int sec)
 void Power_Logs::writeData(const QString &str1,const QString &str2, bool pass)
 {
     if(mPro->step < Test_End) {
+        mPro->testStartTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
         mPro->stepResult << pass;
-        mPro->itemRequest << str1; mPro->itemData << str2;
+        mPro->stepRequest << str1; mPro->itemData << str2;
 
     }
 }

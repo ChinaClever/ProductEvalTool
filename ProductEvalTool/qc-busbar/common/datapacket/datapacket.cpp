@@ -69,6 +69,8 @@ void sDataPacket::init()
     pro->gnd.clear();
     pro->itemData.clear();
     pro->itemRequest.clear();
+    pro->stepRequest.clear();
+    pro->stepResult.clear();
 
 }
 

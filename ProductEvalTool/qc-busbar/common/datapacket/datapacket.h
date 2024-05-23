@@ -661,7 +661,8 @@ struct sProgress
     QStringList no, itemName;
     QStringList itemContent;
     QStringList itemData;
-    QStringList itemRequest;
+    QString itemRequest;
+    QStringList stepRequest;
     QList<bool> uploadPass;
     uchar uploadPassResult;
     QString product_sn;

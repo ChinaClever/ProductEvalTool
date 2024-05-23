@@ -419,14 +419,14 @@ bool Power_CoreThread::stepVolTest()
             if(!ret) {
                 str2 = tr("电压控制L1关闭，网络异常");
                 str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);
-                mLogs->writeData(str2,str,ret); str1.clear(); ret = true; break;
+                mLogs->writeData(str2,str,!ret); str1.clear(); ret = true; break;
             }
         }else {
             ret = mRead->readData();
             if(!ret) {
                 str2 = tr("电压控制L1关闭，串口通信异常");
                 str = tr("电压控制L1成功");mLogs->updatePro(str, !ret);
-                mLogs->writeData(str2,str,ret); str1.clear(); ret = true; break;
+                mLogs->writeData(str2,str,!ret); str1.clear(); ret = true; break;
             }
         }
         flag++;
@@ -435,7 +435,7 @@ bool Power_CoreThread::stepVolTest()
             {
                 str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
-                mLogs->updatePro(str, ret);
+                mLogs->updatePro(str, !ret);
             }
             str2 = tr("电压控制L1断电不成功异常");
             ret = false; str = tr("电压控制L1失败");mLogs->updatePro(str, ret);
@@ -491,7 +491,7 @@ void Power_CoreThread::getNumAndIndexSlot(int curnum)
     int num = curnum >= 2 ? curnum : 2;
     bool ret = false;
     mCurBoxNum = num;
-    QString str = tr("级联测试成功，设置地址%1成功").arg(num-1);
+    QString str = tr("级联测试成功，设置地址成功");
     if(num > 3){
         ret = true;
         emit TipSig(str);

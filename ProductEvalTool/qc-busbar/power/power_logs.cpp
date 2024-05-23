@@ -109,7 +109,11 @@ void Power_Logs::writeData(const QString &str1,const QString &str2, bool pass)
 {
     if(mPro->step < Test_End) {
         mPro->testStartTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
-        mPro->stepResult << pass;
+        if(pass) {
+            mPro->stepResult << "1";
+        } else {
+            mPro->stepResult << "0";
+        }
         mPro->stepRequest << str1; mPro->itemData << str2;
 
     }

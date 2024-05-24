@@ -181,9 +181,8 @@ bool Power_CoreThread::factorySet()
 
 void Power_CoreThread::clearStartEleSlot()
 {
-    qDebug()<<"id"<<mItem->modeId;
     mCtrl->eleClean();
-    qDebug()<<"id-"<<mItem->modeId;
+
     return;
 }
 

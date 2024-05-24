@@ -27,6 +27,7 @@ bool cm_pingNet(const QString& ip)
     }else {
         bPingSuccess = false;
     }
+    pingProcess.close();
 
     return bPingSuccess;
 }

@@ -433,7 +433,7 @@ void Home_WorkWid::on_loadBtn_clicked()
 
 void Home_WorkWid::on_clearBtn_clicked()
 {
-    clearStartEleSig();
+    mPowThread->clearStartEleSlot();
 }
 
 void Home_WorkWid::on_codeEit_textChanged(const QString &arg1)
@@ -467,5 +467,6 @@ void Home_WorkWid::on_comBox_currentIndexChanged(int index)
 void Home_WorkWid::initTypeComboBox()
 {
     int index = mCfgm->modeId;
+    qDebug()<<"mCfgm->modeId"<<mCfgm->modeId;
     ui->comBox->setCurrentIndex(index);
 }

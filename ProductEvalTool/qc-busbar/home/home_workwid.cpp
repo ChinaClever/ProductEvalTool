@@ -17,6 +17,7 @@ Home_WorkWid::Home_WorkWid(QWidget *parent) :
     initWid();
     initLayout();
     initTypeComboBox();
+    ui->clearBtn->hide();
     QTimer::singleShot(5*1000,this,SLOT(PingSlot())); //延时初始化
 }
 

@@ -83,7 +83,7 @@ void Ctrl_SiRtu::eleClean()
     }else{
         for(int i = 0 ; i < mBusData->box[mItem->addr - 1].loopNum ; i++){
             setBusbarInsertEle(i+1); // 清除电能
-            mPacket->delay(2);
+            mPacket->delay(4);
         }
     }
 }
@@ -117,7 +117,7 @@ bool Ctrl_SiRtu::sentRtuCmd(ushort reg, ushort value, uchar fn)
 
     for(int i=0; i<3; ++i) {
         ret = mModbus->write(it);
-        if(ret) break; else sDataPacket::bulid()->delay(1+i);
+        if(ret) break; else sDataPacket::bulid()->delay(3+i);
     }
 
     return ret;

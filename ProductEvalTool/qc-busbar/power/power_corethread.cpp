@@ -181,20 +181,9 @@ bool Power_CoreThread::factorySet()
 
 void Power_CoreThread::clearStartEleSlot()
 {
+    qDebug()<<"id"<<mItem->modeId;
     mCtrl->eleClean();
-    bool ret = true , res = false;
-    ret = mRead->readDevData();
-
-    int i = 0;
-    for(; i<mBusData->box[mItem->addr-1].loopNum; ++i) {
-        ret = eleErrRange0(i); if(ret) res = true;
-    }
-    QString str = tr("清除电能");
-    if(res) str += tr("成功"); else str += tr("L%1 失败").arg(i);
-    mPro->step = Test_Over;
-    mLogs->updatePro(str, res);
-    emit TipSig(str);
-
+    qDebug()<<"id-"<<mItem->modeId;
     return;
 }
 

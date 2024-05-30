@@ -112,21 +112,34 @@ void Json_Pack::stepData()
     obj.insert("soft_version", mPro->softwareVersion);
     obj.insert("start_time", mPro->testStartTime);
     obj.insert("end_time", mPro->testEndTime);
-    // obj.insert("test_type", "功能测试");
-    obj.insert("test_step", mPro->test_step);
-    obj.insert("test_item", mPro->test_item);
+    obj.insert("test_type", "功能测试");
+
     obj.insert("tool_name", "qc-busbar");
     if(mPro->work_mode >=2) {
         QString str1 = mPro->itemContent.join(";");
         obj.insert("test_cfg" ,str1);
     }
     int num = mPro->stepResult.size();
+    QString str;
     for(int i=0; i<num; ++i)
     {
-        if(mPro->itemData.at(i).contains("经人工"))
-            obj.insert("test_type", "人工测试");
-        else obj.insert("test_type", "功能测试");
+        if(mPro->itemData.at(i).contains("界面"))
+        {
+            mPro->test_step= "人工测试";
+            mPro->test_item = "表的显示屏";
+        } else if(mPro->itemData.at(i).contains("按键")) {
+            mPro->test_step= "人工测试";
+            mPro->test_item = "表的按键";
+        } else if(mPro->itemData.at(i).contains("告警")) {
+            mPro->test_step= "人工测试";
+            mPro->test_item = "预警、告警";
+        } else if(mPro->itemData.at(i).contains("极性")) {
+            mPro->test_step= "人工测试";
+            mPro->test_item = "极性测试";
+        }
 
+        obj.insert("test_item", mPro->test_item);
+        obj.insert("test_step", mPro->test_step);
         obj.insert("test_process" ,mPro->itemData.at(i));
         obj.insert("test_result" ,mPro->stepResult.at(i));
         obj.insert("test_request" ,mPro->stepRequest.at(i));

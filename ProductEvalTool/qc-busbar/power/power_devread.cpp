@@ -58,8 +58,7 @@ bool Power_DevRead::readData()
 
 bool Power_DevRead::readDev()
 {
-    bool ret = mPacket->delay(4);
-    qDebug()<<"START_BUSBAR"<<mItem->modeId;
+    bool ret = mPacket->delay(2);
     if(ret) {
         if( mItem->modeId == START_BUSBAR ){
             QString str = tr("始端箱串口RTU通讯");
@@ -929,7 +928,7 @@ bool Power_DevRead::SixInsertOne_CtrlTwo()
             str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;
         }
         flag++;
-        if(flag >50) {
+        if(flag >60) {
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
@@ -975,7 +974,7 @@ bool Power_DevRead::SixInsertOne_CtrlThree()
             }
         }
         flag++;
-        if(flag >50) {
+        if(flag >60) {
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
@@ -1122,7 +1121,7 @@ bool Power_DevRead::SixInsertTwo_CtrlTwo()
             str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;
         }
         flag++;
-        if(flag >50) {
+        if(flag >60) {
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
@@ -1167,7 +1166,7 @@ bool Power_DevRead::SixInsertTwo_CtrlThree()
             }
         }
         flag++;
-        if(flag >50) {
+        if(flag >60) {
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);

@@ -112,10 +112,13 @@ void Power_CoreThread::InsertErrRange()   //比较基本配置信息
     expect = mItem->si.si_filter;
     if(curValue == expect) ret = true;
     str = tr("插接箱过滤次数实际值：%1 , 期待值：%2！").arg(curValue).arg(expect);
-    mLogs->updatePro(str,ret);ret = false;
+    mLogs->updatePro(str,ret);
     if(!ret) {
-        Ctrl_SiRtu::bulid()->setBusbarInsertFilter(expect);
+        bool res = Ctrl_SiRtu::bulid()->setBusbarInsertFilter(expect);
+        str = tr("插接箱过滤次数设置成功");
+        mLogs->updatePro(str,res);
     }
+    ret = false;
 
     curValue = b->iOF;
     expect = mItem->si.si_iOF;
@@ -317,29 +320,37 @@ void Power_CoreThread::workResult(bool)
     //     Json_Pack::bulid()->stepData();//全流程才发送记录(http)
     // }
 
-    while(1)
-    {
-        // qDebug()<<"JudgSig"<<mPro->issure;
-        msleep(500);
-        if(mPro->issure)
+    if(mCfg->work_mode == 3){
+        while(1)
         {
-            mLogs->saveLogs();
-            if(mPro->online) {
-                // sleep(1);
-                Json_Pack::bulid()->stepData();//全流程才发送记录(http)
+            // qDebug()<<"JudgSig"<<mPro->issure;
+            msleep(500);
+            if(mPro->issure)
+            {
+                break;
+
             }
-            break;
         }
     }
 
-    if(mPro->result == Test_Fail) {
-        str = tr("数据发送失败");
-        res = false;
-    }else {
-        str = tr("数据发送成功");
-        res = true;
+    mLogs->saveLogs();
+    if(mPro->online) {
+        // sleep(1);
+        Json_Pack::bulid()->stepData();//全流程才发送记录(http)
+
     }
-    mPacket->updatePro(str, res);
+
+    if(mPro->online) {
+        if(mPro->result == Test_Fail) {
+            str = tr("数据发送失败");
+            res = false;
+        }else {
+            str = tr("数据发送成功");
+            res = true;
+        }
+        mPacket->updatePro(str, res);
+    }
+
     emit finshSig(res); mPro->step = Test_Over;
 }
 
@@ -469,7 +480,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     b += Obj->vol.value[1+i];
                     c += Obj->vol.value[2+i];
                 }
-                if((!c)&&(a> 4400)&&(c >4400)) {
+                if((!c)&&(a> 4400)&&(b>4400)) {
                     ret = true;
                     for(int i =0;i<loop;i++)
                     {
@@ -500,7 +511,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
             }
         }
         flag++;
-        if(flag >40) {
+        if(flag >60) {
             for(int i =0;i<loop;i++)
             {
                 str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
@@ -638,7 +649,6 @@ void Power_CoreThread::workDown()
           // if(ret) ret = mSource->read();
           // else mPro->result = Test_Fail;
           // if(ret) ret = checkLoadErrRange();
-
            if(ret) ret = stepLoadTest();                       //负载+断路器测试
            BaseErrRange();                                     //对比始端箱/插接箱基本信息
            if(ret) ret = factorySet();                       //清除电能

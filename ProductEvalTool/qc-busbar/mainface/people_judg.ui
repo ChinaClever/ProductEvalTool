@@ -26,6 +26,7 @@
     <font>
      <family>微软雅黑</family>
      <pointsize>16</pointsize>
+     <weight>75</weight>
      <bold>true</bold>
     </font>
    </property>
@@ -46,6 +47,7 @@
     <font>
      <family>微软雅黑</family>
      <pointsize>-1</pointsize>
+     <weight>50</weight>
      <italic>false</italic>
      <bold>false</bold>
     </font>
@@ -57,7 +59,7 @@
     <string notr="true">QCheckBox{spacing: 130px;font: 18px;}</string>
    </property>
    <property name="text">
-    <string notr="true">1、表的显示屏界面是否显示完整</string>
+    <string notr="true">表的显示屏界面是否显示完整</string>
    </property>
    <property name="checked">
     <bool>true</bool>
@@ -88,6 +90,7 @@
     <font>
      <family>微软雅黑</family>
      <pointsize>-1</pointsize>
+     <weight>50</weight>
      <italic>false</italic>
      <bold>false</bold>
     </font>
@@ -99,7 +102,7 @@
     <string notr="true">QCheckBox{spacing: 180px;font: 18px;}</string>
    </property>
    <property name="text">
-    <string notr="true">2、表的按键是否功能无误 </string>
+    <string notr="true">表的按键是否功能无误 </string>
    </property>
    <property name="checked">
     <bool>true</bool>
@@ -118,6 +121,7 @@
     <font>
      <family>微软雅黑</family>
      <pointsize>-1</pointsize>
+     <weight>50</weight>
      <italic>false</italic>
      <bold>false</bold>
     </font>
@@ -132,7 +136,7 @@
     <string notr="true">QCheckBox{spacing: 125px;font: 18px;}</string>
    </property>
    <property name="text">
-    <string>3、表的预警、告警状态是否无误 </string>
+    <string>表的预警、告警状态是否无误 </string>
    </property>
    <property name="checked">
     <bool>true</bool>
@@ -151,6 +155,7 @@
     <font>
      <family>微软雅黑</family>
      <pointsize>-1</pointsize>
+     <weight>50</weight>
      <italic>false</italic>
      <bold>false</bold>
     </font>
@@ -162,7 +167,7 @@
     <string notr="true">QCheckBox{spacing: 220px;font: 18px;}</string>
    </property>
    <property name="text">
-    <string>4、极性测试是否通过</string>
+    <string>极性测试是否通过</string>
    </property>
    <property name="checked">
     <bool>true</bool>

@@ -55,6 +55,8 @@ void Setting::updateType()
     dv->si_buzzer = ui->buzzerBox_2->currentIndex();
     dv->si_filter = ui->filterspinBox_2->value();
     dv->si_iOF = ui->iOFBox_2->currentIndex();
+    qDebug()<<dv->si_buzzer<<dv->si_filter<<dv->si_iOF;
+    qDebug()<<ui->buzzerBox_2->currentIndex()<<ui->filterspinBox_2->value()<<ui->iOFBox_2->currentIndex();
 }
 
 bool Setting::dataSave()
@@ -67,7 +69,8 @@ bool Setting::dataSave()
     return ret;
 }
 
-void Setting::saveErrSlot()
+void Setting::
+saveErrSlot()
 {
     mCnt = 1;
     enabledSlot(true);
@@ -76,7 +79,6 @@ void Setting::saveErrSlot()
 
 void Setting::enabledSlot(bool en)
 {
-    if(mItem->modeId != START_BUSBAR) return;
     ui->groupBox2->setEnabled(en);
     ui->groupBox3->setEnabled(en);
     if(!en) {

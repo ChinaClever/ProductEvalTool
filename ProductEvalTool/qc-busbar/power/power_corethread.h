@@ -4,7 +4,7 @@
 #include "power_devread.h"
 #include "json_pack.h"
 #include "testconfig.h"
-
+#include "people_judg.h"
 
 class Power_CoreThread : public Power_Object
 {
@@ -19,7 +19,7 @@ signals:
     void noLoadSig();
     void TipSig(QString str);
     void finshSig(bool ret);
-
+    void JudgSig();
 private slots:
     void noloadHomeSlot(int ret);
 
@@ -33,6 +33,9 @@ protected:
 
     bool initDev();
     bool hubPort();
+    void StartErrRange();
+    void InsertErrRange();
+    void BaseErrRange();
     bool eleErrRange(int i);
     bool eleErrRange0(int i);
     bool envErrRange();
@@ -80,6 +83,7 @@ private:
     sTestConfigItem  *mCfg;
     RtuRw *mModbus;
     Dev_Source *mSource;
+    People_judg *mJudg;
 };
 
 #endif // POWER_CORETHREAD_H

@@ -15,6 +15,7 @@ Cfg::Cfg()
     initErrData();
     initCfgDev();
     initCurrentNum();
+    initJudgItem();
 }
 
 Cfg *Cfg::bulid()
@@ -94,41 +95,19 @@ void Cfg::initCfgDev()
 
 
     QString g = "BusbarInsertCfg";
-    item->si.si_baud = read("si_baud", 3, g).toInt();
     item->si.si_iOF = read("si_iOF", 0, g).toInt();
     item->si.si_buzzer = read("si_buzzer", 0, g).toInt();
-    item->si.si_filter = read("si_filter", 5, g).toInt();
-    item->si.si_version = read("si_version", 100, g).toInt();
-    item->si.si_phaseflag = read("si_phaseflag", 0, g).toInt();
+    item->si.si_filter = read("si_filter", 5, g).toInt();   
     initSiData(g);
 
     g = "BusbarStartCfg";
-    item->ip.ip_curtype = read("ip_curtype", 2 , g).toInt();
     item->ip.ip_buzzer = read("ip_buzzer", 0 , g).toInt();
     item->ip.ip_filter = read("ip_filter", 5 , g).toInt();
-
-    item->ip.ip_mode = read("ip_mode", 1 , g).toInt();
-    item->ip.ip_num = read("ip_num", 6 , g).toInt();
     item->ip.ip_ISD = read("ip_ISD", 0 , g).toInt();
     item->ip.ip_iOF = read("ip_iOF", 0 , g).toInt();
-    item->ip.ip_shunt = read("ip_shunt", 0 , g).toInt();
-    item->ip.ip_residual = read("ip_residual", 0 , g).toInt();
+    item->ip.ip_shunt = read("ip_shunt", 0 , g).toInt();  
     item->ip.ip_lightning = read("ip_lightning", 0 , g).toInt();
-    item->ip.version = read("ip_version", 200 , g).toInt();
     initIpData(g);
-
-    g = "BusbarEnvCfg";
-    item->si.tem_buzzer = read("tem_buzzer", 0 , g).toInt();
-    item->si.tem_filter = read("tem_filter", 5 , g).toInt();
-    item->si.tem_version = read("tem_version", 100 , g).toInt();
-    item->si.temMin[0] = read("temMin_1", 0 , g).toDouble();
-    item->si.temMin[1] = read("temMin_2", 0 , g).toDouble();
-    item->si.temMin[2] = read("temMin_3", 0 , g).toDouble();
-    item->si.temMin[3] = read("temMin_4", 0 , g).toDouble();
-    item->si.temMax[0] = read("temMax_1", 0 , g).toDouble();
-    item->si.temMax[1] = read("temMax_2", 0 , g).toDouble();
-    item->si.temMax[2] = read("temMax_3", 0 , g).toDouble();
-    item->si.temMax[3] = read("temMax_4", 0 , g).toDouble();
 }
 
 void Cfg::writeCfgDev()
@@ -137,44 +116,20 @@ void Cfg::writeCfgDev()
     write("modeId", item->modeId, "BusbarSys");
     write("user", item->user, "BusbarUser");
 
-    if(item->modeId == START_BUSBAR){
-        QString g = "BusbarStartCfg";
-        write("ip_curtype", item->ip.ip_curtype, g);
-        write("ip_buzzer", item->ip.ip_buzzer, g);
-        write("ip_filter", item->ip.ip_filter, g);
-        write("ip_mode", item->ip.ip_mode, g);
-        write("ip_num", item->ip.ip_num, g);
-        write("ip_ISD", item->ip.ip_ISD, g);
-        write("ip_iOF", item->ip.ip_iOF, g);
-        write("ip_shunt", item->ip.ip_shunt, g);
-        write("ip_residual", item->ip.ip_residual, g);
-        write("ip_lightning", item->ip.ip_lightning, g);
-        write("ip_version", item->ip.version, g);
-        writeIpData(g);
-    }else if(item->modeId == INSERT_BUSBAR){
-        QString g = "BusbarInsertCfg";
-        write("si_baud", item->si.si_baud, g);
-        write("si_buzzer", item->si.si_buzzer, g);
-        write("si_filter", item->si.si_filter, g);
-        write("si_iOF", item->si.si_iOF, g);
-        write("si_version", item->si.si_version, g);
-        write("si_phaseflag", item->si.si_phaseflag, g);
-        writeSiData(g);
-    }else if(item->modeId == TEMPER_BUSBAR){
-        QString g = "BusbarEnvCfg";
-        //温度阈值
-        write("tem_buzzer", item->si.tem_buzzer, g);
-        write("tem_filter", item->si.tem_filter, g);
-        write("tem_version", item->si.tem_version, g);
-        write("temMin_1", item->si.temMin[0], g);
-        write("temMin_2", item->si.temMin[1], g);
-        write("temMin_3", item->si.temMin[2], g);
-        write("temMin_4", item->si.temMin[3], g);
-        write("temMax_1", item->si.temMax[0], g);
-        write("temMax_2", item->si.temMax[1], g);
-        write("temMax_3", item->si.temMax[2], g);
-        write("temMax_4", item->si.temMax[3], g);
-    }
+    QString g = "BusbarStartCfg";
+    write("ip_buzzer", item->ip.ip_buzzer, g);
+    write("ip_filter", item->ip.ip_filter, g);
+    write("ip_ISD", item->ip.ip_ISD, g);
+    write("ip_iOF", item->ip.ip_iOF, g);
+    write("ip_shunt", item->ip.ip_shunt, g);
+    write("ip_lightning", item->ip.ip_lightning, g);
+    writeIpData(g);
+
+    QString q = "BusbarInsertCfg";
+    write("si_buzzer", item->si.si_buzzer, q);
+    write("si_filter", item->si.si_filter, q);
+    write("si_iOF", item->si.si_iOF, q);
+    writeSiData(q);
 }
 
 void Cfg::writeIpData(const QString &g)
@@ -353,4 +308,18 @@ void Cfg::initCurrentNum()
         int value = read("num", 0,"Date").toInt();
         item->currentNum = value;
     }
+}
+
+void Cfg::initJudgItem()
+{
+    QString g = "BusbarPeopleTest";
+    item->supCheck1 = read("sup_check1", "", g).toString();
+    item->supCheck2 = read("sup_check2", "", g).toString();
+}
+
+void Cfg::writeJudgItem()
+{
+    QString g = "BusbarPeopleTest";
+    write("sup_check1", item->supCheck1, g);
+    write("sup_check2", item->supCheck2, g);
 }

@@ -6,6 +6,7 @@
 #include "logmainwid.h"
 #include "setup_mainwid.h"
 #include "home_mainwid.h"
+#include "setting.h"
 // #include "set_mainwid.h"
 // #include "test_setting.h"
 
@@ -37,5 +38,6 @@ private:
     Home_MainWid *mHomeWid;
     // Set_MainWid *mSet;
     // Test_setting *mTestSet;
+    Setting *mSetting;
 };
 #endif // MAINWINDOW_H

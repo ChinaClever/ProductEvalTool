@@ -71,6 +71,7 @@ void sDataPacket::init()
     pro->itemRequest.clear();
     pro->stepRequest.clear();
     pro->stepResult.clear();
+    pro->issure = 0;
 
 }
 

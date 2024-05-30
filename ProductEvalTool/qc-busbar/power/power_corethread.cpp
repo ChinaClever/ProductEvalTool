@@ -20,6 +20,7 @@ void Power_CoreThread::initFunSlot()
     Printer_BarTender::bulid(this);
     mSource = Dev_Source::bulid(this);
     mCfg = TestConfig::bulid()->item;
+
     mModbus = Rtu_Modbus::bulid(this)->get(2);
     connect(mModbus,&RtuRw::sendNumAndIndexSig, this, &Power_CoreThread::getNumAndIndexSlot);
     connect(mModbus,&RtuRw::sendDelaySig, this, &Power_CoreThread::getDelaySlot);
@@ -51,6 +52,87 @@ bool Power_CoreThread::initDev()
     return ret;
 }
 
+void Power_CoreThread::StartErrRange()
+{
+    bool ret = false; QString str ;
+    sBoxData *b = &(mBusData->box[mItem->addr - 1]);
+
+    int curValue = b->buzzerStatus;
+    int expect = mItem->ip.ip_buzzer;
+    if(curValue == expect) ret = true;
+    str = tr("始端箱蜂鸣器实际值：%1 , 期待值：%2！").arg(curValue?tr("关闭"):tr("开启")).arg(expect?tr("关闭"):tr("开启"));
+    mLogs->updatePro(str,ret);ret = false;
+
+    curValue = b->alarmTime;
+    expect = mItem->ip.ip_filter;
+    if(curValue == expect) ret = true;
+    str = tr("始端箱过滤次数实际值：%1 , 期待值：%2！").arg(curValue).arg(expect);
+    mLogs->updatePro(str,ret);ret = false;
+    if(!ret) {
+        mRead->SetInfo(mRead->getFilterOid(),QString::number(expect));
+    }
+
+    curValue = b->lightning;
+    expect = mItem->ip.ip_lightning;
+    if(curValue == expect) ret = true;
+    str = tr("始端箱防雷模块实际值：%1 , 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
+    mLogs->updatePro(str,ret);ret = false;
+
+    curValue = b->iOF;
+    expect = mItem->ip.ip_iOF;
+    if(curValue == expect) ret = true;
+    str = tr("始端箱iOF辅助触点实际值：%1 , 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
+    mLogs->updatePro(str,ret);ret = false;
+
+    curValue = b->isd;
+    expect = mItem->ip.ip_ISD;
+    if(curValue == expect) ret = true;
+    str = tr("始端箱ISD报警触点实际值：%1 , 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
+    mLogs->updatePro(str,ret);ret = false;
+
+    curValue = b->shuntRelease;
+    expect = mItem->ip.ip_shunt;
+    if(curValue == expect) ret = true;
+    str = tr("始端箱分励脱扣实际值：%1 , 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
+    mLogs->updatePro(str,ret);ret = false;
+}
+
+void Power_CoreThread::InsertErrRange()   //比较基本配置信息
+{
+    bool ret = false; QString str;
+    sBoxData *b = &(mBusData->box[mItem->addr - 1]);
+
+    int curValue = b->buzzerStatus;
+    int expect = mItem->si.si_buzzer;
+    if(curValue == expect) ret = true;
+    str = tr("插接箱蜂鸣器实际值：%1 , 期待值：%2！").arg(curValue?tr("关闭"):tr("开启")).arg(expect?tr("关闭"):tr("开启"));
+    mLogs->updatePro(str,ret);ret = false;
+
+    curValue = b->alarmTime;
+    expect = mItem->si.si_filter;
+    if(curValue == expect) ret = true;
+    str = tr("插接箱过滤次数实际值：%1 , 期待值：%2！").arg(curValue).arg(expect);
+    mLogs->updatePro(str,ret);ret = false;
+    if(!ret) {
+        Ctrl_SiRtu::bulid()->setBusbarInsertFilter(expect);
+    }
+
+    curValue = b->iOF;
+    expect = mItem->si.si_iOF;
+    if(curValue == expect) ret = true;
+    str = tr("插接箱iOF辅助触点实际值：%1 , 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
+    mLogs->updatePro(str,ret);ret = false;
+}
+
+void Power_CoreThread::BaseErrRange()   //比较基本配置信息
+{
+    if(mItem->modeId == START_BUSBAR) {
+        StartErrRange();
+    } else {
+        InsertErrRange();
+    }
+}
+
 bool Power_CoreThread::eleErrRange(int i)
 {
     bool ret = mItem->eleCheck;
@@ -74,7 +156,6 @@ bool Power_CoreThread::eleErrRange0(int i)
     return mLogs->updatePro(str, ret);
 }
 
-
 bool Power_CoreThread::envErrRange()
 {
     bool ret = true;
@@ -93,8 +174,6 @@ bool Power_CoreThread::envErrRange()
 
     return ret;
 }
-
-
 
 bool Power_CoreThread::volLoadErrRange(int i)
 {
@@ -205,27 +284,57 @@ void Power_CoreThread::workResult(bool)
     mPro->itemContent << "回路数量：" + mPro->loopNum;
     mPro->itemContent << "模块序列号：" + mPro->moduleSN;
     mPro->itemContent << "设备类型：" + mPro->productType;
-    mPro->itemContent << "告警滤波：" + QString::number(mBusData->box[mItem->addr-1].alarmTime);
+    mPro->itemContent << "告警滤波次数：" + QString::number(mBusData->box[mItem->addr-1].alarmTime);
 
-    if(mBusData->box[mItem->addr-1].iOF) mPro->itemContent << "断路器IOF触点：有";
+    if(mBusData->box[mItem->addr-1].buzzerStatus) mPro->itemContent << "蜂鸣器：关闭";
+    else mPro->itemContent << "蜂鸣器：开启";
+
+    if(mBusData->box[mItem->addr-1].iOF) mPro->itemContent << "断路器IOF触点：配有";
     else mPro->itemContent << "断路器IOF触点：无";
 
     if(mItem->modeId == INSERT_BUSBAR) {
         mPro->phase = QString::number(mBusData->box[mItem->addr-1].phaseFlag);
         if(mBusData->box[mItem->addr-1].phaseFlag) mPro->itemContent << "相数：三相";
         else mPro->itemContent << "相数：单相";
+
+    }
+
+    if(mItem->modeId == START_BUSBAR) {
+        if(mBusData->box[mItem->addr-1].shuntRelease) mPro->itemContent << "分励脱扣器：配有";
+        else mPro->itemContent << "分励脱扣器：无";
+        if(mBusData->box[mItem->addr-1].lightning) mPro->itemContent << "防雷模块：配有";
+        else mPro->itemContent << "防雷模块：无";
+        if(mBusData->box[mItem->addr-1].isd) mPro->itemContent << "ISD报警触点：配有";
+        else mPro->itemContent << "ISD报警触点：无";
+    } else {
         if(mBusData->box[mItem->addr-1].boxType) mPro->itemContent << "盒子类型: 测温模块";
         else mPro->itemContent << "盒子类型：插接箱";
     }
-    mLogs->saveLogs();
-    if(mPro->online) {
-        sleep(1);
-        Json_Pack::bulid()->stepData();//全流程才发送记录(http)
+
+    // mLogs->saveLogs();
+    // if(mPro->online) {
+    //     sleep(1);
+    //     Json_Pack::bulid()->stepData();//全流程才发送记录(http)
+    // }
+
+    while(1)
+    {
+        // qDebug()<<"JudgSig"<<mPro->issure;
+        msleep(500);
+        if(mPro->issure)
+        {
+            mLogs->saveLogs();
+            if(mPro->online) {
+                // sleep(1);
+                Json_Pack::bulid()->stepData();//全流程才发送记录(http)
+            }
+            break;
+        }
     }
+
     if(mPro->result == Test_Fail) {
         str = tr("数据发送失败");
         res = false;
-
     }else {
         str = tr("数据发送成功");
         res = true;
@@ -530,15 +639,15 @@ void Power_CoreThread::workDown()
           // else mPro->result = Test_Fail;
           // if(ret) ret = checkLoadErrRange();
 
-          if(ret) ret = stepLoadTest();                       //负载+断路器测试
-          if(ret) ret = factorySet();                         //清除电能
-
+           if(ret) ret = stepLoadTest();                       //负载+断路器测试
+           BaseErrRange();                                     //对比始端箱/插接箱基本信息
+           if(ret) ret = factorySet();                       //清除电能
+           emit JudgSig();
         }
-        if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(), "5");
-        else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(5);  //设置滤波=5
-
     }
+
     if(!ret) mPro->result = Test_Fail;
+
     workResult(ret);
 }
 

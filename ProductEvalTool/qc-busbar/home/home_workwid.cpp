@@ -6,18 +6,18 @@
 #include "home_workwid.h"
 #include "ui_home_workwid.h"
 
-
-
 Home_WorkWid::Home_WorkWid(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Home_WorkWid)
 {
     ui->setupUi(this);
     mId = 1;
+
     initWid();
     initLayout();
     initTypeComboBox();
     ui->clearBtn->hide();
+
     QTimer::singleShot(5*1000,this,SLOT(PingSlot())); //延时初始化
 }
 
@@ -37,6 +37,8 @@ void Home_WorkWid::initWid()
     mPro->step = Test_End;
     mCfgm->online = false;
 
+    mJudg = new People_judg(this);
+
     mVolInsul = new Face_Volinsul(ui->stackedWid);
     ui->stackedWid->addWidget(mVolInsul);
     connect(mVolInsul, &Face_Volinsul::StatusSig, this, &Home_WorkWid::StatusSlot);
@@ -55,6 +57,7 @@ void Home_WorkWid::initWid()
     connect(this , SIGNAL(clearStartEleSig()), mPowThread, SLOT(clearStartEleSlot()));
     connect(mPowThread,&Power_CoreThread::finshSig, this, &Home_WorkWid::StatusSlot);
     connect(mPowThread, &Power_CoreThread::TipSig , mPower, &Face_Power::TextSlot);
+    connect(mPowThread,&Power_CoreThread::JudgSig, this, &Home_WorkWid::JudgSlots);
 
     mPowDev = Power_DevRead::bulid(this);
     connect(mPowDev, &Power_DevRead::StepSig , mPower, &Face_Power::TextSlot);
@@ -421,6 +424,10 @@ void Home_WorkWid::on_loadBtn_clicked()
             mPacket->init();
             ItemStatus();
             mPowThread->start();
+            // QGridLayout *gridLayout = new QGridLayout(this->parentWidget());
+            // gridLayout->setContentsMargins(0, 0, 0, 0);
+            // gridLayout->addWidget(this);
+
         }
     }else{
         bool ret = MsgBox::question(this, tr("确定需要提前结束？"));
@@ -429,6 +436,11 @@ void Home_WorkWid::on_loadBtn_clicked()
             updateResult();
         }
     }
+}
+
+void Home_WorkWid::JudgSlots()
+{
+    mJudg->exec();
 }
 
 void Home_WorkWid::on_clearBtn_clicked()
@@ -467,6 +479,5 @@ void Home_WorkWid::on_comBox_currentIndexChanged(int index)
 void Home_WorkWid::initTypeComboBox()
 {
     int index = mCfgm->modeId;
-    qDebug()<<"mCfgm->modeId"<<mCfgm->modeId;
     ui->comBox->setCurrentIndex(index);
 }

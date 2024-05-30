@@ -671,6 +671,8 @@ struct sProgress
     QString test_item;
     QString loopNum;
     QString phase;
+    QString test_type;
+    uchar issure;
 };
 
 

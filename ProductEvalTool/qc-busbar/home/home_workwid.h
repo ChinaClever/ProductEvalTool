@@ -10,7 +10,8 @@
 #include "power_corethread.h"
 #include <QLabel>
 #include <QPainter>
-
+#include "face_judg.h"
+#include "usrlanddlg.h"
 class VerticalLabel : public QLabel
 {
 public:
@@ -97,6 +98,7 @@ private slots:
     void on_codeEit_textChanged(const QString &arg1); 
     void on_comBox_currentIndexChanged(int index);
     void PingSlot();
+    void JudgSlots();
 private:
     Ui::Home_WorkWid *ui;
 
@@ -119,6 +121,8 @@ private:
     Home_DataWid *mData;
     RtuRw *mModbus;
     Power_DevRead *mPowDev;
+
+    People_judg *mJudg;
 };
 
 #endif // HOME_WORKWID_H

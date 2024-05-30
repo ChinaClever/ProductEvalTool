@@ -1,5 +1,6 @@
 #ifndef CONFIGBASH
 #define CONFIGBASH
+
 #include "cfgcom.h"
 #include "serialstatuswid.h"
 #include "datapacket.h"
@@ -196,6 +197,8 @@ struct sCfgItem
     uchar modeId;
     uchar addr;
     QString sn;//成品序列号
+    QString supCheck1;
+    QString supCheck2;
 };
 
 
@@ -227,7 +230,7 @@ public:
     void setCurrentNum();
     void write(const QString &key, const QVariant& v, const QString &g="Cfg");
     QVariant read(const QString &key, const QVariant &v = QVariant(), const QString &g="Cfg");
-
+    void writeJudgItem();
 protected:
 
     void initErrData();
@@ -242,7 +245,7 @@ protected:
     void writeIpData(const QString &g);
     void writeUnit(const QString& prefix, sUnitCfg &unit, const QString &g, int f=1);
     void initUnit(const QString& prefix, sUnitCfg &unit, const QString &g, int f=1);
-
+    void initJudgItem();
 private:
     CfgCom *mCfg;
 };

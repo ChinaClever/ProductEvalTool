@@ -34,6 +34,9 @@ void MainWindow::initWid()
     // mSet = new Set_MainWid(ui->stackedWid);
     // ui->stackedWid->addWidget(mSet);
 
+    mSetting = new Setting (ui->stackedWid);
+    ui->stackedWid->addWidget(mSetting);
+
     mSetupWid = new Setup_MainWid(ui->stackedWid);
     ui->stackedWid->addWidget(mSetupWid);
 

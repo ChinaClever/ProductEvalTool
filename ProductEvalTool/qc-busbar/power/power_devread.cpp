@@ -42,9 +42,9 @@ bool Power_DevRead::readData()
 {
     bool ret = true;
     if( mItem->modeId == START_BUSBAR ){
-            if(mItem->ip.ip_mode == 1){//RTU模式地址为1
-                ret = mSiRtu->readPduData();
-            }else ret = mSiRtu->readRtuData();        
+            // if(mItem->ip.ip_mode == 1){//RTU模式地址为1
+            //     ret = mSiRtu->readPduData();
+            // }else ret = mSiRtu->readRtuData();
         if(ret) {
             ret = checkNet();
             if(ret) ret = mIpSnmp->readPduData();
@@ -58,7 +58,7 @@ bool Power_DevRead::readData()
 
 bool Power_DevRead::readDev()
 {
-    bool ret = mPacket->delay(2);
+    bool ret = mPacket->delay(5);
     if(ret) {
         if( mItem->modeId == START_BUSBAR ){
             QString str = tr("始端箱串口RTU通讯");
@@ -67,7 +67,7 @@ bool Power_DevRead::readDev()
                 if(mItem->ip.ip_mode == 1){//RTU模式地址为1
                     ret = mSiRtu->readPduData();
                 }else ret = mSiRtu->readRtuData();
-                if(ret) break; else if(!mPacket->delay(1)) break;
+                if(ret) break; else if(!mPacket->delay(3)) break;
             }
             if(ret) str += tr("成功");
             else{ str += tr("失败"); mPro->result = Test_Fail;}
@@ -84,7 +84,7 @@ bool Power_DevRead::readDev()
         }else{
             for(int i=0; i<5; ++i) {
                 ret = mSiRtu->readPduData();
-                if(ret) break; else if(!mPacket->delay(1)) break;
+                if(ret) break; else if(!mPacket->delay(3)) break;
             }
             QString str = tr("插接箱串口RTU通讯");
             if(ret) str += tr("成功");
@@ -1760,22 +1760,22 @@ bool Power_DevRead::Load_ThreeLoop()
             }
         }
 
-        if(mItem->modeId == START_BUSBAR) { //判断始端箱三相功率值之和是否等于总功率误差不超过10kw
-            uint toTal = StartBox->totalPow.ivalue /COM_RATE_POW;
-            uint sum = 0; bool res = false;
-            str= tr("误差较大：");
-            QString str1 = tr("总功率与三相功率之和误差不超过10kw");
-            for(int i =0;i<START_LINE_NUM;i++)
-                sum += StartBox->data.pow.value[i] /COM_RATE_POW;
+        // if(mItem->modeId == START_BUSBAR) { //判断始端箱三相功率值之和是否等于总功率误差不超过10kw
+        //     uint toTal = StartBox->totalPow.ivalue /COM_RATE_POW;
+        //     uint sum = 0; bool res = false;
+        //     str= tr("误差较大：");
+        //     QString str1 = tr("总功率与三相功率之和误差不超过10kw");
+        //     for(int i =0;i<START_LINE_NUM;i++)
+        //         sum += StartBox->data.pow.value[i] /COM_RATE_POW;
 
-            if(((sum-10) <=toTal)&&(toTal <=(sum+10))) {
-                res = true;
-                str= tr("误差范围内：");
-            }
+        //     if(((sum-10) <=toTal)&&(toTal <=(sum+10))) {
+        //         res = true;
+        //         str= tr("误差范围内：");
+        //     }
 
-            str += tr("总功率为 %1kw，三相功率之和为 %2kw").arg(toTal).arg(sum);
-            mLogs->updatePro(str, res); mLogs->writeData(str1,str,res);
-        }
+        //     str += tr("总功率为 %1kw，三相功率之和为 %2kw").arg(toTal).arg(sum);
+        //     mLogs->updatePro(str, res); mLogs->writeData(str1,str,res);
+        // }
         if(mPro->stopFlag == 0) {           //插接位1电流控制1
             if(ret) ret = Three_CtrlOne();
             if(ret) ret = Three_CtrlTwo();

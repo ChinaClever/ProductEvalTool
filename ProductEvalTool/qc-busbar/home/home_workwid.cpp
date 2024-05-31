@@ -54,7 +54,7 @@ void Home_WorkWid::initWid()
     connect(Json_Pack::bulid(this), &Json_Pack::httpSig, this, &Home_WorkWid::insertTextslots);
 
     mPowThread = new Power_CoreThread(this);
-    connect(this , SIGNAL(clearStartEleSig()), mPowThread, SLOT(clearStartEleSlot()));
+    // connect(this , SIGNAL(clearStartEleSig()), mPowThread, SLOT(clearStartEleSlot()));
     connect(mPowThread,&Power_CoreThread::finshSig, this, &Home_WorkWid::StatusSlot);
     connect(mPowThread, &Power_CoreThread::TipSig , mPower, &Face_Power::TextSlot);
     connect(mPowThread,&Power_CoreThread::JudgSig, this, &Home_WorkWid::JudgSlots);
@@ -74,7 +74,7 @@ void Home_WorkWid::PingSlot()
     QString str = tr("服务端IP异常");
     for(int k=0; k<2; ++k) {
         if(!ret) {
-            mPacket->delay(1);
+            mPacket->delay(2);
             ip = mCfgm->Service;
             ret = cm_pingNet(ip);
         }
@@ -261,7 +261,7 @@ bool Home_WorkWid::initSerialGND()
         ret = true;
     } else{
         ret = coms->ser2->isOpened();
-        if(!ret){MsgBox::critical(this, tr("请先打开GND串口")); return ret;}
+        if(!ret){MsgBox::critical(this, tr("请先打开接地串口")); return ret;}
     }
 
     return ret;
@@ -277,7 +277,7 @@ bool Home_WorkWid::initSerial()
         ret = true;
     }else{
         ret = coms->ser3->isOpened();
-        if(!ret){MsgBox::critical(this, tr("请先打开级联串口")); return ret;}
+        if(!ret){MsgBox::critical(this, tr("请先打开设备串口")); return ret;}
     }
 
     return ret;
@@ -423,11 +423,7 @@ void Home_WorkWid::on_loadBtn_clicked()
         if(ret) {       
             mPacket->init();
             ItemStatus();
-            mPowThread->start();
-            // QGridLayout *gridLayout = new QGridLayout(this->parentWidget());
-            // gridLayout->setContentsMargins(0, 0, 0, 0);
-            // gridLayout->addWidget(this);
-
+            mPowThread->start();          
         }
     }else{
         bool ret = MsgBox::question(this, tr("确定需要提前结束？"));
@@ -443,10 +439,10 @@ void Home_WorkWid::JudgSlots()
     mJudg->exec();
 }
 
-void Home_WorkWid::on_clearBtn_clicked()
-{
-    mPowThread->clearStartEleSlot();
-}
+// void Home_WorkWid::on_clearBtn_clicked()
+// {
+//     mPowThread->clearStartEleSlot();
+// }
 
 void Home_WorkWid::on_codeEit_textChanged(const QString &arg1)
 {

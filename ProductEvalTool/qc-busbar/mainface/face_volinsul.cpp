@@ -67,7 +67,7 @@ void Face_Volinsul::resultSlot()
     mPacket->updatePro(str, res);
     mDataSave->saveTestData();
     if(mPro->online) {
-        mPacket->delay(1);
+        mPacket->delay(2);
         Json_Pack::bulid()->http_post("busbarreport/add",mPro->Service);
     }
     if(mPro->result == Test_Fail) res = false;

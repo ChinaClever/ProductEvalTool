@@ -151,6 +151,8 @@ void Setup_MainWid::on_pcBtn_clicked()
     ui->pcBtn->setText(str);
     ui->logCountSpin->setEnabled(ret);
     ui->addrEdit->setEnabled(ret);
+    ui->pcNumSpin->setEnabled(ret);
+
     if(!ret) {
         bool res = true;
         QString str1 = tr("该服务端IP异常");
@@ -162,8 +164,6 @@ void Setup_MainWid::on_pcBtn_clicked()
         if(res) mItem->online = true;
         if(!res) MsgBox::information(this,str1);
     }
-    if(mItem->pcNum) ret = false;
-    ui->pcNumSpin->setEnabled(ret);
 }
 
 void Setup_MainWid::on_verBtn_clicked()

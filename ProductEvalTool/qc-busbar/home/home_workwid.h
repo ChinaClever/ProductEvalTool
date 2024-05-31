@@ -10,8 +10,7 @@
 #include "power_corethread.h"
 #include <QLabel>
 #include <QPainter>
-#include "face_judg.h"
-#include "usrlanddlg.h"
+
 class VerticalLabel : public QLabel
 {
 public:
@@ -94,7 +93,7 @@ private slots:
     void on_groundBtn_clicked();
     void on_volBtn_clicked();
     void on_loadBtn_clicked();
-    void on_clearBtn_clicked();
+    // void on_clearBtn_clicked();
     void on_codeEit_textChanged(const QString &arg1); 
     void on_comBox_currentIndexChanged(int index);
     void PingSlot();

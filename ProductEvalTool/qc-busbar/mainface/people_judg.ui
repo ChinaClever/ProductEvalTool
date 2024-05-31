@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>696</width>
-    <height>479</height>
+    <width>564</width>
+    <height>395</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,6 @@
     <font>
      <family>微软雅黑</family>
      <pointsize>16</pointsize>
-     <weight>75</weight>
      <bold>true</bold>
     </font>
    </property>
@@ -47,7 +46,6 @@
     <font>
      <family>微软雅黑</family>
      <pointsize>-1</pointsize>
-     <weight>50</weight>
      <italic>false</italic>
      <bold>false</bold>
     </font>
@@ -90,7 +88,6 @@
     <font>
      <family>微软雅黑</family>
      <pointsize>-1</pointsize>
-     <weight>50</weight>
      <italic>false</italic>
      <bold>false</bold>
     </font>
@@ -121,7 +118,6 @@
     <font>
      <family>微软雅黑</family>
      <pointsize>-1</pointsize>
-     <weight>50</weight>
      <italic>false</italic>
      <bold>false</bold>
     </font>
@@ -155,7 +151,6 @@
     <font>
      <family>微软雅黑</family>
      <pointsize>-1</pointsize>
-     <weight>50</weight>
      <italic>false</italic>
      <bold>false</bold>
     </font>
@@ -173,62 +168,11 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="label_3">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>310</y>
-     <width>91</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>微软雅黑</family>
-     <pointsize>12</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>需额外补充：</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="supEdit1">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>360</y>
-     <width>261</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>微软雅黑</family>
-     <pointsize>14</pointsize>
-    </font>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="supEdit2">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>430</y>
-     <width>261</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>微软雅黑</family>
-     <pointsize>14</pointsize>
-    </font>
-   </property>
-  </widget>
   <widget class="QPushButton" name="sureButton">
    <property name="geometry">
     <rect>
-     <x>550</x>
-     <y>390</y>
+     <x>230</x>
+     <y>330</y>
      <width>111</width>
      <height>51</height>
     </rect>
@@ -241,32 +185,6 @@
    </property>
    <property name="text">
     <string>确定</string>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="supBox1">
-   <property name="geometry">
-    <rect>
-     <x>430</x>
-     <y>360</y>
-     <width>16</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="supBox2">
-   <property name="geometry">
-    <rect>
-     <x>430</x>
-     <y>430</y>
-     <width>16</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">

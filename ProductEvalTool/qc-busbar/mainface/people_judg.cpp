@@ -24,12 +24,12 @@ void People_judg::initData()
     mItem = Cfg::bulid()->item;
     mPro = mPacket->getPro();
 
-    ui->supEdit1->setText(mItem->supCheck1);
-    ui->supEdit2->setText(mItem->supCheck2);
-    if(!(ui->supEdit1->text().isEmpty()))
-        ui->supBox1->setChecked(true);
-    if(!(ui->supEdit2->text().isEmpty()))
-        ui->supBox2->setChecked(true);
+    // ui->supEdit1->setText(mItem->supCheck1);
+    // ui->supEdit2->setText(mItem->supCheck2);
+    // if(!(ui->supEdit1->text().isEmpty()))
+    //     ui->supBox1->setChecked(true);
+    // if(!(ui->supEdit2->text().isEmpty()))
+    //     ui->supBox2->setChecked(true);
 }
 void People_judg::writeData(const QString &str1,const QString &str2,bool pass)
 {
@@ -73,26 +73,27 @@ void People_judg::on_sureButton_clicked()
     if(ret) writeData(str1,str2,ret);
     else writeData(str1,str3,ret);
 
-    str2 = tr("经人工确认：通过");
-    str3 = tr("经人工确认：不通过");
-    mItem->supCheck1.clear();
-    str1 = ui->supEdit1->text();
-    if(!str1.isEmpty()) {
-        mItem->supCheck1 = str1;
-        ret = ui->supBox1->isChecked();
-        if(ret) writeData(str1,str2,ret);
-        else writeData(str1,str3,ret);
-    }
+    // str2 = tr("经人工确认：通过");
+    // str3 = tr("经人工确认：不通过");
+    // mItem->supCheck1.clear();
+    // str1 = ui->supEdit1->text();
+    // if(!str1.isEmpty()) {
+    //     mItem->supCheck1 = str1;
+    //     ret = ui->supBox1->isChecked();
+    //     if(ret) writeData(str1,str2,ret);
+    //     else writeData(str1,str3,ret);
+    // }
 
-    mItem->supCheck2.clear();
-    str1 = ui->supEdit2->text();
-    if(!str1.isEmpty()) {
-        mItem->supCheck2 = str1;
-        ret = ui->supBox2->isChecked();
-        if(ret) writeData(str1,str2,ret);
-        else writeData(str1,str3,ret);
-    }   
-    Cfg::bulid()->writeJudgItem();
+    // mItem->supCheck2.clear();
+    // str1 = ui->supEdit2->text();
+    // if(!str1.isEmpty()) {
+    //     mItem->supCheck2 = str1;
+    //     ret = ui->supBox2->isChecked();
+    //     if(ret) writeData(str1,str2,ret);
+    //     else writeData(str1,str3,ret);
+    // }
+    // Cfg::bulid()->writeJudgItem();
+
     mPro->issure = 1;
     this->close();
 }

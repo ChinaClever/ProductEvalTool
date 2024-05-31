@@ -158,7 +158,7 @@ bool Sn_SerialNum::writeSn(sSnItem &itSn)
 
     sRtuSetItems itRtu;
     initWriteCmd(itRtu, buf, len);
-    mPacket->delay(1);
+    mPacket->delay(2);
 
     return mModbus->writes(itRtu);
 }

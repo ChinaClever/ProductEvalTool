@@ -28,7 +28,6 @@ void Setting::initType()
     sIpCfg *dt = &(mItem->ip); //始端箱
     ui->buzzerBox->setCurrentIndex(dt->ip_buzzer);
     ui->filterspinBox->setValue(dt->ip_filter);
-
     ui->ISDBox->setCurrentIndex(dt->ip_ISD);
     ui->iOFBox->setCurrentIndex(dt->ip_iOF);
     ui->shuntBox->setCurrentIndex(dt->ip_shunt);
@@ -51,12 +50,9 @@ void Setting::updateType()
     dt->ip_lightning = ui->lightningBox->currentIndex();
 
     sSiCfg *dv = &(mItem->si);
-
     dv->si_buzzer = ui->buzzerBox_2->currentIndex();
     dv->si_filter = ui->filterspinBox_2->value();
     dv->si_iOF = ui->iOFBox_2->currentIndex();
-    qDebug()<<dv->si_buzzer<<dv->si_filter<<dv->si_iOF;
-    qDebug()<<ui->buzzerBox_2->currentIndex()<<ui->filterspinBox_2->value()<<ui->iOFBox_2->currentIndex();
 }
 
 bool Setting::dataSave()

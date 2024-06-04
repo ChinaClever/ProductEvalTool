@@ -210,7 +210,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>660</y>
+      <y>600</y>
       <width>191</width>
       <height>21</height>
      </rect>
@@ -235,7 +235,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>510</y>
+      <y>450</y>
       <width>191</width>
       <height>21</height>
      </rect>
@@ -260,7 +260,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>750</y>
+      <y>700</y>
       <width>191</width>
       <height>51</height>
      </rect>
@@ -282,7 +282,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>310</y>
+      <y>260</y>
       <width>191</width>
       <height>51</height>
      </rect>
@@ -304,7 +304,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>360</y>
+      <y>310</y>
       <width>191</width>
       <height>16</height>
      </rect>
@@ -325,33 +325,11 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="clearBtn">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>860</y>
-      <width>101</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>微软雅黑</family>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>清除电能</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="groundBtn">
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>460</y>
+      <y>400</y>
       <width>191</width>
       <height>51</height>
      </rect>
@@ -373,7 +351,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>800</y>
+      <y>750</y>
       <width>191</width>
       <height>21</height>
      </rect>
@@ -398,7 +376,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>610</y>
+      <y>550</y>
       <width>191</width>
       <height>51</height>
      </rect>
@@ -459,7 +437,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>230</y>
+      <y>850</y>
       <width>191</width>
       <height>41</height>
      </rect>

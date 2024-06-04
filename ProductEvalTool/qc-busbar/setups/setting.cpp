@@ -7,6 +7,9 @@ Setting::Setting(QWidget *parent)
 {
     ui->setupUi(this);
     groupBox_background_icon(this);
+
+    ui->label_2->hide();
+    ui->buzzerBox->hide();
     QTimer::singleShot(10,this,SLOT(initFunSlot()));
 }
 
@@ -26,7 +29,7 @@ void Setting::initFunSlot()
 void Setting::initType()
 {
     sIpCfg *dt = &(mItem->ip); //始端箱
-    ui->buzzerBox->setCurrentIndex(dt->ip_buzzer);
+    // ui->buzzerBox->setCurrentIndex(dt->ip_buzzer);
     ui->filterspinBox->setValue(dt->ip_filter);
     ui->ISDBox->setCurrentIndex(dt->ip_ISD);
     ui->iOFBox->setCurrentIndex(dt->ip_iOF);
@@ -34,15 +37,15 @@ void Setting::initType()
     ui->lightningBox->setCurrentIndex(dt->ip_lightning);
 
     sSiCfg *dv = &(mItem->si); //插接箱
-    ui->buzzerBox_2->setCurrentIndex(dv->si_buzzer);
     ui->filterspinBox_2->setValue(dv->si_filter);
     ui->iOFBox_2->setCurrentIndex(dv->si_iOF);
+    ui->outputBox->setCurrentIndex(dv->si_phaseflag);
 }
 
 void Setting::updateType()
 {
     sIpCfg *dt = &(mItem->ip); //设备类型
-    dt->ip_buzzer = ui->buzzerBox->currentIndex();
+    dt->ip_buzzer = 0;
     dt->ip_filter = ui->filterspinBox->value();
     dt->ip_ISD = ui->ISDBox->currentIndex();
     dt->ip_iOF = ui->iOFBox->currentIndex();
@@ -50,9 +53,10 @@ void Setting::updateType()
     dt->ip_lightning = ui->lightningBox->currentIndex();
 
     sSiCfg *dv = &(mItem->si);
-    dv->si_buzzer = ui->buzzerBox_2->currentIndex();
     dv->si_filter = ui->filterspinBox_2->value();
+    dv->si_buzzer = 0;
     dv->si_iOF = ui->iOFBox_2->currentIndex();
+    dv->si_phaseflag = ui->outputBox->currentIndex();
 }
 
 bool Setting::dataSave()

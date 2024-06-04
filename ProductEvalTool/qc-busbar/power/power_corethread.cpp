@@ -125,6 +125,12 @@ void Power_CoreThread::InsertErrRange()   //比较基本配置信息
     if(curValue == expect) ret = true;
     str = tr("插接箱iOF辅助触点实际值：%1 , 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
     mLogs->updatePro(str,ret);ret = false;
+
+    curValue = b->phaseFlag;
+    expect = mItem->si.si_phaseflag;
+    if(curValue == expect) ret = true;
+    str = tr("插接箱输出位类型实际值：%1 , 期待值：%2！").arg(curValue?tr("三相"):tr("单相")).arg(expect?tr("三相"):tr("单相"));
+    mLogs->updatePro(str,ret);ret = false;
 }
 
 void Power_CoreThread::BaseErrRange()   //比较基本配置信息
@@ -335,9 +341,7 @@ void Power_CoreThread::workResult(bool)
 
     mLogs->saveLogs();
     if(mPro->online) {
-        // sleep(1);
         Json_Pack::bulid()->stepData();//全流程才发送记录(http)
-
     }
 
     if(mPro->online) {

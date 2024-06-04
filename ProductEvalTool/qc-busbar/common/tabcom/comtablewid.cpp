@@ -195,7 +195,7 @@ void ComTableWid::initTableWid(QStringList &header, int line, const QString &tit
     for(int i=0; i<line; ++i) {
         int row = ui->tableWidget->rowCount();
         addInitRow(row);
-        ui->tableWidget->setRowHeight(row, 75);
+        ui->tableWidget->setRowHeight(row, 70);
     }
 }
 void ComTableWid::initDataWid(QStringList &header, int line, const QString &title)
@@ -204,7 +204,7 @@ void ComTableWid::initDataWid(QStringList &header, int line, const QString &titl
     for(int i=0; i<line; ++i) {
         int row = ui->tableWidget->rowCount();
         addInitRow(row);
-        ui->tableWidget->setRowHeight(row, 75);
+        ui->tableWidget->setRowHeight(row, 70);
     }
 }
 /**

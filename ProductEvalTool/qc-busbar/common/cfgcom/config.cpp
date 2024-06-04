@@ -97,7 +97,8 @@ void Cfg::initCfgDev()
     QString g = "BusbarInsertCfg";
     item->si.si_iOF = read("si_iOF", 0, g).toInt();
     item->si.si_buzzer = read("si_buzzer", 0, g).toInt();
-    item->si.si_filter = read("si_filter", 5, g).toInt();   
+    item->si.si_filter = read("si_filter", 5, g).toInt();
+    item->si.si_phaseflag = read("si_phaseflag", 0, g).toInt();
     initSiData(g);
 
     g = "BusbarStartCfg";
@@ -129,6 +130,7 @@ void Cfg::writeCfgDev()
     write("si_buzzer", item->si.si_buzzer, q);
     write("si_filter", item->si.si_filter, q);
     write("si_iOF", item->si.si_iOF, q);
+    write("si_phaseflag", item->si.si_phaseflag, q);
     writeSiData(q);
 }
 

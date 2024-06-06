@@ -10,6 +10,7 @@ Setting::Setting(QWidget *parent)
 
     ui->label_2->hide();
     ui->buzzerBox->hide();
+    mItem = Cfg::bulid()->item;
     QTimer::singleShot(10,this,SLOT(initFunSlot()));
 }
 
@@ -22,7 +23,10 @@ void Setting::initFunSlot()
 {
     ui->groupBox2->setEnabled(false);
     ui->groupBox3->setEnabled(false);
-    mItem = Cfg::bulid()->item;
+    ui->groupBox4->setEnabled(false);
+    ui->userEdit->setText(mItem->user);
+    ui->cntSpin->setValue(mItem->cnt.num);
+
     initType(); mCnt = 0;
 }
 
@@ -40,10 +44,22 @@ void Setting::initType()
     ui->filterspinBox_2->setValue(dv->si_filter);
     ui->iOFBox_2->setCurrentIndex(dv->si_iOF);
     ui->outputBox->setCurrentIndex(dv->si_phaseflag);
+    uchar loop = 0;
+    if(dv->loopNum == 3)
+        loop = 0;
+    else if (dv->loopNum == 6)
+        loop = 1;
+    else if (dv->loopNum == 9)
+        loop = 2;
+
+    ui->loopNumBox->setCurrentIndex(loop);
 }
 
 void Setting::updateType()
 {
+    mItem->user = ui->userEdit->text();
+    mItem->cnt.num = ui->cntSpin->value();
+
     sIpCfg *dt = &(mItem->ip); //设备类型
     dt->ip_buzzer = 0;
     dt->ip_filter = ui->filterspinBox->value();
@@ -57,6 +73,13 @@ void Setting::updateType()
     dv->si_buzzer = 0;
     dv->si_iOF = ui->iOFBox_2->currentIndex();
     dv->si_phaseflag = ui->outputBox->currentIndex();
+    uchar loop = ui->loopNumBox->currentIndex();
+    if(loop == 0)
+        dv->loopNum = 3;
+    else if (loop == 1)
+        dv->loopNum = 6;
+    else if (loop == 2)
+        dv->loopNum = 9;
 }
 
 bool Setting::dataSave()
@@ -69,8 +92,7 @@ bool Setting::dataSave()
     return ret;
 }
 
-void Setting::
-saveErrSlot()
+void Setting::saveErrSlot()
 {
     mCnt = 1;
     enabledSlot(true);
@@ -81,6 +103,7 @@ void Setting::enabledSlot(bool en)
 {
     ui->groupBox2->setEnabled(en);
     ui->groupBox3->setEnabled(en);
+    ui->groupBox4->setEnabled(en);
     if(!en) {
         en = dataSave();
         if(en) {
@@ -99,6 +122,7 @@ void Setting::on_setBtn_clicked()
     ui->setBtn->setText(str);
     ui->groupBox2->setEnabled(en);
     ui->groupBox3->setEnabled(en);
+    ui->groupBox4->setEnabled(en);
 
     QTimer::singleShot(50,this,SLOT(saveFunSlot()));
 }
@@ -109,3 +133,9 @@ void Setting::saveFunSlot()
     enabledSlot(en);
     if(!en) Cfg::bulid()->writeCfgDev();
 }
+
+void Setting::on_userEdit_textChanged(const QString &arg1)
+{
+    ui->userEdit->setClearButtonEnabled(1);
+}
+

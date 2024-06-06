@@ -21,7 +21,7 @@ public:
     QString getConnectModeOid();
     QString getFilterOid();
     bool SetInfo(QString o , QString val);
-
+    QString trans(int index);
     //九回路三个输出位
     bool Load_NineLoop();
     bool NineInsertOne_CtrlOne();

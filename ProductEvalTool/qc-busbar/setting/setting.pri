@@ -7,8 +7,7 @@ HEADERS += \
     $$PWD/set_mainwid.h \
     $$PWD/set_siwid.h \
     $$PWD/set_temper.h \
-    $$PWD/set_workwid.h \
-    $$PWD/test_setting.h
+    $$PWD/set_workwid.h
 
 	
 SOURCES += \
@@ -17,8 +16,7 @@ SOURCES += \
     $$PWD/set_mainwid.cpp \
     $$PWD/set_siwid.cpp \
     $$PWD/set_temper.cpp \
-    $$PWD/set_workwid.cpp \
-    $$PWD/test_setting.cpp
+    $$PWD/set_workwid.cpp
 
 
 FORMS += \

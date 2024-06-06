@@ -12,6 +12,7 @@ class Power_CoreThread : public Power_Object
 public:
     explicit Power_CoreThread(QObject *parent = nullptr);
     void clearStartEleSlot();
+
 protected slots:
     void initFunSlot();
 
@@ -72,6 +73,7 @@ protected:
     bool stepLoadTest();
     QString changeMode(int index);
     void autoSetAddress();
+    QString trans(int index);
 
 private:
     Power_Logs *mLogs;
@@ -84,6 +86,7 @@ private:
     RtuRw *mModbus;
     Dev_Source *mSource;
     People_judg *mJudg;
+    uchar loopNum;
 };
 
 #endif // POWER_CORETHREAD_H

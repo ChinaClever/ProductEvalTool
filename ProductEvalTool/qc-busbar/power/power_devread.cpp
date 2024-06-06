@@ -232,12 +232,25 @@ bool Power_DevRead::readDevData()
     return ret;
 }
 
+QString Power_DevRead::trans(int index)
+{
+    QString str;
+    int ca = index % 3 + 1;
+    switch(ca)
+    {
+    case 1: str = "A"+QString::number(index / 3+1);
+    case 2: str = "B"+QString::number(index / 3+1);
+    case 3: str = "C"+QString::number(index / 3+1);
+    }
+    return str;
+}
+
 bool Power_DevRead::NineInsertOne_CtrlOne()
 {
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路1电流值、功率值为0，回路2、3电流值及功率值不为0");
+    QString str2 = tr("A1电流值、功率值为0，B1、C1电流值及功率值不为0");
     QString str = tr("关闭电流控制L1");  //三相九路电流、功率
     emit StepSig(str);
 
@@ -253,7 +266,8 @@ bool Power_DevRead::NineInsertOne_CtrlOne()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i] /COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i] /COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }
                 mLogs->updatePro(str1, ret);               
@@ -265,8 +279,9 @@ bool Power_DevRead::NineInsertOne_CtrlOne()
         if(flag >60) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
-                 str1 += str;
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("插接位1-电流控制L1失败 ");mLogs->updatePro(str, ret);
@@ -282,8 +297,8 @@ bool Power_DevRead::NineInsertOne_CtrlTwo()
     bool ret = true; int flag = 0;QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路2电流值、功率值为0，回路1、3电流值及功率值不为0");
-    QString str = tr("关闭电流控制L2");
+    QString str2 = tr("B2电流值、功率值为0，A1、C1电流值及功率值不为0");
+    QString str = tr("打开电流控制L1，关闭电流控制L2");
     emit StepSig(str);
 
     while(1)
@@ -299,8 +314,9 @@ bool Power_DevRead::NineInsertOne_CtrlTwo()
             ret = true;
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
-                 str1 += str;
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                str1 += str;
             }            
             mLogs->updatePro(str1, ret); str = tr("插接位1-电流控制L2成功 ");mLogs->updatePro(str, ret);
             str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;
@@ -309,7 +325,8 @@ bool Power_DevRead::NineInsertOne_CtrlTwo()
         if(flag >50) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;           
@@ -326,8 +343,8 @@ bool Power_DevRead::NineInsertOne_CtrlThree()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路3电流值、功率值为0，回路1、2电流值及功率值不为0");
-    QString str = tr("关闭电流控制L3");
+    QString str2 = tr("C3电流值、功率值为0，A1、B1电流值及功率值不为0");
+    QString str = tr("打开电流控制L2，关闭电流控制L3");
     emit StepSig(str);
 
     while(1)
@@ -344,8 +361,9 @@ bool Power_DevRead::NineInsertOne_CtrlThree()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
-                     str1 += str;
+                    QString temp = trans(i);
+                    str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    str1 += str;
                 }               
                 mLogs->updatePro(str1, ret); str = tr("插接位1-电流控制L3成功 ");mLogs->updatePro(str, ret);
                 str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;
@@ -355,8 +373,9 @@ bool Power_DevRead::NineInsertOne_CtrlThree()
         if(flag >50) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
-                 str1 += str;
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("插接位1-电流控制L3失败 ");mLogs->updatePro(str, ret);
@@ -372,7 +391,7 @@ bool Power_DevRead::NineInsertOne_BreakerOne()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路1、2、3电压值为0，回路4、5、6、7、8、9电压值不为0");
+    QString str2 = tr("A1、B1、C1电压值为0，A2、B2、C2、A3、B3、C3电压值不为0");
     QString str = tr("关闭断路器控制1，打开断路器控制2、3");
     emit StepSig(str);
 
@@ -390,7 +409,8 @@ bool Power_DevRead::NineInsertOne_BreakerOne()
             ret = true;
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }            
             mLogs->updatePro(str1, ret); str = tr("断路器控制1成功 ");mLogs->updatePro(str, ret);
@@ -400,7 +420,8 @@ bool Power_DevRead::NineInsertOne_BreakerOne()
         if(flag >50) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -417,7 +438,7 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路4电流值、功率值等于0，回路5、6电流值及功率值不为0");
+    QString str2 = tr("A2电流值、功率值等于0，B2、C2电流值及功率值不为0");
     QString str = tr("请准备插接位2");  //三相回路电流、功率
     emit StepSig(str);
 
@@ -431,8 +452,14 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
                 if(d) ret = true; break;
             }
         }
+        flag++;
+        if(flag >60) {
+            ret = false;
+            str = tr("插接位2 无电流功率");mLogs->updatePro(str, ret);
+            break;
+        }
     }
-
+    flag = 0;
     str = tr("关闭电流控制L1");  //三相回路电流、功率
     emit StepSig(str);
 
@@ -450,7 +477,8 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }                
                 mLogs->updatePro(str1, ret); str = tr("插接位2-电流控制L1成功 ");mLogs->updatePro(str, ret);
@@ -461,7 +489,8 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
         if(flag >60) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -478,8 +507,8 @@ bool Power_DevRead::NineInsertTwo_CtrlTwo()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路5电流值、功率值等于0，回路4、6电流值及功率值不为0");
-    QString str = tr("关闭电流控制L2");
+    QString str2 = tr("B2电流值、功率值等于0，A2、C2电流值及功率值不为0");
+    QString str = tr("打开电流控制L1，关闭电流控制L2");
     emit StepSig(str);
 
     while(1)
@@ -495,7 +524,8 @@ bool Power_DevRead::NineInsertTwo_CtrlTwo()
             ret = true;
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }           
             mLogs->updatePro(str1, ret);
@@ -506,7 +536,8 @@ bool Power_DevRead::NineInsertTwo_CtrlTwo()
         if(flag >50) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -523,8 +554,8 @@ bool Power_DevRead::NineInsertTwo_CtrlThree()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路6电流值、功率值等于0，回路4、5电流值及功率值不为0");
-    QString str = tr("关闭电流控制L3");
+    QString str2 = tr("C2电流值、功率值等于0，A2、B2电流值及功率值不为0");
+    QString str = tr("打开电流控制L2，关闭电流控制L3");
     emit StepSig(str);
 
     while(1)
@@ -541,7 +572,8 @@ bool Power_DevRead::NineInsertTwo_CtrlThree()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }                
                 mLogs->updatePro(str1, ret);
@@ -553,7 +585,8 @@ bool Power_DevRead::NineInsertTwo_CtrlThree()
         if(flag >50) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -570,7 +603,7 @@ bool Power_DevRead::NineInsertOne_BreakerTwo()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路4、5、6电压值为0，回路1、2、3、7、8、9电压值为0");
+    QString str2 = tr("A2、B2、C2电压值为0，A1、B1、C1、A3、B3、C3电压值为0");
     QString str = tr("打开断路器控制1、3，关闭断路器控制2");
     emit StepSig(str);
 
@@ -588,7 +621,8 @@ bool Power_DevRead::NineInsertOne_BreakerTwo()
             ret = true;
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }            
             mLogs->updatePro(str1, ret);
@@ -599,7 +633,8 @@ bool Power_DevRead::NineInsertOne_BreakerTwo()
         if(flag >50) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }
             mLogs->updatePro(str, ret); ret = false;
@@ -616,7 +651,7 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路7电流值、功率值为0，回路8、9电流值及功率值不为0");
+    QString str2 = tr("A3电流值、功率值为0，B2、C3电流值及功率值不为0");
     QString str = tr("请准备插接位3");
     emit StepSig(str);
 
@@ -630,7 +665,14 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
                 if(d) ret = true; break;
             }
         }
+        flag++;
+        if(flag >60) {
+            ret = false;
+            str = tr("插接位3 无电流功率");mLogs->updatePro(str, ret);
+            break;
+        }
     }
+    flag = 0;
     str = tr("关闭电流控制L1");
     emit StepSig(str);
 
@@ -646,7 +688,8 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }
                 mLogs->updatePro(str1, ret);                
@@ -658,7 +701,8 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
         if(flag >80) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }           
             mLogs->updatePro(str, ret); ret = false;
@@ -675,8 +719,8 @@ bool Power_DevRead::NineInsertThree_CtrlTwo()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路8电流值、功率值为0，回路7、9电流值及功率值不为0");
-    QString str = tr("关闭电流控制L2");
+    QString str2 = tr("B3电流值、功率值为0，A3、C3电流值及功率值不为0");
+    QString str = tr("打开电流控制L1，关闭电流控制L2");
     emit StepSig(str);
 
     while(1)
@@ -691,11 +735,12 @@ bool Power_DevRead::NineInsertThree_CtrlTwo()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }                
                 mLogs->updatePro(str1, ret);
-                str = tr("插接位3电流控制L2成功 ");mLogs->updatePro(str, ret);
+                str = tr("插接位3-电流控制L2成功 ");mLogs->updatePro(str, ret);
                 str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;
             }
         }
@@ -703,11 +748,12 @@ bool Power_DevRead::NineInsertThree_CtrlTwo()
         if(flag >80) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("插接位3电流控制L2失败 ");mLogs->updatePro(str, ret);
+            str = tr("插接位3-电流控制L2失败 ");mLogs->updatePro(str, ret);
             str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;
         }
     }
@@ -720,8 +766,8 @@ bool Power_DevRead::NineInsertThree_CtrlThree()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路9电流值、功率值为0，回路7、8电流值及功率值不为0");
-    QString str = tr("关闭电流控制L3");
+    QString str2 = tr("C3电流值、功率值为0，A3、B3电流值及功率值不为0");
+    QString str = tr("打开电流控制L2，关闭电流控制L3");
     emit StepSig(str);
 
     while(1)
@@ -736,11 +782,12 @@ bool Power_DevRead::NineInsertThree_CtrlThree()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }               
                 mLogs->updatePro(str1, ret);
-                str = tr("插接位3电流控制L3成功 ");mLogs->updatePro(str, ret);
+                str = tr("插接位3-电流控制L3成功 ");mLogs->updatePro(str, ret);
                 str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;
             }
         }
@@ -748,11 +795,12 @@ bool Power_DevRead::NineInsertThree_CtrlThree()
         if(flag >80) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("插接位3电流控制L3失败 ");mLogs->updatePro(str, ret);
+            str = tr("插接位3-电流控制L3失败 ");mLogs->updatePro(str, ret);
             str += str1; mLogs->writeData(str2,str,ret); str1.clear(); break;
         }
     }
@@ -765,7 +813,7 @@ bool Power_DevRead::NineInsertOne_BreakerThree()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路1、2、3、4、5、6电压值为0，回路7、8、9电压值不为0");
+    QString str2 = tr("A1、B1、C1、A2、B2、C2电压值为0，A3、B3、C3电压值不为0");
     QString str = tr("打开断路器控制1、2，关闭断路器控制3");
     emit StepSig(str);
 
@@ -783,7 +831,8 @@ bool Power_DevRead::NineInsertOne_BreakerThree()
             ret = true;
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);           
@@ -794,7 +843,8 @@ bool Power_DevRead::NineInsertOne_BreakerThree()
         if(flag >60) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }           
             mLogs->updatePro(str1, ret); ret = false;
@@ -808,7 +858,7 @@ bool Power_DevRead::NineInsertOne_BreakerThree()
 
 bool Power_DevRead::Load_NineLoop()
 {
-    bool ret = true; QString str1;
+    bool ret = true; QString str1; int flag = 0;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     QString str = tr("请准备插接位1");  //三相回路电流、功率
     emit StepSig(str);
@@ -822,6 +872,12 @@ bool Power_DevRead::Load_NineLoop()
             if(a) {
                    if(d) ret = true; break;
             }
+        }
+        flag++;
+        if(flag >60) {
+            ret = false;
+            str = tr("插接位1 无电流功率");mLogs->updatePro(str, ret);
+            break;
         }
     }
     if(mPro->stopFlag == 0) {           //插接位1电流控制1
@@ -860,7 +916,7 @@ bool Power_DevRead::SixInsertOne_CtrlOne()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路1电流值、功率值为0，回路2、3电流值及功率值不为0");
+    QString str2 = tr("A1电流值、功率值为0，B1、C1电流值及功率值不为0");
     QString str = tr("关闭电流控制L1");  //三相回路电流、功率
     emit StepSig(str);
 
@@ -876,7 +932,8 @@ bool Power_DevRead::SixInsertOne_CtrlOne()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("回路%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }
                 mLogs->updatePro(str1, ret);
@@ -888,7 +945,8 @@ bool Power_DevRead::SixInsertOne_CtrlOne()
         if(flag >60) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -905,8 +963,8 @@ bool Power_DevRead::SixInsertOne_CtrlTwo()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路2电流值、功率值为0，回路1、3电流值及功率值不为0");
-    QString str = tr("关闭电流控制L2");
+    QString str2 = tr("B12电流值、功率值为0，A1、C1电流值及功率值不为0");
+    QString str = tr("打开电流控制L1，关闭电流控制L2");
     emit StepSig(str);
 
     while(1)
@@ -920,7 +978,8 @@ bool Power_DevRead::SixInsertOne_CtrlTwo()
             ret = true;
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);
@@ -931,7 +990,8 @@ bool Power_DevRead::SixInsertOne_CtrlTwo()
         if(flag >60) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);  ret = false;
@@ -949,8 +1009,8 @@ bool Power_DevRead::SixInsertOne_CtrlThree()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路3电流值、功率值为0，回路1、2电流值及功率值不为0");
-    QString str = tr("关闭电流控制L3");
+    QString str2 = tr("C1电流值、功率值为0，A1、B1电流值及功率值不为0");
+    QString str = tr("打开电流控制L2，关闭电流控制L3");
     emit StepSig(str);
 
     while(1)
@@ -965,7 +1025,8 @@ bool Power_DevRead::SixInsertOne_CtrlThree()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("回路%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }
                 mLogs->updatePro(str1, ret);
@@ -977,7 +1038,8 @@ bool Power_DevRead::SixInsertOne_CtrlThree()
         if(flag >60) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -994,7 +1056,7 @@ bool Power_DevRead::SixInsertOne_BreakerOne()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路1、2、3电压值为0，回路4、5、6电压值不为0");
+    QString str2 = tr("A1、B1、C1电压值为0，A2、B2、C2电压值不为0");
     QString str = tr("关闭断路器控制1，打开断路器控制2");
     emit StepSig(str);
 
@@ -1011,7 +1073,8 @@ bool Power_DevRead::SixInsertOne_BreakerOne()
             ret = true;
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);
@@ -1022,7 +1085,8 @@ bool Power_DevRead::SixInsertOne_BreakerOne()
         if(flag >50) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -1039,7 +1103,7 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路4电流值、功率值为0，回路5、6电流值及功率值不为0");
+    QString str2 = tr("A2电流值、功率值为0，B2、C2电流值及功率值不为0");
     QString str = tr("请准备插接位2");  //三相回路电流、功率
     emit StepSig(str);
 
@@ -1052,8 +1116,14 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
                 if(d) ret = true; break;
             }
         }
+        flag++;
+        if(flag >60) {
+            ret = false;
+            str = tr("插接位2 无电流功率");mLogs->updatePro(str, ret);
+            break;
+        }
     }
-
+    flag = 0;
     str = tr("关闭电流控制L1");  //三相回路电流、功率
     emit StepSig(str);
 
@@ -1069,7 +1139,8 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }
                 mLogs->updatePro(str1, ret);
@@ -1081,7 +1152,8 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
         if(flag >60) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -1098,8 +1170,8 @@ bool Power_DevRead::SixInsertTwo_CtrlTwo()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路5电流值、功率值为0，回路4、6电流值及功率值不为0");
-    QString str = tr("关闭电流控制L2");
+    QString str2 = tr("B2电流值、功率值为0，A2、C2电流值及功率值不为0");
+    QString str = tr("打开电流控制L1，关闭电流控制L2");
     emit StepSig(str);
 
     while(1)
@@ -1113,7 +1185,8 @@ bool Power_DevRead::SixInsertTwo_CtrlTwo()
             ret = true;
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);
@@ -1124,7 +1197,8 @@ bool Power_DevRead::SixInsertTwo_CtrlTwo()
         if(flag >60) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -1141,8 +1215,8 @@ bool Power_DevRead::SixInsertTwo_CtrlThree()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路6电流值、功率值为0，回路4、5电流值及功率值不为0");
-    QString str = tr("关闭电流控制L3");
+    QString str2 = tr("C2电流值、功率值为0，A2、B2电流值及功率值不为0");
+    QString str = tr("打开电流控制L2，关闭电流控制L3");
     emit StepSig(str);
 
     while(1)
@@ -1157,7 +1231,8 @@ bool Power_DevRead::SixInsertTwo_CtrlThree()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }
                 mLogs->updatePro(str1, ret);
@@ -1169,7 +1244,8 @@ bool Power_DevRead::SixInsertTwo_CtrlThree()
         if(flag >60) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);  ret = false;
@@ -1186,7 +1262,7 @@ bool Power_DevRead::SixInsertOne_BreakerTwo()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路4、5、6电压值为0，回路1、2、3电压值不为0");
+    QString str2 = tr("A2、B2、C2电压值为0，A1、B1、C1电压值不为0");
     QString str = tr("关闭断路器控制2，打开断路器控制1");
     emit StepSig(str);
 
@@ -1203,7 +1279,8 @@ bool Power_DevRead::SixInsertOne_BreakerTwo()
             ret = true;
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);
@@ -1214,7 +1291,8 @@ bool Power_DevRead::SixInsertOne_BreakerTwo()
         if(flag >50) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -1228,7 +1306,7 @@ bool Power_DevRead::SixInsertOne_BreakerTwo()
 
 bool Power_DevRead::Load_SixLoop()
 {
-    bool ret = true; QString str1;
+    bool ret = true; QString str1; int flag = 0;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     QString str = tr("请准备插接位1");  //三相回路电流、功率
     emit StepSig(str);
@@ -1243,7 +1321,14 @@ bool Power_DevRead::Load_SixLoop()
                 if(d) ret = true; break;
             }
         }
+        flag++;
+        if(flag >60) {
+            ret = false;
+            str = tr("插接位1 无电流功率");mLogs->updatePro(str, ret);
+            break;
+        }
     }
+
     if(mPro->stopFlag == 0) {           //插接位1电流控制1
         if(ret) ret = SixInsertOne_CtrlOne();
         if(ret) ret = SixInsertOne_CtrlTwo();
@@ -1272,8 +1357,8 @@ bool Power_DevRead::Three_CtrlOne()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路1电流值、功率值为0，回路2、3电流值及功率值不为0");
-    QString str = tr("拨下电流控制开关L1");  //三相回路电流、功率
+    QString str2 = tr("A1电流值、功率值为0，B1、C1电流值及功率值不为0");
+    QString str = tr("关闭电流控制L1");  //三相回路电流、功率
     emit StepSig(str);
 
     while(1)
@@ -1288,7 +1373,8 @@ bool Power_DevRead::Three_CtrlOne()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }
                 mLogs->updatePro(str1, ret);
@@ -1300,7 +1386,8 @@ bool Power_DevRead::Three_CtrlOne()
         if(flag >40) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);
@@ -1317,8 +1404,8 @@ bool Power_DevRead::Three_CtrlTwo()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路2电流值、功率值为0，回路1、3电流值及功率值不为0");
-    QString str = tr("拨下电流控制开关L2");  //三相回路电流、功率
+    QString str2 = tr("B1电流值、功率值为0，A1、C1电流值及功率值不为0");
+    QString str = tr("打开电流控制L1，关闭电流控制L2");  //三相回路电流、功率
     emit StepSig(str);
 
     while(1)
@@ -1333,7 +1420,8 @@ bool Power_DevRead::Three_CtrlTwo()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }
                 mLogs->updatePro(str1, ret);
@@ -1345,7 +1433,8 @@ bool Power_DevRead::Three_CtrlTwo()
         if(flag >40) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -1362,8 +1451,8 @@ bool Power_DevRead::Three_CtrlThree()
     bool ret = true; int flag = 0;QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路3电流值、功率值为0，回路1、2电流值及功率值不为0");
-    QString str = tr("拨下电流控制开关L3");  //三相回路电流、功率
+    QString str2 = tr("C1电流值、功率值为0，A1、B1电流值及功率值不为0");
+    QString str = tr("打开电流控制L2，关闭电流控制L3");  //三相回路电流、功率
     emit StepSig(str);
 
     while(1)
@@ -1378,7 +1467,8 @@ bool Power_DevRead::Three_CtrlThree()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }
                 mLogs->updatePro(str1, ret);
@@ -1390,7 +1480,8 @@ bool Power_DevRead::Three_CtrlThree()
         if(flag >40) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -1407,7 +1498,7 @@ bool Power_DevRead::Three_Breaker()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路1、2、3电压值为0");
+    QString str2 = tr("A1、B1、C1电压值为0");
     QString str = tr("关闭断路器");
     emit StepSig(str);
 
@@ -1421,7 +1512,8 @@ bool Power_DevRead::Three_Breaker()
             ret = true;
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);
@@ -1432,7 +1524,8 @@ bool Power_DevRead::Three_Breaker()
         if(flag >50) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -1449,7 +1542,7 @@ bool Power_DevRead::Three_One()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路1电流值、功率值为0");
+    QString str2 = tr("回路A1电流值、功率值为0");
     QString str = tr("请准备插接位1");  //三相回路电流、功率
     emit StepSig(str);
 
@@ -1466,8 +1559,15 @@ bool Power_DevRead::Three_One()
                     break;
                 }
         }
+        flag++;
+        if(flag >60) {
+            ret = false;
+            str = tr("插接位1 无电流功率");mLogs->updatePro(str, ret);
+                break;
+        }
     }
-    str = tr("关闭电流控制开关L1，关闭断路器控制1");  //三相回路电流、功率
+    flag = 0;
+    str = tr("关闭电流控制L1，关闭断路器控制1");  //三相回路电流、功率
     emit StepSig(str);
 
     while(1)
@@ -1481,7 +1581,8 @@ bool Power_DevRead::Three_One()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }
                 mLogs->updatePro(str1, ret);
@@ -1493,7 +1594,8 @@ bool Power_DevRead::Three_One()
         if(flag >80) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -1510,7 +1612,7 @@ bool Power_DevRead::Three_OneBreaker()
     bool ret = true; int flag = 0; QString str; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路1电压值为0");
+    QString str2 = tr("A1电压值为0");
 
     while(1)
     {
@@ -1522,7 +1624,8 @@ bool Power_DevRead::Three_OneBreaker()
             ret = true;
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);
@@ -1533,7 +1636,8 @@ bool Power_DevRead::Three_OneBreaker()
         if(flag >50) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -1550,8 +1654,8 @@ bool Power_DevRead::Three_Two()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路2电流值、功率值为0");
-    QString str = tr("请准备插接位2");  //三相回路电流、功率
+    QString str2 = tr("B1电流值、功率值为0");
+    QString str = tr("请准备插接位2,打开电流控制L1");  //三相回路电流、功率
     emit StepSig(str);
 
     while(1)
@@ -1564,9 +1668,16 @@ bool Power_DevRead::Three_Two()
             if(a) {
                 if(d) ret = true; break;}
         }
+        flag++;
+        if(flag >60) {
+            ret = false;
+            str = tr("插接位2 无电流功率");mLogs->updatePro(str, ret);
+                break;
+        }
     }
 
-    str = tr("关闭电流控制开关L1，打开断路器控制1，关闭断路器控制2");  //三相回路电流、功率
+    flag = 0;
+    str = tr("关闭电流控制L1，打开断路器控制1，关闭断路器控制2");  //三相回路电流、功率
     emit StepSig(str);
     while(1)
     {
@@ -1578,7 +1689,8 @@ bool Power_DevRead::Three_Two()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }
                 mLogs->updatePro(str1, ret);
@@ -1590,7 +1702,8 @@ bool Power_DevRead::Three_Two()
         if(flag >80) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -1607,7 +1720,7 @@ bool Power_DevRead::Three_TwoBreaker()
     bool ret = true; int flag = 0; QString str; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路2电压值为0");
+    QString str2 = tr("B1电压值为0");
 
     while(1)
     {
@@ -1619,7 +1732,8 @@ bool Power_DevRead::Three_TwoBreaker()
             ret = true;
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);
@@ -1630,7 +1744,8 @@ bool Power_DevRead::Three_TwoBreaker()
         if(flag >50) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -1647,8 +1762,8 @@ bool Power_DevRead::Three_Three()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路3电流值、功率值为0");
-    QString str = tr("请准备插接位3");  //三相回路电流、功率
+    QString str2 = tr("C1电流值、功率值为0");
+    QString str = tr("请准备插接位3，打开电流控制L1");  //三相回路电流、功率
     emit StepSig(str);
 
     while(1)
@@ -1661,9 +1776,16 @@ bool Power_DevRead::Three_Three()
             if(a) {
                 if(d) ret = true; break;}
             }
+        flag++;
+        if(flag >60) {
+            ret = false;
+            str = tr("插接位3 无电流功率");mLogs->updatePro(str, ret);
+            break;
+        }
     }
 
-    str = tr("关闭电流控制开关L1，打开断路器2，关闭断路器3");  //三相回路电流、功率
+    flag = 0;
+    str = tr("关闭电流控制L1，打开断路器2，关闭断路器3");  //三相回路电流、功率
     emit StepSig(str);
     while(1)
     {
@@ -1677,7 +1799,8 @@ bool Power_DevRead::Three_Three()
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
-                    str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                    QString temp = trans(i);
+                    str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                     str1 += str;
                 }
                 mLogs->updatePro(str1, ret);
@@ -1689,7 +1812,8 @@ bool Power_DevRead::Three_Three()
         if(flag >80) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电流%2A，功率%3kw ").arg(i+1).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
+                QString temp = trans(i);
+                str = tr("%1电流%2A，功率%3kw ").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR).arg(Obj->pow.value[i]/COM_RATE_POW);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -1706,7 +1830,7 @@ bool Power_DevRead::Three_ThreeBreaker()
     bool ret = true; int flag = 0; QString str; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("回路3电压值为0");
+    QString str2 = tr("C1电压值为0");
 
     while(1)
     {
@@ -1718,7 +1842,8 @@ bool Power_DevRead::Three_ThreeBreaker()
             ret = true;
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);
@@ -1729,7 +1854,8 @@ bool Power_DevRead::Three_ThreeBreaker()
         if(flag >50) {
             for(int i =0;i<loop;i++)
             {
-                str = tr("回路%1电压 %2V ").arg(i+1).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                QString temp = trans(i);
+                str = tr("%1电压 %2V ").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
@@ -1743,7 +1869,7 @@ bool Power_DevRead::Three_ThreeBreaker()
 
 bool Power_DevRead::Load_ThreeLoop()
 {
-    bool ret = true; QString str;
+    bool ret = true; QString str; int flag = 0;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     sBoxData *StartBox = &(mBusData->box[mItem->addr - 1]);
     if((mItem->modeId == START_BUSBAR) || (mBusData->box[mItem->addr-1].phaseFlag == 1)) {
@@ -1757,6 +1883,12 @@ bool Power_DevRead::Load_ThreeLoop()
             d = Obj->pow.value[0];
             if(a) {
                 if(d) ret = true; break;
+            }
+            flag++;
+            if(flag >60) {
+                ret = false;
+                str = tr("该插接位 无电流功率");mLogs->updatePro(str, ret);
+                 break;
             }
         }
 

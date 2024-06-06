@@ -222,7 +222,7 @@ bool Ctrl_SiRtu::setBusbarStartLineVol(int index , int val1 , int val2)//test
 bool Ctrl_SiRtu::setBusbarInsertEle(int index)
 {
     bool ret = true;
-    ret = sentRtuCmd(SetPlugEle_1+(index-1)*15, 1);
+    ret = rtu_sent_ushortV3_buff(mItem->addr ,SetPlugEle_1 -1 +(index-1)*15, 2, 1, 1);
 
     return ret;
 }

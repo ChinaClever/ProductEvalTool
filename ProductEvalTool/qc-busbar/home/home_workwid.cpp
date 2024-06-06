@@ -345,6 +345,22 @@ void Home_WorkWid::ItemStatus()
     }
 }
 
+bool Home_WorkWid::checkUesr()
+{
+    bool ret = true;
+    qDebug()<<"user"<<mCfgm->user;
+    if(mCfgm->user.isEmpty()) {
+        MsgBox::critical(this, tr("请先填写工单号！"));
+        return false;
+    }
+
+    if(mCfgm->cnt.num < 1) {
+        MsgBox::critical(this, tr("请先填写订单剩余数量！"));
+        return false;
+    }
+
+    return ret;
+}
 void Home_WorkWid::on_vol_insulBtn_clicked()//耐压/绝缘
 {
     ui->stackedWid->show();
@@ -352,6 +368,7 @@ void Home_WorkWid::on_vol_insulBtn_clicked()//耐压/绝缘
     mPro->work_mode = 0;
     if(mPro->step == Test_End){
         bool ret = initSerialVol();
+        ret = checkUesr();
         if(ret) {
             mPacket->init(); ItemStatus();
             int mode = Test_Over;
@@ -375,6 +392,7 @@ void Home_WorkWid::on_groundBtn_clicked()//接地
     mPro->work_mode = 1;
     if(mPro->step == Test_End){
         bool ret = initSerialGND();
+        ret = checkUesr();
         if(ret) {
             mPacket->init(); ItemStatus();
             int mode = Test_Over;
@@ -398,6 +416,7 @@ void Home_WorkWid::on_volBtn_clicked()
     mPro->work_mode = 2;
     if(mPro->step == Test_End) {
         bool ret = initSerial();
+        ret = checkUesr();
         if(ret) {
             mPacket->init();
             ItemStatus();
@@ -419,6 +438,7 @@ void Home_WorkWid::on_loadBtn_clicked()
     mPro->work_mode = 3;
     if(mPro->step == Test_End) {
         bool ret = initSerial();
+        ret = checkUesr();
         if(ret) {       
             mPacket->init();
             ItemStatus();
@@ -438,17 +458,11 @@ void Home_WorkWid::JudgSlots()
     mJudg->exec();
 }
 
-// void Home_WorkWid::on_clearBtn_clicked()
-// {
-//     mPowThread->clearStartEleSlot();
-// }
-
 void Home_WorkWid::on_codeEit_textChanged(const QString &arg1)
 {
     ui->textEdit->clear();
     ui->codeEit->setClearButtonEnabled(1);
 }
-
 
 void Home_WorkWid::on_comBox_currentIndexChanged(int index)
 {

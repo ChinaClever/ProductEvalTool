@@ -37,6 +37,8 @@ public slots:
 private slots:
     void on_setBtn_clicked();
 
+    void on_userEdit_textChanged(const QString &arg1);
+
 private:
     Ui::Setting *ui;
     sCfgItem *mItem;

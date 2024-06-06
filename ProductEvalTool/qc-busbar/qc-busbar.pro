@@ -21,7 +21,7 @@ include(ctrls/ctrls.pri)
 include(sernum/sernum.pri)
 include(devices/devices.pri)
 include(snmp/snmp.pri)
-# include(setting/setting.pri)
+include(setting/setting.pri)
 include(mainface/mainface.pri)
 include(power/power.pri)
 

@@ -119,7 +119,7 @@ struct sSiCfg {
     uchar si_iOF;
     ushort si_version;
     ushort si_phaseflag;
-
+    uchar loopNum;
     //四个温度
     double temMax[4];
     double temMin[4];
@@ -182,7 +182,7 @@ struct sCfgItem
     QString Service;
     bool online;
     uchar pcNum;
-    QString user; // 客户名称
+    QString user; // 客户名称---工单号
     QString sw_ver;
     QString hw_ver;
     QString pn;

@@ -82,7 +82,7 @@ protected:
     void startTest();
     void overTest();
     void ItemStatus();
-
+    bool checkUesr();
     void initTypeComboBox();
 signals:
     void noloadHomeSig(int ret);

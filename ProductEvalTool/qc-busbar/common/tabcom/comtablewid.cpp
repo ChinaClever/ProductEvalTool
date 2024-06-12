@@ -195,7 +195,7 @@ void ComTableWid::initTableWid(QStringList &header, int line, const QString &tit
     for(int i=0; i<line; ++i) {
         int row = ui->tableWidget->rowCount();
         addInitRow(row);
-        ui->tableWidget->setRowHeight(row, 70);
+        ui->tableWidget->setRowHeight(row, 65);
     }
 }
 void ComTableWid::initDataWid(QStringList &header, int line, const QString &title)
@@ -204,7 +204,7 @@ void ComTableWid::initDataWid(QStringList &header, int line, const QString &titl
     for(int i=0; i<line; ++i) {
         int row = ui->tableWidget->rowCount();
         addInitRow(row);
-        ui->tableWidget->setRowHeight(row, 70);
+        ui->tableWidget->setRowHeight(row, 65);
     }
 }
 /**
@@ -370,7 +370,6 @@ void ComTableWid::setItemColor(int id, int column, int alarm)
 {
     QColor bc(0,0,0);
     if(2 == alarm) bc.setRgb(255, 0, 0);
-    if(3 == alarm) bc.setRgb(85, 170, 255);
     QTableWidgetItem *item = ui->tableWidget->item(id, column);
     item->setForeground(QBrush(bc));
 }

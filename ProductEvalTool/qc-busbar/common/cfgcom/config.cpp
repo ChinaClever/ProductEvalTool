@@ -80,9 +80,9 @@ void Cfg::initCnt()
 void Cfg::writeCnt()
 {
     write("num", item->cnt.num, "BusbarCnt");
-    write("all", item->cnt.all, "BusbarCnt");
+    // write("all", item->cnt.all, "BusbarCnt");
     write("ok", item->cnt.ok, "BusbarCnt");
-    write("err", item->cnt.err, "BusbarCnt");
+    // write("err", item->cnt.err, "BusbarCnt");
 }
 
 
@@ -100,6 +100,10 @@ void Cfg::initCfgDev()
     item->si.si_filter = read("si_filter", 5, g).toInt();
     item->si.si_phaseflag = read("si_phaseflag", 0, g).toInt();
     item->si.loopNum = read("si_loopNum", 0, g).toInt();
+    item->si.si_curErr = read("si_curErr", 5, g).toInt();
+    item->si.si_volErr = read("si_volErr", 5, g).toInt();
+    item->si.si_vol = read("si_vol", 0, g).toInt();
+    item->si.si_cur = read("si_cur", 0, g).toInt();
     initSiData(g);
 
     g = "BusbarStartCfg";
@@ -109,6 +113,13 @@ void Cfg::initCfgDev()
     item->ip.ip_iOF = read("ip_iOF", 0 , g).toInt();
     item->ip.ip_shunt = read("ip_shunt", 0 , g).toInt();  
     item->ip.ip_lightning = read("ip_lightning", 0 , g).toInt();
+    item->ip.ip_residual = read("ip_residual", 0 , g).toInt();
+    item->ip.ip_volErr = read("ip_volErr", 5, g).toInt();
+    item->ip.ip_curErr = read("ip_curErr", 5, g).toInt();
+    item->ip.ip_powErr = read("ip_powErr", 10, g).toInt();
+    item->ip.ip_vol = read("ip_vol", 0, g).toInt();
+    item->ip.ip_cur = read("ip_cur", 0, g).toInt();
+    item->ip.ip_pow = read("ip_pow", 0, g).toInt();
     initIpData(g);
 }
 
@@ -125,6 +136,14 @@ void Cfg::writeCfgDev()
     write("ip_iOF", item->ip.ip_iOF, g);
     write("ip_shunt", item->ip.ip_shunt, g);
     write("ip_lightning", item->ip.ip_lightning, g);
+    write("ip_residual", item->ip.ip_residual, g);
+    write("ip_volErr", item->ip.ip_volErr, g);
+    write("ip_curErr", item->ip.ip_curErr, g);
+    write("ip_powErr", item->ip.ip_powErr, g);
+    write("ip_vol", item->ip.ip_vol, g);
+    write("ip_cur", item->ip.ip_cur, g);
+    write("ip_pow", item->ip.ip_pow, g);
+
     writeIpData(g);
 
     QString q = "BusbarInsertCfg";
@@ -133,6 +152,10 @@ void Cfg::writeCfgDev()
     write("si_iOF", item->si.si_iOF, q);
     write("si_phaseflag", item->si.si_phaseflag, q);
     write("si_loopNum", item->si.loopNum, q);
+    write("si_volErr", item->si.si_volErr, g);
+    write("si_curErr", item->si.si_curErr, g);
+    write("si_vol", item->si.si_vol, g);
+    write("si_cur", item->si.si_cur, g);
     writeSiData(q);
 }
 

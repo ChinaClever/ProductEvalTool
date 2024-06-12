@@ -1,7 +1,7 @@
 #ifndef POWER_DATAREAD_H
 #define POWER_DATAREAD_H
 
-#include "power_devctrl.h"
+#include "power_errrange.h"
 
 class Power_DevRead : public Power_Object
 {
@@ -20,6 +20,7 @@ public:
     bool readData();
     QString getConnectModeOid();
     QString getFilterOid();
+    QString setShuntReleaseCtrlOid();
     bool SetInfo(QString o , QString val);
     QString trans(int index);
     //九回路三个输出位
@@ -74,6 +75,8 @@ protected slots:
     void initFunSlot();
 signals:
     void StepSig(QString str);
+    void PloarSig(QString str);
+    void CurImageSig(int value);
 private:
     Dev_Object *mRtu;
     Dev_SiRtu *mSiRtu;
@@ -82,6 +85,9 @@ private:
     Dev_IpSnmp *mIpSnmp;
     Power_Logs *mLogs;
     sCfgItem *mItem;
+    Power_ErrRange *mErr;
+    int exValue ;
+    int err ;
 };
 
 #endif // POWER_DATAREAD_H

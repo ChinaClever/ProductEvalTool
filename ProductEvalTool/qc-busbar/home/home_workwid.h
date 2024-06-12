@@ -60,7 +60,7 @@ protected slots:
     void timeoutDone();
     void overSlot();
     void updateWidSlot(int id);
-
+    void polarSlot(QString str);
     void StatusSlot(bool ret);
 protected:
     void initLayout();

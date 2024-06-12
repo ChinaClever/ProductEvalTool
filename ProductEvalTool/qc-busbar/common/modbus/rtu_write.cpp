@@ -227,23 +227,74 @@ int Rtu_Write::rtu_sent_packet_uint_V3(Rtu_Sent_Uint_V3 *pkt, uchar *ptr)
     return 17;
 }
 
+// void Rtu_Write::autoSetAddress()
+// {
+//     uchar recvbuffer[1024];
+//     memset(recvbuffer,0,sizeof(recvbuffer));
+//     int count = 6;
+
+//     while(count--){
+//         memset(recvbuffer,0,sizeof(recvbuffer));
+//         int rtn = readSerial(recvbuffer,5);
+//         QByteArray array2;
+//         QString strArray2;
+//         array2.append((char *)recvbuffer, rtn);
+//         strArray2 = array2.toHex(); // 十六进制
+//         if(rtn / 8 == 1 && strArray2.contains("ff7b"))emit sendNumAndIndexSig(recvbuffer[5]);
+//         if(rtn / 8 == 2 && recvbuffer[8]==0xff && recvbuffer[9]==0x7b)emit sendNumAndIndexSig(recvbuffer[8+5]);
+//         if(rtn / 8 >= 3 && recvbuffer[16]==0xff && recvbuffer[17]==0x7b){emit sendNumAndIndexSig(recvbuffer[16+5]);break;}
+//         if(recvbuffer[5] == 0xCC){count=-1;break;}
+//     }
+//     if(count == -1){ emit sendDelaySig(); }
+// }
+
 void Rtu_Write::autoSetAddress()
 {
+    static uchar buffer[11]={0x01, 0x10 , 0x00 , 0x1F , 0x00, 0x01 , 0x02 , 0x00 ,0x01 , 0x65 , 0xFF};
+    buffer[8] = 0x01;//打开自动设置地址模式
+    ushort cr = rtu_crc(buffer, sizeof(buffer)-2);
+    buffer[sizeof(buffer)-2] = (0xff)&(cr); /*低8位*/
+    buffer[sizeof(buffer)-1] = ((cr) >> 8); /*高8位*/
+    int rtn = writeSerial(buffer, sizeof(buffer));//打开自动设置地址模式
+    //    hexToStr((char*)buffer , rtn);
+    sleep(2);
     uchar recvbuffer[1024];
     memset(recvbuffer,0,sizeof(recvbuffer));
-    int count = 6;
-
-    while(count--){
-        memset(recvbuffer,0,sizeof(recvbuffer));
-        int rtn = readSerial(recvbuffer,5);
-        QByteArray array2;
-        QString strArray2;
-        array2.append((char *)recvbuffer, rtn);
-        strArray2 = array2.toHex(); // 十六进制
-        if(rtn / 8 == 1 && strArray2.contains("ff7b"))emit sendNumAndIndexSig(recvbuffer[5]);
-        if(rtn / 8 == 2 && recvbuffer[8]==0xff && recvbuffer[9]==0x7b)emit sendNumAndIndexSig(recvbuffer[8+5]);
-        if(rtn / 8 >= 3 && recvbuffer[16]==0xff && recvbuffer[17]==0x7b){emit sendNumAndIndexSig(recvbuffer[16+5]);break;}
-        if(recvbuffer[5] == 0xCC){count=-1;break;}
-    }
+    rtn = readSerial(recvbuffer,10);
+    //    hexToStr((char*)recvbuffer , rtn , " recv1 ");
+    int count = 50;
+    if(rtn > 0){
+        static uchar buffer1[13]={0x01, 0x6A , 0x12 , 0x22 , 0x06, 0x00 , 0x00 , 0x00 ,0x00 , 0x00 , 0x00 , 0x10 , 0xe7};
+        buffer1[2] = 2;
+        ushort crc = rtu_crc(buffer1, sizeof(buffer1)-2);
+        buffer1[sizeof(buffer1)-2] = (0xff)&(crc); /*低8位*/
+        buffer1[sizeof(buffer1)-1] = ((crc) >> 8); /*高8位*/
+        rtn = writeSerial(buffer1, sizeof(buffer1));
+        //        hexToStr((char*)buffer1 , rtn);
+        while(count--){
+            memset(recvbuffer,0,sizeof(recvbuffer));
+            rtn = readSerial(recvbuffer,10);
+            QByteArray array2;
+            QString strArray2;
+            array2.append((char *)recvbuffer, rtn);
+            strArray2 = array2.toHex(); // 十六进制
+            for(int i=0; i<array2.size(); ++i)
+                strArray2.insert(2+3*i, " "); // 插入空格
+            //            qDebug()<< "rtn  "<<rtn<<"  recv2:" << strArray2;
+            if(rtn % 8 == 0 && strArray2.contains("ff 7b"))emit sendNumAndIndexSig(recvbuffer[5]);
+            if(recvbuffer[0]==0x01 && recvbuffer[1]==0x6a){ emit sendDelaySig();break;}
+            if(recvbuffer[5] == 2+2) break;
+            if(recvbuffer[5] == 0xCC){count=-1;break;}
+        }
+    }else { emit sendDelaySig(); }
     if(count == -1){ emit sendDelaySig(); }
+    buffer[8] = 0x00;//关闭自动设置地址模式
+    cr = rtu_crc(buffer, sizeof(buffer)-2);
+    buffer[sizeof(buffer)-2] = (0xff)&(cr); /*低8位*/
+    buffer[sizeof(buffer)-1] = ((cr) >> 8); /*高8位*/
+    rtn = writeSerial(buffer, sizeof(buffer));
+    //    hexToStr((char*)buffer , rtn);
+    memset(recvbuffer,0,sizeof(recvbuffer));
+    rtn = readSerial(recvbuffer,10);
+    //    hexToStr((char*)recvbuffer , rtn , " close recv2 ");
 }

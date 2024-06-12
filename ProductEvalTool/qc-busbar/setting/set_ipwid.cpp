@@ -32,36 +32,27 @@ void Set_IpWid::initFunSlot()
 void Set_IpWid::initType()
 {
     sIpCfg *dt = &(mItem->ip); //设备类型
-    ui->curTypeBox->setCurrentIndex(dt->ip_curtype);
-    ui->buzzerBox->setCurrentIndex(dt->ip_buzzer);
+
     ui->filterspinBox->setValue(dt->ip_filter);
-    ui->modeBox->setCurrentIndex(dt->ip_mode);
-    ui->numBox->setCurrentIndex(dt->ip_num-1);
+
     ui->ISDBox->setCurrentIndex(dt->ip_ISD);
     ui->iOFBox->setCurrentIndex(dt->ip_iOF);
     ui->shuntBox->setCurrentIndex(dt->ip_shunt);
     ui->residualBox->setCurrentIndex(dt->ip_residual);
     ui->lightningBox->setCurrentIndex(dt->ip_lightning);
-    int ver = dt->version;
-    QString str = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
-    ui->verlineEdit->setText(str);
 }
 
 
 void Set_IpWid::updateType()
 {
     sIpCfg *dt = &(mItem->ip); //设备类型
-    dt->ip_curtype = ui->curTypeBox->currentIndex();
-    dt->ip_buzzer = ui->buzzerBox->currentIndex();
+    dt->ip_buzzer = 0;
     dt->ip_filter = ui->filterspinBox->value();
-    dt->ip_mode = ui->modeBox->currentIndex();
-    dt->ip_num = ui->numBox->currentIndex()+1;
     dt->ip_ISD = ui->ISDBox->currentIndex();
     dt->ip_iOF = ui->iOFBox->currentIndex();
     dt->ip_shunt = ui->shuntBox->currentIndex();
     dt->ip_residual = ui->residualBox->currentIndex();
     dt->ip_lightning = ui->lightningBox->currentIndex();
-    dt->version = ui->verlineEdit->text().remove(".").toUInt();
 }
 
 bool Set_IpWid::inputCheck()

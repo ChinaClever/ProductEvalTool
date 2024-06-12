@@ -95,6 +95,7 @@ struct sIpCfg {
     QString outFirst;
     QString outSecond;
 
+
     uchar ip_curtype;
     uchar ip_buzzer;
     uchar ip_filter;
@@ -105,6 +106,14 @@ struct sIpCfg {
     uchar ip_shunt;
     uchar ip_residual;
     uchar ip_lightning;
+
+    uint ip_vol;
+    ushort ip_cur;
+    ushort ip_pow;
+    uint ip_volErr;
+    ushort ip_curErr;
+    ushort ip_powErr;
+
 };
 
 struct sSiCfg {
@@ -126,6 +135,11 @@ struct sSiCfg {
     ushort tem_version;
     uchar tem_buzzer;
     uchar tem_filter;
+
+    uint si_vol;
+    ushort si_cur;
+    uint si_volErr;
+    ushort si_curErr;
 };
 
 struct sCfgDev {

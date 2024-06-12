@@ -24,7 +24,7 @@ protected:
     void initLayout();
 public slots:
     void TextSlot(QString str);
-
+    void ImageSlot(int value);
 private:
     Ui::Face_Power *ui;
     Home_LoopTabWid *mLineTabWid;

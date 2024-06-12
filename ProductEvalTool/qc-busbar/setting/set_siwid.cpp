@@ -33,25 +33,35 @@ void Set_SiWid::initFunSlot()
 void Set_SiWid::initType()
 {
     sSiCfg *dt = &(mItem->si); //设备类型
-    ui->baudBox->setCurrentIndex(dt->si_baud);
-    ui->buzzerBox->setCurrentIndex(dt->si_buzzer);
+
     ui->filterspinBox->setValue(dt->si_filter);
     ui->iOFBox->setCurrentIndex(dt->si_iOF);
-    int ver = dt->si_version;
-    QString str = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
-    ui->verlineEdit->setText(str);
     ui->phaseBox->setCurrentIndex(dt->si_phaseflag);
+    uchar loop = 0;
+    if(dt->loopNum == 3)
+        loop = 0;
+    else if (dt->loopNum == 6)
+        loop = 1;
+    else if (dt->loopNum == 9)
+        loop = 2;
+
+    ui->loopNumBox->setCurrentIndex(loop);
 }
 
 void Set_SiWid::updateType()
 {
     sSiCfg *dt = &(mItem->si);
-    dt->si_baud = ui->baudBox->currentIndex();
-    dt->si_buzzer = ui->buzzerBox->currentIndex();
+    dt->si_buzzer = 0;
     dt->si_filter = ui->filterspinBox->value();
     dt->si_iOF = ui->iOFBox->currentIndex();
-    dt->si_version = ui->verlineEdit->text().remove(".").toUInt();
     dt->si_phaseflag = ui->phaseBox->currentIndex();
+    uchar loop = ui->loopNumBox->currentIndex();
+    if(loop == 0)
+        dt->loopNum = 3;
+    else if (loop == 1)
+        dt->loopNum = 6;
+    else if (loop == 2)
+        dt->loopNum = 9;
 }
 
 bool Set_SiWid::inputCheck()

@@ -37,11 +37,11 @@ void Home_LoopTabWid::appendItem(sBoxData *box)
             setTableRow(i, listStr);
             if(i<4) setItemColor(i, 5, box->env.tem.status[i]);
 
-            if(dev->cur.value[i] == 0) setItemColor(i, 0, 3);
-            if(dev->vol.value[i] == 0) setItemColor(i, 1, 3);
-            if(dev->pow.value[i] == 0) setItemColor(i, 2, 3);
+            setItemColor(i, 0, dev->cur.status[i]);
+            setItemColor(i, 1, dev->vol.status[i]);
+            setItemColor(i, 2, dev->pow.status[i]);
         }
-    }else {
+    }else if(box->loopNum == 3) {
         for(int i=0; i<box->loopNum + 1; ++i) {
             QStringList listStr;
             if(i == 3) {
@@ -59,11 +59,9 @@ void Home_LoopTabWid::appendItem(sBoxData *box)
             setTableRow(i, listStr);
             setItemColor(i, 5, box->env.tem.status[i]);
 
-            if(i < 3) {
-                if(dev->cur.value[i] == 0) setItemColor(i, 0, 3);
-                if(dev->vol.value[i] == 0) setItemColor(i, 1, 3);
-                if(dev->pow.value[i] == 0) setItemColor(i, 2, 3);
-            }
+            setItemColor(i, 0, dev->cur.status[i]);
+            setItemColor(i, 1, dev->vol.status[i]);
+            setItemColor(i, 2, dev->pow.status[i]);
         }
     }
 }

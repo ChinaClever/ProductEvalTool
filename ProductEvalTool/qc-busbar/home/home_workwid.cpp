@@ -17,6 +17,7 @@ Home_WorkWid::Home_WorkWid(QWidget *parent) :
     initLayout();
     initTypeComboBox();
 
+    ui->stopFag->hide();
     QTimer::singleShot(7*1000,this,SLOT(PingSlot())); //延时初始化
 }
 
@@ -57,9 +58,12 @@ void Home_WorkWid::initWid()
     connect(mPowThread,&Power_CoreThread::finshSig, this, &Home_WorkWid::StatusSlot);
     connect(mPowThread, &Power_CoreThread::TipSig , mPower, &Face_Power::TextSlot);
     connect(mPowThread,&Power_CoreThread::JudgSig, this, &Home_WorkWid::JudgSlots);
+    connect(mPowThread, &Power_CoreThread::ImageSig , mPower, &Face_Power::ImageSlot);
 
     mPowDev = Power_DevRead::bulid(this);
     connect(mPowDev, &Power_DevRead::StepSig , mPower, &Face_Power::TextSlot);
+    connect(mPowDev, &Power_DevRead::PloarSig , this, &Home_WorkWid::polarSlot);
+    connect(mPowDev, &Power_DevRead::CurImageSig , mPower, &Face_Power::ImageSlot);
 
     timer = new QTimer(this);
     timer->start(100);
@@ -87,6 +91,11 @@ void Home_WorkWid::overSlot()
 {
     mItem->mode = Test_Over;
     mVolInsul->resultSlot();
+
+}
+void Home_WorkWid::polarSlot(QString str)
+{
+    bool ret = MsgBox::question(this, str);
 
 }
 
@@ -214,7 +223,7 @@ void Home_WorkWid::updateWid()
     str = mDev->devType.dev_type;
     mPro->productType = str;
     mPro->Service = mCfgm->Service;
-    mPro->stopFlag = ui->stopFag->isChecked();
+    mPro->stopFlag = 1;
     mPro->online = mCfgm->online;
     int ver = get_share_mem()->box[mCfgm->addr-1].version;
     mPro->softwareVersion = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
@@ -240,14 +249,10 @@ bool Home_WorkWid::initSerialVol()
     sSerial *coms = &(mCfgm->coms);
     ui->textEdit->clear();
     bool ret = false;
-    if(mCfgm->modeId == TEMPER_BUSBAR) {
-        ret = true;
-    } else{
-        ret = coms->ser1->isOpened();
-        if(!ret){MsgBox::critical(this, tr("请先打绝缘/耐压串口")); return ret;}
-    }
+    ret = coms->ser1->isOpened();
+    if(!ret){MsgBox::critical(this, tr("请先打Acw/Ir串口")); return ret;}
 
-        return ret;
+    return ret;
 }
 
 bool Home_WorkWid::initSerialGND()
@@ -260,7 +265,7 @@ bool Home_WorkWid::initSerialGND()
         ret = true;
     } else{
         ret = coms->ser2->isOpened();
-        if(!ret){MsgBox::critical(this, tr("请先打开接地串口")); return ret;}
+        if(!ret){MsgBox::critical(this, tr("请先打开Gnd串口")); return ret;}
     }
 
     return ret;
@@ -276,7 +281,7 @@ bool Home_WorkWid::initSerial()
         ret = true;
     }else{
         ret = coms->ser3->isOpened();
-        if(!ret){MsgBox::critical(this, tr("请先打开设备串口")); return ret;}
+        if(!ret){MsgBox::critical(this, tr("请先打开Dev串口")); return ret;}
     }
 
     return ret;
@@ -348,12 +353,10 @@ void Home_WorkWid::ItemStatus()
 bool Home_WorkWid::checkUesr()
 {
     bool ret = true;
-    qDebug()<<"user"<<mCfgm->user;
     if(mCfgm->user.isEmpty()) {
         MsgBox::critical(this, tr("请先填写工单号！"));
         return false;
     }
-
     if(mCfgm->cnt.num < 1) {
         MsgBox::critical(this, tr("请先填写订单剩余数量！"));
         return false;
@@ -361,14 +364,15 @@ bool Home_WorkWid::checkUesr()
 
     return ret;
 }
-void Home_WorkWid::on_vol_insulBtn_clicked()//耐压/绝缘
+
+void Home_WorkWid::on_vol_insulBtn_clicked()//耐压--绝缘
 {
     ui->stackedWid->show();
     mItem->work_mode = 0;
     mPro->work_mode = 0;
     if(mPro->step == Test_End){
         bool ret = initSerialVol();
-        ret = checkUesr();
+        if(ret) ret = checkUesr();
         if(ret) {
             mPacket->init(); ItemStatus();
             int mode = Test_Over;
@@ -392,7 +396,7 @@ void Home_WorkWid::on_groundBtn_clicked()//接地
     mPro->work_mode = 1;
     if(mPro->step == Test_End){
         bool ret = initSerialGND();
-        ret = checkUesr();
+        if(ret) ret = checkUesr();
         if(ret) {
             mPacket->init(); ItemStatus();
             int mode = Test_Over;
@@ -409,14 +413,14 @@ void Home_WorkWid::on_groundBtn_clicked()//接地
     }
 }
 
-void Home_WorkWid::on_volBtn_clicked()
+void Home_WorkWid::on_volBtn_clicked()  //串口--电压
 {
     ui->stackedWid->hide();
     mItem->work_mode = 2;
     mPro->work_mode = 2;
     if(mPro->step == Test_End) {
         bool ret = initSerial();
-        ret = checkUesr();
+        if(ret) ret = checkUesr();
         if(ret) {
             mPacket->init();
             ItemStatus();
@@ -431,20 +435,20 @@ void Home_WorkWid::on_volBtn_clicked()
     }
 }
 
-void Home_WorkWid::on_loadBtn_clicked()
+void Home_WorkWid::on_loadBtn_clicked()     //电流--断路器
 {
     ui->stackedWid->hide();
     mItem->work_mode = 3;
     mPro->work_mode = 3;
     if(mPro->step == Test_End) {
         bool ret = initSerial();
-        ret = checkUesr();
+        if(ret) ret = checkUesr();
         if(ret) {       
             mPacket->init();
             ItemStatus();
             mPowThread->start();          
         }
-    }else{
+    }else {
         bool ret = MsgBox::question(this, tr("确定需要提前结束？"));
         if(ret) {
             LoadStatus(!ret); mPro->result = Test_Fail;
@@ -485,6 +489,7 @@ void Home_WorkWid::on_comBox_currentIndexChanged(int index)
     }
     Cfg::bulid()->writeCfgDev();
 }
+
 void Home_WorkWid::initTypeComboBox()
 {
     int index = mCfgm->modeId;

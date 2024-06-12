@@ -9,6 +9,7 @@ Face_Power::Face_Power(QWidget *parent)
     mFirst = 1;
     initLayout();
     initWid();
+
 }
 
 Face_Power::~Face_Power()
@@ -21,8 +22,9 @@ void Face_Power::initLayout()
     QPalette pl = ui->textEdit->palette();
     pl.setBrush(QPalette::Base,QBrush(QColor(255,0,0,0)));
     ui->textEdit->setPalette(pl);
+
     QGridLayout *gridLayout = new QGridLayout(this->parentWidget());
-    gridLayout->setContentsMargins(0, 7, 0, 0);
+    gridLayout->setContentsMargins(0, 0, 0, 0);
     gridLayout->addWidget(this);
 
     ui->textEdit->setAlignment(Qt::AlignCenter);
@@ -52,4 +54,26 @@ void Face_Power::ClearText()
 {
     mFirst = 1;
     ui->textEdit->clear();
+}
+
+void Face_Power::ImageSlot(int value)
+{
+    switch (value) {
+    case 0:
+        ui->label->setStyleSheet("QLabel{background-image: url(:/image/vol_test.jpg);}");
+        break;
+    case 1:
+        ui->label->setStyleSheet("QLabel{background-image: url(:/image/ploa.jpg);}");
+        break;
+    case 2:
+        ui->label->setStyleSheet("QLabel{background-image: url(:/image/cur_test.jpg);}");
+        break;
+    default:
+        break;
+    }
+    // if(value == 1)
+    // {
+    //     QString str = tr("极性测试指示灯1和灯2亮");
+    //     bool ret = MsgBox::information(this,str);
+    // }
 }

@@ -8,8 +8,6 @@ Setting::Setting(QWidget *parent)
     ui->setupUi(this);
     groupBox_background_icon(this);
 
-    ui->label_2->hide();
-    ui->buzzerBox->hide();
     mItem = Cfg::bulid()->item;
     QTimer::singleShot(10,this,SLOT(initFunSlot()));
 }
@@ -39,6 +37,11 @@ void Setting::initType()
     ui->iOFBox->setCurrentIndex(dt->ip_iOF);
     ui->shuntBox->setCurrentIndex(dt->ip_shunt);
     ui->lightningBox->setCurrentIndex(dt->ip_lightning);
+    ui->residualBox->setCurrentIndex(dt->ip_residual);
+
+    ui->ip_volErrSpin->setValue(dt->ip_volErr / 10.0);
+    ui->ip_curErrSpin->setValue(dt->ip_curErr / 10.0);
+    ui->ip_powErrSpin->setValue(dt->ip_powErr / 10.0);
 
     sSiCfg *dv = &(mItem->si); //插接箱
     ui->filterspinBox_2->setValue(dv->si_filter);
@@ -53,6 +56,8 @@ void Setting::initType()
         loop = 2;
 
     ui->loopNumBox->setCurrentIndex(loop);
+    ui->si_volErrSpin->setValue(dv->si_volErr / 10.0);
+    ui->si_curErrSpin->setValue(dv->si_curErr / 10.0);
 }
 
 void Setting::updateType()
@@ -67,6 +72,14 @@ void Setting::updateType()
     dt->ip_iOF = ui->iOFBox->currentIndex();
     dt->ip_shunt = ui->shuntBox->currentIndex();
     dt->ip_lightning = ui->lightningBox->currentIndex();
+    dt->ip_residual = ui->residualBox->currentIndex();
+
+    dt->ip_vol = ui->ip_volSpin->value();
+    dt->ip_cur = ui->ip_curSpin->value();
+    dt->ip_pow = ui->ip_powErrSpin->value();
+    dt->ip_volErr = ui->ip_volErrSpin->value() * 10;
+    dt->ip_curErr = ui->ip_curErrSpin->value() * 10;
+    dt->ip_powErr = ui->ip_powErrSpin->value() * 10;
 
     sSiCfg *dv = &(mItem->si);
     dv->si_filter = ui->filterspinBox_2->value();
@@ -80,6 +93,10 @@ void Setting::updateType()
         dv->loopNum = 6;
     else if (loop == 2)
         dv->loopNum = 9;
+    dv->si_vol = ui->si_volSpin->value();
+    dv->si_cur = ui->si_curSpin->value();
+    dv->si_volErr = ui->si_volErrSpin->value() * 10;
+    dv->si_curErr = ui->si_curErrSpin->value() * 10;
 }
 
 bool Setting::dataSave()
@@ -108,6 +125,7 @@ void Setting::enabledSlot(bool en)
         en = dataSave();
         if(en) {
             Cfg::bulid()->writeCfgDev();
+            Cfg::bulid()->writeCnt();
         } else {
             saveErrSlot();
         }
@@ -131,7 +149,10 @@ void Setting::saveFunSlot()
 {
     bool en = mCnt % 2;
     enabledSlot(en);
-    if(!en) Cfg::bulid()->writeCfgDev();
+    if(!en) {
+        Cfg::bulid()->writeCnt();
+        Cfg::bulid()->writeCfgDev();
+    }
 }
 
 void Setting::on_userEdit_textChanged(const QString &arg1)

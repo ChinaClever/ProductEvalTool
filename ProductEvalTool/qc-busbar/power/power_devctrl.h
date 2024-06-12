@@ -1,7 +1,7 @@
 #ifndef POWER_DEVCTRL_H
 #define POWER_DEVCTRL_H
 
-#include "power_logs.h"
+#include "power_devread.h"
 
 class Power_DevCtrl : public Power_Object
 {

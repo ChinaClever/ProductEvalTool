@@ -23,27 +23,11 @@ Set_LineUnitWid::~Set_LineUnitWid()
 }
 
 void Set_LineUnitWid::showAndHideWid(bool show)
-{
-    ui->label->setHidden(show);
-    ui->lineVolMinSpin->setHidden(show);
-    ui->label_3->setHidden(show);
-    ui->lineVolMaxSpin->setHidden(show);
-    ui->label_7->setHidden(show);
-    ui->hzMinSpin->setHidden(show);
-    ui->label_4->setHidden(show);
-    ui->hzMaxSpin->setHidden(show);
+{  
     ui->label_16->setHidden(show);
     ui->totalpowMinSpin->setHidden(show);
     ui->label_15->setHidden(show);
-    ui->totalpowMaxSpin->setHidden(show);
-    ui->label_18->setHidden(show);/////////////////////////////////////////////////////////////////////////////
-    ui->zerocurMinSpin->setHidden(show);
-    ui->label_17->setHidden(show);
-    ui->zerocurMaxSpin->setHidden(show);/////////////////////////////////////////////////////////////////////////////
-    ui->label_2->setHidden(show);
-    ui->reMaxSpin->setHidden(show);
-    ui->label_17->hide();
-    ui->zerocurMinSpin->hide();
+    ui->totalpowMaxSpin->setHidden(show);  
 }
 
 void Set_LineUnitWid::init(sObjCfg *obj , int index)
@@ -56,29 +40,14 @@ void Set_LineUnitWid::init(sObjCfg *obj , int index)
     ui->volMaxSpin->setValue(obj->vol.max);
     ui->temMinSpin->setValue(obj->tem.min);
     ui->temMaxSpin->setValue(obj->tem.max);
-    ui->powMinSpin->setValue(obj->pow.min);
-    ui->powMaxSpin->setValue(obj->pow.max);
 
     ui->totalpowMinSpin->setValue(obj->totalpow.min);
-    ui->totalpowMaxSpin->setValue(obj->totalpow.max);
-    ui->lineVolMinSpin->setValue(obj->linevol.min);
-    ui->lineVolMaxSpin->setValue(obj->linevol.max);
-    ui->hzMinSpin->setValue(obj->hz.min);
-    ui->hzMaxSpin->setValue(obj->hz.max);
-    ui->zerocurMinSpin->setValue(obj->zerocur.min);
-    ui->zerocurMaxSpin->setValue(obj->zerocur.max);
-
-    ui->reMaxSpin->setValue(obj->recur.max);
+    ui->totalpowMaxSpin->setValue(obj->totalpow.max);   
 
     obj->vol.rate = transformRate(ui->volMaxSpin->decimals());
     obj->cur.rate = transformRate(ui->curMaxSpin->decimals());
     obj->tem.rate = transformRate(ui->temMaxSpin->decimals());
-    obj->pow.rate = transformRate(ui->powMaxSpin->decimals());
     obj->totalpow.rate = transformRate(ui->totalpowMaxSpin->decimals());
-    obj->linevol.rate = transformRate(ui->lineVolMaxSpin->decimals());
-    obj->hz.rate = transformRate(ui->hzMaxSpin->decimals());
-    obj->zerocur.rate = transformRate(ui->zerocurMaxSpin->decimals());
-    obj->recur.rate = transformRate(ui->reMaxSpin->decimals());
 
     if(index == START_BUSBAR){
         showAndHideWid(false);
@@ -96,21 +65,9 @@ void Set_LineUnitWid::updateData()
     obj->vol.max = ui->volMaxSpin->value();
     obj->tem.min = ui->temMinSpin->value();
     obj->tem.max = ui->temMaxSpin->value();
-    obj->pow.min = ui->powMinSpin->value();
-    obj->pow.max = ui->powMaxSpin->value();
 
     obj->totalpow.min = ui->totalpowMinSpin->value();
     obj->totalpow.max = ui->totalpowMaxSpin->value();
-    obj->linevol.min = ui->lineVolMinSpin->value();
-    obj->linevol.max = ui->lineVolMaxSpin->value();
-    obj->hz.min = ui->hzMinSpin->value();
-    obj->hz.max = ui->hzMaxSpin->value();
-    obj->zerocur.min = ui->zerocurMinSpin->value();
-    obj->zerocur.max = ui->zerocurMaxSpin->value();
-
-    obj->recur.max = ui->reMaxSpin->value();
-
-
 }
 
 int Set_LineUnitWid::transformRate(int index)

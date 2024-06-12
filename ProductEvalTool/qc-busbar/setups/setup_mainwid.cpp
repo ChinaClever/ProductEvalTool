@@ -142,8 +142,7 @@ void Setup_MainWid::on_pcBtn_clicked()
         ret = false;
         writePcNum();
         writeAddr();
-        writeLogCount();
-        Cfg::bulid()->writeCnt();
+        writeLogCount();      
     } else {
         str = tr("保存");
     }

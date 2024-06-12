@@ -1,8 +1,7 @@
 #ifndef POWER_CORETHREAD_H
 #define POWER_CORETHREAD_H
-
-#include "power_devread.h"
-#include "json_pack.h"
+#include "power_devctrl.h"
+// #include "json_pack.h"
 #include "testconfig.h"
 #include "people_judg.h"
 
@@ -21,6 +20,7 @@ signals:
     void TipSig(QString str);
     void finshSig(bool ret);
     void JudgSig();
+    void ImageSig(int value);
 private slots:
     void noloadHomeSlot(int ret);
 
@@ -35,11 +35,12 @@ protected:
     bool initDev();
     bool hubPort();
     void StartErrRange();
+    void EnvErrRange();
     void InsertErrRange();
     void BaseErrRange();
     bool eleErrRange(int i);
     bool eleErrRange0(int i);
-    bool envErrRange();
+
 
     bool volAlarmErr(int i);
     bool curAlarmErr(int i);
@@ -87,6 +88,8 @@ private:
     Dev_Source *mSource;
     People_judg *mJudg;
     uchar loopNum;
+    Dev_SiRtu *mSiRtu;
+    Power_ErrRange *mErr;
 };
 
 #endif // POWER_CORETHREAD_H

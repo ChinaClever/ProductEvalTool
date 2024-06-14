@@ -28,7 +28,7 @@ protected:
 
     bool inputCheck();
     bool dataSave();
-
+    int transformRate(int index);
 public slots:
     void initFunSlot();
     void enabledSlot(bool en);
@@ -42,6 +42,8 @@ private slots:
 private:
     Ui::Setting *ui;
     sCfgItem *mItem;
+    sProgress *mPro;
+    sDataPacket *mPacket;
     int mCnt;
 };
 

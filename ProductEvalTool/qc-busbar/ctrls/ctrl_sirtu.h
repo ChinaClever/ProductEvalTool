@@ -20,6 +20,7 @@ public:
 
     bool setBusbarStartEle(int index);//index [1,3]
     bool setBusbarStartPow(int val1 , int val2);
+    bool setBusbarStartModbus(int val);
     bool setBusbarStartLineVol(int index , int val1 , int val2);
 
     bool setBusbarInsertEle(int index);//index [1,9]

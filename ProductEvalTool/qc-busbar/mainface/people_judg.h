@@ -16,7 +16,7 @@ class People_judg : public QDialog
 public:
     explicit People_judg(QWidget *parent = nullptr);
     ~People_judg();
-    void writeData(const QString &str1,const QString &str2,bool pass);
+    void writeData(const QString &str1,const QString &str2,const QString &str3,bool pass);
     void initData();
 private slots:
     void on_sureButton_clicked();

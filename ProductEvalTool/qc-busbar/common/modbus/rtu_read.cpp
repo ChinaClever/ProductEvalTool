@@ -104,7 +104,7 @@ int Rtu_Read::rtuRead(sRtuItem *pkt, sRtuReplyItem *recv)
 {
     uchar sendBuf[64]={0}, recvBuf[MODBUS_RTU_SIZE]={0};
     int rtn = rtuPacket(pkt, sendBuf);
-    rtn = transmit(sendBuf, rtn, recvBuf, 3);
+    rtn = transmit(sendBuf, rtn, recvBuf, 5);
     if(rtn > 0) {
         bool ret = recvCrc(recvBuf, rtn, recv);
         if(ret) {

@@ -669,9 +669,15 @@ struct sProgress
     QString product_sn;
     QString test_step;
     QString test_item;
+    QStringList test_function;
     QString loopNum;
     QString phase;
     QString test_type;
+    QString order_id;//订单号
+    QString order_num;//订单数量
+    QString test_num;//检验数量
+    QString dev_name;//设备名称
+    uchar Lan_flag;//0---中文，1---英文
     uchar issure;
 };
 

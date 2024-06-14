@@ -105,6 +105,8 @@ private:
     QTimer *timer;
     sDevData * mDev;
     sProgress *mPro;
+    sDevData * eDev;
+    sProgress *ePro;
     sCfgItem *mCfgm;
     sDataPacket *mPacket;
 

@@ -25,7 +25,6 @@ void Home_DataWid::appendItem(sBoxData *box)
         for(int i=0; i<box->loopNum; ++i) {
             QStringList listStr;
             listStr << QString::number(dev->vol.value[i]/COM_RATE_VOL,'f',1);
-            listStr << " " << " ";
             setTableRow(i, listStr);
         }
     }else if(mCfgm->work_mode == 3) {
@@ -42,8 +41,7 @@ void Home_DataWid::appendItem(sBoxData *box)
 void Home_DataWid::timeoutDone()
 {
     clearTable();
-
-    if(mBusData->box[mItem->addr-1].loopNum) {
+    if((mBusData->box[mItem->addr-1].loopNum)&&(mBusData->box[mItem->addr-1].loopNum < 10)) {
         appendItem(&(mBusData->box[mItem->addr-1]));
     }
 }

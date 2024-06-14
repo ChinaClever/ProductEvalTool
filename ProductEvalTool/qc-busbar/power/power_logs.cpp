@@ -62,7 +62,6 @@ bool Power_Logs::writeLog()
     it.sn = mDev->devType.sn;
     it.content = mPro->test_item;
 
-    mItem->cnt.all += 1;
     if(mPro->result != Test_Fail) {
         it.passed = tr("通过");
         mItem->cnt.ok += 1;
@@ -77,11 +76,12 @@ bool Power_Logs::writeLog()
         mItem->cnt.err += 1;
         it.passed = tr("失败");
     }
-    it.memo = mPro->itemData.join("; ");
 
+    it.memo = mPro->itemData.join("; ");
+    mPro->test_num = mItem->cnt.all - mItem->cnt.num;
     if(it.QRcode.size()) mLogItems << it;
     if(it.QRcode.isEmpty()) return false;
-
+    Cfg::bulid()->writeCnt();
     return DbLogs::bulid()->insertItem(it);
 }
 
@@ -102,7 +102,7 @@ bool Power_Logs::updatePro(const QString &str, bool pass, int sec)
     return pass;
 }
 
-void Power_Logs::writeData(const QString &str1,const QString &str2, bool pass)
+void Power_Logs::writeData(const QString &str1,const QString &str2, const QString &str3, bool pass)
 {
     if(mPro->step < Test_End) {
         mPro->testStartTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
@@ -112,6 +112,6 @@ void Power_Logs::writeData(const QString &str1,const QString &str2, bool pass)
             mPro->stepResult << "0";
         }
         mPro->stepRequest << str1; mPro->itemData << str2;
-
+        mPro->test_function << str3;
     }
 }

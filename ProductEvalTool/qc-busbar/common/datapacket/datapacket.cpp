@@ -72,7 +72,11 @@ void sDataPacket::init()
     pro->stepRequest.clear();
     pro->stepResult.clear();
     pro->issure = 0;
-
+    pro->dev_name.clear();
+    pro->order_id.clear();
+    pro->order_num.clear();
+    pro->test_num.clear();
+    pro->Lan_flag = 0;
 }
 
 bool sDataPacket::updatePro(const QString &str, bool pass, int sec)

@@ -578,23 +578,23 @@ bool Dev_SiRtu::rtu_recv_packetV3(uchar *buf, int len, Rtu_recv *pkt)
         uchar *ptr=buf;
         ptr += rtu_recv_head(ptr, pkt); //指针偏移0
         if( pkt->addr == 0x01 ){//始端箱??
-            // ptr += rtu_start_recv_init(ptr , pkt);
-            // ptr += 5*2;//保留
-            // for(int i = 0 ; i < RTU_LINE_NUM ; ++i) // 读取相 数据
-            //     ptr += rtu_start_recv_line_data(ptr , pkt , i);
-            // ptr += rtu_start_recv_other_data(ptr , pkt);
-            // for(int i = 0 ; i < RTU_TH_NUM ; ++i) // 读取温度 数据
-            //     ptr += rtu_start_recv_env_data(ptr , pkt , i);
-            // for(int i = 0 ; i < RTU_LINE_NUM ; ++i) // 读取滤波 数据
-            //     ptr += rtu_start_recv_thd_data(ptr , pkt , i);
-            // ptr += rtu_start_recv_some_alarm_data(ptr , pkt);
-            // for(int i = 0 ; i < RTU_LINE_NUM ; ++i) // 读取滤波 数据
-            //     ptr += rtu_start_recv_last_alarm_data(ptr , pkt , i);
-            // int state = 1;
-            // if( pkt->breaker == 1 ) state = 0;
-            // for(int i = 0 ; i < RTU_LINE_NUM ; ++i)
-            //     pkt->data[i].sw = state;// 更新始端箱断路器状态
-            // pkt->lineNum = 3;
+            ptr += rtu_start_recv_init(ptr , pkt);
+            ptr += 5*2;//保留
+            for(int i = 0 ; i < RTU_LINE_NUM ; ++i) // 读取相 数据
+                ptr += rtu_start_recv_line_data(ptr , pkt , i);
+            ptr += rtu_start_recv_other_data(ptr , pkt);
+            for(int i = 0 ; i < RTU_TH_NUM ; ++i) // 读取温度 数据
+                ptr += rtu_start_recv_env_data(ptr , pkt , i);
+            for(int i = 0 ; i < RTU_LINE_NUM ; ++i) // 读取滤波 数据
+                ptr += rtu_start_recv_thd_data(ptr , pkt , i);
+            ptr += rtu_start_recv_some_alarm_data(ptr , pkt);
+            for(int i = 0 ; i < RTU_LINE_NUM ; ++i) // 读取滤波 数据
+                ptr += rtu_start_recv_last_alarm_data(ptr , pkt , i);
+            int state = 1;
+            if( pkt->breaker == 1 ) state = 0;
+            for(int i = 0 ; i < RTU_LINE_NUM ; ++i)
+                pkt->data[i].sw = state;// 更新始端箱断路器状态
+            pkt->lineNum = 3;
         }
         else{//插接箱
             ptr += rtu_plug_recv_init(ptr , pkt);

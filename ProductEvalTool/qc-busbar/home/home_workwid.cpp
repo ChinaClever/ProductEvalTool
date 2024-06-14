@@ -33,6 +33,8 @@ void Home_WorkWid::initWid()
     mPacket = sDataPacket::bulid();
     mDev = mPacket->getDev();
     mPro = mPacket->getPro();
+    eDev = mPacket->getDev();
+    ePro = mPacket->getPro();
     mLogs = Power_Logs::bulid(this);
     mPro->step = Test_End;
     mCfgm->online = false;
@@ -218,13 +220,20 @@ void Home_WorkWid::updateWid()
 {
     QString str = mDev->devType.sn;
     mPro->moduleSN = str;
+    ePro->moduleSN = str;
     mItem->sn.sn = ui->codeEit->text();
     mPro->product_sn = ui->codeEit->text();
+    ePro->product_sn = ui->codeEit->text();
+
     str = mDev->devType.dev_type;
     mPro->productType = str;
+    ePro->productType = str;
+
     mPro->Service = mCfgm->Service;
     mPro->stopFlag = 1;
     mPro->online = mCfgm->online;
+    mPro->dev_name = ui->comBox->currentText();
+    // ePro->dev_name =
     int ver = get_share_mem()->box[mCfgm->addr-1].version;
     mPro->softwareVersion = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
 
@@ -337,11 +346,11 @@ void Home_WorkWid::ItemStatus()
             mPro->itemRequest = "接地电阻 <100mΩ";
             break;
     }
-    case 2: {mPro->test_step = "电力测试"; mPro->test_item = ui->volBtn->text();
+    case 2: {mPro->test_step = "功能测试";
             ui->volLab->setStyleSheet("background-color:yellow;color:rgb(0, 0, 0);");
             break;
     }
-    case 3: {mPro->test_step = "电力测试";  mPro->test_item = ui->loadBtn->text();
+    case 3: {mPro->test_step = "功能测试";
             ui->loadLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
             break;
     }

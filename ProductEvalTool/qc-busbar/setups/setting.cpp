@@ -7,7 +7,8 @@ Setting::Setting(QWidget *parent)
 {
     ui->setupUi(this);
     groupBox_background_icon(this);
-
+    mPacket = sDataPacket::bulid();
+    mPro = mPacket->getPro();
     mItem = Cfg::bulid()->item;
     QTimer::singleShot(10,this,SLOT(initFunSlot()));
 }
@@ -23,8 +24,8 @@ void Setting::initFunSlot()
     ui->groupBox3->setEnabled(false);
     ui->groupBox4->setEnabled(false);
     ui->userEdit->setText(mItem->user);
-    ui->cntSpin->setValue(mItem->cnt.num);
-
+    ui->cntSpin->setValue(mItem->cnt.num);//剩余数量
+    ui->orderBox->setValue(mItem->cnt.all);//订单数量
     initType(); mCnt = 0;
 }
 
@@ -38,11 +39,16 @@ void Setting::initType()
     ui->shuntBox->setCurrentIndex(dt->ip_shunt);
     ui->lightningBox->setCurrentIndex(dt->ip_lightning);
     ui->residualBox->setCurrentIndex(dt->ip_residual);
+    ui->ip_volSpin->setValue(dt->ip_vol);
+    ui->ip_curSpin->setValue(dt->ip_cur);
+    ui->ip_powSpin->setValue(dt->ip_pow);
+    ui->ip_volErrSpin->setValue(dt->ip_volErr);
+    ui->ip_curErrSpin->setValue(dt->ip_curErr);
+    ui->ip_powErrSpin->setValue(dt->ip_powErr);
+    ui->ip_curMinSpin->setValue(dt->ip_curMin);
+    ui->ip_curMaxSpin->setValue(dt->ip_curMax);
 
-    ui->ip_volErrSpin->setValue(dt->ip_volErr / 10.0);
-    ui->ip_curErrSpin->setValue(dt->ip_curErr / 10.0);
-    ui->ip_powErrSpin->setValue(dt->ip_powErr / 10.0);
-
+    dt->rate = transformRate(ui->ip_curMaxSpin->decimals());
     sSiCfg *dv = &(mItem->si); //插接箱
     ui->filterspinBox_2->setValue(dv->si_filter);
     ui->iOFBox_2->setCurrentIndex(dv->si_iOF);
@@ -56,14 +62,20 @@ void Setting::initType()
         loop = 2;
 
     ui->loopNumBox->setCurrentIndex(loop);
-    ui->si_volErrSpin->setValue(dv->si_volErr / 10.0);
-    ui->si_curErrSpin->setValue(dv->si_curErr / 10.0);
+    ui->si_volSpin->setValue(dv->si_vol);
+    ui->si_curSpin->setValue(dv->si_cur);
+    ui->si_volErrSpin->setValue(dv->si_volErr );
+    ui->si_curErrSpin->setValue(dv->si_curErr );
+    ui->si_curMinSpin->setValue(dv->si_curMin);
+    ui->si_curMaxSpin->setValue(dv->si_curMax);
+    dv->rate = transformRate(ui->si_curMaxSpin->decimals());
 }
 
 void Setting::updateType()
 {
     mItem->user = ui->userEdit->text();
     mItem->cnt.num = ui->cntSpin->value();
+    mItem->cnt.all = ui->orderBox->value();
 
     sIpCfg *dt = &(mItem->ip); //设备类型
     dt->ip_buzzer = 0;
@@ -77,9 +89,11 @@ void Setting::updateType()
     dt->ip_vol = ui->ip_volSpin->value();
     dt->ip_cur = ui->ip_curSpin->value();
     dt->ip_pow = ui->ip_powErrSpin->value();
-    dt->ip_volErr = ui->ip_volErrSpin->value() * 10;
-    dt->ip_curErr = ui->ip_curErrSpin->value() * 10;
-    dt->ip_powErr = ui->ip_powErrSpin->value() * 10;
+    dt->ip_volErr = ui->ip_volErrSpin->value();
+    dt->ip_curErr = ui->ip_curErrSpin->value();
+    dt->ip_powErr = ui->ip_powErrSpin->value();
+    dt->ip_curMin = ui->ip_curMinSpin->value();
+    dt->ip_curMax = ui->ip_curMaxSpin->value();
 
     sSiCfg *dv = &(mItem->si);
     dv->si_filter = ui->filterspinBox_2->value();
@@ -95,8 +109,11 @@ void Setting::updateType()
         dv->loopNum = 9;
     dv->si_vol = ui->si_volSpin->value();
     dv->si_cur = ui->si_curSpin->value();
-    dv->si_volErr = ui->si_volErrSpin->value() * 10;
-    dv->si_curErr = ui->si_curErrSpin->value() * 10;
+    dv->si_volErr = ui->si_volErrSpin->value();
+    dv->si_curErr = ui->si_curErrSpin->value();
+    dv->si_curMin = ui->si_curMinSpin->value();
+    dv->si_curMax = ui->si_curMaxSpin->value();
+    // qDebug()<<"---temp---"<<dv->si_vol<<dv->si_cur<<dv->si_volErr<<dv->si_curErr;
 }
 
 bool Setting::dataSave()
@@ -142,6 +159,7 @@ void Setting::on_setBtn_clicked()
     ui->groupBox3->setEnabled(en);
     ui->groupBox4->setEnabled(en);
 
+    mPro->order_id = ui->userEdit->text();
     QTimer::singleShot(50,this,SLOT(saveFunSlot()));
 }
 
@@ -160,3 +178,15 @@ void Setting::on_userEdit_textChanged(const QString &arg1)
     ui->userEdit->setClearButtonEnabled(1);
 }
 
+int Setting::transformRate(int index)
+{
+    int rate = 1;
+    switch(index){
+    case 0: rate = 1;break;
+    case 1: rate = 10;break;
+    case 2: rate = 100;break;
+    case 3: rate = 1000;break;
+    default: rate = 1;break;
+    }
+    return rate;
+}

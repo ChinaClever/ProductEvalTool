@@ -107,13 +107,15 @@ struct sIpCfg {
     uchar ip_residual;
     uchar ip_lightning;
 
-    uint ip_vol;
-    ushort ip_cur;
-    ushort ip_pow;
+    float ip_vol;
+    float ip_cur;
+    float ip_pow;
     uint ip_volErr;
     ushort ip_curErr;
     ushort ip_powErr;
-
+    float ip_curMin;
+    float ip_curMax;
+    uint rate;
 };
 
 struct sSiCfg {
@@ -136,10 +138,13 @@ struct sSiCfg {
     uchar tem_buzzer;
     uchar tem_filter;
 
-    uint si_vol;
-    ushort si_cur;
+    float si_vol;
+    float si_cur;
     uint si_volErr;
     ushort si_curErr;
+    float si_curMin;
+    float si_curMax;
+    uint rate;
 };
 
 struct sCfgDev {

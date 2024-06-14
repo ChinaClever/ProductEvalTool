@@ -203,7 +203,7 @@ bool Dev_IpSnmp::devDataV3()
                     if(id == "1.3.6.1.4.1.30966.12.1.1.2.18.0" || id == "1.3.6.1.4.1.30966.12.1.1.2.19.0") continue;
                     praseMasterVal(id , id_value);
                     ret = true;
-                    qDebug()<<id  <<"       id_value   " <<id_value;
+                    // qDebug()<<id  <<"       id_value   " <<id_value;
                 }
                 else{
                     Snmp::socket_cleanup();

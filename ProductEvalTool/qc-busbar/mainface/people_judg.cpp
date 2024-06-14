@@ -31,9 +31,10 @@ void People_judg::initData()
     // if(!(ui->supEdit2->text().isEmpty()))
     //     ui->supBox2->setChecked(true);
 }
-void People_judg::writeData(const QString &str1,const QString &str2,bool pass)
+void People_judg::writeData(const QString &str1,const QString &str2, const QString &str3,bool pass)
 {
     mPro->stepRequest << str1; mPro->itemData << str2;
+    mPro->test_function << str3;
     mPro->testStartTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
     if(pass) {
         mPro->stepResult << "1";
@@ -44,54 +45,38 @@ void People_judg::writeData(const QString &str1,const QString &str2,bool pass)
 }
 void People_judg::on_sureButton_clicked()
 {
-    QString str2 = tr("经人工确认：通过，屏幕各界面显示正常");
-    QString str3 = tr("经人工确认：不通过，屏幕各界面显示异常");
+    QString str2 = tr("符合要求");
+    QString str3 = tr("不符合要求");
 
+    QString str = tr("指示灯检查");
     QString str1 = ui->lcdBox->text();
     bool ret = ui->lcdBox->isChecked();
-    if(ret) writeData(str1,str2,ret);
-    else  writeData(str1,str3,ret);
+    if(ret) writeData(str1,str2,str,ret);
+    else  writeData(str1,str3,str,ret);
 
-    str2 = tr("经人工确认：通过，按键功能正常");
-    str3 = tr("经人工确认：不通过，按键功能异常");
+    str = tr("指示灯检查");
     ret = ui->keyBox->isChecked();
     str1 = ui->keyBox->text();
-    if(ret) writeData(str1,str2,ret);
-    else writeData(str1,str3,ret);
+    if(ret) writeData(str1,str2,str,ret);
+    else writeData(str1,str3,str,ret);
 
-    str2 = tr("经人工确认：通过，预警、告警正常");
-    str3 = tr("经人工确认：不通过，预警、告警异常");
+    str = tr("蜂鸣器开关检查");
     ret = ui->alarmBox->isChecked();
     str1 = ui->alarmBox->text();
-    if(ret) writeData(str1,str2,ret);
-    else writeData(str1,str3,ret);
+    if(ret) writeData(str1,str2,str,ret);
+    else writeData(str1,str3,str,ret);
 
-    str2 = tr("经人工确认：通过，极性测试成功");
-    str3 = tr("经人工确认：不通过，极性测试失败");
+    str = tr("蜂鸣器开关检查");
+    ret = ui->beepBox->isChecked();
+    str1 = ui->beepBox->text();
+    if(ret) writeData(str1,str2,str,ret);
+    else writeData(str1,str3,str,ret);
+
+    str = tr("极性检查");
     ret = ui->testBox->isChecked();
     str1 = ui->testBox->text();
-    if(ret) writeData(str1,str2,ret);
-    else writeData(str1,str3,ret);
-
-    // str2 = tr("经人工确认：通过");
-    // str3 = tr("经人工确认：不通过");
-    // mItem->supCheck1.clear();
-    // str1 = ui->supEdit1->text();
-    // if(!str1.isEmpty()) {
-    //     mItem->supCheck1 = str1;
-    //     ret = ui->supBox1->isChecked();
-    //     if(ret) writeData(str1,str2,ret);
-    //     else writeData(str1,str3,ret);
-    // }
-
-    // mItem->supCheck2.clear();
-    // str1 = ui->supEdit2->text();
-    // if(!str1.isEmpty()) {
-    //     mItem->supCheck2 = str1;
-    //     ret = ui->supBox2->isChecked();
-    //     if(ret) writeData(str1,str2,ret);
-    //     else writeData(str1,str3,ret);
-    // }
+    if(ret) writeData(str1,str2,str,ret);
+    else writeData(str1,str3,str,ret);
     // Cfg::bulid()->writeJudgItem();
 
     mPro->issure = 1;

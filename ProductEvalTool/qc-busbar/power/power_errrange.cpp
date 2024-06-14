@@ -30,13 +30,13 @@ bool Power_ErrRange::volErr(int id)
     if(mItem->modeId == START_BUSBAR) {
         sIpCfg *cth = &(mItem->ip);
         value = mBusData->box[mItem->addr - 1].data.vol.value[id];
-        exValue = cth->ip_vol;
-        err = exValue*(cth->ip_volErr/1000.0);
+        exValue = cth->ip_vol *10.0;
+        err = cth->ip_volErr *10.0;
     }else {
         sSiCfg *cth = &(mItem->si);
         value = mBusData->box[mItem->addr - 1].data.vol.value[id];
-        exValue = cth->si_vol;
-        err = exValue*(cth->si_volErr/1000.0);
+        exValue = cth->si_vol *10.0;
+        err = cth->si_volErr *10.0;
     }
     bool ret = checkErrRange(exValue, value, err);
     if(ret) pass = Test_Pass;
@@ -52,13 +52,13 @@ bool Power_ErrRange::curErr(int id)
     if(mItem->modeId == START_BUSBAR) {
         sIpCfg *cth = &(mItem->ip);
         value = mBusData->box[mItem->addr - 1].data.cur.value[id];
-        exValue = cth->ip_cur;
-        err = exValue*(cth->ip_curErr/1000.0);
+        exValue = cth->ip_cur *1000.0;
+        err = cth->ip_curErr *1000.0;
     }else {
         sSiCfg *cth = &(mItem->si);
         value = mBusData->box[mItem->addr - 1].data.cur.value[id];
-        exValue = cth->si_cur;
-        err = exValue*(cth->si_curErr/1000.0);
+        exValue = cth->si_cur *1000.0;
+        err = cth->si_curErr *1000.0;
     }
 
     bool ret = checkErrRange(exValue, value, err);
@@ -112,15 +112,24 @@ bool Power_ErrRange::checkErrRange(int exValue, int value, int err)
 
 
 bool Power_ErrRange::curAlarm(int id)
-{    
-    bool ret = true;
-
-    sObjCfg *cth = mItem->modeId == START_BUSBAR ?(&(mItem->ip_cfg)):(&(mItem->si_cfg));
+{
+    bool ret = true; int min; int max;
     sDataPowUnit *unit = &(mBusData->box[mItem->addr - 1].data.cur);
-    int min = cth->cur.min*cth->cur.rate;
-    int max = cth->cur.max*cth->cur.rate;
-    if(unit->min[id] != min) ret = false;
-    if(unit->max[id] != max) ret = false;
+    if(mItem->modeId == START_BUSBAR) {
+        sIpCfg *cth = &(mItem->ip);
+        min = cth->ip_curMin*cth->rate;
+        max = cth->ip_curMax*cth->rate;
+        if(unit->min[id] != min) ret = false;
+        if(unit->max[id] != max) ret = false;
+        qDebug()<<"START_BUSBAR"<<min<<max<<unit->min[id]<<unit->max[id];
+    }else {
+        sSiCfg *cth = &(mItem->si);
+        min = cth->si_curMin*cth->rate;
+        max = cth->si_curMax*cth->rate;
+        if(unit->min[id] != min) ret = false;
+        if(unit->max[id] != max) ret = false;
+        qDebug()<<"INSERT_BUSBAR"<<min<<max<<unit->min[id]<<unit->max[id];
+    }
 
     return ret;
 }

@@ -71,6 +71,7 @@ protected:
     bool stepVolTest();
     bool Vol_ctrlOne();
     bool Vol_ctrlTwo();
+    bool Vol_ctrlThree();
     bool stepLoadTest();
     QString changeMode(int index);
     void autoSetAddress();

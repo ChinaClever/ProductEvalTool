@@ -32,11 +32,14 @@ void Json_Pack::head(QJsonObject &obj)
     obj.insert("soft_version", mPro->softwareVersion);
     obj.insert("start_time", mPro->testStartTime);
     obj.insert("end_time", mPro->testEndTime);
-    obj.insert("test_type", "功能测试");
+    obj.insert("test_type", "");
     obj.insert("test_step", mPro->test_step);
     obj.insert("test_item", mPro->test_item);
     obj.insert("test_request", mPro->itemRequest);
     obj.insert("tool_name", "qc-busbar");
+    obj.insert("order_id", mPro->order_id);
+    obj.insert("test_num", mPro->test_num);
+    obj.insert("dev_name", mPro->dev_name);
 
     int num = mPro->itPass.size();
     mPro->uploadPassResult = 1;
@@ -112,7 +115,7 @@ void Json_Pack::stepData()
     obj.insert("soft_version", mPro->softwareVersion);
     obj.insert("start_time", mPro->testStartTime);
     obj.insert("end_time", mPro->testEndTime);
-    obj.insert("test_type", "功能测试");
+    obj.insert("test_type", "");
 
     obj.insert("tool_name", "qc-busbar");
     if(mPro->work_mode >=2) {
@@ -123,22 +126,7 @@ void Json_Pack::stepData()
     QString str;
     for(int i=0; i<num; ++i)
     {
-        if(mPro->itemData.at(i).contains("界面"))
-        {
-            mPro->test_step= "人工测试";
-            mPro->test_item = "表的显示屏";
-        } else if(mPro->itemData.at(i).contains("按键")) {
-            mPro->test_step= "人工测试";
-            mPro->test_item = "表的按键";
-        } else if(mPro->itemData.at(i).contains("告警")) {
-            mPro->test_step= "人工测试";
-            mPro->test_item = "预警、告警";
-        } else if(mPro->itemData.at(i).contains("极性")) {
-            mPro->test_step= "人工测试";
-            mPro->test_item = "极性测试";
-        }
-
-        obj.insert("test_item", mPro->test_item);
+        obj.insert("test_item", mPro->test_function.at(i));
         obj.insert("test_step", mPro->test_step);
         obj.insert("test_process" ,mPro->itemData.at(i));
         obj.insert("test_result" ,mPro->stepResult.at(i));

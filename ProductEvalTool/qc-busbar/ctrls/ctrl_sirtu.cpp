@@ -203,6 +203,14 @@ bool Ctrl_SiRtu::setBusbarInsertFilter(int val)
     return ret;
 }
 
+bool Ctrl_SiRtu::setBusbarStartModbus(int val)
+{
+    bool ret = true;
+    ret = sentRtuCmd(StartWorkMode, val);
+
+    return ret;
+}
+
 bool Ctrl_SiRtu::setBusbarStartPow(int val1 , int val2)//test
 {
     bool ret = true;

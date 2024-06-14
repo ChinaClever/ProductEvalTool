@@ -183,16 +183,19 @@
       <string>设置功能</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_5">
-      <item row="1" column="2">
-       <widget class="QSpinBox" name="pcNumSpin">
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="addrEdit">
         <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="styleSheet">
-         <string notr="true"/>
+        <property name="text">
+         <string>192.168.1.15</string>
         </property>
-        <property name="maximum">
-         <number>9</number>
+        <property name="frame">
+         <bool>true</bool>
+        </property>
+        <property name="cursorPosition">
+         <number>12</number>
         </property>
        </widget>
       </item>
@@ -216,16 +219,6 @@
         </property>
        </spacer>
       </item>
-      <item row="2" column="1">
-       <widget class="QLabel" name="label_15">
-        <property name="text">
-         <string>日志数目：</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="2">
        <widget class="QSpinBox" name="logCountSpin">
         <property name="enabled">
@@ -239,16 +232,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="label_16">
-        <property name="text">
-         <string>电脑号：</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
        <widget class="QLabel" name="label_2">
         <property name="text">
@@ -256,19 +239,36 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLineEdit" name="addrEdit">
+      <item row="1" column="2">
+       <widget class="QSpinBox" name="pcNumSpin">
         <property name="enabled">
          <bool>false</bool>
         </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="maximum">
+         <number>9</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="label_15">
         <property name="text">
-         <string>192.168.1.15</string>
+         <string>日志数目：</string>
         </property>
-        <property name="frame">
-         <bool>true</bool>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="cursorPosition">
-         <number>12</number>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string>电脑号：</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>

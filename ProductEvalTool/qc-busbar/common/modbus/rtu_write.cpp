@@ -262,7 +262,7 @@ void Rtu_Write::autoSetAddress()
     memset(recvbuffer,0,sizeof(recvbuffer));
     rtn = readSerial(recvbuffer,10);
     //    hexToStr((char*)recvbuffer , rtn , " recv1 ");
-    int count = 50;
+    int count = 20;
     if(rtn > 0){
         static uchar buffer1[13]={0x01, 0x6A , 0x12 , 0x22 , 0x06, 0x00 , 0x00 , 0x00 ,0x00 , 0x00 , 0x00 , 0x10 , 0xe7};
         buffer1[2] = 2;
@@ -280,7 +280,7 @@ void Rtu_Write::autoSetAddress()
             strArray2 = array2.toHex(); // 十六进制
             for(int i=0; i<array2.size(); ++i)
                 strArray2.insert(2+3*i, " "); // 插入空格
-            //            qDebug()<< "rtn  "<<rtn<<"  recv2:" << strArray2;
+                       qDebug()<< "rtn  "<<rtn<<"  recv2:" << strArray2;
             if(rtn % 8 == 0 && strArray2.contains("ff 7b"))emit sendNumAndIndexSig(recvbuffer[5]);
             if(recvbuffer[0]==0x01 && recvbuffer[1]==0x6a){ emit sendDelaySig();break;}
             if(recvbuffer[5] == 2+2) break;

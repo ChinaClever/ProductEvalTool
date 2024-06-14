@@ -10,6 +10,7 @@
 Json_Pack::Json_Pack(QObject *parent)
 {
     mPro = sDataPacket::bulid()->getPro();
+    ePro = datapacket_English::bulid()->getPro();
     mBusData = get_share_mem();
     mItem = Cfg::bulid()->item;
 }
@@ -29,7 +30,7 @@ void Json_Pack::head(QJsonObject &obj)
     mPro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
 
     obj.insert("product_sn", mPro->product_sn);
-    obj.insert("soft_version", mPro->softwareVersion);
+    obj.insert("soft_version", "");
     obj.insert("start_time", mPro->testStartTime);
     obj.insert("end_time", mPro->testEndTime);
     obj.insert("test_type", "");
@@ -40,7 +41,8 @@ void Json_Pack::head(QJsonObject &obj)
     obj.insert("order_id", mPro->order_id);
     obj.insert("test_num", mPro->test_num);
     obj.insert("dev_name", mPro->dev_name);
-
+    obj.insert("language_select", 0);
+    obj.insert("order_num", mPro->order_num);
     int num = mPro->itPass.size();
     mPro->uploadPassResult = 1;
     for(int i=0; i<num; ++i)
@@ -85,11 +87,59 @@ void Json_Pack::getJson(QJsonObject &json , QByteArray &ba)
     ba = jsonDoc.toJson();
 }
 
-
-
-void Json_Pack::http_post(const QString &method, const QString &ip, int port)
+void Json_Pack::head_English(QJsonObject &obj)
 {
-    QJsonObject json; head(json);
+    QDateTime t = QDateTime::currentDateTime();
+    ePro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
+
+    obj.insert("product_sn", ePro->product_sn);
+    obj.insert("soft_version", "");
+    obj.insert("start_time", ePro->testStartTime);
+    obj.insert("end_time", ePro->testEndTime);
+    obj.insert("test_type", "");
+    obj.insert("test_step", ePro->test_step);
+    obj.insert("test_item", ePro->test_item);
+    obj.insert("test_request", ePro->itemRequest);
+    obj.insert("tool_name", "qc-busbar");
+    obj.insert("order_id", ePro->order_id);
+    obj.insert("test_num", ePro->test_num);
+    obj.insert("dev_name", ePro->dev_name);
+    obj.insert("language_select", 1);
+    obj.insert("order_num", ePro->order_num);
+
+    int num = ePro->itPass.size();
+    ePro->uploadPassResult = 1;
+    for(int i=0; i<num; ++i)
+    {
+        qDebug()<<"mPro->pass.at(i)"<<ePro->itPass.at(i);
+        if(ePro->itPass.at(i) == 0) {
+            ePro->uploadPassResult = 0; break;
+        }
+    }
+    obj.insert("test_result", ePro->uploadPassResult);
+
+    if(mPro->work_mode >=2) {
+        QString str1 = ePro->itemContent.join(";");
+        obj.insert("test_cfg" ,str1);
+    }
+
+    QString str = ePro->itemData.join(";");
+    obj.insert("test_process" ,str);
+
+    // pduInfo(obj);
+}
+
+void Json_Pack::SendJson_Safe()
+{
+    QJsonObject json;
+    head(json); http_post("busbarreport/add",mPro->Service,json);
+    json.empty();
+    sDataPacket::bulid()->delay(2);
+    head_English(json);http_post("busbarreport/add",mPro->Service,json);//安规测试的英文版本
+}
+
+void Json_Pack::http_post(const QString &method, const QString &ip, QJsonObject json, int port)
+{
     qDebug()<<"json"<<json;
     AeaQt::HttpClient http;
     http.clearAccessCache();
@@ -112,10 +162,15 @@ void Json_Pack::stepData()
     QDateTime t = QDateTime::currentDateTime();
     mPro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
     obj.insert("product_sn", mPro->product_sn);
-    obj.insert("soft_version", mPro->softwareVersion);
+    obj.insert("soft_version", "");
     obj.insert("start_time", mPro->testStartTime);
     obj.insert("end_time", mPro->testEndTime);
     obj.insert("test_type", "");
+    obj.insert("order_id", mPro->order_id);
+    obj.insert("order_num", mPro->order_num);
+    obj.insert("test_num", mPro->test_num);
+    obj.insert("dev_name", mPro->dev_name);
+    obj.insert("language_select", 0);
 
     obj.insert("tool_name", "qc-busbar");
     if(mPro->work_mode >=2) {
@@ -131,6 +186,40 @@ void Json_Pack::stepData()
         obj.insert("test_process" ,mPro->itemData.at(i));
         obj.insert("test_result" ,mPro->stepResult.at(i));
         obj.insert("test_request" ,mPro->stepRequest.at(i));
+        stephttp_post("busbarreport/add",mPro->Service,obj);
+    }
+}
+
+void Json_Pack::stepData_Eng()//功能测试的英文版本
+{
+    QJsonObject obj;
+    QDateTime t = QDateTime::currentDateTime();
+    ePro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
+    obj.insert("product_sn", ePro->product_sn);
+    obj.insert("soft_version", "");
+    obj.insert("start_time", ePro->testStartTime);
+    obj.insert("end_time", ePro->testEndTime);
+    obj.insert("test_type", "");
+    obj.insert("order_id", mPro->order_id);
+    obj.insert("order_num", mPro->order_num);
+    obj.insert("test_num", mPro->test_num);
+    obj.insert("dev_name", mPro->dev_name);
+    obj.insert("language_select", 1);
+
+    obj.insert("tool_name", "qc-busbar");
+    if(mPro->work_mode >=2) {
+        QString str1 = ePro->itemContent.join(";");
+        obj.insert("test_cfg" ,str1);
+    }
+    int num = ePro->stepResult.size();
+    QString str;
+    for(int i=0; i<num; ++i)
+    {
+        obj.insert("test_item", ePro->test_function.at(i));
+        obj.insert("test_step", ePro->test_step);
+        obj.insert("test_process" ,ePro->itemData.at(i));
+        obj.insert("test_result" ,ePro->stepResult.at(i));
+        obj.insert("test_request" ,ePro->stepRequest.at(i));
         stephttp_post("busbarreport/add",mPro->Service,obj);
     }
 }

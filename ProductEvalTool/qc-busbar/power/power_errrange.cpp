@@ -121,14 +121,12 @@ bool Power_ErrRange::curAlarm(int id)
         max = cth->ip_curMax*cth->rate;
         if(unit->min[id] != min) ret = false;
         if(unit->max[id] != max) ret = false;
-        qDebug()<<"START_BUSBAR"<<min<<max<<unit->min[id]<<unit->max[id];
     }else {
         sSiCfg *cth = &(mItem->si);
         min = cth->si_curMin*cth->rate;
         max = cth->si_curMax*cth->rate;
         if(unit->min[id] != min) ret = false;
         if(unit->max[id] != max) ret = false;
-        qDebug()<<"INSERT_BUSBAR"<<min<<max<<unit->min[id]<<unit->max[id];
     }
 
     return ret;

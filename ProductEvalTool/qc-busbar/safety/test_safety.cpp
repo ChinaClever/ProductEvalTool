@@ -11,7 +11,9 @@ Test_safety::Test_safety(QObject *parent) : QThread(parent)
     mItem = TestConfig::bulid()->item;
     mTrans = new Test_TransThread(this);
     mPacket = sDataPacket::bulid();
+    mPacketEng = datapacket_English::bulid();
     mPro = mPacket->getPro();
+    ePro = mPacketEng->getPro();
 }
 
 Test_safety::~Test_safety()

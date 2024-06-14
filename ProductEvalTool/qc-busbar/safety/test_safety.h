@@ -37,7 +37,9 @@ private:
     sTestConfigItem  *mItem;
     Test_TransThread *mTrans;
     sProgress *mPro;
+    sProgress *ePro;
     sDataPacket *mPacket;
+    datapacket_English *mPacketEng;
 };
 
 #endif // TEST_SAFETY_H

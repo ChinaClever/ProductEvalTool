@@ -109,6 +109,7 @@ private:
     sProgress *ePro;
     sCfgItem *mCfgm;
     sDataPacket *mPacket;
+    datapacket_English *mPacketEng;
 
     Face_Power *mPower;
     Test_safety *mSafrtyThread;

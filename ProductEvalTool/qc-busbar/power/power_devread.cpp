@@ -271,6 +271,9 @@ bool Power_DevRead::NineInsertOne_CtrlOne()
     QString str2 = tr("输出插座1接入负载，断开负载输入端断路器L1，读取读取A电流为0A，B/C电流为正常；");
     QString str = tr("关闭负载输入端L1");  //三相九路电流、功率
     QString str3 = tr("符合要求"); QString str4 = tr("插座1电流检查");
+    QString eng2 = tr("Connect output socket 1 to the load, disconnect the load input circuit breaker L1, and read that the current of A is 0A, while the current of B/C is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 1 current check");
     emit StepSig(str); emit CurImageSig(2);
 
     while(1)
@@ -291,7 +294,8 @@ bool Power_DevRead::NineInsertOne_CtrlOne()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口1-A1检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
 
         }
         flag++;
@@ -304,7 +308,9 @@ bool Power_DevRead::NineInsertOne_CtrlOne()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口1-A1检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -320,6 +326,10 @@ bool Power_DevRead::NineInsertOne_CtrlTwo()
     QString str = tr("打开负载输入端L1，关闭负载输入端L2");
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座1电流检查");
+    QString eng2 = tr("Disconnect the load input circuit breaker L2 and check that the reading of B current is 0A and A/C current is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 1 current check");
+
     while(1)
     {
         int a=0, b=0, c = 0;
@@ -338,7 +348,8 @@ bool Power_DevRead::NineInsertOne_CtrlTwo()
                 str1 += str;
             }            
             mLogs->updatePro(str1, ret); str = tr("输出口1-B1检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >50) {
@@ -350,7 +361,9 @@ bool Power_DevRead::NineInsertOne_CtrlTwo()
             }
             mLogs->updatePro(str1, ret); ret = false;           
             str = tr("输出口1-B1检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -362,10 +375,14 @@ bool Power_DevRead::NineInsertOne_CtrlThree()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("断开负载输入端断路器L3，检查读取C电流为0A，A/B电流为正常");
+    QString str2 = tr("断开负载输入端断路器L3，检查读取C电流为0A，A/B电流为正常；");
     QString str = tr("打开负载输入端L2，关闭负载输入端L3");
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座1电流检查");
+    QString eng2 = tr("Disconnect the load input circuit breaker L3 and check that the reading of C current is 0A and A/B current is normal");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 1 current check");
+
     while(1)
     {
         int a=0, b=0, c = 1;
@@ -383,7 +400,8 @@ bool Power_DevRead::NineInsertOne_CtrlThree()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); str = tr("输出口1-C1检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
 
         }
         flag++;
@@ -396,7 +414,9 @@ bool Power_DevRead::NineInsertOne_CtrlThree()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口1-C1检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -408,10 +428,14 @@ bool Power_DevRead::NineInsertOne_BreakerOne()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("断开断路器1，读取A1/B1/C1断路器状态为关，电压为0V，A2/B2/C2/A3/B3/C3电压正常;");
+    QString str2 = tr("断开断路器1， A1/B1/C1电压为0V，A2/B2/C2/A3/B3/C3电压正常；");
     QString str = tr("关闭插接箱的断路器1，打开插接箱的断路器2、3");
     emit StepSig(str);
     QString str3 = tr("符合要求"); QString str4 = tr("断路器检查");
+    QString eng2 = tr("Disconnect circuit breaker 1, A1/B1/C1 voltage is 0V, A2/B2/C2/A3/B3/C3 voltage is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Circuit breaker inspection");
+
     while(1)
     {
         int a=0, b=0, c=0;
@@ -435,7 +459,8 @@ bool Power_DevRead::NineInsertOne_BreakerOne()
                 str1 += str;
             }            
             mLogs->updatePro(str1, ret); str = tr("插接箱断路器1检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >50) {
@@ -447,7 +472,9 @@ bool Power_DevRead::NineInsertOne_BreakerOne()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("插接箱断路器1检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -463,6 +490,10 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
     QString str = tr("请准备输出口2");  //三相回路电流、功率
     emit StepSig(str);
     QString str3 = tr("符合要求"); QString str4 = tr("插座2电流检查");
+    QString eng2 = tr("Connect output socket 2 to the load, disconnect the load input circuit breaker L1, and read that the current of A is 0A, while the current of B/C is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 2 current check");
+
     while(1){
         int a=0;
         if(ret) {
@@ -504,7 +535,8 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); str = tr("输出口2-A2检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
 
         }
         flag++;
@@ -517,7 +549,9 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口2-A2检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -533,6 +567,10 @@ bool Power_DevRead::NineInsertTwo_CtrlTwo()
     QString str = tr("打开负载输入端L1，关闭负载输入端L2");
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座2电流检查");
+    QString eng2 = tr("Disconnect the load input circuit breaker L2 and check that the reading of B current is 0A and A/C current is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 2 current check");
+
     while(1)
     {
         int a=0, b=0, c = 1;
@@ -552,7 +590,8 @@ bool Power_DevRead::NineInsertTwo_CtrlTwo()
             }           
             mLogs->updatePro(str1, ret);
             str = tr("输出口2-B2检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >50) {
@@ -564,7 +603,9 @@ bool Power_DevRead::NineInsertTwo_CtrlTwo()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口2-B2检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -580,6 +621,10 @@ bool Power_DevRead::NineInsertTwo_CtrlThree()
     QString str = tr("打开负载输入端L2，关闭负载输入端L3");
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座2电流检查");
+    QString eng2 = tr("Disconnect the load input circuit breaker L3, check that the reading of C current is 0A, and the A/B current is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 2 current check");
+
     while(1)
     {
         int a=0, b=0, c = 1;
@@ -599,7 +644,8 @@ bool Power_DevRead::NineInsertTwo_CtrlThree()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口2-C2检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
 
         }
         flag++;
@@ -612,7 +658,9 @@ bool Power_DevRead::NineInsertTwo_CtrlThree()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口2-C2检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -624,10 +672,14 @@ bool Power_DevRead::NineInsertOne_BreakerTwo()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("断开断路器2，读取A2/B2/C2断路器状态为关，电压为0V, A1/B1/C1/A3/B3/C3电压正常;");
+    QString str2 = tr("断开断路器2，A2/B2/C2电压为0V, A1/B1/C1/A3/B3/C3电压正常；");
     QString str = tr("打开插接箱的断路器1、3，关闭插接箱的断路器2");
     emit StepSig(str);
     QString str3 = tr("符合要求"); QString str4 = tr("断路器检查");
+    QString eng2 = tr("Disconnect circuit breaker 2, A2/B2/C2 voltage is 0V, A1/B1/C1/A3/B3/C3 voltage is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Circuit breaker inspection");
+
     while(1)
     {
         int a=0, b=0, c=0;
@@ -652,7 +704,8 @@ bool Power_DevRead::NineInsertOne_BreakerTwo()
             }            
             mLogs->updatePro(str1, ret);
             str = tr("插接箱断路器2检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >50) {
@@ -664,7 +717,9 @@ bool Power_DevRead::NineInsertOne_BreakerTwo()
             }
             mLogs->updatePro(str, ret); ret = false;
             str = tr("插接箱断路器2检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -680,6 +735,10 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
     QString str = tr("请准备输出口3");
     emit StepSig(str);
     QString str3 = tr("符合要求"); QString str4 = tr("插座3电流检查");
+    QString eng2 = tr("Connect output socket 3 to the load, disconnect the load input circuit breaker L1, and read that the current of A is 0A, while the current of B/C is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 3 current check");
+
     while(1){
         int a=0;
         if(ret) {
@@ -721,7 +780,8 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口3-A3检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >80) {
@@ -733,7 +793,9 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
             }           
             mLogs->updatePro(str, ret); ret = false;
             str = tr("输出口3-A3检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -749,6 +811,10 @@ bool Power_DevRead::NineInsertThree_CtrlTwo()
     QString str = tr("打开负载输入端L1，关闭负载输入端L2");
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座3电流检查");
+    QString eng2 = tr("Disconnect the load input circuit breaker L2 and check that the reading of B current is 0A and A/C current is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 3 current check");
+
     while(1)
     {
         ret = readData();
@@ -768,7 +834,8 @@ bool Power_DevRead::NineInsertThree_CtrlTwo()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口3-B3检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >80) {
@@ -780,7 +847,9 @@ bool Power_DevRead::NineInsertThree_CtrlTwo()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口3-B3检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求");mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求");mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -796,6 +865,10 @@ bool Power_DevRead::NineInsertThree_CtrlThree()
     QString str = tr("打开负载输入端L2，关闭负载输入端L3");
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座3电流检查");
+    QString eng2 = tr("Disconnect the load input circuit breaker L3, check that the reading of C current is 0A, and the A/B current is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 3 current check");
+
     while(1)
     {
         ret = readData();
@@ -814,7 +887,8 @@ bool Power_DevRead::NineInsertThree_CtrlThree()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口3-C3检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >80) {
@@ -826,7 +900,9 @@ bool Power_DevRead::NineInsertThree_CtrlThree()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口3-C3检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -838,10 +914,14 @@ bool Power_DevRead::NineInsertOne_BreakerThree()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("断开断路器3，读取A3/B3/C3断路器状态为关，电压为0V, A1/B1/C1/A2/B2/C2电压正常;");
+    QString str2 = tr("断开断路器3，A3/B3/C3电压为0V, A1/B1/C1/A2/B2/C2电压正常；");
     QString str = tr("打开插接箱的断路器1、2，关闭插接箱的断路器3");
     emit StepSig(str);
     QString str3 = tr("符合要求"); QString str4 = tr("断路器检查");
+    QString eng2 = tr("Disconnect circuit breaker 3, A3/B3/C3 voltage is 0V, A1/B1/C1/A2/B2/C2 voltage is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Circuit breaker inspection");
+
     while(1)
     {
         ret = readData();
@@ -866,7 +946,8 @@ bool Power_DevRead::NineInsertOne_BreakerThree()
             }
             mLogs->updatePro(str1, ret);           
             str = tr("插接箱断路器3检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >60) {
@@ -878,7 +959,9 @@ bool Power_DevRead::NineInsertOne_BreakerThree()
             }           
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("插接箱断路器3检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -952,6 +1035,10 @@ bool Power_DevRead::SixInsertOne_CtrlOne()
     QString str = tr("关闭负载输入端L1");  //三相回路电流、功率
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座1电流检查");
+    QString eng2 = tr("Connect output socket 1 to the load, disconnect the load input circuit breaker L1, and read that the current of A is 0A, while the current of B/C is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 1 current check");
+
     while(1)
     {
         ret = readData();
@@ -970,7 +1057,8 @@ bool Power_DevRead::SixInsertOne_CtrlOne()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口1-A1检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >60) {
@@ -982,7 +1070,9 @@ bool Power_DevRead::SixInsertOne_CtrlOne()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口1-A1检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -998,6 +1088,10 @@ bool Power_DevRead::SixInsertOne_CtrlTwo()
     QString str = tr("打开负载输入端L1，关闭负载输入端L2");
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座1电流检查");
+    QString eng2 = tr("Disconnect the load input circuit breaker L2 and check that the reading of B current is 0A and A/C current is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 1 current check");
+
     while(1)
     {
         ret = readData();
@@ -1016,7 +1110,8 @@ bool Power_DevRead::SixInsertOne_CtrlTwo()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口1-B1检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >60) {
@@ -1028,7 +1123,9 @@ bool Power_DevRead::SixInsertOne_CtrlTwo()
             }
             mLogs->updatePro(str1, ret);  ret = false;
             str = tr("输出口1-B1检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
 
     }
@@ -1045,6 +1142,10 @@ bool Power_DevRead::SixInsertOne_CtrlThree()
     QString str = tr("打开负载输入端L2，关闭负载输入端L3");
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座1电流检查");
+    QString eng2 = tr("Disconnect the load input circuit breaker L3, check that the reading of C current is 0A, and the A/B current is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 1 current check");
+
     while(1)
     {
         ret = readData();
@@ -1063,7 +1164,8 @@ bool Power_DevRead::SixInsertOne_CtrlThree()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口-C1检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >60) {
@@ -1075,7 +1177,9 @@ bool Power_DevRead::SixInsertOne_CtrlThree()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口-C1检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -1087,10 +1191,14 @@ bool Power_DevRead::SixInsertOne_BreakerOne()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("断开断路器1，读取A1/B1/C1断路器状态为关，电压为0V, A2/B2/C2电压正常;");
+    QString str2 = tr("断开断路器1，A1/B1/C1电压为0V, A2/B2/C2电压正常；");
     QString str = tr("关闭插接箱的断路器1，打开插接箱的断路器2");
     emit StepSig(str);
     QString str3 = tr("符合要求"); QString str4 = tr("断路器检查");
+    QString eng2 = tr("Disconnect circuit breaker 1, A1/B1/C1 voltage is 0V, A2/B2/C2 voltage is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Circuit breaker inspection");
+
     while(1)
     {
         int a=0; int b=0;
@@ -1114,7 +1222,8 @@ bool Power_DevRead::SixInsertOne_BreakerOne()
             }
             mLogs->updatePro(str1, ret);
             str = tr("插接箱断路器1检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >50) {
@@ -1126,7 +1235,9 @@ bool Power_DevRead::SixInsertOne_BreakerOne()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("插接箱断路器1检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -1142,6 +1253,10 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
     QString str = tr("请准备输出口2");  //三相回路电流、功率
     emit StepSig(str);
     QString str3 = tr("符合要求"); QString str4 = tr("插座2电流检查");
+    QString eng2 = tr("Connect output socket 2 to the load, disconnect the load input circuit breaker L1, and read that the current of A is 0A, while the current of B/C is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 2 current check");
+
     while(1){
         int a=0;
         if(ret) {
@@ -1183,7 +1298,8 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口2-A2检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >60) {
@@ -1195,7 +1311,9 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口2-A2检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -1211,6 +1329,10 @@ bool Power_DevRead::SixInsertTwo_CtrlTwo()
     QString str = tr("打开负载输入端L1，关闭负载输入端L2");
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座2电流检查");
+    QString eng2 = tr("Disconnect the load input circuit breaker L2 and check that the reading of B current is 0A and A/C current is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 2 current check");
+
     while(1)
     {
         ret = readData();
@@ -1229,7 +1351,8 @@ bool Power_DevRead::SixInsertTwo_CtrlTwo()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口2-B2检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >60) {
@@ -1241,7 +1364,9 @@ bool Power_DevRead::SixInsertTwo_CtrlTwo()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口2-B2检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -1257,6 +1382,10 @@ bool Power_DevRead::SixInsertTwo_CtrlThree()
     QString str = tr("打开负载输入端L2，关闭负载输入端L3");
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座2电流检查");
+    QString eng2 = tr("Disconnect the load input circuit breaker L3, check that the reading of C current is 0A, and the A/B current is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 2 current check");
+
     while(1)
     {
         ret = readData();
@@ -1275,7 +1404,8 @@ bool Power_DevRead::SixInsertTwo_CtrlThree()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口2-C2检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >60) {
@@ -1287,7 +1417,9 @@ bool Power_DevRead::SixInsertTwo_CtrlThree()
             }
             mLogs->updatePro(str1, ret);  ret = false;
             str = tr("输出口2-C2检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -1299,10 +1431,14 @@ bool Power_DevRead::SixInsertOne_BreakerTwo()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("断开断路器2，读取A2/B2/C2断路器状态为关，电压为0V, A1/B1/C1电压正常；");
+    QString str2 = tr("断开断路器2，A2/B2/C2电压为0V, A1/B1/C1电压正常；");
     QString str = tr("关闭插接箱的断路器2，打开插接箱的断路器1");
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("断路器检查");
+    QString eng2 = tr("Disconnect circuit breaker 2, A2/B2/C2 voltage is 0V, A1/B1/C1 voltage is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Circuit breaker inspection");
+
     while(1)
     {
         int a=0, b=0;
@@ -1326,7 +1462,8 @@ bool Power_DevRead::SixInsertOne_BreakerTwo()
             }
             mLogs->updatePro(str1, ret);
             str = tr("插接箱断路器2检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >50) {
@@ -1338,7 +1475,9 @@ bool Power_DevRead::SixInsertOne_BreakerTwo()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("插接箱断路器2检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -1403,6 +1542,10 @@ bool Power_DevRead::Three_CtrlOne()
     QString str = tr("关闭负载输入端L1");  //三相回路电流、功率
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座1电流检查");
+    QString eng2 = tr("Connect output socket 1 to the load, disconnect the load input circuit breaker L1, and read that the current of A is 0A, while the current of B/C is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 1 current check");
+
     while(1)
     {
         ret = readData();
@@ -1421,7 +1564,8 @@ bool Power_DevRead::Three_CtrlOne()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口-A检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >40) {
@@ -1433,7 +1577,9 @@ bool Power_DevRead::Three_CtrlOne()
             }
             mLogs->updatePro(str1, ret);
             ret = false; str = tr("输出口-A检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -1449,6 +1595,10 @@ bool Power_DevRead::Three_CtrlTwo()
     QString str = tr("打开负载输入端L1，关闭负载输入端L2");  //三相回路电流、功率
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座1电流检查");
+    QString eng2 = tr("Disconnect the load input circuit breaker L2 and check that the reading of B current is 0A and A/C current is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 1 current check");
+
     while(1)
     {
         ret = readData();
@@ -1467,7 +1617,8 @@ bool Power_DevRead::Three_CtrlTwo()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口-B检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >40) {
@@ -1479,7 +1630,9 @@ bool Power_DevRead::Three_CtrlTwo()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口-B检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -1495,6 +1648,10 @@ bool Power_DevRead::Three_CtrlThree()
     QString str = tr("打开负载输入端L2，关闭负载输入端L3");  //三相回路电流、功率
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座1电流检查");
+    QString eng2 = tr("Disconnect the load input circuit breaker L3, check that the reading of C current is 0A, and the A/B current is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 1 current check");
+
     while(1)
     {
         ret = readData();
@@ -1513,7 +1670,8 @@ bool Power_DevRead::Three_CtrlThree()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口-C检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >40) {
@@ -1525,7 +1683,9 @@ bool Power_DevRead::Three_CtrlThree()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口-C检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -1537,12 +1697,16 @@ bool Power_DevRead::Three_Breaker()
     bool ret = true; int flag = 0; QString str1,str;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("断开断路器,读取A/B/C断路器状态为关，电压为0V");
+    QString str2 = tr("断开断路器，A/B/C电压为0V；");
     if(mItem->modeId == START_BUSBAR)
         str = tr("关闭始端箱的断路器");
     else {str = tr("关闭插接箱的断路器");}
     emit StepSig(str);
     QString str3 = tr("符合要求"); QString str4 = tr("断路器检查");
+    QString eng2 = tr("Disconnect the circuit breaker, with A/B/C voltage of 0V;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Circuit breaker inspection");
+
     while(1)
     {
         int a=0,b=0,c=0;
@@ -1561,7 +1725,8 @@ bool Power_DevRead::Three_Breaker()
             if(mItem->modeId == START_BUSBAR) str = tr("始端箱的断路器检测成功 ");
             else str = tr("插接箱的断路器检测成功 ");
             mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >50) {
@@ -1575,7 +1740,9 @@ bool Power_DevRead::Three_Breaker()
             if(mItem->modeId == START_BUSBAR) str = tr("始端箱的断路器检测失败 ");
             else str = tr("插接箱的断路器检测失败 ");
             mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -1591,6 +1758,10 @@ bool Power_DevRead::Three_One()
     QString str = tr("请准备输出口1");  //三相回路电流、功率
     emit StepSig(str);
     QString str3 = tr("符合要求"); QString str4 = tr("插座1电流检查");
+    QString eng2 = tr("Connect output socket 1 to the load, disconnect the load input circuit breaker L1, and read that the current of A is 0A, while the current of B/C is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 1 current check");
+
     while(1)
     {
         int a=0;
@@ -1635,7 +1806,8 @@ bool Power_DevRead::Three_One()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口1-A检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >80) {
@@ -1647,7 +1819,9 @@ bool Power_DevRead::Three_One()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口1-A检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -1659,10 +1833,14 @@ bool Power_DevRead::Three_OneBreaker()
     bool ret = true; int flag = 0; QString str; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("断开断路器A，读取A断路器状态为关，电压为0V，B/C电压正常;");
+    QString str2 = tr("断开断路器A，A电压为0V，B/C电压正常；");
     QString str3 = tr("符合要求"); QString str4 = tr("断路器检查");
     str = tr("关闭插接箱的断路器1");  //三相回路电流、功率
     emit StepSig(str);
+    QString eng2 = tr("Disconnect circuit breaker A, A voltage is 0V, B/C voltage is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Circuit breaker inspection");
+
     while(1)
     {
         int a=0,b=0,c=0;
@@ -1683,7 +1861,8 @@ bool Power_DevRead::Three_OneBreaker()
             }
             mLogs->updatePro(str1, ret);
             str = tr("插接箱的断路器1检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >50) {
@@ -1695,7 +1874,9 @@ bool Power_DevRead::Three_OneBreaker()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("插接箱的断路器1检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -1711,6 +1892,10 @@ bool Power_DevRead::Three_Two()
     QString str = tr("请准备输出口2,打开负载输入端L1");  //三相回路电流、功率
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座2电流检查");
+    QString eng2 = tr("Connect output socket 2 to the load, disconnect the load input circuit breaker L1, check and read that the current of B is 0A, and the current of A/C is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 2 current check");
+
     while(1)
     {
         int a=0;
@@ -1753,7 +1938,8 @@ bool Power_DevRead::Three_Two()
                 }
                 mLogs->updatePro(str1, ret);
                 str = tr("输出口2-B检测成功 ");mLogs->updatePro(str, ret);
-                mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+                mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+                str1.clear(); break;
 
         }
         flag++;
@@ -1766,7 +1952,9 @@ bool Power_DevRead::Three_Two()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口2-B检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -1778,10 +1966,14 @@ bool Power_DevRead::Three_TwoBreaker()
     bool ret = true; int flag = 0; QString str; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("断开断路器B,读取B断路器状态为关，电压为0V，A/C电压正常；");
+    QString str2 = tr("断开断路器B,B电压为0V，A/C电压正常；");
     str = tr("打开插接箱断路器1，关闭插接箱断路器2");  //三相回路电流、功率
     emit StepSig(str);
     QString str3 = tr("符合要求"); QString str4 = tr("断路器检查");
+    QString eng2 = tr("Disconnect circuit breaker B, B voltage is 0V, A/C voltage is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Circuit breaker inspection");
+
     while(1)
     {
         int a=0,b=0,c=0;
@@ -1802,7 +1994,8 @@ bool Power_DevRead::Three_TwoBreaker()
             }
             mLogs->updatePro(str1, ret);
             str = tr("插接箱的断路器2检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >50) {
@@ -1814,7 +2007,9 @@ bool Power_DevRead::Three_TwoBreaker()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("插接箱的断路器2检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -1830,6 +2025,10 @@ bool Power_DevRead::Three_Three()
     QString str = tr("请准备输出口3，打开负载输入端L1");  //三相回路电流、功率
     emit StepSig(str); emit CurImageSig(2);
     QString str3 = tr("符合要求"); QString str4 = tr("插座3电流检查");
+    QString eng2 = tr("Connect the output socket 3 to the load, disconnect the load input circuit breaker L1, and check that the reading of C current is 0A, and the A/B current is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Socket 3 current check");
+
     while(1)
     {
         int a=0;
@@ -1851,7 +2050,7 @@ bool Power_DevRead::Three_Three()
     emit StepSig(str5); emit CurImageSig(1); sleep(4);
 
     flag = 0;
-    str = tr("关闭负载输入端L1，打开插接箱断路器2，关闭插接箱断路器3");  //三相回路电流、功率
+    str = tr("关闭负载输入端L1");  //三相回路电流、功率
     emit StepSig(str); emit CurImageSig(2);
     while(1)
     {
@@ -1871,7 +2070,8 @@ bool Power_DevRead::Three_Three()
             }
             mLogs->updatePro(str1, ret);
             str = tr("输出口3-C检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
 
         }
         flag++;
@@ -1884,7 +2084,9 @@ bool Power_DevRead::Three_Three()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("输出口3-C检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 
@@ -1896,8 +2098,13 @@ bool Power_DevRead::Three_ThreeBreaker()
     bool ret = true; int flag = 0; QString str; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("断开断路器C，读取C断路器状态为关，电压为0V，A/B电压正常;");
+    QString str2 = tr("断开断路器C，C电压为0V，A/B电压正常；");
     QString str3 = tr("符合要求"); QString str4 = tr("断路器检查");
+    str = tr("打开插接箱断路器2，关闭插接箱断路器3");  //三相回路电流、功率
+    emit StepSig(str);
+    QString eng2 = tr("Disconnect circuit breaker C, C voltage is 0V, A/B voltage is normal;");
+    QString eng3 = tr("Meet a requirement");
+    QString eng4 = tr("Circuit breaker inspection");
     while(1)
     {
         int a=0,b=0,c=0;
@@ -1918,7 +2125,8 @@ bool Power_DevRead::Three_ThreeBreaker()
             }
             mLogs->updatePro(str1, ret);
             str = tr("插接箱断路器3检测成功 ");mLogs->updatePro(str, ret);
-            mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
         flag++;
         if(flag >50) {
@@ -1930,7 +2138,9 @@ bool Power_DevRead::Three_ThreeBreaker()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("插接箱断路器3检测失败 ");mLogs->updatePro(str, ret);
-            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret); str1.clear(); break;
+            str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
+            eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
         }
     }
 

@@ -31,10 +31,11 @@ void Home_WorkWid::initWid()
     mCfgm = Cfg::bulid()->item;
     mItem = TestConfig::bulid()->item;
     mPacket = sDataPacket::bulid();
+    mPacketEng = datapacket_English::bulid();
     mDev = mPacket->getDev();
     mPro = mPacket->getPro();
-    eDev = mPacket->getDev();
-    ePro = mPacket->getPro();
+    eDev = mPacketEng->getDev();
+    ePro = mPacketEng->getPro();
     mLogs = Power_Logs::bulid(this);
     mPro->step = Test_End;
     mCfgm->online = false;
@@ -232,10 +233,33 @@ void Home_WorkWid::updateWid()
     mPro->Service = mCfgm->Service;
     mPro->stopFlag = 1;
     mPro->online = mCfgm->online;
-    mPro->dev_name = ui->comBox->currentText();
-    // ePro->dev_name =
+
+    mPro->order_id = mCfgm->user;
+    mPro->order_num = mCfgm->cnt.all;
+
+    ePro->order_id = mCfgm->user;
+    ePro->order_num = mCfgm->cnt.all;
+
+    switch (ui->comBox->currentIndex()) {
+    case 0: {
+        mPro->dev_name = tr("始端箱"); ePro->dev_name = tr("Starting box");
+        break;
+    }
+    case 1: {
+        mPro->dev_name = tr("插接箱"); ePro->dev_name = tr("Plug in box");
+        break;
+    }
+    case 2: {
+        mPro->dev_name = tr("母线槽"); ePro->dev_name = tr("Busway");
+        break;
+    }
+    default:
+        break;
+    }
+
     int ver = get_share_mem()->box[mCfgm->addr-1].version;
-    mPro->softwareVersion = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
+    mPro->softwareVersion = "V" +QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
+    ePro->softwareVersion = mPro->softwareVersion;
 
     if(mPro->step < Test_Over) {
         updateTime();
@@ -337,22 +361,26 @@ void Home_WorkWid::ItemStatus()
 {
     switch (mItem->work_mode) {
     case 0: {mPro->test_step = "安规测试"; mPro->test_item = ui->vol_insulBtn->text();
-            ui->acwLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
-            mPro->itemRequest = "交流耐压 <5mA，绝缘电阻 >10MΩ";
-            break;
+             ePro->test_step = "Safety testing"; ePro->test_item = "Voltage withstand/insulation test";
+             ui->acwLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
+             mPro->itemRequest = "交流耐压 <5mA，绝缘电阻 >10MΩ";
+             ePro->itemRequest = "AC withstand voltage<5mA, insulation resistance>10MΩ";
+             break;
     }
     case 1: {mPro->test_step = "安规测试"; mPro->test_item = ui->groundBtn->text();
-            ui->gndLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
-            mPro->itemRequest = "接地电阻 <100mΩ";
-            break;
+             ePro->test_step = "Safety testing"; ePro->test_item = "Grounding";
+             ui->gndLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
+             mPro->itemRequest = "接地电阻 <100mΩ";
+             ePro->itemRequest = "Grounding resistance<100mΩ";
+             break;
     }
-    case 2: {mPro->test_step = "功能测试";
-            ui->volLab->setStyleSheet("background-color:yellow;color:rgb(0, 0, 0);");
-            break;
+    case 2: {mPro->test_step = "功能测试"; ePro->test_step = "Functional testing";
+             ui->volLab->setStyleSheet("background-color:yellow;color:rgb(0, 0, 0);");
+             break;
     }
-    case 3: {mPro->test_step = "功能测试";
-            ui->loadLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
-            break;
+    case 3: {mPro->test_step = "功能测试"; ePro->test_step = "Functional testing";
+             ui->loadLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
+             break;
     }
     default:
         break;

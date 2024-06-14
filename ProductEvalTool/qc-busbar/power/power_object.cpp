@@ -9,8 +9,10 @@ Power_Object::Power_Object(QObject *parent) : QThread(parent)
 {
     isRun = false;
     mPacket = sDataPacket::bulid();
+    mPacketEng = datapacket_English::bulid();
     mItem = Cfg::bulid()->item;
     mPro = mPacket->getPro();
+    ePro = mPacketEng->getPro();
     mDev = mPacket->getDev();
     mSour = mPacket->getDev(0);
     mDt = &(mDev->devType);

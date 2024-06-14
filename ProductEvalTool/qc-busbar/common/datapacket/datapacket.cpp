@@ -74,8 +74,8 @@ void sDataPacket::init()
     pro->issure = 0;
     pro->dev_name.clear();
     pro->order_id.clear();
-    pro->order_num.clear();
-    pro->test_num.clear();
+    pro->order_num = 0;
+    pro->test_num = 0;
     pro->Lan_flag = 0;
 }
 

@@ -61,6 +61,10 @@ void Power_CoreThread::StartErrRange()
     sBoxData *b = &(mBusData->box[mItem->addr - 1]);
     QString str1 = tr("串口线接入IN接口，Modbus RTU串口命令正常返回，IN接口通讯正常");
     QString str2 = tr("接口检查"); QString str3 = tr("符合要求");
+
+    QString eng1 = tr("Serial cable connected to IN interface, Modbus RTU serial port command returned normally, IN interface communication is normal");
+    QString eng2 = tr("Interface inspection"); QString eng3 = tr("Meet a requirement");
+
     str = tr("请将串口线接入到始端箱IN口");           //IN OUT口通讯正常，及网口
     emit TipSig(str); sleep(3);
     while(1)
@@ -69,59 +73,64 @@ void Power_CoreThread::StartErrRange()
         if(ret) break;
 
         flag++;
-        if(flag >60){            
+        if(flag >30){
             ret = false; break;
         }
     }
     str = tr("始端箱IN口通讯");
     if(ret) {
-        str += tr("成功"); str3 = tr("符合要求");
+        str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
     }else {
-        str += tr("失败"); str3 = tr("不符合要求");
+        str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
     }
     mLogs->updatePro(str, ret); mLogs->writeData(str1, str3, str2, ret);
+    mLogs->writeDataEng(eng1, eng3, eng2, ret);
 
     str = tr("请将串口线接入到始端箱OUT口");           //IN OUT口通讯正常，及网口
-    emit TipSig(str); sleep(3);
+    emit TipSig(str); sleep(3); flag = 0;
     while(1)
     {
         ret = mSiRtu->readPduData();
         if(ret) break;
 
         flag++;
-        if(flag >60){
+        if(flag >30){
             ret = false; break;
         }
     }
     str1 = tr("串口线 接入OUT接口，Modbus RTU串口命令正常返回，OUT接口通讯正常");
+    eng1 = tr("The serial cable is connected to the OUT interface, and the Modbus RTU serial command returns normally. The OUT interface communication is normal");
     str = tr("始端箱OUT口通讯");
     if(ret) {
-        str += tr("成功"); str3 = tr("符合要求");
+        str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
     }else {
-        str += tr("失败"); str3 = tr("不符合要求");
+        str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
     }
     mLogs->updatePro(str, ret); mLogs->writeData(str1, str3, str2, ret);
+    mLogs->writeDataEng(eng1, eng3, eng2, ret);
 
     str = tr("请将网线接入到始端箱NET口");           //IN OUT口通讯正常，及网口
-    emit TipSig(str); sleep(3);
+    emit TipSig(str); sleep(3); flag = 0;
     while(1)
     {
         ret = mRead->readData();
         if(ret) break;
 
         flag++;
-        if(flag >60){
+        if(flag >30){
             ret = false; break;
         }
     }
     str1 = tr("ping功能正常，NET接口通讯正常");
+    eng1 = tr("Ping function is normal, NET interface communication is normal");
     str = tr("始端箱NET口通讯");
     if(ret) {
-        str += tr("成功"); str3 = tr("符合要求");
+        str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
     }else {
-        str += tr("失败"); str3 = tr("不符合要求");
+        str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
     }
     mLogs->updatePro(str, ret); mLogs->writeData(str1, str3, str2, ret);
+    mLogs->writeDataEng(eng1, eng3, eng2, ret);
 
     ret = false;
     int curValue = b->buzzerStatus;
@@ -138,7 +147,8 @@ void Power_CoreThread::StartErrRange()
     mLogs->updatePro(str,ret); ret = false;
 
     str1 = tr("检查SPD防雷模块接入状态，接入正常");
-    str2 = tr("SPD防雷检查");
+    eng1 = tr("Check the connection status of the SPD lightning protection module, and ensure that it is connected normally");
+    str2 = tr("SPD防雷检查"); eng2 = tr("SPD lightning protection inspection");
     curValue = b->lightning;
     expect = mItem->ip.ip_lightning;
     if(curValue == expect) ret = true;
@@ -159,17 +169,19 @@ void Power_CoreThread::StartErrRange()
                     }
                 }
                 flag++;
-                if(flag >60){
+                if(flag >40){
                     ret = false; break;
                 }
             }
             str = tr("始端箱防雷模块状态：%1").arg(b->lpsState ==1?tr("工作正常"):tr("损坏"));
             if(ret) {
-                str3 = tr("符合要求");
+                str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
             }else {
-                str3 = tr("不符合要求");
+                str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
             }
             mLogs->updatePro(str,ret); mLogs->writeData(str1, str3, str2, ret);
+            mLogs->writeDataEng(eng1, eng3, eng2, ret);
+
             if(ret) {
                 str = tr("请将始端箱防雷模块拔出");
                 emit TipSig(str); flag = 0;
@@ -181,21 +193,23 @@ void Power_CoreThread::StartErrRange()
                     }
 
                     flag++;
-                    if(flag >60){
+                    if(flag >40){
                         ret = false; break;
                     }
                 }
                 str1 = tr("检查SPD防雷模块报警状态，报警与恢复状态正常");
+                eng1 = tr("Check the alarm status of the SPD lightning protection module, and ensure that the alarm and recovery status are normal");
                 str = tr("始端箱防雷模块状态：%1").arg(b->lpsState ==1?tr("工作正常"):tr("损坏"));
                 mLogs->updatePro(str,ret);
 
                 str = tr("始端箱防雷模块检查");
                 if(ret) {
-                    str += tr("成功"); str3 = tr("符合要求");
+                    str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
                 }else {
-                    str += tr("失败"); str3 = tr("不符合要求");
+                    str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
                 }
                 mLogs->updatePro(str,ret); mLogs->writeData(str1, str3, str2, ret);
+                mLogs->writeDataEng(eng1, eng3, eng2, ret);
 
                 str = tr("请将始端箱防雷模块插入原位");
                 emit TipSig(str); sleep(2);
@@ -204,18 +218,21 @@ void Power_CoreThread::StartErrRange()
     }
 
     ret = false; str2 = tr("断路器iOF辅助触点检查");
+    eng2 = tr("Circuit breaker iOF auxiliary contact inspection");
     curValue = b->iOF;
     expect = mItem->ip.ip_iOF;
     if(curValue == expect) ret = true;
     str = tr("始端箱iOF辅助触点实际值：%1 ， 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
     mLogs->updatePro(str,ret); flag = 0;
     if(ret) {
-        str3 = tr("符合要求");
+        str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
     }else {
-        str3 = tr("不符合要求");
+        str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
     }
     str1 = tr("依据产品规格书核对始端箱iOF辅助触点");
-    mLogs->writeData(str1, str3, str2, ret);
+    eng1 = tr("Verify the iOF auxiliary contacts of the starting box according to the product specifications");
+    mLogs->writeData(str1, str3, str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
+
     if(ret) {
         if(curValue == 1) {
             str = tr("请将始端箱的断路器断开");
@@ -227,36 +244,41 @@ void Power_CoreThread::StartErrRange()
                     if(b->data.sw[0] == 2) break;
                 }
                 flag++;
-                if(flag >60){
+                if(flag >40){
                     ret = false; break;
                 }
             }
             str = tr("始端箱iOF辅助触点检查");
             str1 = tr("断开断路器状态显示为分闸");
+            eng1 = tr("The status of the disconnected circuit breaker is displayed as open");
             if(ret) {
-                str += tr("成功"); str3 = tr("符合要求");
+                str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
             }else {
-                str += tr("失败"); str3 = tr("不符合要求");
+                str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
             }
             mLogs->writeData(str1, str3, str2, ret); mLogs->updatePro(str,ret);
+            mLogs->writeDataEng(eng1, eng3, eng2, ret);
+
             str = tr("请将始端箱的断路器闭合");
             emit TipSig(str); sleep(2);
         }
     }
 
     ret = false; str2 = tr("断路器ISD报警触点检查");
+    eng2 = tr("Inspection of ISD alarm contacts for circuit breakers");
     curValue = b->isd;
     expect = mItem->ip.ip_ISD;
     if(curValue == expect) ret = true;
     str = tr("始端箱ISD报警触点实际值：%1 ， 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
     mLogs->updatePro(str,ret); flag = 0;
     if(ret) {
-        str3 = tr("符合要求");
+        str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
     }else {
-        str3 = tr("不符合要求");
+        str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
     }
-    str1 = tr("依据产品规格书核对始端箱ISD报警触点");
-    mLogs->writeData(str1, str3, str2, ret);
+    str1 = tr("依据产品规格书核对始端箱ISD报警触点"); eng1 = tr("Verify the ISD alarm contacts of the starting box according to the product specifications");
+    mLogs->writeData(str1, str3, str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
+
     if(ret) {
         if(curValue == 1) {
             str = tr("请使用螺丝刀顶一下始端箱上的红色按钮");
@@ -268,19 +290,20 @@ void Power_CoreThread::StartErrRange()
                     if(b->data.sw[0] == 3) break; //1：合闸   2：分闸   3：跳闸（选配ISD报警触点）
                 }
                 flag++;
-                if(flag >60){
+                if(flag >40){
                     ret = false; break;
                 }
             }
             str1 = tr("螺丝刀按一下黄色测试按钮，检查断路器状态：跳闸");
+            eng1 = tr("Press the yellow test button with a screwdriver to check the circuit breaker status: tripped");
             str = tr("始端箱ISD报警触点检查");
             if(ret) {
-                str += tr("成功"); str3 = tr("符合要求");
+                str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
             }else {
-                str += tr("失败"); str3 = tr("不符合要求");
+                str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
             }
             mLogs->writeData(str1, str3, str2, ret);
-            mLogs->updatePro(str,ret);
+            mLogs->updatePro(str,ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
             str = tr("请将始端箱的断路器闭合");
             emit TipSig(str); sleep(2);
         }
@@ -291,7 +314,7 @@ void Power_CoreThread::StartErrRange()
     expect = mItem->ip.ip_shunt;
     if(curValue == expect) ret = true;
     str = tr("始端箱分励脱扣实际值：%1 ， 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
-    mLogs->updatePro(str,ret);
+    mLogs->updatePro(str,ret); flag = 0;
     if(ret) {
         if(curValue == 1) {
             for(int i=0;i<2;i++)
@@ -303,7 +326,7 @@ void Power_CoreThread::StartErrRange()
                     if(b->data.sw[0] == 3) break;
                 }
                 flag++;
-                if(flag >60){
+                if(flag >40){
                     ret = false; break;
                 }
             }
@@ -327,6 +350,20 @@ void Power_CoreThread::StartErrRange()
     for(int i=0; i<mBusData->box[mItem->addr - 1].loopNum; ++i) {
         ret = curAlarmErr(i);
     }
+
+    ret = false;
+    str1 = tr("依据产品规格书核对产品的软件烧录版本"); str2 = tr("软件版本");
+    eng1 = tr("Verify the software burning version of the product according to the product specification sheet");
+    eng2 = tr("Software version");
+    curValue = b->version;
+    expect = mItem->ip.version;
+    if(curValue == expect) ret = true;
+    QString curVer = QString::number(curValue/100)+"."+QString::number(curValue/10%10)+"."+QString::number(curValue%10);
+    QString expectVer = QString::number(expect/100)+"."+QString::number(expect/10%10)+"."+QString::number(expect%10);
+    str = tr("版本信息实际值：%1 , 期待值：%2！").arg(curVer).arg(expectVer);
+    eng3 = tr("Starting box:%1").arg(expectVer);  str3 = tr("始端箱：%1").arg(expectVer);
+    mLogs->writeData(str1, str3 ,str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
+    mLogs->updatePro(str,ret);
 }
 
 bool Power_CoreThread::curAlarmErr(int i)
@@ -366,56 +403,76 @@ void Power_CoreThread::InsertErrRange()
 
     QString str1 = tr("是否包含此功能与规格书要求一致");
     QString str2 = tr("符合要求"); QString str3 = tr("断路器iOF辅助触点检查");
+    QString eng1 = tr("Does it include this function that is consistent with the specifications");
+    QString eng2 = tr("Meet a requirement"); QString eng3 = tr("Circuit breaker iOF auxiliary contact inspection");
+
     curValue = b->iOF;
     expect = mItem->si.si_iOF;
     if(curValue == expect) ret = true;
     str = tr("插接箱iOF辅助触点实际值：%1 , 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
     if(ret) {
-        str2 = tr("符合要求");
+        str2 = tr("符合要求"); eng2 = tr("Meet a requirement");
     }else {
-        str2 = tr("不符合要求");
+        str2 = tr("不符合要求"); eng2 = tr("Not Satisfiable");
     }
-    mLogs->writeData(str1, str2 ,str3, ret);
+    mLogs->writeData(str1, str2 ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
     mLogs->updatePro(str,ret);ret = false;
 
     str1 = tr("单相或三相与规格书要求一致"); str3 = tr("输出插座类型");
+    eng1 = tr("Single or three-phase in accordance with the specifications"); eng3 = tr("Output socket type");
     curValue = b->phaseFlag;
     expect = mItem->si.si_phaseflag;
     if(curValue == expect) ret = true;
     str = tr("插接箱输出位类型实际值：%1 , 期待值：%2！").arg(curValue?tr("三相"):tr("单相")).arg(expect?tr("三相"):tr("单相"));
     if(ret) {
-        str2 = tr("符合要求");
+        str2 = tr("符合要求"); eng2 = tr("Meet a requirement");
     }else {
-        str2 = tr("不符合要求");
+        str2 = tr("不符合要求"); eng2 = tr("Not Satisfiable");
     }
-    mLogs->writeData(str1, str2 ,str3, ret);
+    mLogs->writeData(str1, str2 ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
     mLogs->updatePro(str,ret);ret = false;
 
     str1 = tr("回路数量与规格书要求一致"); str3 = tr("输出回路数量");
+    eng1 = tr("The number of circuits is consistent with the requirements of the specification sheet"); eng3 = tr("Number of output circuits");
     curValue = b->loopNum;
     expect = mItem->si.loopNum;
     if(curValue == expect) ret = true;
     str = tr("插接箱回路数量实际值：%1 , 期待值：%2！").arg(curValue).arg(expect);
     if(ret) {
-        str2 = tr("符合要求");
+        str2 = tr("符合要求"); eng2 = tr("Meet a requirement");
     }else {
-        str2 = tr("不符合要求");
+        str2 = tr("不符合要求"); eng2 = tr("Not Satisfiable");
     }
-    mLogs->writeData(str1, str2 ,str3, ret);
+    mLogs->writeData(str1, str2 ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
     mLogs->updatePro(str,ret);ret = false;
 
     ret = false;
     for(int i=0; i<mBusData->box[mItem->addr - 1].loopNum; ++i) {
         ret = curAlarmErr(i);
     }
+
+    ret = false;
+    str1 = tr("依据产品规格书核对产品的软件烧录版本"); str3 = tr("软件版本");
+    eng1 = tr("Verify the software burning version of the product according to the product specification sheet");
+    eng3 = tr("Software version");
+    curValue = b->version;
+    expect = mItem->si.version;
+    if(curValue == expect) ret = true;
+    QString curVer = QString::number(curValue/100)+"."+QString::number(curValue/10%10)+"."+QString::number(curValue%10);
+    QString expectVer = QString::number(expect/100)+"."+QString::number(expect/10%10)+"."+QString::number(expect%10);
+    str = tr("版本信息实际值：%1 , 期待值：%2！").arg(curVer).arg(expectVer);
+    str2 = tr("插接箱：V%1").arg(expectVer); eng2 = tr("Plug in box:V%1").arg(expectVer);
+    mLogs->writeData(str1, str2 ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
+    mLogs->updatePro(str,ret);
 }
 
 void Power_CoreThread::EnvErrRange()
 {
     bool ret = true; QString str, str2, str3 ;
     sDataValue *unit = &(mBusData->box[mItem->addr - 1].env.tem);
-    qDebug()<<"EnvErrRange"<<mItem->addr;
     QString str1 = tr("所有值在平均值的±5℃范围内");
+    QString eng1 = tr("All values are within the range of ± 5 ℃ of the average value");
+    QString eng2 = tr("Temperature value check"); QString eng3 = tr("Meet a requirement");
     str = tr("温度检测");
     str2 = tr("温度模块检测：");
     ushort tem = 0;
@@ -441,12 +498,12 @@ void Power_CoreThread::EnvErrRange()
         }
     }
     if(ret) {
-        str += tr("成功"); str3 = tr("符合要求");
+        str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
     }else {
-        str += tr("失败"); str3 = tr("不符合要求");
+        str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
     }
     str2 = tr("温度值检查");
-    mLogs->writeData(str1, str3, str2, ret);
+    mLogs->writeData(str1, str3, str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
     mLogs->updatePro(str, ret);
 }
 
@@ -574,10 +631,14 @@ void Power_CoreThread::workResult(bool)
     }
     mPacket->updatePro(str, res);
     mPro->loopNum = QString::number(mBusData->box[mItem->addr-1].loopNum);
-
     mPro->itemContent << "模块序列号：" + mPro->moduleSN;
     mPro->itemContent << "设备类型：" + mPro->productType;
     mPro->itemContent << "告警滤波次数：" + QString::number(mBusData->box[mItem->addr-1].alarmTime);
+
+    ePro->loopNum = QString::number(mBusData->box[mItem->addr-1].loopNum);
+    ePro->itemContent << "Module serial number:" + mPro->moduleSN;
+    ePro->itemContent << "Equipment type:" + mPro->productType;
+    ePro->itemContent << "Alarm filtering frequency:" + QString::number(mBusData->box[mItem->addr-1].alarmTime);
 
     if(mCfg->work_mode == 3){
         while(1)
@@ -593,6 +654,8 @@ void Power_CoreThread::workResult(bool)
     mLogs->saveLogs();
     if(mPro->online) {
         Json_Pack::bulid()->stepData();//全流程才发送记录(http)
+        sleep(1);
+        Json_Pack::bulid()->stepData_Eng();
     }
 
     if(mPro->online) {
@@ -630,10 +693,11 @@ bool Power_CoreThread::Vol_ctrlOne()
     bool ret = true; int flag = 0;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str, str1, str2, str3, str4;
+    QString str, str1, str2, str3, str4; QString eng2;
     str3 = tr("符合要求"); str4 = tr("回路电压检查");
     str = tr("关闭电源输出端L2");  //b1,b2,b3
     emit TipSig(str); emit ImageSig(0);
+    QString eng3 = tr("Meet a requirement"); QString eng4 = tr("Circuit voltage check");
 
     while(1)
     {
@@ -662,8 +726,9 @@ bool Power_CoreThread::Vol_ctrlOne()
                 }
                 mLogs->updatePro(str1, ret);
                 str2 = tr("断开电源输出端断路器L2，读取B1/B2/B3电压为0V，A1/A2/A3/C1/C2/C3正常");
+                eng2 = tr("Disconnect the power output circuit breaker L2, read the voltage of B1/B2/B3 as 0V, A1/A2/A3/C1/C2/C3 is normal");
                 str = tr("B路电压检测成功 "); mLogs->updatePro(str, ret);
-                mLogs->writeData(str2,str3,str4,ret);
+                mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
                 str1.clear(); break;
             }
         }else if(loop == 6) {
@@ -688,8 +753,11 @@ bool Power_CoreThread::Vol_ctrlOne()
                 }
                 mLogs->updatePro(str1, ret);
                 str2 = tr("断开电源输出端断路器L2，读取B1/B2电压为0V，A1/A2/C1/C2正常");
+                eng2 = tr("Disconnect the power output circuit breaker L2, read B1/B2 voltage as 0V, A1/A2/C1/C2 normal");
                 str = tr("B路电压检测成功 ");mLogs->updatePro(str, ret);
-                str += str1; mLogs->writeData(str2,str3,str4,ret); str1.clear();break;}
+                str += str1; mLogs->writeData(str2,str3,str4,ret);
+                mLogs->writeDataEng(eng2,eng3,eng4,ret); str1.clear();break;
+            }
         }else if(loop == 3){
             for(int i =0;i<loop;i++)
             {
@@ -708,8 +776,10 @@ bool Power_CoreThread::Vol_ctrlOne()
                 }
                 mLogs->updatePro(str1, ret);
                 str2 = tr("断开电源输出端断路器L2，检查B电压为0V，A/C电压正常");
+                eng2 = tr("Disconnect the power output circuit breaker L2 and check that the voltage of B is 0V, and the voltage of A/C is normal");
                 str = tr("B路电压检测成功 "); mLogs->updatePro(str, ret);
-                str += str1; mLogs->writeData(str2,str3,str4,ret); str1.clear();break;}
+                str += str1; mLogs->writeData(str2,str3,str4,ret);
+                mLogs->writeDataEng(eng2,eng3,eng4,ret); str1.clear();break;}
         }
         flag++;
         if(flag >40) {
@@ -720,9 +790,10 @@ bool Power_CoreThread::Vol_ctrlOne()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);
-            ret = false; str3 = tr("不符合要求");
+            ret = false; str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
             str = tr("B路电压检测失败"); mLogs->updatePro(str, ret);
-            str += str1; mLogs->writeData(str2,str3,str4,ret); str1.clear(); break;
+            str += str1; mLogs->writeData(str2,str3,str4,ret);
+            mLogs->writeDataEng(eng2,eng3,eng4,ret); str1.clear(); break;
         }
     }
 
@@ -735,9 +806,11 @@ bool Power_CoreThread::Vol_ctrlTwo()
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
 
-    str3 = tr("符合要求"); str4 = tr("回路电压检查");
+    str3 = tr("符合要求"); str4 = tr("回路电压检查"); QString eng2;
     QString str = tr("打开电源输出端L2，关闭电源输出端L3");//c1,c2,c3
     emit TipSig(str); emit ImageSig(0);
+    QString eng3 = tr("Meet a requirement"); QString eng4 = tr("Circuit voltage check");
+
     while(1)
     {
         int a=0, b=0, c=0;
@@ -765,8 +838,10 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     }
                     mLogs->updatePro(str1, ret);
                     str2 = tr("断开电源输出端断路器L3，读取C1/C2/C3电压为0V ，A1/A2/A3/B1/B2/B3正常");
+                    eng2 = tr("Disconnect circuit breaker L3 at the power output terminal, read the voltage of C1/C2/C3 as 0V, A1/A2/A3/B1/B2/B3 is normal");
                     str = tr("C路电压检测成功 ");mLogs->updatePro(str, ret);
-                    mLogs->writeData(str2,str3,str4,ret); str1.clear(); break;
+                    mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+                    str1.clear(); break;
                 }
             }else if(loop == 6) {
                 for(int i =0;i<loop;i++)
@@ -789,8 +864,10 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     }
                     mLogs->updatePro(str1, ret);
                     str2 = tr("断开电源输出端断路器L3，读取C1/C2电压为0V，A1/A2/B1/B2/正常");
+                    eng2 = tr("Disconnect circuit breaker L3 at the power output terminal, read C1/C2 voltage as 0V, A1/A2/B1/B2/normal");
                     str = tr("C路电压检测成功 ");mLogs->updatePro(str, ret);
-                    mLogs->writeData(str2,str3,str4,ret); str1.clear(); break;
+                    mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+                    str1.clear(); break;
                 }
             }else if(loop == 3){
                 for(int i =0;i<loop;i++)
@@ -810,8 +887,10 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     }
                     mLogs->updatePro(str1, ret);
                     str2 = tr("断开电源输出端断路器L3，检查C电压为0V，A/B电压正常");
+                    eng2 = tr("Disconnect the power output circuit breaker L3 and check that the voltage of C is 0V, and the voltage of A/B is normal");
                     str = tr("C路电压检测成功 ");mLogs->updatePro(str, ret);
-                    mLogs->writeData(str2,str3,str4,ret); str1.clear(); break;
+                    mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+                    str1.clear(); break;
                 }
             }
         }
@@ -824,9 +903,10 @@ bool Power_CoreThread::Vol_ctrlTwo()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);
-            ret = false; str3 = tr("不符合要求");
+            ret = false; str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
             str = tr("C路电压检测失败");mLogs->updatePro(str, ret);
-            str += str1; mLogs->writeData(str2,str3,str4,ret); str1.clear(); break;
+            str += str1; mLogs->writeData(str2,str3,str4,ret);
+            mLogs->writeDataEng(eng2,eng3,eng4,ret); str1.clear(); break;
         }
     }
 
@@ -841,7 +921,9 @@ bool Power_CoreThread::Vol_ctrlThree()
 
     str3 = tr("符合要求"); str4 = tr("回路电压检查");
     QString str = tr("打开电源输出端L3");//c1,c2,c3
-    emit TipSig(str); emit ImageSig(0);
+    emit TipSig(str); emit ImageSig(0); QString eng2;
+    QString eng3 = tr("Meet a requirement"); QString eng4 = tr("Circuit voltage check");
+
     while(1)
     {
         int a=0, b=0, c=0;
@@ -869,8 +951,10 @@ bool Power_CoreThread::Vol_ctrlThree()
                     }
                     mLogs->updatePro(str1, ret);
                     str2 = tr("闭合断路器，各回路电压正常");
+                    eng2 = tr("Close the circuit breaker and ensure that the voltage of each circuit is normal");
                     str = tr("A路电压检测成功 ");mLogs->updatePro(str, ret);
-                    mLogs->writeData(str2,str3,str4,ret); str1.clear(); break;
+                    mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+                    str1.clear(); break;
                 }
             }else if(loop == 6) {
                 for(int i =0;i<loop;i++)
@@ -893,8 +977,10 @@ bool Power_CoreThread::Vol_ctrlThree()
                     }
                     mLogs->updatePro(str1, ret);
                     str2 = tr("闭合断路器，各回路电压正常");
+                    eng2 = tr("Close the circuit breaker and ensure that the voltage of each circuit is normal");
                     str = tr("A路电压检测成功 ");mLogs->updatePro(str, ret);
-                    mLogs->writeData(str2,str3,str4,ret); str1.clear(); break;
+                    mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+                    str1.clear(); break;
                 }
             }else if(loop == 3){
                 for(int i =0;i<loop;i++)
@@ -914,8 +1000,10 @@ bool Power_CoreThread::Vol_ctrlThree()
                     }
                     mLogs->updatePro(str1, ret);
                     str2 = tr("闭合断路器，各回路电压正常");
+                    eng2 = tr("Close the circuit breaker and ensure that the voltage of each circuit is normal");
                     str = tr("A路电压检测成功 ");mLogs->updatePro(str, ret);
-                    mLogs->writeData(str2,str3,str4,ret); str1.clear(); break;
+                    mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+                    str1.clear(); break;
                 }
             }
         }
@@ -928,9 +1016,10 @@ bool Power_CoreThread::Vol_ctrlThree()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);
-            ret = false; str3 = tr("不符合要求");
+            ret = false; str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
             str = tr("A路电压检测失败");mLogs->updatePro(str, ret);
-            str += str1; mLogs->writeData(str2,str3,str4,ret); str1.clear(); break;
+            str += str1; mLogs->writeData(str2,str3,str4,ret);
+            mLogs->writeDataEng(eng2,eng3,eng4,ret);str1.clear(); break;
         }
     }
 
@@ -975,7 +1064,7 @@ bool Power_CoreThread::stepLoadTest()
 
 void Power_CoreThread::getDelaySlot()
 {
-    QString str; bool ret = false;
+    QString str, eng; bool ret = false;
     if(mCurBoxNum == 0){
         str = tr("始端箱未发出命令");
     }else if(mCurBoxNum >= 2 && mCurBoxNum <= 3 ){
@@ -984,13 +1073,20 @@ void Power_CoreThread::getDelaySlot()
     emit TipSig(str);
     mLogs->updatePro(str, ret);
 
-    if(mCurBoxNum == 2) str = tr("插接箱 IN口接错");
-    if(mCurBoxNum == 3) str = tr("插接箱 OUT口接错");
+    if(mCurBoxNum == 2) {
+        str = tr("插接箱 IN口接错"); eng = tr("The IN port of the plug-in box is connected incorrectly");
+    }
+    if(mCurBoxNum == 3) {
+        str = tr("插接箱 OUT口接错"); eng = tr("The OUT port of the plug-in box is connected incorrectly");
+    }
     emit TipSig(str);
     mLogs->updatePro(str, ret);
     QString str1 = tr("级联治具IN口与被测插接箱IN口直连，OUT口与OUT口直连，级联通讯测试正常");
     QString str2 = tr("IN/OUT接口检查");
-    mLogs->writeData(str1,str,str2,ret);
+    QString eng1 = tr("The IN port of the cascaded fixture is directly connected to the IN port of the tested plug-in box, and the OUT port is directly connected to the OUT port. The cascaded communication test is normal");
+    QString eng2 = tr("IN/OUT interface check");
+
+    mLogs->writeData(str1,str,str2,ret); mLogs->writeDataEng(eng1,eng,eng2,ret);
     mCurBoxNum = 0;
 }
 
@@ -1000,14 +1096,16 @@ void Power_CoreThread::getNumAndIndexSlot(int curnum)
     bool ret = false;
     mCurBoxNum = num;
     QString str = tr("串口测试成功，分配地址正常");
+    QString eng1 = tr("The IN port of the cascaded fixture is directly connected to the IN port of the tested plug-in box, and the OUT port is directly connected to the OUT port. The cascaded communication test is normal");
+    QString eng2 = tr("IN/OUT interface check");
     if(num > 3){
         ret = true;
         emit TipSig(str);
         mLogs->updatePro(str, ret);
-        str = tr("符合要求");
+        str = tr("符合要求"); QString eng = tr("Meet a requirement");
         QString str1 = tr("级联治具IN口与被测插接箱IN口直连，OUT口与OUT口直连，级联通讯测试正常");
         QString str2 = tr("IN/OUT接口检查");
-        mLogs->writeData(str1,str,str2,ret);
+        mLogs->writeData(str1,str,str2,ret); mLogs->writeDataEng(eng1,eng,eng2,ret);
     }
 }
 

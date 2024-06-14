@@ -106,6 +106,7 @@ void Cfg::initCfgDev()
     item->si.si_cur = read("si_cur", 0, g).toFloat();
     item->si.si_curMin = read("si_curMin", 0, g).toFloat();
     item->si.si_curMax = read("si_curMax", 0, g).toFloat();
+    item->si.version = read("si_version", 100, g).toInt();
     initSiData(g);
 
     QString q = "BusbarStartCfg";
@@ -124,6 +125,7 @@ void Cfg::initCfgDev()
     item->ip.ip_pow = read("ip_pow", 0, q).toFloat();
     item->ip.ip_curMin = read("ip_curMin", 0, q).toFloat();
     item->ip.ip_curMax = read("ip_curMax", 0, q).toFloat();
+    item->ip.version = read("ip_version", 200 , q).toInt();
     initIpData(q);
 }
 
@@ -149,6 +151,7 @@ void Cfg::writeCfgDev()
     write("ip_pow", QString::number(item->ip.ip_pow), g);
     write("ip_curMin", QString::number(item->ip.ip_curMin), g);
     write("ip_curMax", QString::number(item->ip.ip_curMax), g);
+    write("ip_version", item->ip.version, g);
     writeIpData(g);
 
     QString q = "BusbarInsertCfg";
@@ -163,6 +166,7 @@ void Cfg::writeCfgDev()
     write("si_cur", QString::number(item->si.si_cur), q);
     write("si_curMin", QString::number(item->si.si_curMin), q);
     write("si_curMax", QString::number(item->si.si_curMax), q);
+    write("si_version", item->si.version, q);
     writeSiData(q);
 }
 

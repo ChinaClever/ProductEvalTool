@@ -66,7 +66,8 @@ bool Power_Logs::writeLog()
         it.passed = tr("通过");
         mItem->cnt.ok += 1;
         if(mItem->cnt.num > 0) {
-            mItem->cnt.num -= 1;
+            if(mPro->work_mode == 3)
+                mItem->cnt.num -= 1;
             if(!mItem->cnt.num)  {
                 mItem->user.clear();
                 Cfg::bulid()->write("user", mItem->user, "User");
@@ -78,7 +79,12 @@ bool Power_Logs::writeLog()
     }
 
     it.memo = mPro->itemData.join("; ");
-    mPro->test_num = mItem->cnt.all - mItem->cnt.num;
+    if(mPro->work_mode == 3)
+    {
+        mPro->test_num = mItem->cnt.all - mItem->cnt.num;
+        ePro->test_num = mItem->cnt.all - mItem->cnt.num;
+    }
+
     if(it.QRcode.size()) mLogItems << it;
     if(it.QRcode.isEmpty()) return false;
     Cfg::bulid()->writeCnt();
@@ -113,5 +119,19 @@ void Power_Logs::writeData(const QString &str1,const QString &str2, const QStrin
         }
         mPro->stepRequest << str1; mPro->itemData << str2;
         mPro->test_function << str3;
+    }
+}
+
+void Power_Logs::writeDataEng(const QString &str1,const QString &str2, const QString &str3, bool pass)
+{
+    if(mPro->step < Test_End) {
+        ePro->testStartTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+        if(pass) {
+            ePro->stepResult << "1";
+        } else {
+            ePro->stepResult << "0";
+        }
+        ePro->stepRequest << str1; ePro->itemData << str2;
+        ePro->test_function << str3;
     }
 }

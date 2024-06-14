@@ -47,6 +47,9 @@ void Setting::initType()
     ui->ip_powErrSpin->setValue(dt->ip_powErr);
     ui->ip_curMinSpin->setValue(dt->ip_curMin);
     ui->ip_curMaxSpin->setValue(dt->ip_curMax);
+    int ver = dt->version;
+    QString str = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
+    ui->ip_versionEdit->setText(str);
 
     dt->rate = transformRate(ui->ip_curMaxSpin->decimals());
     sSiCfg *dv = &(mItem->si); //插接箱
@@ -69,6 +72,9 @@ void Setting::initType()
     ui->si_curMinSpin->setValue(dv->si_curMin);
     ui->si_curMaxSpin->setValue(dv->si_curMax);
     dv->rate = transformRate(ui->si_curMaxSpin->decimals());
+    int sion = dv->version;
+    QString str1 = QString::number(sion/100)+"."+QString::number(sion/10%10)+"."+QString::number(sion%10);
+    ui->si_versionEdit->setText(str1);
 }
 
 void Setting::updateType()
@@ -94,6 +100,7 @@ void Setting::updateType()
     dt->ip_powErr = ui->ip_powErrSpin->value();
     dt->ip_curMin = ui->ip_curMinSpin->value();
     dt->ip_curMax = ui->ip_curMaxSpin->value();
+    dt->version = ui->ip_versionEdit->text().remove(".").toUInt();
 
     sSiCfg *dv = &(mItem->si);
     dv->si_filter = ui->filterspinBox_2->value();
@@ -113,6 +120,7 @@ void Setting::updateType()
     dv->si_curErr = ui->si_curErrSpin->value();
     dv->si_curMin = ui->si_curMinSpin->value();
     dv->si_curMax = ui->si_curMaxSpin->value();
+    dv->version = ui->si_versionEdit->text().remove(".").toUInt();
     // qDebug()<<"---temp---"<<dv->si_vol<<dv->si_cur<<dv->si_volErr<<dv->si_curErr;
 }
 
@@ -159,7 +167,6 @@ void Setting::on_setBtn_clicked()
     ui->groupBox3->setEnabled(en);
     ui->groupBox4->setEnabled(en);
 
-    mPro->order_id = ui->userEdit->text();
     QTimer::singleShot(50,this,SLOT(saveFunSlot()));
 }
 

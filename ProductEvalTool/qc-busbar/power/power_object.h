@@ -20,7 +20,9 @@ protected:
     sDevData *mSour;
     sCfgItem *mItem;
     sProgress *mPro;
+    sProgress *ePro;
     sDataPacket *mPacket;
+    datapacket_English *mPacketEng;
     sBusData *mBusData;
 };
 

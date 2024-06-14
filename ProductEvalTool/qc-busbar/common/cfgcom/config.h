@@ -3,7 +3,8 @@
 
 #include "cfgcom.h"
 #include "serialstatuswid.h"
-#include "datapacket.h"
+// #include "datapacket.h"
+#include "datapacket_english.h"
 
 enum eDevTypes {
     PDU=0,
@@ -137,7 +138,7 @@ struct sSiCfg {
     ushort tem_version;
     uchar tem_buzzer;
     uchar tem_filter;
-
+    ushort version;
     float si_vol;
     float si_cur;
     uint si_volErr;

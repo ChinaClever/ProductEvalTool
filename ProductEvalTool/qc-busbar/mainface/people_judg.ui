@@ -212,6 +212,9 @@
      <property name="text">
       <string>⑤  输出端接入负载，检查极性测试模块指示灯1和2亮</string>
      </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item row="0" column="2">

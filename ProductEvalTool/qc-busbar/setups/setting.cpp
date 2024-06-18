@@ -45,7 +45,6 @@ void Setting::initType()
     ui->ip_volErrSpin->setValue(dt->ip_volErr);
     ui->ip_curErrSpin->setValue(dt->ip_curErr);
     ui->ip_powErrSpin->setValue(dt->ip_powErr);
-    ui->ip_curMinSpin->setValue(dt->ip_curMin);
     ui->ip_curMaxSpin->setValue(dt->ip_curMax);
     int ver = dt->version;
     QString str = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
@@ -69,7 +68,6 @@ void Setting::initType()
     ui->si_curSpin->setValue(dv->si_cur);
     ui->si_volErrSpin->setValue(dv->si_volErr );
     ui->si_curErrSpin->setValue(dv->si_curErr );
-    ui->si_curMinSpin->setValue(dv->si_curMin);
     ui->si_curMaxSpin->setValue(dv->si_curMax);
     dv->rate = transformRate(ui->si_curMaxSpin->decimals());
     int sion = dv->version;
@@ -98,7 +96,7 @@ void Setting::updateType()
     dt->ip_volErr = ui->ip_volErrSpin->value();
     dt->ip_curErr = ui->ip_curErrSpin->value();
     dt->ip_powErr = ui->ip_powErrSpin->value();
-    dt->ip_curMin = ui->ip_curMinSpin->value();
+    dt->ip_curMin = 0;
     dt->ip_curMax = ui->ip_curMaxSpin->value();
     dt->version = ui->ip_versionEdit->text().remove(".").toUInt();
 
@@ -118,7 +116,7 @@ void Setting::updateType()
     dv->si_cur = ui->si_curSpin->value();
     dv->si_volErr = ui->si_volErrSpin->value();
     dv->si_curErr = ui->si_curErrSpin->value();
-    dv->si_curMin = ui->si_curMinSpin->value();
+    dv->si_curMin = 0;
     dv->si_curMax = ui->si_curMaxSpin->value();
     dv->version = ui->si_versionEdit->text().remove(".").toUInt();
     // qDebug()<<"---temp---"<<dv->si_vol<<dv->si_cur<<dv->si_volErr<<dv->si_curErr;

@@ -68,8 +68,7 @@ protected:
     void setTextColor();
     void AcwStatus(bool ret);
     void GndStatus(bool ret);
-    void VolStatus(bool ret);
-    void LoadStatus(bool ret);
+    void FuncStatus(bool ret);
     QString getTime();
     void updateWid();
     void updateTime();
@@ -91,13 +90,13 @@ private slots:
     void insertTextslots(QString str,bool res);
     void on_vol_insulBtn_clicked();
     void on_groundBtn_clicked();
-    void on_volBtn_clicked();
-    void on_loadBtn_clicked();
     // void on_clearBtn_clicked();
     void on_codeEit_textChanged(const QString &arg1); 
     void on_comBox_currentIndexChanged(int index);
     void PingSlot();
     void JudgSlots();
+    void on_funcBtn_clicked();
+
 private:
     Ui::Home_WorkWid *ui;
 
@@ -125,6 +124,8 @@ private:
     Power_DevRead *mPowDev;
 
     People_judg *mJudg;
+
+    Sn_DevId *mDevSn;
 };
 
 #endif // HOME_WORKWID_H

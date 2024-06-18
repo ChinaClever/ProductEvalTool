@@ -24,11 +24,14 @@ void Power_DevRead::initFunSlot()
         sIpCfg *cth = &(mItem->ip);
         exValue = cth->ip_cur *1000.0;
         err = cth->ip_curErr *1000.0;
+        qDebug()<<"modeId"<<cth->ip_cur<<cth->ip_curErr;
     }else {
         sSiCfg *cth = &(mItem->si);
         exValue = cth->si_cur *1000.0;
         err = cth->si_curErr *1000.0;
+        qDebug()<<"modeId"<<exValue<<err;
     }
+
 }
 
 Power_DevRead *Power_DevRead::bulid(QObject *parent)
@@ -52,9 +55,7 @@ bool Power_DevRead::readData()
 {
     bool ret = true;
     if( mItem->modeId == START_BUSBAR ){
-            // if(mItem->ip.ip_mode == 1){//RTU模式地址为1
-                ret = mSiRtu->readPduData();
-            // }else ret = mSiRtu->readRtuData();
+        ret = mSiRtu->readPduData();
         if(ret) {
             ret = checkNet();
             if(ret) ret = mIpSnmp->readPduData();
@@ -73,9 +74,7 @@ bool Power_DevRead::readDev()
         if( mItem->modeId == START_BUSBAR ){
             QString str = tr("始端箱串口RTU通讯");
             for(int i=0; i<5; ++i) {
-                // if(mItem->ip.ip_mode == 1){//RTU模式地址为1
-                    ret = mSiRtu->readPduData();
-                // }else ret = mSiRtu->readRtuData();
+                ret = mSiRtu->readPduData();
                 if(ret) break; else if(!mPacket->delay(8)) break;
             }
             if(ret) str += tr("成功");
@@ -163,75 +162,6 @@ bool Power_DevRead::readSnmp()
     return ret;
 }
 
-bool Power_DevRead::checkIpVersion()
-{
-    bool ret = !isRun;
-    if(ret) {
-        QString str = tr("设备版本检查");
-        if(mDt->version != mItem->ip.version) {
-            if( mItem->ip.version ==  IP_PDUV1_HUADA || mDt->version ==  IP_PDUV3){
-                str += tr("正常");
-            }
-            else{
-                str += tr("出错 期望版本V%1，实际版本V%2").arg(mItem->ip.version).arg(mDt->version);
-                ret = false;
-            }
-        } else {
-            str += tr("正常");
-        }
-        mLogs->updatePro(str, ret);
-    }
-
-    return ret;
-}
-
-bool Power_DevRead::checkIpLine()
-{
-    bool ret = !isRun;
-    if(ret && mItem->ip.lines) {
-        QString str = tr("设备相数检查");
-        if(mDt->lines != mItem->ip.lines) {
-            str += tr("出错 期望相数L=%1，实际相数L=%2").arg(mItem->ip.lines).arg(mDt->lines);
-            ret = false;
-        } else {
-            str += tr("正常");
-        }
-        mLogs->updatePro(str, ret);
-    }
-    if(ret) ret = checkIpVersion();
-
-    return ret;
-}
-
-bool Power_DevRead::checkSiLine()
-{
-    bool ret = !isRun;
-    if(ret) {
-        QString str = tr("设备相数检查");
-        if(mDt->lines != mItem->si.lines) {
-            str += tr("出错 期望相数L=%1，实际相数L=%2").arg(mItem->si.lines).arg(mDt->lines);
-            ret = false;
-        } else {
-            str += tr("正常");
-        }
-        mLogs->updatePro(str, ret);
-    }
-
-    return ret;
-}
-
-bool Power_DevRead::readNet()
-{
-    bool ret = true;
-    if(IP_PDU == mDt->devType) {
-        if(ret) ret = checkIpLine();
-    } else {
-        ret = checkSiLine();
-    }
-
-    return ret;
-}
-
 bool Power_DevRead::readDevData()
 {
     bool ret = true;
@@ -307,7 +237,10 @@ bool Power_DevRead::NineInsertOne_CtrlOne()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口1-A1检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口1-A1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -359,8 +292,12 @@ bool Power_DevRead::NineInsertOne_CtrlTwo()
                 str = tr("%1电流%2A，").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR);
                 str1 += str;
             }
-            mLogs->updatePro(str1, ret); ret = false;           
-            str = tr("输出口1-B1检测失败 ");mLogs->updatePro(str, ret);
+            mLogs->updatePro(str1, ret); ret = false;
+            str = tr("输出口1-B1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
+
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -413,7 +350,10 @@ bool Power_DevRead::NineInsertOne_CtrlThree()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口1-C1检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口1-C1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -472,6 +412,8 @@ bool Power_DevRead::NineInsertOne_BreakerOne()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("插接箱断路器1检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -512,7 +454,7 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
     }
     QString str5 = tr("请检测输出口2位置的极性测试是否合格?");
     // emit PloarSig(str3);
-    emit StepSig(str5); emit CurImageSig(1); sleep(4);
+    emit StepSig(str5); emit CurImageSig(1); sleep(5);
 
     flag = 0;
     str = tr("关闭负载输入端L1");  //三相回路电流、功率
@@ -548,7 +490,10 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口2-A2检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口2-A2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -602,7 +547,10 @@ bool Power_DevRead::NineInsertTwo_CtrlTwo()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口2-B2检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口2-B2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -657,7 +605,10 @@ bool Power_DevRead::NineInsertTwo_CtrlThree()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口2-C2检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口2-C2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -757,7 +708,7 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
     }
     QString str5 = tr("请检测输出口3位置的极性测试是否合格?");
     // emit PloarSig(str5);
-    emit StepSig(str5); emit CurImageSig(1); sleep(4);
+    emit StepSig(str5); emit CurImageSig(1); sleep(5);
     flag = 0;
     str = tr("关闭负载输入端L1");
     emit StepSig(str); emit CurImageSig(2);
@@ -792,7 +743,10 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
                 str1 += str;
             }           
             mLogs->updatePro(str, ret); ret = false;
-            str = tr("输出口3-A3检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口3-A3检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -846,7 +800,10 @@ bool Power_DevRead::NineInsertThree_CtrlTwo()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口3-B3检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口3-B3检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求");mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -899,7 +856,10 @@ bool Power_DevRead::NineInsertThree_CtrlThree()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口3-C3检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口3-C3检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -959,6 +919,8 @@ bool Power_DevRead::NineInsertOne_BreakerThree()
             }           
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("插接箱断路器3检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -993,35 +955,46 @@ bool Power_DevRead::Load_NineLoop()
     }
     QString str2 = tr("请检测输出口1位置的极性测试是否合格?");
     // emit PloarSig(str2);
-    emit StepSig(str2); emit CurImageSig(1); sleep(4);
+    emit StepSig(str2); emit CurImageSig(1); sleep(5);
 
     if(mPro->stopFlag == 0) {           //插接位1电流控制1
         if(ret) ret = NineInsertOne_CtrlOne();
         if(ret) ret = NineInsertOne_CtrlTwo();
         if(ret) ret = NineInsertOne_CtrlThree();
-        if(ret) ret = NineInsertOne_BreakerOne();
+
         if(ret) ret = NineInsertTwo_CtrlOne();
         if(ret) ret = NineInsertTwo_CtrlTwo();
         if(ret) ret = NineInsertTwo_CtrlThree();
-        if(ret) ret = NineInsertOne_BreakerTwo();
+
         if(ret) ret = NineInsertThree_CtrlOne();
         if(ret) ret = NineInsertThree_CtrlTwo();
         if(ret) ret = NineInsertThree_CtrlThree();
-        if(ret) ret = NineInsertOne_BreakerThree();
     }else {
         ret = NineInsertOne_CtrlOne();
         ret = NineInsertOne_CtrlTwo();
         ret = NineInsertOne_CtrlThree();
-        ret = NineInsertOne_BreakerOne();
+
         ret = NineInsertTwo_CtrlOne();
         ret = NineInsertTwo_CtrlTwo();
         ret = NineInsertTwo_CtrlThree();
-        ret = NineInsertOne_BreakerTwo();
+
         ret = NineInsertThree_CtrlOne();
         ret = NineInsertThree_CtrlTwo();
         ret = NineInsertThree_CtrlThree();
-        ret = NineInsertOne_BreakerThree();
+
     }
+    emit CurImageSig(4);
+
+    return ret;
+}
+
+bool Power_DevRead::Break_NineLoop()
+{
+    bool ret = true;
+    ret = NineInsertOne_BreakerOne();
+    ret = NineInsertOne_BreakerTwo();
+    ret = NineInsertOne_BreakerThree();
+    // emit CurImageSig(4);
 
     return ret;
 }
@@ -1069,7 +1042,11 @@ bool Power_DevRead::SixInsertOne_CtrlOne()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口1-A1检测失败 ");mLogs->updatePro(str, ret);
+
+            str = tr("输出口1-A1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -1122,7 +1099,10 @@ bool Power_DevRead::SixInsertOne_CtrlTwo()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);  ret = false;
-            str = tr("输出口1-B1检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口1-B1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -1163,7 +1143,7 @@ bool Power_DevRead::SixInsertOne_CtrlThree()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);
-            str = tr("输出口-C1检测成功 ");mLogs->updatePro(str, ret);
+            str = tr("输出口1-C1检测成功 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str3, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
@@ -1176,7 +1156,10 @@ bool Power_DevRead::SixInsertOne_CtrlThree()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口-C1检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口1-C1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -1235,6 +1218,8 @@ bool Power_DevRead::SixInsertOne_BreakerOne()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("插接箱断路器1检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -1275,7 +1260,7 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
     }
     QString str5 = tr("请检测输出口2位置的极性测试是否合格?");
     // emit PloarSig(str5);
-    emit StepSig(str5);  emit CurImageSig(1);sleep(4);
+    emit StepSig(str5);  emit CurImageSig(1);sleep(5);
     flag = 0;
     str = tr("关闭负载输入端L1");  //三相回路电流、功率
     emit StepSig(str); emit CurImageSig(2);
@@ -1310,7 +1295,10 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口2-A2检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口2-A2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -1363,7 +1351,10 @@ bool Power_DevRead::SixInsertTwo_CtrlTwo()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口2-B2检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口2-B2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -1416,7 +1407,10 @@ bool Power_DevRead::SixInsertTwo_CtrlThree()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret);  ret = false;
-            str = tr("输出口2-C2检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口2-C2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -1433,7 +1427,7 @@ bool Power_DevRead::SixInsertOne_BreakerTwo()
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
     QString str2 = tr("断开断路器2，A2/B2/C2电压为0V, A1/B1/C1电压正常；");
     QString str = tr("关闭插接箱的断路器2，打开插接箱的断路器1");
-    emit StepSig(str); emit CurImageSig(2);
+    emit StepSig(str);
     QString str3 = tr("符合要求"); QString str4 = tr("断路器检查");
     QString eng2 = tr("Disconnect circuit breaker 2, A2/B2/C2 voltage is 0V, A1/B1/C1 voltage is normal;");
     QString eng3 = tr("Meet a requirement");
@@ -1509,26 +1503,37 @@ bool Power_DevRead::Load_SixLoop()
     }
     QString str3 = tr("请检测输出口1位置的极性测试是否合格?");
     // emit PloarSig(str3);
-    emit StepSig(str3); emit CurImageSig(1); sleep(3);
+    emit StepSig(str3); emit CurImageSig(1); sleep(5);
     if(mPro->stopFlag == 0) {           //插接位1电流控制1
         if(ret) ret = SixInsertOne_CtrlOne();
         if(ret) ret = SixInsertOne_CtrlTwo();
         if(ret) ret = SixInsertOne_CtrlThree();
-        if(ret) ret = SixInsertOne_BreakerOne();
+
         if(ret) ret = SixInsertTwo_CtrlOne();
         if(ret) ret = SixInsertTwo_CtrlTwo();
         if(ret) ret = SixInsertTwo_CtrlThree();
-        if(ret) ret = SixInsertOne_BreakerTwo();
+
     }else {
         ret = SixInsertOne_CtrlOne();
         ret = SixInsertOne_CtrlTwo();
         ret = SixInsertOne_CtrlThree();
-        ret = SixInsertOne_BreakerOne();
+
         ret = SixInsertTwo_CtrlOne();
         ret = SixInsertTwo_CtrlTwo();
         ret = SixInsertTwo_CtrlThree();
-        ret = SixInsertOne_BreakerTwo();
+
     }
+    emit CurImageSig(4);
+
+    return ret;
+}
+
+bool Power_DevRead::Break_SixLoop()
+{
+    bool ret = true;
+    ret = SixInsertOne_BreakerOne();
+    ret = SixInsertOne_BreakerTwo();
+    emit CurImageSig(4);
 
     return ret;
 }
@@ -1575,8 +1580,14 @@ bool Power_DevRead::Three_CtrlOne()
                 str = tr("%1电流%2A，").arg(temp).arg(Obj->cur.value[i]/COM_RATE_CUR);
                 str1 += str;
             }
-            mLogs->updatePro(str1, ret);
-            ret = false; str = tr("输出口-A检测失败 ");mLogs->updatePro(str, ret);
+            mLogs->updatePro(str1, ret); ret = false;
+
+            if(mItem->modeId == START_BUSBAR)
+                str = tr("输出口-A检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->ip.ip_cur).arg(mItem->ip.ip_curErr);
+            else str = tr("输出口-A检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -1629,7 +1640,13 @@ bool Power_DevRead::Three_CtrlTwo()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口-B检测失败 ");mLogs->updatePro(str, ret);
+
+            if(mItem->modeId == START_BUSBAR)
+                str = tr("输出口-B检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->ip.ip_cur).arg(mItem->ip.ip_curErr);
+            else str = tr("输出口-B检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -1682,7 +1699,12 @@ bool Power_DevRead::Three_CtrlThree()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口-C检测失败 ");mLogs->updatePro(str, ret);
+            if(mItem->modeId == START_BUSBAR)
+                str = tr("输出口-C检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->ip.ip_cur).arg(mItem->ip.ip_curErr);
+            else str = tr("输出口-C检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -1782,7 +1804,7 @@ bool Power_DevRead::Three_One()
     }
     QString str5 = tr("相位转换旋钮转到L1，并检测输出口1位置的极性测试是否合格?");
     // emit PloarSig(str5);
-    emit StepSig(str5); emit CurImageSig(1); sleep(4);
+    emit StepSig(str5); emit CurImageSig(1); sleep(5);
 
     flag = 0;
     str = tr("关闭负载输入端L1");  //三相回路电流、功率
@@ -1818,7 +1840,10 @@ bool Power_DevRead::Three_One()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口1-A检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口1-A检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -1874,6 +1899,8 @@ bool Power_DevRead::Three_OneBreaker()
             }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("插接箱的断路器1检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -1914,7 +1941,7 @@ bool Power_DevRead::Three_Two()
     }
     QString str5 = tr("相位转换旋钮转到L2，检测输出口2位置的极性测试是否合格?");
     // emit PloarSig(str5);
-    emit StepSig(str5); emit CurImageSig(1); sleep(4);
+    emit StepSig(str5); emit CurImageSig(1); sleep(5);
 
     flag = 0;
     str = tr("关闭负载输入端L2");  //三相回路电流、功率
@@ -1951,7 +1978,10 @@ bool Power_DevRead::Three_Two()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口2-B检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口2-B检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -2047,7 +2077,7 @@ bool Power_DevRead::Three_Three()
     }
     QString str5 = tr("相位转换旋钮转到L2，检测输出口3位置的极性测试是否合格?");
     // emit PloarSig(str5);
-    emit StepSig(str5); emit CurImageSig(1); sleep(4);
+    emit StepSig(str5); emit CurImageSig(1); sleep(5);
 
     flag = 0;
     str = tr("关闭负载输入端L1");  //三相回路电流、功率
@@ -2083,7 +2113,10 @@ bool Power_DevRead::Three_Three()
                 str1 += str;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口3-C检测失败 ");mLogs->updatePro(str, ret);
+            str = tr("输出口3-C检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str); sleep(3);
             str3 = tr("不符合要求"); mLogs->writeData(str2, str3, str4, ret);
             eng3 = tr("Not Satisfiable"); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -2115,7 +2148,7 @@ bool Power_DevRead::Three_ThreeBreaker()
         }
         a = Obj->vol.status[0]; b = Obj->vol.status[1]; c = Obj->vol.value[2];
 
-        if((a == 2) &&(b == 1)&&(!c)) {
+        if((a == 1) &&(b == 1)&&(!c)) {
             ret = true;
             for(int i =0;i<loop;i++)
             {
@@ -2173,7 +2206,7 @@ bool Power_DevRead::Load_ThreeLoop()
         }
         QString str5 = tr("请检测输出口2位置的极性测试是否合格?");
         // emit PloarSig(str5);
-        emit StepSig(str5); emit CurImageSig(1); sleep(4);
+        emit StepSig(str5); emit CurImageSig(1); sleep(5);
 
         if(mItem->modeId == START_BUSBAR) { //判断始端箱三相功率值之和是否等于总功率误差不超过10kw
             uint toTal = StartBox->totalPow.ivalue;
@@ -2196,65 +2229,40 @@ bool Power_DevRead::Load_ThreeLoop()
             if(ret) ret = Three_CtrlOne();
             if(ret) ret = Three_CtrlTwo();
             if(ret) ret = Three_CtrlThree();
-            if(ret) ret = Three_Breaker();
         }else {
             ret = Three_CtrlOne();
             ret = Three_CtrlTwo();
             ret = Three_CtrlThree();
-            ret = Three_Breaker();
+
         }
     }else if(mBusData->box[mItem->addr-1].phaseFlag == 0) {    //单相三回路三个输出位
         if(mPro->stopFlag == 0) {           //插接位1电流控制1
             if(ret) ret = Three_One();
-            if(ret) ret = Three_OneBreaker();
+
             if(ret) ret = Three_Two();
-            if(ret) ret = Three_TwoBreaker();
+
             if(ret) ret = Three_Three();
-            if(ret) ret = Three_ThreeBreaker();
         }else {
             ret = Three_One();
-            ret = Three_OneBreaker();
+
             ret = Three_Two();
-            ret = Three_TwoBreaker();
+
             ret = Three_Three();
-            ret = Three_ThreeBreaker();
+
         }
     }
+    emit CurImageSig(4);
 
     return ret;
 }
-
-bool Power_DevRead::readHub()
+bool Power_DevRead::Three_Break()
 {
     bool ret = true;
-    mRtu->setModbus(0);
-    for(int i=0; i<3; ++i) {
-        ret = mRtu->readPduData();
-        if(ret) break; else mRtu->changeBaudRate();
-    }
-    mRtu->setModbus(2);
+
+    ret = Three_OneBreaker();
+    ret = Three_TwoBreaker();
+    ret = Three_ThreeBreaker();
+    // emit CurImageSig(4);
 
     return ret;
-}
-
-void Power_DevRead::run()
-{
-    if(isRun) return;
-    isRun = true;
-
-    mPacket->init();
-    mPro->step = Collect_Start;
-
-    bool ret  = readSn();
-    if(ret) {
-        QString str = tr("设备数据读取");
-        ret = mRtu->readPduData();
-        if(ret) str += tr("成功");
-        else str += tr("失败");
-        mPacket->updatePro(str, ret);
-    }
-    mPacket->updatePro(tr("已结束"), ret);
-    mPro->step = Test_End;
-
-    isRun = false;
 }

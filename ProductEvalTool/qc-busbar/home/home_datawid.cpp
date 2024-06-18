@@ -25,12 +25,6 @@ void Home_DataWid::appendItem(sBoxData *box)
         for(int i=0; i<box->loopNum; ++i) {
             QStringList listStr;
             listStr << QString::number(dev->vol.value[i]/COM_RATE_VOL,'f',1);
-            setTableRow(i, listStr);
-        }
-    }else if(mCfgm->work_mode == 3) {
-        for(int i=0; i<box->loopNum; ++i) {
-            QStringList listStr;
-            listStr << QString::number(dev->vol.value[i]/COM_RATE_VOL,'f',1);
             listStr << QString::number(dev->cur.value[i]/COM_RATE_CUR,'f',3);
             listStr << QString::number(dev->pow.value[i]/COM_RATE_CUR,'f',3);
             setTableRow(i, listStr);

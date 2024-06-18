@@ -54,6 +54,7 @@ void Face_Power::ClearText()
 {
     mFirst = 1;
     ui->textEdit->clear();
+    ui->label->setStyleSheet("");
 }
 
 void Face_Power::ImageSlot(int value)
@@ -67,6 +68,12 @@ void Face_Power::ImageSlot(int value)
         break;
     case 2:
         ui->label->setStyleSheet("QLabel{background-image: url(:/image/cur_test.jpg);}");
+        break;
+    case 3:
+        ui->label->setStyleSheet("QLabel{background-image: url(:/image/serial.jpg);}");
+        break;
+    case 4:
+        ui->label->setStyleSheet("");
         break;
     default:
         break;

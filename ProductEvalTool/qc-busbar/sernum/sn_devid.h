@@ -15,7 +15,9 @@ protected:
     void initReadType(sRtuItem &it);
     bool readPduData(){return false;}
     bool analysDevType(uchar *buf, int len);
-
+signals:
+    void TipSig(QString str);
+    void TipImageSig(int value);
 private:
     Sn_DevType *mTypeDef;
     sCfgItem *mItem;

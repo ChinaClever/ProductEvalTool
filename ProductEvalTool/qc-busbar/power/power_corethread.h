@@ -33,7 +33,6 @@ protected:
     void workDown();
 
     bool initDev();
-    bool hubPort();
     void StartErrRange();
     void EnvErrRange();
     void InsertErrRange();
@@ -73,6 +72,7 @@ protected:
     bool Vol_ctrlTwo();
     bool Vol_ctrlThree();
     bool stepLoadTest();
+    bool BreakerTest();
     QString changeMode(int index);
     void autoSetAddress();
     QString trans(int index);
@@ -91,6 +91,8 @@ private:
     uchar loopNum;
     Dev_SiRtu *mSiRtu;
     Power_ErrRange *mErr;
+    sCfgItem *mItem;
 };
 
+double calculateAverageWithoutHighestAndLowest(QVector<ushort> &numbers);
 #endif // POWER_CORETHREAD_H

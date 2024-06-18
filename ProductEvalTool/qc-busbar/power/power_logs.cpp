@@ -66,7 +66,7 @@ bool Power_Logs::writeLog()
         it.passed = tr("通过");
         mItem->cnt.ok += 1;
         if(mItem->cnt.num > 0) {
-            if(mPro->work_mode == 3)
+            if(mPro->work_mode == 2)
                 mItem->cnt.num -= 1;
             if(!mItem->cnt.num)  {
                 mItem->user.clear();
@@ -78,8 +78,15 @@ bool Power_Logs::writeLog()
         it.passed = tr("失败");
     }
 
-    it.memo = mPro->itemData.join("; ");
-    if(mPro->work_mode == 3)
+    int num = mPro->stepResult.size();
+    QString str;
+    for(int i=0; i<num; ++i)
+    {
+        str += mPro->test_function.at(i) + ":" + mPro->itemData.at(i) + ";";
+    }
+
+    it.memo = str;
+    if(mPro->work_mode == 2)
     {
         mPro->test_num = mItem->cnt.all - mItem->cnt.num;
         ePro->test_num = mItem->cnt.all - mItem->cnt.num;

@@ -111,9 +111,9 @@ struct sIpCfg {
     float ip_vol;
     float ip_cur;
     float ip_pow;
-    uint ip_volErr;
-    ushort ip_curErr;
-    ushort ip_powErr;
+    float ip_volErr;
+    float ip_curErr;
+    float ip_powErr;
     float ip_curMin;
     float ip_curMax;
     uint rate;
@@ -141,8 +141,8 @@ struct sSiCfg {
     ushort version;
     float si_vol;
     float si_cur;
-    uint si_volErr;
-    ushort si_curErr;
+    float si_volErr;
+    float si_curErr;
     float si_curMin;
     float si_curMax;
     uint rate;

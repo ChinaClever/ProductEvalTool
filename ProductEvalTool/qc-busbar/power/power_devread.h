@@ -13,7 +13,6 @@ public:
 
     bool readSn();
     bool readDev();
-    bool readHub();
     bool readNet();
     bool checkNet();
     bool readDevData();
@@ -25,6 +24,7 @@ public:
     QString trans(int index);
     //九回路三个输出位
     bool Load_NineLoop();
+    bool Break_NineLoop();
     bool NineInsertOne_CtrlOne();
     bool NineInsertOne_CtrlTwo();
     bool NineInsertOne_CtrlThree();
@@ -40,6 +40,7 @@ public:
 
     //六回路二个输出位
     bool Load_SixLoop();
+    bool Break_SixLoop();
     bool SixInsertOne_CtrlOne();
     bool SixInsertOne_CtrlTwo();
     bool SixInsertOne_CtrlThree();
@@ -60,17 +61,12 @@ public:
     bool Three_One();
     bool Three_Two();
     bool Three_Three();
+    bool Three_Break();
     bool Three_OneBreaker();
     bool Three_TwoBreaker();
     bool Three_ThreeBreaker();
 protected:
-    void run();
     bool readSnmp();
-
-    bool checkSiLine();
-    bool checkIpLine();
-    bool checkIpVersion();
-
 protected slots:
     void initFunSlot();
 signals:

@@ -100,8 +100,8 @@ void Cfg::initCfgDev()
     item->si.si_filter = read("si_filter", 5, g).toInt();
     item->si.si_phaseflag = read("si_phaseflag", 0, g).toInt();
     item->si.loopNum = read("si_loopNum", 0, g).toInt();
-    item->si.si_curErr = read("si_curErr", 5, g).toInt();
-    item->si.si_volErr = read("si_volErr", 5, g).toInt();
+    item->si.si_curErr = read("si_curErr", 5, g).toFloat();
+    item->si.si_volErr = read("si_volErr", 5, g).toFloat();
     item->si.si_vol = read("si_vol", 0, g).toFloat();
     item->si.si_cur = read("si_cur", 0, g).toFloat();
     item->si.si_curMin = read("si_curMin", 0, g).toFloat();
@@ -117,9 +117,9 @@ void Cfg::initCfgDev()
     item->ip.ip_shunt = read("ip_shunt", 0 , q).toInt();
     item->ip.ip_lightning = read("ip_lightning", 0 , q).toInt();
     item->ip.ip_residual = read("ip_residual", 0 , q).toInt();
-    item->ip.ip_volErr = read("ip_volErr", 5, q).toInt();
-    item->ip.ip_curErr = read("ip_curErr", 5, q).toInt();
-    item->ip.ip_powErr = read("ip_powErr", 10, q).toInt();
+    item->ip.ip_volErr = read("ip_volErr", 5, q).toFloat();
+    item->ip.ip_curErr = read("ip_curErr", 5, q).toFloat();
+    item->ip.ip_powErr = read("ip_powErr", 10, q).toFloat();
     item->ip.ip_vol = read("ip_vol", 0, q).toFloat();
     item->ip.ip_cur = read("ip_cur", 0, q).toFloat();
     item->ip.ip_pow = read("ip_pow", 0, q).toFloat();
@@ -143,9 +143,9 @@ void Cfg::writeCfgDev()
     write("ip_shunt", item->ip.ip_shunt, g);
     write("ip_lightning", item->ip.ip_lightning, g);
     write("ip_residual", item->ip.ip_residual, g);
-    write("ip_volErr", item->ip.ip_volErr, g);
-    write("ip_curErr", item->ip.ip_curErr, g);
-    write("ip_powErr", item->ip.ip_powErr, g);
+    write("ip_volErr", QString::number(item->ip.ip_volErr), g);
+    write("ip_curErr", QString::number(item->ip.ip_curErr), g);
+    write("ip_powErr", QString::number(item->ip.ip_powErr), g);
     write("ip_vol", QString::number(item->ip.ip_vol), g);
     write("ip_cur", QString::number(item->ip.ip_cur), g);
     write("ip_pow", QString::number(item->ip.ip_pow), g);
@@ -160,8 +160,8 @@ void Cfg::writeCfgDev()
     write("si_iOF", item->si.si_iOF, q);
     write("si_phaseflag", item->si.si_phaseflag, q);
     write("si_loopNum", item->si.loopNum, q);
-    write("si_volErr", item->si.si_volErr, q);
-    write("si_curErr", item->si.si_curErr, q);
+    write("si_volErr", QString::number(item->si.si_volErr), q);
+    write("si_curErr", QString::number(item->si.si_curErr), q);
     write("si_vol", QString::number(item->si.si_vol), q);
     write("si_cur", QString::number(item->si.si_cur), q);
     write("si_curMin", QString::number(item->si.si_curMin), q);

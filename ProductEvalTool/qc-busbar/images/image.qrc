@@ -8,5 +8,6 @@
         <file>ploa.jpg</file>
         <file>cur_test.jpg</file>
         <file>vol_test.jpg</file>
+        <file>serial.jpg</file>
     </qresource>
 </RCC>

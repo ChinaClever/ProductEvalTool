@@ -23,26 +23,11 @@ void Power_CoreThread::initFunSlot()
     Printer_BarTender::bulid(this);
     mSource = Dev_Source::bulid(this);
     mCfg = TestConfig::bulid()->item;
+    mItem = Cfg::bulid()->item;
 
     mModbus = Rtu_Modbus::bulid(this)->get(2);
     connect(mModbus,&RtuRw::sendNumAndIndexSig, this, &Power_CoreThread::getNumAndIndexSlot);
     connect(mModbus,&RtuRw::sendDelaySig, this, &Power_CoreThread::getDelaySlot);
-}
-
-bool Power_CoreThread::hubPort()
-{
-    QString str = tr("设备 SER 级联口");
-    bool ret = mItem->coms.ser3->isOpened();
-    if(ret) {
-        ret = mRead->readHub();
-        if(ret) str += tr("正常");
-        else str += tr("错误");
-    }else {
-        ret = true;
-        str += tr("跳过");
-    }
-
-    return mLogs->updatePro(str, ret);
 }
 
 bool Power_CoreThread::initDev()
@@ -383,10 +368,11 @@ void Power_CoreThread::InsertErrRange()
     emit TipSig(str); sleep(2);
 
     str = tr("请将插接箱IN口与测试治具IN口对接，OUT口与测试治具OUT口对接");
-    emit TipSig(str);
+    emit TipSig(str); emit ImageSig(3);
 
     mModbus->autoSetAddress();
 
+    emit ImageSig(4);
     sBoxData *b = &(mBusData->box[mItem->addr - 1]);    //比较基本配置信息
 
     int curValue = b->buzzerStatus;
@@ -466,6 +452,25 @@ void Power_CoreThread::InsertErrRange()
     mLogs->updatePro(str,ret);
 }
 
+double calculateAverageWithoutHighestAndLowest(QVector<ushort> &numbers) {
+    // 如果数组为空，返回0
+    if (numbers.isEmpty()) {
+        return 0.0;
+    }
+    // 对数组进行排序
+    std::sort(numbers.begin(), numbers.end());
+
+    // 去掉最高和最低的值
+    numbers.remove(numbers.size() - 1, 1); // 移除最高值
+    numbers.remove(0, 1);                 // 移除最低值
+
+    // 计算剩余数字的平均值
+    double sum = std::accumulate(numbers.begin(), numbers.end(), 0.0);
+    double average = sum / numbers.size();
+
+    return average;
+}
+
 void Power_CoreThread::EnvErrRange()
 {
     bool ret = true; QString str, str2, str3 ;
@@ -475,23 +480,25 @@ void Power_CoreThread::EnvErrRange()
     QString eng2 = tr("Temperature value check"); QString eng3 = tr("Meet a requirement");
     str = tr("温度检测");
     str2 = tr("温度模块检测：");
-    ushort tem = 0;
+    QVector<ushort> myNumbers = {0};
     for(int i = 0; i<4; i++)
     {
-        tem += unit->value[i];
+        myNumbers.append(unit->value[i]);
     }
+    double average = calculateAverageWithoutHighestAndLowest(myNumbers);
 
-    ushort ave = tem / 4.0;
     QList<bool> pass; pass.clear();
     for(int i = 0; i<4; i++)
     {
         str2 += tr("温度%1 %2℃ ").arg(i+1).arg(unit->value[i]);
-        if(ret) ret = mErr->checkErrRange(ave, unit->value[i], 5.0);
+        if(ret) ret = mErr->checkErrRange(average, unit->value[i], 5.0);
         pass << ret;
     }
+
     ret = true;
     mLogs->updatePro(str2, ret);
-    for(int i=0; i<pass.size(); ++i)
+    int i = 0;
+    for(i; i<pass.size(); ++i)
     {
         if(pass.at(i) == 0) {
             ret = 0; break;
@@ -500,7 +507,7 @@ void Power_CoreThread::EnvErrRange()
     if(ret) {
         str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
     }else {
-        str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
+        str += tr("失败，温度%1检测异常，请检查该温度传感器是否正常").arg(i+1); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
     }
     str2 = tr("温度值检查");
     mLogs->writeData(str1, str3, str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
@@ -650,7 +657,6 @@ void Power_CoreThread::workResult(bool)
             }
         }
     }
-
     mLogs->saveLogs();
     if(mPro->online) {
         Json_Pack::bulid()->stepData();//全流程才发送记录(http)
@@ -791,8 +797,13 @@ bool Power_CoreThread::Vol_ctrlOne()
             }
             mLogs->updatePro(str1, ret);
             ret = false; str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
-            str = tr("B路电压检测失败"); mLogs->updatePro(str, ret);
-            str += str1; mLogs->writeData(str2,str3,str4,ret);
+            if(mItem->modeId == START_BUSBAR)
+                str = tr("B路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->ip.ip_vol).arg(mItem->ip.ip_volErr);
+            else str = tr("B路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->si.si_vol).arg(mItem->si.si_volErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电压超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit TipSig(str); sleep(3);
+            mLogs->writeData(str2,str3,str4,ret);
             mLogs->writeDataEng(eng2,eng3,eng4,ret); str1.clear(); break;
         }
     }
@@ -904,8 +915,14 @@ bool Power_CoreThread::Vol_ctrlTwo()
             }
             mLogs->updatePro(str1, ret);
             ret = false; str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
-            str = tr("C路电压检测失败");mLogs->updatePro(str, ret);
-            str += str1; mLogs->writeData(str2,str3,str4,ret);
+
+            if(mItem->modeId == START_BUSBAR)
+                str = tr("C路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->ip.ip_vol).arg(mItem->ip.ip_volErr);
+            else str = tr("C路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->si.si_vol).arg(mItem->si.si_volErr);
+            mLogs->updatePro(str, ret);
+            str = tr("电压超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit TipSig(str); sleep(3);
+            mLogs->writeData(str2,str3,str4,ret);
             mLogs->writeDataEng(eng2,eng3,eng4,ret); str1.clear(); break;
         }
     }
@@ -1017,8 +1034,14 @@ bool Power_CoreThread::Vol_ctrlThree()
             }
             mLogs->updatePro(str1, ret);
             ret = false; str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
-            str = tr("A路电压检测失败");mLogs->updatePro(str, ret);
-            str += str1; mLogs->writeData(str2,str3,str4,ret);
+            if(mItem->modeId == START_BUSBAR)
+                str = tr("A路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->ip.ip_vol).arg(mItem->ip.ip_volErr);
+            else str = tr("A路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->si.si_vol).arg(mItem->si.si_volErr);
+            mLogs->updatePro(str, ret);
+
+            str = tr("电压超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit TipSig(str); sleep(3);
+            mLogs->writeData(str2,str3,str4,ret);
             mLogs->writeDataEng(eng2,eng3,eng4,ret);str1.clear(); break;
         }
     }
@@ -1044,6 +1067,7 @@ bool Power_CoreThread::stepVolTest()
             ret = Vol_ctrlThree();
         }
     }
+    emit ImageSig(4);
 
     return ret;
 }
@@ -1061,7 +1085,23 @@ bool Power_CoreThread::stepLoadTest()
 
     return ret;
 }
+bool Power_CoreThread::BreakerTest()
+{
+    bool ret = false;
+    if(mBusData->box[mItem->addr-1].loopNum == 9) {
+        ret = mRead->Break_NineLoop();
+    }else if(mBusData->box[mItem->addr-1].loopNum == 6) {
+        ret = mRead->Break_SixLoop();
+    }else if(mBusData->box[mItem->addr-1].loopNum == 3) {
+        if((mItem->modeId == START_BUSBAR) || (mBusData->box[mItem->addr-1].phaseFlag == 1)) {
+            ret = mRead->Three_Breaker();
+        }else if(mBusData->box[mItem->addr-1].phaseFlag == 0) {    //单相三回路三个输出位
+            ret = mRead->Three_Break();
+        }
+    }
 
+    return ret;
+}
 void Power_CoreThread::getDelaySlot()
 {
     QString str, eng; bool ret = false;
@@ -1123,31 +1163,32 @@ void Power_CoreThread::workDown()
         {
             ret = true;
         }else {
-            QString str = tr("请确认规格书参数与工具参数设置的数据是否一致");
-            emit TipSig(str); sleep(2); ret = false;
+            QString str = tr("请确认规格书与该工具参数设置的输出位类型、回路数量值是否一致");
+            emit TipSig(str); sleep(2); ret = false; mLogs->updatePro(str, ret);
         }
     }
-    if(ret) {
-        if(mCfg->work_mode == 2) {
-            BaseErrRange();                                 //检查IN OUT口 网口对比始端箱/插接箱基本信息
-            EnvErrRange();                                  //温度模块检测
+    if(ret)
+    {
+        BaseErrRange();                                 //检查IN OUT口 网口对比始端箱/插接箱基本信息
+        EnvErrRange();                                  //温度模块检测
 
-            if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(),"0");
-            else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
+        if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(),"0");
+        else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
 
-            if(ret) ret = stepVolTest();                    //电压测试
-        }else if(mCfg->work_mode == 3) {
-          // if(ret) ret = mSource->read();
-          // else mPro->result = Test_Fail;
-          // if(ret) ret = checkLoadErrRange();
+        ret = BreakerTest();                            //断路器测试
 
-            if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(),"0");
-            else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
+        ret = stepVolTest();                            //电压测试
 
-            if(ret) ret = stepLoadTest();                    //电流+断路器测试
-            if(ret) ret = factorySet();                      //清除电能
-            if(ret) emit JudgSig();                                //极性测试弹窗
+      // if(ret) ret = mSource->read();
+      // else mPro->result = Test_Fail;
+      // if(ret) ret = checkLoadErrRange();
+
+        ret = stepLoadTest();                    //电流测试
+        ret = factorySet();                      //清除电能
+        if(ret) {
+            mCfg->work_mode = 3; emit JudgSig(); //极性测试弹窗
         }
+
         if(mItem->modeId == START_BUSBAR)
         {
             int temp = mItem->ip.ip_filter;

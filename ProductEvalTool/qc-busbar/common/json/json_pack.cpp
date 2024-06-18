@@ -54,7 +54,7 @@ void Json_Pack::head(QJsonObject &obj)
     }
     obj.insert("test_result", mPro->uploadPassResult);
 
-    if(mPro->work_mode >=2) {
+    if(mPro->work_mode ==2) {
         QString str1 = mPro->itemContent.join(";");
         obj.insert("test_cfg" ,str1);
     }
@@ -118,7 +118,7 @@ void Json_Pack::head_English(QJsonObject &obj)
     }
     obj.insert("test_result", ePro->uploadPassResult);
 
-    if(mPro->work_mode >=2) {
+    if(mPro->work_mode ==2) {
         QString str1 = ePro->itemContent.join(";");
         obj.insert("test_cfg" ,str1);
     }
@@ -173,7 +173,7 @@ void Json_Pack::stepData()
     obj.insert("language_select", 0);
 
     obj.insert("tool_name", "qc-busbar");
-    if(mPro->work_mode >=2) {
+    if(mPro->work_mode ==2) {
         QString str1 = mPro->itemContent.join(";");
         obj.insert("test_cfg" ,str1);
     }
@@ -207,7 +207,7 @@ void Json_Pack::stepData_Eng()//功能测试的英文版本
     obj.insert("language_select", 1);
 
     obj.insert("tool_name", "qc-busbar");
-    if(mPro->work_mode >=2) {
+    if(mPro->work_mode ==2) {
         QString str1 = ePro->itemContent.join(";");
         obj.insert("test_cfg" ,str1);
     }

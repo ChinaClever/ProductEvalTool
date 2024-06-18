@@ -68,6 +68,10 @@ void Home_WorkWid::initWid()
     connect(mPowDev, &Power_DevRead::PloarSig , this, &Home_WorkWid::polarSlot);
     connect(mPowDev, &Power_DevRead::CurImageSig , mPower, &Face_Power::ImageSlot);
 
+    mDevSn = Sn_DevId::bulid(this);
+    connect(mDevSn, &Sn_DevId::TipImageSig , mPower, &Face_Power::ImageSlot);
+    connect(mDevSn, &Sn_DevId::TipSig , mPower, &Face_Power::TextSlot);
+
     timer = new QTimer(this);
     timer->start(100);
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
@@ -332,17 +336,12 @@ void Home_WorkWid::GndStatus(bool ret)
     else ui->gndLab->setStyleSheet("background-color:red; color:rgb(0, 0, 0);");
 }
 
-void Home_WorkWid::VolStatus(bool ret)
+void Home_WorkWid::FuncStatus(bool ret)
 {
-    if(ret) ui->volLab->setStyleSheet("background-color:green; color:rgb(0, 0, 0);");
-    else  ui->volLab->setStyleSheet("background-color:red; color:rgb(0, 0, 0);");
+    if(ret) ui->funcLab->setStyleSheet("background-color:green; color:rgb(0, 0, 0);");
+    else  ui->funcLab->setStyleSheet("background-color:red; color:rgb(0, 0, 0);");
 }
 
-void Home_WorkWid::LoadStatus(bool ret)
-{
-    if(ret) ui->loadLab->setStyleSheet("background-color:green; color:rgb(0, 0, 0);");
-    else ui->loadLab->setStyleSheet("background-color:red; color:rgb(0, 0, 0);");
-}
 
 
 void Home_WorkWid::StatusSlot(bool ret)
@@ -350,8 +349,7 @@ void Home_WorkWid::StatusSlot(bool ret)
     switch (mItem->work_mode) {
     case 0: AcwStatus(ret); break;
     case 1: GndStatus(ret); break;
-    case 2: VolStatus(ret); break;
-    case 3: LoadStatus(ret); break;
+    case 2: FuncStatus(ret); break;
     default:
         break;
     }
@@ -375,11 +373,7 @@ void Home_WorkWid::ItemStatus()
              break;
     }
     case 2: {mPro->test_step = "功能测试"; ePro->test_step = "Functional testing";
-             ui->volLab->setStyleSheet("background-color:yellow;color:rgb(0, 0, 0);");
-             break;
-    }
-    case 3: {mPro->test_step = "功能测试"; ePro->test_step = "Functional testing";
-             ui->loadLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
+             ui->funcLab->setStyleSheet("background-color:yellow;color:rgb(0, 0, 0);");
              break;
     }
     default:
@@ -450,7 +444,7 @@ void Home_WorkWid::on_groundBtn_clicked()//接地
     }
 }
 
-void Home_WorkWid::on_volBtn_clicked()  //串口--电压
+void Home_WorkWid::on_funcBtn_clicked()
 {
     ui->stackedWid->hide();
     mItem->work_mode = 2;
@@ -466,29 +460,7 @@ void Home_WorkWid::on_volBtn_clicked()  //串口--电压
     }else {
         bool ret = MsgBox::question(this, tr("确定需要提前结束？"));
         if(ret) {
-            VolStatus(!ret); mPro->result = Test_Fail;
-            updateResult();
-        }
-    }
-}
-
-void Home_WorkWid::on_loadBtn_clicked()     //电流--断路器
-{
-    ui->stackedWid->hide();
-    mItem->work_mode = 3;
-    mPro->work_mode = 3;
-    if(mPro->step == Test_End) {
-        bool ret = initSerial();
-        if(ret) ret = checkUesr();
-        if(ret) {       
-            mPacket->init();
-            ItemStatus();
-            mPowThread->start();          
-        }
-    }else {
-        bool ret = MsgBox::question(this, tr("确定需要提前结束？"));
-        if(ret) {
-            LoadStatus(!ret); mPro->result = Test_Fail;
+            FuncStatus(!ret); mPro->result = Test_Fail;
             updateResult();
         }
     }
@@ -532,3 +504,6 @@ void Home_WorkWid::initTypeComboBox()
     int index = mCfgm->modeId;
     ui->comBox->setCurrentIndex(index);
 }
+
+
+

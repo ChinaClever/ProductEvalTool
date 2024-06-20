@@ -92,6 +92,7 @@
     <widget class="QLabel" name="label_4">
      <property name="font">
       <font>
+       <family>微软雅黑</family>
        <pointsize>14</pointsize>
       </font>
      </property>
@@ -104,6 +105,7 @@
     <widget class="QLabel" name="label_3">
      <property name="font">
       <font>
+       <family>微软雅黑</family>
        <pointsize>14</pointsize>
       </font>
      </property>
@@ -143,6 +145,7 @@
     <widget class="QLabel" name="label_5">
      <property name="font">
       <font>
+       <family>微软雅黑</family>
        <pointsize>14</pointsize>
       </font>
      </property>
@@ -198,6 +201,7 @@
     <widget class="QCheckBox" name="testBox">
      <property name="font">
       <font>
+       <family>微软雅黑</family>
        <pointsize>-1</pointsize>
        <italic>false</italic>
        <bold>false</bold>

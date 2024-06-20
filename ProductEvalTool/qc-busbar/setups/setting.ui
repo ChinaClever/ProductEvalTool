@@ -136,7 +136,7 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>350</height>
+       <height>400</height>
       </size>
      </property>
      <property name="font">
@@ -465,30 +465,10 @@
       <string>始端箱参数设置区</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="3">
-       <widget class="QComboBox" name="ISDBox">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>30</height>
-         </size>
-        </property>
-        <item>
-         <property name="text">
-          <string>无</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>配有</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QLabel" name="label_2">
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_18">
         <property name="text">
-         <string>剩余电流监测模块</string>
+         <string>产线测试电流</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -511,155 +491,23 @@
         </property>
        </widget>
       </item>
+      <item row="10" column="1">
+       <widget class="QLineEdit" name="ip_versionEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>2.2.2</string>
+        </property>
+       </widget>
+      </item>
       <item row="3" column="0">
        <widget class="QLabel" name="label_19">
         <property name="text">
          <string>产线测试电压</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="3">
-       <widget class="QDoubleSpinBox" name="ip_curErrSpin">
-        <property name="suffix">
-         <string>A</string>
-        </property>
-        <property name="decimals">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <double>10.000000000000000</double>
-        </property>
-        <property name="singleStep">
-         <double>0.100000000000000</double>
-        </property>
-        <property name="value">
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QLabel" name="label_15">
-        <property name="text">
-         <string>产线测试电压误差</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="2">
-       <widget class="QLabel" name="label_17">
-        <property name="text">
-         <string>功率误差</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QComboBox" name="lightningBox">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>30</height>
-         </size>
-        </property>
-        <item>
-         <property name="text">
-          <string>无</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>配有</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_18">
-        <property name="text">
-         <string>产线测试电流</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="1">
-       <widget class="QDoubleSpinBox" name="ip_powSpin">
-        <property name="suffix">
-         <string>kw</string>
-        </property>
-        <property name="decimals">
-         <number>3</number>
-        </property>
-        <property name="maximum">
-         <double>100.000000000000000</double>
-        </property>
-        <property name="singleStep">
-         <double>0.001000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="iOFBox">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>30</height>
-         </size>
-        </property>
-        <item>
-         <property name="text">
-          <string>无</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>配有</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="2" column="3">
-       <widget class="QComboBox" name="residualBox">
-        <item>
-         <property name="text">
-          <string>无</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>有</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QDoubleSpinBox" name="ip_curSpin">
-        <property name="suffix">
-         <string>A</string>
-        </property>
-        <property name="decimals">
-         <number>3</number>
-        </property>
-        <property name="maximum">
-         <double>1000.000000000000000</double>
-        </property>
-        <property name="singleStep">
-         <double>0.100000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="11" column="2">
-       <widget class="QLabel" name="label_25">
-        <property name="text">
-         <string>电流最大值</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -697,58 +545,52 @@
         </property>
        </widget>
       </item>
-      <item row="10" column="0">
-       <widget class="QLabel" name="label_20">
+      <item row="3" column="2">
+       <widget class="QLabel" name="label_15">
         <property name="text">
-         <string>功率</string>
+         <string>产线测试电压误差</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>防雷模块</string>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="iOFBox">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>30</height>
+         </size>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
+        <item>
+         <property name="text">
+          <string>无</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>配有</string>
+         </property>
+        </item>
        </widget>
       </item>
-      <item row="10" column="3">
-       <widget class="QDoubleSpinBox" name="ip_powErrSpin">
-        <property name="suffix">
-         <string>kw</string>
-        </property>
-        <property name="decimals">
-         <number>3</number>
-        </property>
-        <property name="maximum">
-         <double>100.000000000000000</double>
-        </property>
-        <property name="singleStep">
-         <double>0.001000000000000</double>
-        </property>
-        <property name="value">
-         <double>0.100000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="11" column="3">
-       <widget class="QDoubleSpinBox" name="ip_curMaxSpin">
+      <item row="6" column="3">
+       <widget class="QDoubleSpinBox" name="ip_curErrSpin">
         <property name="suffix">
          <string>A</string>
         </property>
         <property name="decimals">
-         <number>3</number>
+         <number>1</number>
         </property>
         <property name="maximum">
-         <double>1000.000000000000000</double>
+         <double>10.000000000000000</double>
         </property>
         <property name="singleStep">
-         <double>0.010000000000000</double>
+         <double>0.100000000000000</double>
+        </property>
+        <property name="value">
+         <double>1.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -772,23 +614,39 @@
         </item>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_11">
-        <property name="text">
-         <string>断路器iOF辅助触点</string>
+      <item row="0" column="3">
+       <widget class="QComboBox" name="lightningBox">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>30</height>
+         </size>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
+        <item>
+         <property name="text">
+          <string>无</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>配有</string>
+         </property>
+        </item>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="label_9">
-        <property name="text">
-         <string>ISD报警触点</string>
+      <item row="6" column="1">
+       <widget class="QDoubleSpinBox" name="ip_curSpin">
+        <property name="suffix">
+         <string>A</string>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+        <property name="decimals">
+         <number>3</number>
+        </property>
+        <property name="maximum">
+         <double>1000.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
         </property>
        </widget>
       </item>
@@ -811,24 +669,44 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_8">
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>告警滤波次数</string>
+         <string>防雷模块</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
-      <item row="6" column="2">
-       <widget class="QLabel" name="label_16">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_11">
         <property name="text">
-         <string>产线测试电流误差</string>
+         <string>断路器iOF辅助触点</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QComboBox" name="ISDBox">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>30</height>
+         </size>
+        </property>
+        <item>
+         <property name="text">
+          <string>无</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>配有</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item row="1" column="0">
@@ -847,26 +725,93 @@
         </property>
        </widget>
       </item>
-      <item row="11" column="0">
-       <widget class="QLabel" name="label_28">
+      <item row="10" column="2">
+       <widget class="QLabel" name="label_25">
         <property name="text">
-         <string>软件版本</string>
+         <string>电流最大值</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
-      <item row="11" column="1">
-       <widget class="QLineEdit" name="ip_versionEdit">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="10" column="3">
+       <widget class="QDoubleSpinBox" name="ip_curMaxSpin">
+        <property name="suffix">
+         <string>A</string>
         </property>
+        <property name="decimals">
+         <number>3</number>
+        </property>
+        <property name="maximum">
+         <double>1000.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.010000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_9">
         <property name="text">
-         <string>2.2.2</string>
+         <string>ISD报警触点</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="2">
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string>产线测试电流误差</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>剩余电流监测模块</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QComboBox" name="residualBox">
+        <item>
+         <property name="text">
+          <string>无</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>有</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>告警滤波次数</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0">
+       <widget class="QLabel" name="label_28">
+        <property name="text">
+         <string>软件版本</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>

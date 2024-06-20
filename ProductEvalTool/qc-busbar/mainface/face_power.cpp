@@ -75,6 +75,9 @@ void Face_Power::ImageSlot(int value)
     case 4:
         ui->label->setStyleSheet("");
         break;
+    case 5:
+        ui->label->setStyleSheet("QLabel{background-image: url(:/image/isd_test.png);}");
+        break;
     default:
         break;
     }

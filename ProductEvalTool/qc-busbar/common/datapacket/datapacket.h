@@ -73,6 +73,7 @@ enum  sSetStartType{
     ,SetStartAlarmTime       = 8           //2-5
     ,SetStartBreaker         = 9           //0:没有 1:正常 2:损坏
     ,SetStartLps             = 10           //0:没有 1:正常 2:损坏
+    ,SetStartShuntRelease    = 14           //12：断路器分闸 （连续发两条命令方可控制断路器分闸）
 
 //    ,StartEle_1   = 34           //电能清零
 //    ,StartEle_2   = 51

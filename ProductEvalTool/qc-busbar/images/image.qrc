@@ -9,5 +9,6 @@
         <file>cur_test.jpg</file>
         <file>vol_test.jpg</file>
         <file>serial.jpg</file>
+        <file>isd_test.png</file>
     </qresource>
 </RCC>

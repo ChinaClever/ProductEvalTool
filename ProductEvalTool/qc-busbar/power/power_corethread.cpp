@@ -71,6 +71,19 @@ void Power_CoreThread::StartErrRange()
     mLogs->updatePro(str, ret); mLogs->writeData(str1, str3, str2, ret);
     mLogs->writeDataEng(eng1, eng3, eng2, ret);
 
+    str = tr("请将IN串口线拔出");           //IN OUT口通讯正常，及网口
+    emit TipSig(str);
+    while(1)
+    {
+        ret = mSiRtu->readPduData();
+        if(!ret) break;
+
+        flag++;
+        if(flag >30){
+            ret = false; break;
+        }
+    }
+
     str = tr("请将串口线接入到始端箱OUT口");           //IN OUT口通讯正常，及网口
     emit TipSig(str); sleep(3); flag = 0;
     while(1)
@@ -98,7 +111,8 @@ void Power_CoreThread::StartErrRange()
     emit TipSig(str); sleep(3); flag = 0;
     while(1)
     {
-        ret = mRead->readData();
+
+        ret = mRead->checkNet();
         if(ret) break;
 
         flag++;
@@ -117,11 +131,11 @@ void Power_CoreThread::StartErrRange()
     mLogs->updatePro(str, ret); mLogs->writeData(str1, str3, str2, ret);
     mLogs->writeDataEng(eng1, eng3, eng2, ret);
 
+    mRead->readData();
     ret = false;
     int curValue = b->buzzerStatus;
     int expect = mItem->ip.ip_buzzer;
     if(curValue == expect) ret = true;
-    qDebug()<<"curValue == expect"<<curValue << expect<< ret;
     str = tr("始端箱蜂鸣器实际值：%1 ， 期待值：%2！").arg(curValue?tr("关闭"):tr("开启")).arg(expect?tr("关闭"):tr("开启"));
     mLogs->updatePro(str,ret); ret = false; //mLogs->writeData(str1, str, ret);
 
@@ -184,7 +198,7 @@ void Power_CoreThread::StartErrRange()
                 }
                 str1 = tr("检查SPD防雷模块报警状态，报警与恢复状态正常");
                 eng1 = tr("Check the alarm status of the SPD lightning protection module, and ensure that the alarm and recovery status are normal");
-                str = tr("始端箱防雷模块状态：%1").arg(b->lpsState ==1?tr("工作正常"):tr("损坏"));
+                str = tr("始端箱防雷模块状态：%1，（模拟）").arg(b->lpsState ==1?tr("工作正常"):tr("损坏"));
                 mLogs->updatePro(str,ret);
 
                 str = tr("始端箱防雷模块检查");
@@ -197,7 +211,20 @@ void Power_CoreThread::StartErrRange()
                 mLogs->writeDataEng(eng1, eng3, eng2, ret);
 
                 str = tr("请将始端箱防雷模块插入原位");
-                emit TipSig(str); sleep(2);
+                emit TipSig(str);
+                while(1)
+                {
+                    ret = mRead->readData();
+                    if(ret){
+                        if(b->lpsState == 1) {
+                            break;
+                        }
+                    }
+                    flag++;
+                    if(flag >40){
+                        ret = false; break;
+                    }
+                }
             }
         }
     }
@@ -217,35 +244,59 @@ void Power_CoreThread::StartErrRange()
     str1 = tr("依据产品规格书核对始端箱iOF辅助触点");
     eng1 = tr("Verify the iOF auxiliary contacts of the starting box according to the product specifications");
     mLogs->writeData(str1, str3, str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
+    str1.clear();
 
-    if(ret) {
-        if(curValue == 1) {
-            str = tr("请将始端箱的断路器断开");
-            emit TipSig(str);
-            while(1)
-            {
-                ret = mRead->readData();
-                if(ret) {
-                    if(b->data.sw[0] == 2) break;
-                }
-                flag++;
-                if(flag >40){
-                    ret = false; break;
-                }
-            }
-            str = tr("始端箱iOF辅助触点检查");
-            str1 = tr("断开断路器状态显示为分闸");
-            eng1 = tr("The status of the disconnected circuit breaker is displayed as open");
+    if(1) {
+        str = tr("请将始端箱的断路器断开");
+        emit TipSig(str);
+        while(1)
+        {
+            int a=0,d=0,c=0;
+            ret = mRead->readData();
+            a = b->data.vol.value[0]; d = b->data.vol.value[1]; c = b->data.vol.value[2];
             if(ret) {
-                str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
-            }else {
-                str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
+                if(b->data.sw[0] == 2) {
+                    if((!a)&&(!d) &&(!c)) {
+                        for(int i =0;i<b->loopNum;i++)
+                        {
+                            QString temp = trans(i);
+                            str = tr("%1电压 %2V，").arg(temp).arg(b->data.vol.value[i]/COM_RATE_VOL);
+                            str1 += str;
+                        }
+                        mLogs->updatePro(str1, ret);
+                        break;
+                    }
+                }
             }
-            mLogs->writeData(str1, str3, str2, ret); mLogs->updatePro(str,ret);
-            mLogs->writeDataEng(eng1, eng3, eng2, ret);
+            flag++;
+            if(flag >40){
+                ret = false; break;
+            }
+        }
+        str = tr("始端箱的断路器检测");
+        str1 = tr("断开断路器状态显示为分闸");
+        str2 = tr("断路器检查"); eng2 = tr("Circuit breaker inspection");
+        eng1 = tr("The status of the disconnected circuit breaker is displayed as open");
+        if(ret) {
+            str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
+        }else {
+            str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
+        }
+        mLogs->writeData(str1, str3, str2, ret); mLogs->updatePro(str,ret);
+        mLogs->writeDataEng(eng1, eng3, eng2, ret);
 
-            str = tr("请将始端箱的断路器闭合");
-            emit TipSig(str); sleep(2);
+        str = tr("请将始端箱的断路器闭合");
+        emit TipSig(str);
+        while(1)
+        {
+            ret = mRead->readData();
+            if(ret) {
+                if(b->data.sw[0] == 1) break; //1：合闸   2：分闸   3：跳闸（选配ISD报警触点）
+            }
+            flag++;
+            if(flag >40){
+                ret = false; break;
+            }
         }
     }
 
@@ -266,7 +317,8 @@ void Power_CoreThread::StartErrRange()
 
     if(ret) {
         if(curValue == 1) {
-            str = tr("请使用螺丝刀顶一下始端箱上的红色按钮");
+            emit ImageSig(5);
+            str = tr("请使用螺丝刀顶一下始端箱上的黄色按钮");
             emit TipSig(str);
             while(1)
             {
@@ -290,10 +342,23 @@ void Power_CoreThread::StartErrRange()
             mLogs->writeData(str1, str3, str2, ret);
             mLogs->updatePro(str,ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
             str = tr("请将始端箱的断路器闭合");
-            emit TipSig(str); sleep(2);
+            emit TipSig(str); emit ImageSig(4);
+            while(1)
+            {
+                ret = mRead->readData();
+                if(ret) {
+                    if(b->data.sw[0] == 1) break; //1：合闸   2：分闸   3：跳闸（选配ISD报警触点）
+                }
+                flag++;
+                if(flag >40){
+                    ret = false; break;
+                }
+            }
         }
     }
 
+    str = tr("始端箱分励脱扣测试开始");
+    emit TipSig(str);
     ret = false;
     curValue = b->shuntRelease;
     expect = mItem->ip.ip_shunt;
@@ -303,7 +368,9 @@ void Power_CoreThread::StartErrRange()
     if(ret) {
         if(curValue == 1) {
             for(int i=0;i<2;i++)
-                mRead->SetInfo(mRead->setShuntReleaseCtrlOid(),"12");
+            {
+                Ctrl_SiRtu::bulid()->setBusbarStartShuntRelease(12);
+            }
             while(1)
             {
                 ret = mRead->readData();
@@ -321,6 +388,19 @@ void Power_CoreThread::StartErrRange()
             else str += tr("失败");
             // mLogs->writeData(str1, str, ret);
             mLogs->updatePro(str,ret);
+            str = tr("请将始端箱的断路器闭合");
+            emit TipSig(str);
+            while(1)
+            {
+                ret = mRead->readData();
+                if(ret) {
+                    if(b->data.sw[0] == 1) break; //1：合闸   2：分闸   3：跳闸（选配ISD报警触点）
+                }
+                flag++;
+                if(flag >40){
+                    ret = false; break;
+                }
+            }
         }
     }
 
@@ -332,8 +412,22 @@ void Power_CoreThread::StartErrRange()
     mLogs->updatePro(str,ret);
 
     ret = false;
-    for(int i=0; i<mBusData->box[mItem->addr - 1].loopNum; ++i) {
+    for(int i=0; i<b->loopNum; ++i) {
         ret = curAlarmErr(i);
+    }
+
+    ret = VolErrRange();
+    if(!ret) {
+        ret = mRead->readData();
+        str = tr("第二次读取数据"); mLogs->updatePro(str,true);
+        VolErrRange();
+    }
+
+    ret = CurErrRange();
+    if(!ret) {
+        ret = mRead->readData();
+        str = tr("第二次读取数据"); mLogs->updatePro(str,true);
+        CurErrRange();
     }
 
     ret = false;
@@ -373,8 +467,10 @@ void Power_CoreThread::InsertErrRange()
     mModbus->autoSetAddress();
 
     emit ImageSig(4);
+    ret = mRead->readData();
     sBoxData *b = &(mBusData->box[mItem->addr - 1]);    //比较基本配置信息
 
+    ret = false;
     int curValue = b->buzzerStatus;
     int expect = mItem->si.si_buzzer;
     if(curValue == expect) ret = true;
@@ -433,8 +529,22 @@ void Power_CoreThread::InsertErrRange()
     mLogs->updatePro(str,ret);ret = false;
 
     ret = false;
-    for(int i=0; i<mBusData->box[mItem->addr - 1].loopNum; ++i) {
+    for(int i=0; i< b->loopNum; ++i) {
         ret = curAlarmErr(i);
+    }
+
+    ret = VolErrRange();
+    if(!ret) {
+        ret = mRead->readData();
+        str = tr("第二次读取数据"); mLogs->updatePro(str,true);
+        VolErrRange();
+    }
+
+    ret = CurErrRange();
+    if(!ret) {
+        ret = mRead->readData();
+        str = tr("第二次读取数据"); mLogs->updatePro(str,true);
+        CurErrRange();
     }
 
     ret = false;
@@ -450,6 +560,51 @@ void Power_CoreThread::InsertErrRange()
     str2 = tr("插接箱：V%1").arg(expectVer); eng2 = tr("Plug in box:V%1").arg(expectVer);
     mLogs->writeData(str1, str2 ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
     mLogs->updatePro(str,ret);
+}
+
+bool Power_CoreThread::VolErrRange()
+{
+    bool ret = true , res = true; QString str;
+    sBoxData *b = &(mBusData->box[mItem->addr - 1]);
+    for(int i=0; i<mBusData->box[mItem->addr - 1].loopNum; ++i) {
+        ret = mErr->volErr(i);
+        if(mItem->modeId == START_BUSBAR) {
+            str = tr("始端箱电压 L%1，实际值：%2V ").arg(i+1).arg(QString::number((b->data.vol.value[i]/COM_RATE_VOL),'f',1));
+        }else {
+            str = tr("插接箱电压 L%1，实际值：%2V ").arg(i+1).arg(QString::number((b->data.vol.value[i]/COM_RATE_VOL),'f',1));
+        }
+
+        if(ret) str += tr("检测正常");
+        else str += tr("超出误差范围");
+
+        if(!ret) res = false;
+        mLogs->updatePro(str,ret);
+    }
+
+    return res;
+}
+
+bool Power_CoreThread::CurErrRange()
+{
+    bool ret = true , res = true; QString str;
+    sBoxData *b = &(mBusData->box[mItem->addr - 1]);
+    for(int i=0; i<mBusData->box[mItem->addr - 1].loopNum; ++i) {
+        if(mItem->modeId == START_BUSBAR) {
+            str = tr("始端箱电流 L%1，实际值：%2A ").arg(i+1).arg(QString::number((b->data.cur.value[i]/COM_RATE_CUR),'f',3));
+        }else {
+            str = tr("插接箱电流 L%1，实际值：%2A ").arg(i+1).arg(QString::number((b->data.cur.value[i]/COM_RATE_CUR),'f',3));
+        }
+        if(b->data.cur.value[i]) ret = false;
+        if(ret) {
+            str += tr("检测正常");
+        }else {
+            str += tr("检测失败,有底数");
+        }
+        if(!ret) res = false;
+        mLogs->updatePro(str,ret);
+    }
+
+    return res;
 }
 
 double calculateAverageWithoutHighestAndLowest(QVector<ushort> &numbers) {
@@ -490,7 +645,7 @@ void Power_CoreThread::EnvErrRange()
     QList<bool> pass; pass.clear();
     for(int i = 0; i<4; i++)
     {
-        str2 += tr("温度%1 %2℃ ").arg(i+1).arg(unit->value[i]);
+        str2 += tr("温度%1 %2℃ ").arg(i+1).arg(QString::number(unit->value[i],'f',1));
         if(ret) ret = mErr->checkErrRange(average, unit->value[i], 5.0);
         pass << ret;
     }
@@ -498,7 +653,7 @@ void Power_CoreThread::EnvErrRange()
     ret = true;
     mLogs->updatePro(str2, ret);
     int i = 0;
-    for(i; i<pass.size(); ++i)
+    for(; i<pass.size(); ++i)
     {
         if(pass.at(i) == 0) {
             ret = 0; break;
@@ -525,15 +680,19 @@ void Power_CoreThread::BaseErrRange()   //比较基本配置信息
 
 bool Power_CoreThread::eleErrRange(int i)
 {
-    bool ret = mItem->eleCheck;
-    QString str = tr("第%1回路，实测电能=%2Kwh").arg(i+1).arg(mBusData->box[mItem->addr-1].data.ele[i]/COM_RATE_ELE);
+    bool ret = false;
+    if(0 != mBusData->box[mItem->addr-1].data.ele[i]) {
+        ret = false;
+    }else {
+        ret = true;
+    }
 
-    return mLogs->updatePro(str, ret);
+    return ret;
 }
 
 bool Power_CoreThread::eleErrRange0(int i)
 {
-    QString str = tr("电能 L%1，实测电能=%2Kwh").arg(i+1).arg(mBusData->box[mItem->addr-1].data.ele[i]/COM_RATE_ELE);
+    QString str = tr("电能 L%1，实测电能=%2kWh").arg(i+1).arg(mBusData->box[mItem->addr-1].data.ele[i]/COM_RATE_ELE);
     bool ret = false;
     if(0 != mBusData->box[mItem->addr-1].data.ele[i]) {
         str += tr("错误");
@@ -599,19 +758,38 @@ QString Power_CoreThread::changeMode(int index)
 
 bool Power_CoreThread::factorySet()
 {
+    QString str = tr("请将负载断开");  //b1,b2,b3
+    emit TipSig(str); sleep(6);
+
     bool ret = true , res = true;
-    if(mItem->modeId == START_BUSBAR && mItem->ip.addr == SNMP){
+    uchar tag = mBusData->box[mItem->addr-1].workMode;
+    if(mItem->modeId == START_BUSBAR && mBusData->box[mItem->addr-1].workMode ==0){//&& mItem->ip.addr == SNMP
         mRead->SetInfo(mRead->getConnectModeOid(),"1");//切换成RTU模式
     }
+    str = tr("正在清除电能");  //b1,b2,b3
+    emit TipSig(str);
+
     ret = mCtrl->eleClean();
     mRead->readDevData();
+
+    int j = 0;
+    for(; j<mBusData->box[mItem->addr-1].loopNum; ++j) {
+        ret = eleErrRange(j); if(!ret) res = false;
+    }
+    if(!res) {
+        ret = mCtrl->eleClean();
+        mRead->readDevData();
+    }
+    ret = true ; res = true;
     int i = 0;
     for(; i<mBusData->box[mItem->addr-1].loopNum; ++i) {
         ret = eleErrRange0(i); if(!ret) res = false;
     }
-    QString str = tr("清除电能");
+    str = tr("清除电能");
     if(res) str += tr("成功"); else str += tr("失败");
     mLogs->updatePro(str, res);
+    if(mItem->modeId == START_BUSBAR)
+        mRead->SetInfo(mRead->getConnectModeOid(),QString::number(tag));//切换成SNMP模式
 
     return res;
 }
@@ -650,14 +828,16 @@ void Power_CoreThread::workResult(bool)
     if(mCfg->work_mode == 3){
         while(1)
         {
-            msleep(500);
+            msleep(200);
             if(mPro->issure)
             {
                 break;
             }
         }
     }
+
     mLogs->saveLogs();
+    mCfg->work_mode = 2; emit finshSig(res);
     if(mPro->online) {
         Json_Pack::bulid()->stepData();//全流程才发送记录(http)
         sleep(1);
@@ -674,8 +854,7 @@ void Power_CoreThread::workResult(bool)
         }
         mPacket->updatePro(str, res);
     }
-
-    emit finshSig(res); mPro->step = Test_Over;
+    mPro->step = Test_Over;
 }
 
 QString Power_CoreThread::trans(int index)
@@ -788,7 +967,7 @@ bool Power_CoreThread::Vol_ctrlOne()
                 mLogs->writeDataEng(eng2,eng3,eng4,ret); str1.clear();break;}
         }
         flag++;
-        if(flag >40) {
+        if(flag >50) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -906,7 +1085,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
             }
         }
         flag++;
-        if(flag >40) {
+        if(flag >50) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -1025,7 +1204,7 @@ bool Power_CoreThread::Vol_ctrlThree()
             }
         }
         flag++;
-        if(flag >40) {
+        if(flag >55) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -1072,7 +1251,7 @@ bool Power_CoreThread::stepVolTest()
     return ret;
 }
 
-bool Power_CoreThread::stepLoadTest()
+bool Power_CoreThread::stepLoadTest()       //电流测试
 {
     bool ret = false;
     if(mBusData->box[mItem->addr-1].loopNum == 9) {
@@ -1085,15 +1264,15 @@ bool Power_CoreThread::stepLoadTest()
 
     return ret;
 }
-bool Power_CoreThread::BreakerTest()
+bool Power_CoreThread::BreakerTest()        //断路器测试
 {
     bool ret = false;
     if(mBusData->box[mItem->addr-1].loopNum == 9) {
         ret = mRead->Break_NineLoop();
     }else if(mBusData->box[mItem->addr-1].loopNum == 6) {
         ret = mRead->Break_SixLoop();
-    }else if(mBusData->box[mItem->addr-1].loopNum == 3) {
-        if((mItem->modeId == START_BUSBAR) || (mBusData->box[mItem->addr-1].phaseFlag == 1)) {
+    }else if((mItem->modeId != START_BUSBAR)&&(mBusData->box[mItem->addr-1].loopNum == 3)) {
+        if(mBusData->box[mItem->addr-1].phaseFlag == 1) {
             ret = mRead->Three_Breaker();
         }else if(mBusData->box[mItem->addr-1].phaseFlag == 0) {    //单相三回路三个输出位
             ret = mRead->Three_Break();
@@ -1176,7 +1355,6 @@ void Power_CoreThread::workDown()
         else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
 
         ret = BreakerTest();                            //断路器测试
-
         ret = stepVolTest();                            //电压测试
 
       // if(ret) ret = mSource->read();
@@ -1185,9 +1363,8 @@ void Power_CoreThread::workDown()
 
         ret = stepLoadTest();                    //电流测试
         ret = factorySet();                      //清除电能
-        if(ret) {
-            mCfg->work_mode = 3; emit JudgSig(); //极性测试弹窗
-        }
+
+        mCfg->work_mode = 3; emit JudgSig(); //极性测试弹窗
 
         if(mItem->modeId == START_BUSBAR)
         {

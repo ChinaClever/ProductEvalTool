@@ -53,7 +53,7 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 int main(int argc, char *argv[])
 {
     //qInstallMessageHandler(outputMessage);//注释显示打印信息，打开则输出日志
-    QtSingleApplication a(QLatin1String("Busbar-Test"),argc, argv);
+    QtSingleApplication a(QLatin1String("Busbar-QualityTest"),argc, argv);
     if(a.isRunning())  {
         MsgBox::critical(NULL, QObject::tr("程序已运行！"));
         a.sendMessage("raise_window_noop", 1000); //4s后激活前个实例

@@ -34,7 +34,10 @@ private:
     sProgress *mPro;
     sDevData *mDev;
     sDataPacket *mPacket;
+    sProgress *ePro;
     QList<sStateItem> mLogItems;
+    sCfgItem *mCfg;
+    datapacket_English *mPacketEng;
 };
 
 #endif // TESTDATASAVE_H

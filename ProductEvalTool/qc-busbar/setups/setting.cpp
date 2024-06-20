@@ -41,10 +41,9 @@ void Setting::initType()
     ui->residualBox->setCurrentIndex(dt->ip_residual);
     ui->ip_volSpin->setValue(dt->ip_vol);
     ui->ip_curSpin->setValue(dt->ip_cur);
-    ui->ip_powSpin->setValue(dt->ip_pow);
     ui->ip_volErrSpin->setValue(dt->ip_volErr);
     ui->ip_curErrSpin->setValue(dt->ip_curErr);
-    ui->ip_powErrSpin->setValue(dt->ip_powErr);
+    dt->ip_powErr = 1;
     ui->ip_curMaxSpin->setValue(dt->ip_curMax);
     int ver = dt->version;
     QString str = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
@@ -92,10 +91,9 @@ void Setting::updateType()
 
     dt->ip_vol = ui->ip_volSpin->value();
     dt->ip_cur = ui->ip_curSpin->value();
-    dt->ip_pow = ui->ip_powErrSpin->value();
     dt->ip_volErr = ui->ip_volErrSpin->value();
     dt->ip_curErr = ui->ip_curErrSpin->value();
-    dt->ip_powErr = ui->ip_powErrSpin->value();
+    dt->ip_powErr = 1;
     dt->ip_curMin = 0;
     dt->ip_curMax = ui->ip_curMaxSpin->value();
     dt->version = ui->ip_versionEdit->text().remove(".").toUInt();
@@ -164,6 +162,14 @@ void Setting::on_setBtn_clicked()
     ui->groupBox2->setEnabled(en);
     ui->groupBox3->setEnabled(en);
     ui->groupBox4->setEnabled(en);
+    if(!en) {
+        mItem->user = ui->userEdit->text();
+        mItem->cnt.num = ui->cntSpin->value();
+        sCount *cnt = &(mItem->cnt);
+        cnt->all = cnt->ok = cnt->err = 0;
+        Cfg::bulid()->writeCnt();
+        Cfg::bulid()->initCnt();
+    }
 
     QTimer::singleShot(50,this,SLOT(saveFunSlot()));
 }

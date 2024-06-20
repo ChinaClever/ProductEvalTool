@@ -258,8 +258,9 @@ bool Test_safety::testACW(QString & recv)
                 item.status = true;
             }
             QString ansStr = recv.split(",").at(4);
-            mItem->sn.acw += (i == (stepTotal - 1))
-                    ?ansStr:ansStr+"/";
+            // mItem->sn.acw += (i == (stepTotal - 1))
+            //         ?ansStr:ansStr+"/";
+            mItem->sn.acw += tr("%1、").arg(i+1) + ansStr;
             item.measured = ansStr;
         }else{item.measured = tr("读取测试结果失败");item.status = false;}
         item.expect = tr("小于10mA");

@@ -136,7 +136,7 @@ bool Ctrl_SiRtu::rtu_sent_ushortV3_buff(uchar addr, ushort reg, uint num,  uint 
     msg.val2 = val2;
     for(int i=0; i<3; ++i) {
         ret = mModbus->write(msg);
-        if(ret) break; else sDataPacket::bulid()->delay(2+i);
+        if(ret) break; else sDataPacket::bulid()->delay(3+i);
     }
     return ret;
 }
@@ -166,7 +166,8 @@ bool Ctrl_SiRtu::rtu_sent_uintV3_buff(uchar addr, ushort reg, uint num,  uint va
 bool Ctrl_SiRtu::setBusbarStartEle(int index)//清始端箱电能
 {
     bool ret = true;
-    ret = sentRtuCmd(StartEle_3031+(index-1)*110, 1);
+    ret = sentRtuCmd(StartEle_3031 +(index-1)*110, 1);
+    // ret = rtu_sent_ushortV3_buff(mItem->addr ,StartEle_3031 - 1 +(index-1)*110, 2, 1, 1);
 
     return ret;
 }
@@ -199,6 +200,14 @@ bool Ctrl_SiRtu::setBusbarInsertFilter(int val)
 {
     bool ret = true;
     ret = sentRtuCmd(SetPlugAlarmTime, val);
+
+    return ret;
+}
+
+bool Ctrl_SiRtu::setBusbarStartShuntRelease(int val)
+{
+    bool ret = true;
+    ret = sentRtuCmd(SetStartShuntRelease, val);
 
     return ret;
 }

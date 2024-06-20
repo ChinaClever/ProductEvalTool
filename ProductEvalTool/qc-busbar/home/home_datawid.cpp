@@ -26,7 +26,7 @@ void Home_DataWid::appendItem(sBoxData *box)
             QStringList listStr;
             listStr << QString::number(dev->vol.value[i]/COM_RATE_VOL,'f',1);
             listStr << QString::number(dev->cur.value[i]/COM_RATE_CUR,'f',3);
-            listStr << QString::number(dev->pow.value[i]/COM_RATE_CUR,'f',3);
+            listStr << QString::number(dev->pow.value[i]/COM_RATE_POW,'f',3);
             setTableRow(i, listStr);
         }
     }

@@ -79,10 +79,10 @@ void Cfg::initCnt()
 
 void Cfg::writeCnt()
 {
-    write("num", item->cnt.num, "BusbarCnt");
-    write("all", item->cnt.all, "BusbarCnt");
-    // write("ok", item->cnt.ok, "BusbarCnt");
-    // write("err", item->cnt.err, "BusbarCnt");
+    write("num", item->cnt.num, "BusbarCnt");//剩余数量
+    write("all", item->cnt.all, "BusbarCnt");//订单数量
+    write("ok", item->cnt.ok, "BusbarCnt");
+    write("err", item->cnt.err, "BusbarCnt");
 }
 
 

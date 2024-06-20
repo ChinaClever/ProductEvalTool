@@ -22,6 +22,7 @@ public:
     bool setBusbarStartPow(int val1 , int val2);
     bool setBusbarStartModbus(int val);
     bool setBusbarStartLineVol(int index , int val1 , int val2);
+    bool setBusbarStartShuntRelease(int val);
 
     bool setBusbarInsertEle(int index);//index [1,9]
     bool setBusbarInsertPow(int index , int val1 , int val2);

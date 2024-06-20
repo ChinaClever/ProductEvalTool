@@ -86,15 +86,15 @@ bool Power_Logs::writeLog()
     }
 
     it.memo = str;
-    if(mPro->work_mode == 2)
-    {
-        mPro->test_num = mItem->cnt.all - mItem->cnt.num;
-        ePro->test_num = mItem->cnt.all - mItem->cnt.num;
-    }
+
+    mPro->test_num = mItem->cnt.all - mItem->cnt.num;
+    ePro->test_num = mItem->cnt.all - mItem->cnt.num;
+
+    Cfg::bulid()->writeCnt();
 
     if(it.QRcode.size()) mLogItems << it;
     if(it.QRcode.isEmpty()) return false;
-    Cfg::bulid()->writeCnt();
+
     return DbLogs::bulid()->insertItem(it);
 }
 

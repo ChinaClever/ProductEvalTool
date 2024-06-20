@@ -347,9 +347,9 @@ void Home_WorkWid::FuncStatus(bool ret)
 void Home_WorkWid::StatusSlot(bool ret)
 {
     switch (mItem->work_mode) {
-    case 0: AcwStatus(ret); break;
-    case 1: GndStatus(ret); break;
-    case 2: FuncStatus(ret); break;
+    case 0: {AcwStatus(ret); break;}
+    case 1: {GndStatus(ret); break;}
+    case 2: {FuncStatus(ret);break;}
     default:
         break;
     }
@@ -361,15 +361,16 @@ void Home_WorkWid::ItemStatus()
     case 0: {mPro->test_step = "安规测试"; mPro->test_item = ui->vol_insulBtn->text();
              ePro->test_step = "Safety testing"; ePro->test_item = "Voltage withstand/insulation test";
              ui->acwLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
-             mPro->itemRequest = "交流耐压 <5mA，绝缘电阻 >10MΩ";
-             ePro->itemRequest = "AC withstand voltage<5mA, insulation resistance>10MΩ";
+
+             mPro->itemRequest = "交流耐压：1、PE-N/L1/L2/L3，2、N-PE/L1/L2/L3，3、L1-PE/N/L2/L3，4、L2-PE/N/L1/L3，5、L3-PE/N/L1/L2，漏电流≤5mA；绝缘电阻：N-PE/L1/L2/L3，绝缘电阻 >10MΩ";
+             ePro->itemRequest = "AC withstand voltage:1、PE-N/L1/L2/L3,2、N-PE/L1/L2/L3,3、L1-PE/N/L2/L3,4、L2-PE/N/L1/L3,5、L3-PE/N/L1/L2,Leakage current <5mA; Insulation resistance:N-PE/L1/L2/L3,insulation resistance>10MΩ";
              break;
     }
     case 1: {mPro->test_step = "安规测试"; mPro->test_item = ui->groundBtn->text();
-             ePro->test_step = "Safety testing"; ePro->test_item = "Grounding";
+             ePro->test_step = "Safety testing"; ePro->test_item = "Grounding test";
              ui->gndLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
-             mPro->itemRequest = "接地电阻 <100mΩ";
-             ePro->itemRequest = "Grounding resistance<100mΩ";
+             mPro->itemRequest = "接地电阻：PE-箱体面壳接地螺钉，接地电阻<100mΩ";
+             ePro->itemRequest = "Grounding resistance:PE - box surface shell grounding screw,grounding resistance<100m Ω";
              break;
     }
     case 2: {mPro->test_step = "功能测试"; ePro->test_step = "Functional testing";
@@ -491,10 +492,8 @@ void Home_WorkWid::on_comBox_currentIndexChanged(int index)
         mCfgm->addr = 2;
         break;
     }
-    case TEMPER_BUSBAR:{
-        mCfgm->addr = 2;
+    default:
         break;
-    }
     }
     Cfg::bulid()->writeCfgDev();
 }

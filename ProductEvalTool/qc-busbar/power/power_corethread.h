@@ -35,6 +35,8 @@ protected:
     bool initDev();
     void StartErrRange();
     void EnvErrRange();
+    bool VolErrRange();
+    bool CurErrRange();
     void InsertErrRange();
     void BaseErrRange();
     bool eleErrRange(int i);

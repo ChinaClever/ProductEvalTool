@@ -315,50 +315,49 @@ void Power_CoreThread::StartErrRange()
     str1 = tr("依据产品规格书核对始端箱ISD报警触点"); eng1 = tr("Verify the ISD alarm contacts of the starting box according to the product specifications");
     mLogs->writeData(str1, str3, str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
 
-    if(ret) {
-        if(curValue == 1) {
-            emit ImageSig(5);
-            str = tr("请使用螺丝刀顶一下始端箱上的黄色按钮");
-            emit TipSig(str);
-            while(1)
-            {
-                ret = mRead->readData();
-                if(ret) {
-                    if(b->data.sw[0] == 3) break; //1：合闸   2：分闸   3：跳闸（选配ISD报警触点）
-                }
-                flag++;
-                if(flag >40){
-                    ret = false; break;
-                }
-            }
-            str1 = tr("螺丝刀按一下黄色测试按钮，检查断路器状态：跳闸");
-            eng1 = tr("Press the yellow test button with a screwdriver to check the circuit breaker status: tripped");
-            str = tr("始端箱ISD报警触点检查");
-            if(ret) {
-                str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
-            }else {
-                str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
-            }
-            mLogs->writeData(str1, str3, str2, ret);
-            mLogs->updatePro(str,ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
-            str = tr("请将始端箱的断路器闭合");
-            emit TipSig(str); emit ImageSig(4);
-            while(1)
-            {
-                ret = mRead->readData();
-                if(ret) {
-                    if(b->data.sw[0] == 1) break; //1：合闸   2：分闸   3：跳闸（选配ISD报警触点）
-                }
-                flag++;
-                if(flag >40){
-                    ret = false; break;
-                }
-            }
-        }
-    }
+    // if(ret) {
+    //     if(curValue == 1) {
+    //         emit ImageSig(5);
+    //         str = tr("请使用螺丝刀顶一下始端箱上的黄色按钮");
+    //         emit TipSig(str);
+    //         while(1)
+    //         {
+    //             ret = mRead->readData();
+    //             if(ret) {
+    //                 if(b->data.sw[0] == 3) break; //1：合闸   2：分闸   3：跳闸（选配ISD报警触点）
+    //             }
+    //             flag++;
+    //             if(flag >40){
+    //                 ret = false; break;
+    //             }
+    //         }
+    //         str1 = tr("螺丝刀按一下黄色测试按钮，检查断路器状态：跳闸");
+    //         eng1 = tr("Press the yellow test button with a screwdriver to check the circuit breaker status: tripped");
+    //         str = tr("始端箱ISD报警触点检查");
+    //         if(ret) {
+    //             str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
+    //         }else {
+    //             str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
+    //         }
+    //         mLogs->writeData(str1, str3, str2, ret);
+    //         mLogs->updatePro(str,ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
+    //         str = tr("请将始端箱的断路器闭合");
+    //         emit TipSig(str); emit ImageSig(4);
+    //         while(1)
+    //         {
+    //             ret = mRead->readData();
+    //             if(ret) {
+    //                 if(b->data.sw[0] == 1) break; //1：合闸   2：分闸   3：跳闸（选配ISD报警触点）
+    //             }
+    //             flag++;
+    //             if(flag >40){
+    //                 ret = false; break;
+    //             }
+    //         }
+    //     }
+    // }
 
-    str = tr("始端箱分励脱扣测试开始");
-    emit TipSig(str);
+
     ret = false;
     curValue = b->shuntRelease;
     expect = mItem->ip.ip_shunt;
@@ -367,6 +366,8 @@ void Power_CoreThread::StartErrRange()
     mLogs->updatePro(str,ret); flag = 0;
     if(ret) {
         if(curValue == 1) {
+            str = tr("始端箱分励脱扣测试开始");
+            emit TipSig(str);
             for(int i=0;i<2;i++)
             {
                 Ctrl_SiRtu::bulid()->setBusbarStartShuntRelease(12);
@@ -758,7 +759,7 @@ QString Power_CoreThread::changeMode(int index)
 
 bool Power_CoreThread::factorySet()
 {
-    QString str = tr("请将负载断开");  //b1,b2,b3
+    QString str = tr("请将负载输入端L1、L2、L3断开");  //b1,b2,b3
     emit TipSig(str); sleep(6);
 
     bool ret = true , res = true;
@@ -1241,6 +1242,8 @@ bool Power_CoreThread::stepVolTest()
     }else {
         if((mItem->modeId == START_BUSBAR) || (mBusData->box[mItem->addr-1].phaseFlag ==1))
         {
+            QString str = tr("请将电源输出端L1、L2、L3打开");
+            emit TipSig(str); sleep(4);
             ret = Vol_ctrlOne();
             ret = Vol_ctrlTwo();
             ret = Vol_ctrlThree();
@@ -1363,6 +1366,8 @@ void Power_CoreThread::workDown()
 
         ret = stepLoadTest();                    //电流测试
         ret = factorySet();                      //清除电能
+        QString str = tr("请将电源输出端L1、L2、L3关闭，负载输入端L1、L2、L3关闭");
+        emit TipSig(str);
 
         mCfg->work_mode = 3; emit JudgSig(); //极性测试弹窗
 

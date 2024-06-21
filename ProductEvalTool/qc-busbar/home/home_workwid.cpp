@@ -238,12 +238,6 @@ void Home_WorkWid::updateWid()
     mPro->stopFlag = 1;
     mPro->online = mCfgm->online;
 
-    mPro->order_id = mCfgm->user;
-    mPro->order_num = mCfgm->cnt.all;
-
-    ePro->order_id = mCfgm->user;
-    ePro->order_num = mCfgm->cnt.all;
-
     switch (ui->comBox->currentIndex()) {
     case 0: {
         mPro->dev_name = tr("始端箱"); ePro->dev_name = tr("Starting box");

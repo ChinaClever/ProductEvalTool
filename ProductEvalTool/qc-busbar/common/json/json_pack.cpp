@@ -28,6 +28,8 @@ void Json_Pack::head(QJsonObject &obj)
 {
     QDateTime t = QDateTime::currentDateTime();
     mPro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
+    mPro->order_id = mItem->user;
+    mPro->order_num = mItem->cnt.all;
 
     obj.insert("product_sn", mPro->product_sn);
     obj.insert("soft_version", "");
@@ -91,7 +93,10 @@ void Json_Pack::head_English(QJsonObject &obj)
 {
     QDateTime t = QDateTime::currentDateTime();
     ePro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
+    ePro->order_id = mItem->user;
+    ePro->order_num = mItem->cnt.all;
 
+    ePro->testStartTime = mPro->testStartTime;
     obj.insert("product_sn", ePro->product_sn);
     obj.insert("soft_version", "");
     obj.insert("start_time", ePro->testStartTime);
@@ -161,6 +166,10 @@ void Json_Pack::stepData()
     QJsonObject obj;
     QDateTime t = QDateTime::currentDateTime();
     mPro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
+
+    mPro->order_id = mItem->user;
+    mPro->order_num = mItem->cnt.all;
+
     obj.insert("product_sn", mPro->product_sn);
     obj.insert("soft_version", "");
     obj.insert("start_time", mPro->testStartTime);
@@ -195,15 +204,19 @@ void Json_Pack::stepData_Eng()//功能测试的英文版本
     QJsonObject obj;
     QDateTime t = QDateTime::currentDateTime();
     ePro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
+    ePro->testStartTime = mPro->testStartTime;
+    ePro->order_id = mItem->user;
+    ePro->order_num = mItem->cnt.all;
+
     obj.insert("product_sn", ePro->product_sn);
     obj.insert("soft_version", "");
     obj.insert("start_time", ePro->testStartTime);
     obj.insert("end_time", ePro->testEndTime);
     obj.insert("test_type", "");
-    obj.insert("order_id", mPro->order_id);
-    obj.insert("order_num", mPro->order_num);
-    obj.insert("test_num", mPro->test_num);
-    obj.insert("dev_name", mPro->dev_name);
+    obj.insert("order_id", ePro->order_id);
+    obj.insert("order_num", ePro->order_num);
+    obj.insert("test_num", ePro->test_num);
+    obj.insert("dev_name", ePro->dev_name);
     obj.insert("language_select", 1);
 
     obj.insert("tool_name", "qc-busbar");

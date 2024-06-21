@@ -191,7 +191,7 @@ bool Test_safety::testGND( QString & recv)//acw
     }
     QString str = tr("接地测试结果：%1 mΩ").arg(mPro->gnd);
     mPacket->updatePro(str, true); mPro->itemData << str;
-    mItem->sn.gnd.clear();
+    ePro->itemData << str; mItem->sn.gnd.clear();
 
     return ret;
 }
@@ -230,7 +230,7 @@ bool Test_safety::testIR(QString & recv)
     }
     QString str = tr("绝缘测试结果：%1 MΩ").arg(mPro->ir);
     mPacket->updatePro(str, true); mPro->itemData << str;
-    mItem->sn.ir.clear();
+    ePro->itemData << str; mItem->sn.ir.clear();
 
     return ret;
 }
@@ -269,7 +269,7 @@ bool Test_safety::testACW(QString & recv)
     }
     QString str = tr("交流耐压测试结果：%1 mA").arg(mPro->acw);
     mPacket->updatePro(str, true); mPro->itemData << str;
-    mItem->sn.acw.clear();
+    ePro->itemData << str; mItem->sn.acw.clear();
 
     return ret;
 }

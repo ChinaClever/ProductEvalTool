@@ -68,10 +68,10 @@ bool Power_Logs::writeLog()
         if(mItem->cnt.num > 0) {
             if(mPro->work_mode == 2)
                 mItem->cnt.num -= 1;
-            if(!mItem->cnt.num)  {
-                mItem->user.clear();
-                Cfg::bulid()->write("user", mItem->user, "User");
-            }
+            // if(!mItem->cnt.num)  {
+            //     mItem->user.clear();
+            //     Cfg::bulid()->write("user", mItem->user, "User");
+            // }
         }
     } else {
         mItem->cnt.err += 1;

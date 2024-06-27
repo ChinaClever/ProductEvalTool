@@ -23,6 +23,7 @@ public:
     void resultSlot();
 signals:
     void StatusSig(bool ret);
+    void finshSig();
 public slots:
     // void startSlot();
     void progressSlot();
@@ -36,6 +37,7 @@ private:
     sDataPacket *mPacket;
     QTimer *timer;
     TestDataSave *mDataSave;
+    sCfgItem *mCfg;
 };
 
 #endif // VOL_INSUL_H

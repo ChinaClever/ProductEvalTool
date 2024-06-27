@@ -191,7 +191,8 @@ bool Test_safety::testGND( QString & recv)//acw
     }
     QString str = tr("接地测试结果：%1 mΩ").arg(mPro->gnd);
     mPacket->updatePro(str, true); mPro->itemData << str;
-    ePro->itemData << str; mItem->sn.gnd.clear();
+    QString str1 = tr("Grounding test results:%1 mΩ").arg(mPro->gnd);
+    ePro->itemData << str1; mItem->sn.gnd.clear();
 
     return ret;
 }
@@ -230,7 +231,8 @@ bool Test_safety::testIR(QString & recv)
     }
     QString str = tr("绝缘测试结果：%1 MΩ").arg(mPro->ir);
     mPacket->updatePro(str, true); mPro->itemData << str;
-    ePro->itemData << str; mItem->sn.ir.clear();
+    QString str1 = tr("Insulation test results:%1 MΩ").arg(mPro->ir);
+    ePro->itemData << str1; mItem->sn.ir.clear();
 
     return ret;
 }
@@ -260,7 +262,7 @@ bool Test_safety::testACW(QString & recv)
             QString ansStr = recv.split(",").at(4);
             // mItem->sn.acw += (i == (stepTotal - 1))
             //         ?ansStr:ansStr+"/";
-            mItem->sn.acw += tr("%1、").arg(i+1) + ansStr;
+            mItem->sn.acw += tr(" %1、").arg(i+1) + ansStr;
             item.measured = ansStr;
         }else{item.measured = tr("读取测试结果失败");item.status = false;}
         item.expect = tr("小于10mA");
@@ -269,7 +271,8 @@ bool Test_safety::testACW(QString & recv)
     }
     QString str = tr("交流耐压测试结果：%1 mA").arg(mPro->acw);
     mPacket->updatePro(str, true); mPro->itemData << str;
-    ePro->itemData << str; mItem->sn.acw.clear();
+    QString str1 = tr("AC withstand voltage test results:%1 mA").arg(mPro->acw);
+    ePro->itemData << str1; mItem->sn.acw.clear();
 
     return ret;
 }
@@ -277,6 +280,7 @@ bool Test_safety::testACW(QString & recv)
 void Test_safety::run()
 {
     testReady();
+
     if(!mItem->work_mode) {
         mItem->progress.allNum = 22;
         QString recv = "";

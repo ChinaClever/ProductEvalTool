@@ -6,155 +6,71 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>583</width>
-    <height>481</height>
+    <width>979</width>
+    <height>950</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0" colspan="2">
-    <widget class="QCheckBox" name="lcdBox">
-     <property name="font">
-      <font>
-       <family>微软雅黑</family>
-       <pointsize>-1</pointsize>
-       <italic>false</italic>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QCheckBox{spacing: 150px;font: 18px;}</string>
-     </property>
-     <property name="text">
-      <string notr="true">①  产生告警，指示灯变为红色闪烁</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-     <property name="autoRepeat">
-      <bool>false</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>true</bool>
-     </property>
-     <property name="autoRepeatInterval">
-      <number>100</number>
-     </property>
-     <property name="tristate">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0" colspan="2">
-    <widget class="QCheckBox" name="beepBox">
-     <property name="font">
-      <font>
-       <family>微软雅黑</family>
-       <pointsize>-1</pointsize>
-       <italic>false</italic>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QCheckBox{spacing: 190px;font: 18px;}</string>
-     </property>
-     <property name="text">
-      <string>④  解除告警，蜂鸣器声音停止</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="font">
-      <font>
-       <family>微软雅黑</family>
-       <pointsize>16</pointsize>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>人工待确认项</string>
-     </property>
-    </widget>
-   </item>
    <item row="4" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="font">
-      <font>
-       <family>微软雅黑</family>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>蜂鸣器开关检查</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="font">
-      <font>
-       <family>微软雅黑</family>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>指示灯检查</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="2">
-    <widget class="QCheckBox" name="alarmBox">
-     <property name="font">
-      <font>
-       <family>微软雅黑</family>
-       <pointsize>-1</pointsize>
-       <italic>false</italic>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="autoFillBackground">
-      <bool>false</bool>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QCheckBox{spacing: 130px;font: 18px;}</string>
-     </property>
-     <property name="text">
-      <string>③  产生告警，蜂鸣器声音响亮、清脆 </string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
     <widget class="QLabel" name="label_5">
      <property name="font">
       <font>
        <family>微软雅黑</family>
-       <pointsize>14</pointsize>
+       <pointsize>13</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>极性检查</string>
+      <string>3、极性检查</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="1">
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_10">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>4、外观检查</string>
+     </property>
+    </widget>
+   </item>
+   <item row="18" column="0" colspan="3">
+    <widget class="QCheckBox" name="assemBox_3">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 625px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string notr="true">各组件安装到位，无异常间隙、断差</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="32" column="1">
     <widget class="QPushButton" name="sureButton">
      <property name="minimumSize">
       <size>
@@ -173,8 +89,8 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QCheckBox" name="keyBox">
+   <item row="16" column="0" colspan="3">
+    <widget class="QCheckBox" name="assemBox">
      <property name="font">
       <font>
        <family>微软雅黑</family>
@@ -187,17 +103,298 @@
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="styleSheet">
-      <string notr="true">QCheckBox{spacing: 150px;font: 18px;}</string>
+      <string notr="true">QCheckBox{spacing: 633px;font: 16px;}</string>
      </property>
      <property name="text">
-      <string notr="true">②  解除告警，指示灯变为绿色闪烁</string>
+      <string>产品组件型号与BOM清单保持一致</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
      </property>
      <property name="checked">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="8" column="0" colspan="2">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>1、指示灯检查</string>
+     </property>
+    </widget>
+   </item>
+   <item row="21" column="0" colspan="3">
+    <widget class="QCheckBox" name="assemBox_6">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 690px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string notr="true">各螺钉扭力均符合SOP要求</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="24" column="0" colspan="3">
+    <widget class="QCheckBox" name="assemBox_9">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing:345px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string notr="true">表头插入后不允许出现摇晃、松动、无法插入等异常现象，拔出力（50±5N)</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeat">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeatInterval">
+      <number>100</number>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="26" column="0">
+    <widget class="QLabel" name="label_8">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>7、基本使用功能</string>
+     </property>
+    </widget>
+   </item>
+   <item row="20" column="0" colspan="3">
+    <widget class="QCheckBox" name="assemBox_5">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 483px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string notr="true">整机内部线缆无接错、漏接、线缆破损、漏铜等异常现象</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="0" colspan="3">
+    <widget class="QCheckBox" name="appearBox_4">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing:350px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string notr="true">标签，无贴错、漏贴现象，张贴位置一致，内容清晰，标签无起翘脱落现象</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeat">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeatInterval">
+      <number>100</number>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="0" colspan="3">
+    <widget class="QCheckBox" name="packBox_3">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 560px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string>包装标签，彩盒标签、栈板标签内容正确一致</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="28" column="0" colspan="3">
+    <widget class="QCheckBox" name="funcBox_2">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 645px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string>面板锁2把钥匙均能正常开启关闭</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="23" column="0" colspan="3">
+    <widget class="QCheckBox" name="assemBox_8">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing:260px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string notr="true">主体、面壳等相关部件都需进行接地。主体面板位置接地螺柱及螺柱周围不能有异物遮挡</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeat">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeatInterval">
+      <number>100</number>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="3">
     <widget class="QCheckBox" name="testBox">
      <property name="font">
       <font>
@@ -211,26 +408,640 @@
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="styleSheet">
-      <string notr="true">QCheckBox{spacing:5px;font: 18px;}</string>
+      <string notr="true">QCheckBox{spacing:520px;font: 16px;}</string>
      </property>
      <property name="text">
-      <string>⑤  输出端接入负载，检查极性测试模块指示灯1和2亮</string>
+      <string>输出端接入负载，检查极性测试模块指示灯1和2亮</string>
      </property>
      <property name="checked">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QLabel" name="label_2">
+   <item row="19" column="0" colspan="3">
+    <widget class="QCheckBox" name="assemBox_4">
      <property name="font">
       <font>
        <family>微软雅黑</family>
-       <pointsize>12</pointsize>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 513px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string notr="true">整机螺钉无漏打、滑牙、浮高、组件松动等异常现象</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeat">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeatInterval">
+      <number>100</number>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="30" column="0" colspan="3">
+    <widget class="QCheckBox" name="funcBox_4">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing:225px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string>手柄按压顺畅、无异常干涉卡滞等现象，锁定机构能激活，锁定机构激活后取电模块无法下沉</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0" colspan="3">
+    <widget class="QCheckBox" name="appearBox_3">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 300px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string notr="true">产品内部整洁、无异物，不允许出现线皮、螺丝等异常物品在产品内，摇晃无异响</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeat">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeatInterval">
+      <number>100</number>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>13</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>选择即确认无误</string>
+      <string>2、蜂鸣器开关检查</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0" colspan="3">
+    <widget class="QCheckBox" name="packBox">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 700px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string>产品摆放、堆叠方式正确</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QCheckBox" name="lcdBox">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 200px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string notr="true"> 产生告警，指示灯变为红色闪烁</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeat">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeatInterval">
+      <number>100</number>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QCheckBox" name="alarmBox">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 180px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string> 产生告警，蜂鸣器声音响亮、清脆 </string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="29" column="0" colspan="3">
+    <widget class="QCheckBox" name="funcBox_3">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 320px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string>按压卡爪按键，卡爪能正常向两边展开并锁定。按压锁止按钮，卡爪能正常回弹</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QCheckBox" name="beepBox">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 230px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string>解除告警，蜂鸣器声音停止</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="17" column="0" colspan="3">
+    <widget class="QCheckBox" name="assemBox_2">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing:560px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string notr="true">产品各组装件，组装位置，组装方向保持一致</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeat">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeatInterval">
+      <number>100</number>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QCheckBox" name="keyBox">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 200px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string notr="true"> 解除告警，指示灯变为绿色闪烁</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="22" column="0" colspan="3">
+    <widget class="QCheckBox" name="assemBox_7">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing:290px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string notr="true">产品内部线缆端子连接不允许出现松动、脱落、未安装到位、压线螺丝未拧紧等现象</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeat">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeatInterval">
+      <number>100</number>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="3">
+    <widget class="QCheckBox" name="appearBox">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 50px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string notr="true">距离产品30CM处，检查产品的划痕、脏污、掉漆、露底、变形、开裂。标准参照《New Busbar外观通用检验标准》</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeat">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeatInterval">
+      <number>100</number>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="3">
+    <widget class="QCheckBox" name="appearBox_2">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing:380px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string notr="true">所有零部件上的丝印、模印都是清晰可见的，无残缺、模糊等异常现象</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="25" column="0" colspan="3">
+    <widget class="QCheckBox" name="assemBox_10">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing:530px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string notr="true">防雷保险无缺少，漏放。盖子闭合无松动脱落现象</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeat">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeatInterval">
+      <number>100</number>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>5、包装检查</string>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="0">
+    <widget class="QLabel" name="label_11">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>6、装配检查</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="0" colspan="3">
+    <widget class="QCheckBox" name="packBox_2">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 750px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string>无漏装、错装配件</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="27" column="0" colspan="3">
+    <widget class="QCheckBox" name="funcBox">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing:640px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string>按键能正常使用，且按键手感一致</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="31" column="0" colspan="3">
+    <widget class="QCheckBox" name="funcBox_5">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox{spacing: 290px;font: 16px;}</string>
+     </property>
+     <property name="text">
+      <string>铜套度锡、使用标准插头能正常使用不允许出现无法插入等现象、保护盖能自动回弹</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

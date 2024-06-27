@@ -10,6 +10,7 @@
 #include "power_corethread.h"
 #include <QLabel>
 #include <QPainter>
+#include "people_safety.h"
 
 class VerticalLabel : public QLabel
 {
@@ -62,6 +63,7 @@ protected slots:
     void updateWidSlot(int id);
     void polarSlot(QString str);
     void StatusSlot(bool ret);
+    void SafeSlot();
 protected:
     void initLayout();
     void insertText();
@@ -124,7 +126,7 @@ private:
     Power_DevRead *mPowDev;
 
     People_judg *mJudg;
-
+    People_Safety *mSafePeo;
     Sn_DevId *mDevSn;
 };
 

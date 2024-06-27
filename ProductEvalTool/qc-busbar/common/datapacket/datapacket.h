@@ -649,6 +649,7 @@ struct sProgress
     QString Service;
     bool online;
     uchar result;    // 最终结果
+    uchar flag;
     QTime startTime;
     QString testStartTime;
     QString testEndTime;
@@ -665,6 +666,7 @@ struct sProgress
     QStringList itemData;
     QString itemRequest;
     QStringList stepRequest;
+    QStringList sureItem;
     QList<bool> uploadPass;
     uchar uploadPassResult;
     QString product_sn;

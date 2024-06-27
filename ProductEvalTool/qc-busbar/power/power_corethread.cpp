@@ -72,7 +72,7 @@ void Power_CoreThread::StartErrRange()
     mLogs->writeDataEng(eng1, eng3, eng2, ret);
 
     str = tr("请将IN串口线拔出");           //IN OUT口通讯正常，及网口
-    emit TipSig(str);
+    emit TipSig(str); flag = 0;
     while(1)
     {
         ret = mSiRtu->readPduData();
@@ -136,13 +136,15 @@ void Power_CoreThread::StartErrRange()
     int curValue = b->buzzerStatus;
     int expect = mItem->ip.ip_buzzer;
     if(curValue == expect) ret = true;
-    str = tr("始端箱蜂鸣器实际值：%1 ， 期待值：%2！").arg(curValue?tr("关闭"):tr("开启")).arg(expect?tr("关闭"):tr("开启"));
+    str = tr("始端箱蜂鸣器实际值：%1 ， 期待值：%2").arg(curValue?tr("关闭"):tr("开启")).arg(expect?tr("关闭"):tr("开启"));
     mLogs->updatePro(str,ret); ret = false; //mLogs->writeData(str1, str, ret);
 
     curValue = b->alarmTime;
-    expect = mItem->ip.ip_filter;
-    if(curValue == expect) ret = true;
-    str = tr("始端箱过滤次数实际值：%1 ， 期待值：%2！").arg(curValue).arg(expect);
+    mItem->ip.ip_filter = curValue;
+    if(curValue >= 5) ret = true;
+    str = tr("始端箱过滤次数实际值：%1").arg(curValue);
+    if(ret) str += tr("成功");
+    else str += tr("失败，实际值小于5");
     mLogs->updatePro(str,ret); ret = false;
 
     str1 = tr("检查SPD防雷模块接入状态，接入正常");
@@ -151,7 +153,7 @@ void Power_CoreThread::StartErrRange()
     curValue = b->lightning;
     expect = mItem->ip.ip_lightning;
     if(curValue == expect) ret = true;
-    str = tr("始端箱防雷模块实际值：%1 ， 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
+    str = tr("始端箱防雷模块实际值：%1 ， 期待值：%2").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
     mLogs->updatePro(str,ret);
     flag = 0;
     if(ret) {
@@ -305,7 +307,7 @@ void Power_CoreThread::StartErrRange()
     curValue = b->isd;
     expect = mItem->ip.ip_ISD;
     if(curValue == expect) ret = true;
-    str = tr("始端箱ISD报警触点实际值：%1 ， 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
+    str = tr("始端箱ISD报警触点实际值：%1 ， 期待值：%2").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
     mLogs->updatePro(str,ret); flag = 0;
     if(ret) {
         str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
@@ -362,7 +364,7 @@ void Power_CoreThread::StartErrRange()
     curValue = b->shuntRelease;
     expect = mItem->ip.ip_shunt;
     if(curValue == expect) ret = true;
-    str = tr("始端箱分励脱扣实际值：%1 ， 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
+    str = tr("始端箱分励脱扣实际值：%1 ， 期待值：%2").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
     mLogs->updatePro(str,ret); flag = 0;
     if(ret) {
         if(curValue == 1) {
@@ -409,7 +411,7 @@ void Power_CoreThread::StartErrRange()
     curValue = b->reState;
     expect = mItem->ip.ip_residual;
     if(curValue == expect) ret = true;
-    str = tr("始端箱剩余电流检测模块实际值：%1 ， 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
+    str = tr("始端箱剩余电流检测模块实际值：%1 ， 期待值：%2").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
     mLogs->updatePro(str,ret);
 
     ret = false;
@@ -440,7 +442,7 @@ void Power_CoreThread::StartErrRange()
     if(curValue == expect) ret = true;
     QString curVer = QString::number(curValue/100)+"."+QString::number(curValue/10%10)+"."+QString::number(curValue%10);
     QString expectVer = QString::number(expect/100)+"."+QString::number(expect/10%10)+"."+QString::number(expect%10);
-    str = tr("版本信息实际值：%1 , 期待值：%2！").arg(curVer).arg(expectVer);
+    str = tr("版本信息实际值：%1 , 期待值：%2").arg(curVer).arg(expectVer);
     eng3 = tr("Starting box:%1").arg(expectVer);  str3 = tr("始端箱：%1").arg(expectVer);
     mLogs->writeData(str1, str3 ,str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
     mLogs->updatePro(str,ret);
@@ -475,13 +477,15 @@ void Power_CoreThread::InsertErrRange()
     int curValue = b->buzzerStatus;
     int expect = mItem->si.si_buzzer;
     if(curValue == expect) ret = true;
-    str = tr("插接箱蜂鸣器实际值：%1 , 期待值：%2！").arg(curValue?tr("关闭"):tr("开启")).arg(expect?tr("关闭"):tr("开启"));
+    str = tr("插接箱蜂鸣器实际值：%1 , 期待值：%2").arg(curValue?tr("关闭"):tr("开启")).arg(expect?tr("关闭"):tr("开启"));
     mLogs->updatePro(str,ret);ret = false;
 
     curValue = b->alarmTime;
-    expect = mItem->si.si_filter;
-    if(curValue == expect) ret = true;
-    str = tr("插接箱过滤次数实际值：%1 , 期待值：%2！").arg(curValue).arg(expect);
+    mItem->si.si_filter = curValue;
+    if(curValue >= 5) ret = true;
+    str = tr("插接箱过滤次数实际值：%1").arg(curValue);
+    if(ret) str += tr("成功");
+    else str += tr("失败，实际值小于5");
     mLogs->updatePro(str,ret); ret = false;
 
     QString str1 = tr("是否包含此功能与规格书要求一致");
@@ -492,7 +496,7 @@ void Power_CoreThread::InsertErrRange()
     curValue = b->iOF;
     expect = mItem->si.si_iOF;
     if(curValue == expect) ret = true;
-    str = tr("插接箱iOF辅助触点实际值：%1 , 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
+    str = tr("插接箱iOF辅助触点实际值：%1 , 期待值：%2").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
     if(ret) {
         str2 = tr("符合要求"); eng2 = tr("Meet a requirement");
     }else {
@@ -506,7 +510,7 @@ void Power_CoreThread::InsertErrRange()
     curValue = b->phaseFlag;
     expect = mItem->si.si_phaseflag;
     if(curValue == expect) ret = true;
-    str = tr("插接箱输出位类型实际值：%1 , 期待值：%2！").arg(curValue?tr("三相"):tr("单相")).arg(expect?tr("三相"):tr("单相"));
+    str = tr("插接箱输出位类型实际值：%1 , 期待值：%2").arg(curValue?tr("三相"):tr("单相")).arg(expect?tr("三相"):tr("单相"));
     if(ret) {
         str2 = tr("符合要求"); eng2 = tr("Meet a requirement");
     }else {
@@ -520,7 +524,7 @@ void Power_CoreThread::InsertErrRange()
     curValue = b->loopNum;
     expect = mItem->si.loopNum;
     if(curValue == expect) ret = true;
-    str = tr("插接箱回路数量实际值：%1 , 期待值：%2！").arg(curValue).arg(expect);
+    str = tr("插接箱回路数量实际值：%1 , 期待值：%2").arg(curValue).arg(expect);
     if(ret) {
         str2 = tr("符合要求"); eng2 = tr("Meet a requirement");
     }else {
@@ -557,10 +561,11 @@ void Power_CoreThread::InsertErrRange()
     if(curValue == expect) ret = true;
     QString curVer = QString::number(curValue/100)+"."+QString::number(curValue/10%10)+"."+QString::number(curValue%10);
     QString expectVer = QString::number(expect/100)+"."+QString::number(expect/10%10)+"."+QString::number(expect%10);
-    str = tr("版本信息实际值：%1 , 期待值：%2！").arg(curVer).arg(expectVer);
+    str = tr("版本信息实际值：%1 , 期待值：%2").arg(curVer).arg(expectVer);
     str2 = tr("插接箱：V%1").arg(expectVer); eng2 = tr("Plug in box:V%1").arg(expectVer);
     mLogs->writeData(str1, str2 ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
     mLogs->updatePro(str,ret);
+
 }
 
 bool Power_CoreThread::VolErrRange()
@@ -760,7 +765,7 @@ QString Power_CoreThread::changeMode(int index)
 bool Power_CoreThread::factorySet()
 {
     QString str = tr("请将负载输入端L1、L2、L3断开");  //b1,b2,b3
-    emit TipSig(str); sleep(6);
+    emit TipSig(str); emit ImageSig(2); sleep(6);
 
     bool ret = true , res = true;
     uchar tag = mBusData->box[mItem->addr-1].workMode;
@@ -829,32 +834,36 @@ void Power_CoreThread::workResult(bool)
     if(mCfg->work_mode == 3){
         while(1)
         {
-            msleep(200);
+            msleep(100);
             if(mPro->issure)
             {
                 break;
             }
         }
     }
-
+    mPro->work_mode = 3;
     mLogs->saveLogs();
-    mCfg->work_mode = 2; emit finshSig(res);
-    if(mPro->online) {
-        Json_Pack::bulid()->stepData();//全流程才发送记录(http)
-        sleep(1);
-        Json_Pack::bulid()->stepData_Eng();
-    }
 
     if(mPro->online) {
-        if(mPro->result == Test_Fail) {
+        // Json_Pack::bulid()->stepData();//全流程才发送记录(http)
+        Json_Pack::bulid()->FuncData();
+        msleep(20);
+        Json_Pack::bulid()->FuncData_Lan();
+    }
+    mCfg->work_mode = 2; emit finshSig(res);
+
+    bool ret = false;
+    if(mPro->online) {
+        if(mPro->flag == 0) {
             str = tr("数据发送失败");
-            res = false;
+            ret = false;
         }else {
             str = tr("数据发送成功");
-            res = true;
+            ret = true;
         }
-        mPacket->updatePro(str, res);
+        mPacket->updatePro(str, ret);
     }
+
     mPro->step = Test_Over;
 }
 
@@ -1336,8 +1345,8 @@ void Power_CoreThread::workDown()
     mPro->step = Test_Start;
     bool ret = false; sBoxData *b = &(mBusData->box[mItem->addr - 1]);
     loopNum = mBusData->box[mItem->addr-1].loopNum;
-    ret = initDev();
-
+    // ret = initDev();
+    mCfg->work_mode = 3; emit JudgSig(); //极性测试弹窗
     if(mItem->modeId == INSERT_BUSBAR)
     {
         if(ret) ret = mRead->readDev();
@@ -1366,8 +1375,8 @@ void Power_CoreThread::workDown()
 
         ret = stepLoadTest();                    //电流测试
         ret = factorySet();                      //清除电能
-        QString str = tr("请将电源输出端L1、L2、L3关闭，负载输入端L1、L2、L3关闭");
-        emit TipSig(str);
+        QString str = tr("请将电源输出端L1、L2、L3关闭");
+        emit TipSig(str); emit ImageSig(2);
 
         mCfg->work_mode = 3; emit JudgSig(); //极性测试弹窗
 

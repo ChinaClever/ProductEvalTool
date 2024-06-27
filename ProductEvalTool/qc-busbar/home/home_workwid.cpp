@@ -41,10 +41,12 @@ void Home_WorkWid::initWid()
     mCfgm->online = false;
 
     mJudg = new People_judg(this);
+    mSafePeo = new People_Safety(this);
 
     mVolInsul = new Face_Volinsul(ui->stackedWid);
     ui->stackedWid->addWidget(mVolInsul);
     connect(mVolInsul, &Face_Volinsul::StatusSig, this, &Home_WorkWid::StatusSlot);
+    connect(mVolInsul, &Face_Volinsul::finshSig, this, &Home_WorkWid::SafeSlot);
 
     mSafrtyThread = new Test_safety(this);
     connect(mSafrtyThread, SIGNAL(overSig()), this, SLOT(overSlot()));
@@ -400,7 +402,8 @@ void Home_WorkWid::on_vol_insulBtn_clicked()//耐压--绝缘
         bool ret = initSerialVol();
         if(ret) ret = checkUesr();
         if(ret) {
-            mPacket->init(); ItemStatus();
+            mPacket->init(); mPacketEng->init();
+            ItemStatus();
             int mode = Test_Over;
             if(mItem->mode != Test_Start) {
                 mode = Test_Start;
@@ -424,7 +427,8 @@ void Home_WorkWid::on_groundBtn_clicked()//接地
         bool ret = initSerialGND();
         if(ret) ret = checkUesr();
         if(ret) {
-            mPacket->init(); ItemStatus();
+            mPacket->init(); mPacketEng->init();
+            ItemStatus();
             int mode = Test_Over;
             if(mItem->mode != Test_Start) {
                 mode = Test_Start;
@@ -448,7 +452,7 @@ void Home_WorkWid::on_funcBtn_clicked()
         bool ret = initSerial();
         if(ret) ret = checkUesr();
         if(ret) {
-            mPacket->init();
+            mPacket->init(); mPacketEng->init();
             ItemStatus();
             mPowThread->start();
         }
@@ -464,6 +468,11 @@ void Home_WorkWid::on_funcBtn_clicked()
 void Home_WorkWid::JudgSlots()
 {
     mJudg->exec();
+}
+
+void Home_WorkWid::SafeSlot()
+{
+    mSafePeo->exec();
 }
 
 void Home_WorkWid::on_codeEit_textChanged(const QString &arg1)

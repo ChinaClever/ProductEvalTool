@@ -97,7 +97,6 @@ void Cfg::initCfgDev()
     QString g = "BusbarInsertCfg";
     item->si.si_iOF = read("si_iOF", 0, g).toInt();
     item->si.si_buzzer = read("si_buzzer", 0, g).toInt();
-    item->si.si_filter = read("si_filter", 5, g).toInt();
     item->si.si_phaseflag = read("si_phaseflag", 0, g).toInt();
     item->si.loopNum = read("si_loopNum", 0, g).toInt();
     item->si.si_curErr = read("si_curErr", 5, g).toFloat();
@@ -111,7 +110,6 @@ void Cfg::initCfgDev()
 
     QString q = "BusbarStartCfg";
     item->ip.ip_buzzer = read("ip_buzzer", 0 , q).toInt();
-    item->ip.ip_filter = read("ip_filter", 5 , q).toInt();
     item->ip.ip_ISD = read("ip_ISD", 0 , q).toInt();
     item->ip.ip_iOF = read("ip_iOF", 0 , q).toInt();
     item->ip.ip_shunt = read("ip_shunt", 0 , q).toInt();
@@ -137,7 +135,6 @@ void Cfg::writeCfgDev()
 
     QString g = "BusbarStartCfg";
     write("ip_buzzer", item->ip.ip_buzzer, g);
-    write("ip_filter", item->ip.ip_filter, g);
     write("ip_ISD", item->ip.ip_ISD, g);
     write("ip_iOF", item->ip.ip_iOF, g);
     write("ip_shunt", item->ip.ip_shunt, g);
@@ -156,7 +153,6 @@ void Cfg::writeCfgDev()
 
     QString q = "BusbarInsertCfg";
     write("si_buzzer", item->si.si_buzzer, q);
-    write("si_filter", item->si.si_filter, q);
     write("si_iOF", item->si.si_iOF, q);
     write("si_phaseflag", item->si.si_phaseflag, q);
     write("si_loopNum", item->si.loopNum, q);

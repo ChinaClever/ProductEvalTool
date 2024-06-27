@@ -10,6 +10,7 @@ Face_Volinsul::Face_Volinsul(QWidget *parent)
     mPacket = sDataPacket::bulid();
     mPro = mPacket->getPro();
     mDataSave = new TestDataSave(this);
+    mCfg = Cfg::bulid()->item;
     initWid();
 }
 
@@ -51,6 +52,17 @@ void Face_Volinsul::resultSlot()
     QString str1 = tr("测试项目数:%1  失败项目数：%2  项目测试通过率：%3%").arg(mItem->progress.allNum).arg(mItem->progress.errNum).arg(ok);
     mPacket->updatePro(str1);
 
+    if(mCfg->modeId == 2) emit finshSig();
+    if(mCfg->modeId == 2){
+        while(1)
+        {
+            mPacket->delay(1);
+            if(mPro->issure)
+            {
+                break;
+            }
+        }
+    }
     bool res = false;
     QString str = tr("测试结果 ");
     if(!p)
@@ -63,13 +75,31 @@ void Face_Volinsul::resultSlot()
     } else {
         res = true; str += tr("通过");
         mPro->uploadPassResult = 1;
+        if(mCfg->cnt.num > 0) {
+            if(mPro->work_mode == 0 && mCfg->modeId == 2)
+                mCfg->cnt.num -= 1;
+        }
     }
     mPacket->updatePro(str, res);
+
     mDataSave->saveTestData();
     if(mPro->online) {
-        mPacket->delay(2);
+        mPacket->delay(1);
         Json_Pack::bulid()->SendJson_Safe();
     }
+
+    bool ret = false;
+    if(mPro->online) {
+        if(mPro->flag == 0) {
+            str = tr("数据发送失败");
+            ret = false;
+        }else {
+            str = tr("数据发送成功");
+            ret = true;
+        }
+        mPacket->updatePro(str, ret);
+    }
+
     if(mPro->result == Test_Fail) res = false;
     else {res = true;}
     emit StatusSig(res); mPro->step = Test_Over;

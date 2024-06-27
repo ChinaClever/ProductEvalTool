@@ -66,12 +66,8 @@ bool Power_Logs::writeLog()
         it.passed = tr("通过");
         mItem->cnt.ok += 1;
         if(mItem->cnt.num > 0) {
-            if(mPro->work_mode == 2)
+            if(mPro->work_mode == 3)
                 mItem->cnt.num -= 1;
-            // if(!mItem->cnt.num)  {
-            //     mItem->user.clear();
-            //     Cfg::bulid()->write("user", mItem->user, "User");
-            // }
         }
     } else {
         mItem->cnt.err += 1;
@@ -86,9 +82,6 @@ bool Power_Logs::writeLog()
     }
 
     it.memo = str;
-
-    mPro->test_num = mItem->cnt.all - mItem->cnt.num;
-    ePro->test_num = mItem->cnt.all - mItem->cnt.num;
 
     Cfg::bulid()->writeCnt();
 

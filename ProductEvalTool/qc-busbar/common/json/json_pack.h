@@ -17,6 +17,10 @@ public:
     void stepData();
     void stepData_Eng();
     void SendJson_Safe();
+    void SafeData();
+    void SafeData_Lan();
+    void FuncData();
+    void FuncData_Lan();
 signals:
     void httpSig(const QString &msg, bool pass);
 protected:

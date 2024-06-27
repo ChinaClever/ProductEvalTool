@@ -10,6 +10,11 @@ Setting::Setting(QWidget *parent)
     mPacket = sDataPacket::bulid();
     mPro = mPacket->getPro();
     mItem = Cfg::bulid()->item;
+    ui->label_8->hide();
+    ui->filterspinBox->hide();
+    ui->label_14->hide();
+    ui->filterspinBox_2->hide();
+
     QTimer::singleShot(10,this,SLOT(initFunSlot()));
 }
 
@@ -33,7 +38,6 @@ void Setting::initType()
 {
     sIpCfg *dt = &(mItem->ip); //始端箱
     // ui->buzzerBox->setCurrentIndex(dt->ip_buzzer);
-    ui->filterspinBox->setValue(dt->ip_filter);
     ui->ISDBox->setCurrentIndex(dt->ip_ISD);
     ui->iOFBox->setCurrentIndex(dt->ip_iOF);
     ui->shuntBox->setCurrentIndex(dt->ip_shunt);
@@ -51,7 +55,6 @@ void Setting::initType()
 
     dt->rate = transformRate(ui->ip_curMaxSpin->decimals());
     sSiCfg *dv = &(mItem->si); //插接箱
-    ui->filterspinBox_2->setValue(dv->si_filter);
     ui->iOFBox_2->setCurrentIndex(dv->si_iOF);
     ui->outputBox->setCurrentIndex(dv->si_phaseflag);
     uchar loop = 0;
@@ -82,7 +85,6 @@ void Setting::updateType()
 
     sIpCfg *dt = &(mItem->ip); //设备类型
     dt->ip_buzzer = 0;
-    dt->ip_filter = ui->filterspinBox->value();
     dt->ip_ISD = ui->ISDBox->currentIndex();
     dt->ip_iOF = ui->iOFBox->currentIndex();
     dt->ip_shunt = ui->shuntBox->currentIndex();
@@ -99,7 +101,6 @@ void Setting::updateType()
     dt->version = ui->ip_versionEdit->text().remove(".").toUInt();
 
     sSiCfg *dv = &(mItem->si);
-    dv->si_filter = ui->filterspinBox_2->value();
     dv->si_buzzer = 0;
     dv->si_iOF = ui->iOFBox_2->currentIndex();
     dv->si_phaseflag = ui->outputBox->currentIndex();

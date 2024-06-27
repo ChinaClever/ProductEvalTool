@@ -31,12 +31,13 @@ bool TestDataSave::saveDb()
     QString str = tr("成功");
     if(mItem->progress.errNum) str = tr("失败");
     item.passed = str;  // 结果
-    if(mCfg->cnt.num > 0) {
-        if(mCfg->modeId == 2)
-            mCfg->cnt.num -= 1;
-        mPro->test_num = mCfg->cnt.all - mCfg->cnt.num;
-        ePro->test_num = mCfg->cnt.all - mCfg->cnt.num;
-    }
+
+    // if(mCfg->cnt.num > 0) {
+    //     if(mCfg->modeId == 2)
+    //         mCfg->cnt.num -= 1;
+    //     mPro->test_num = mCfg->cnt.all - mCfg->cnt.num;
+    //     ePro->test_num = mCfg->cnt.all - mCfg->cnt.num;
+    // }
     item.memo = mPro->itemData.join("; ");
     if(item.QRcode.size()) mLogItems << item;
     if(item.QRcode.isEmpty()) return false;

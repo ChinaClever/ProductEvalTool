@@ -28,6 +28,7 @@ void sDataPacket::clear(int id)
 
     pro->step = 0;
     pro->result = 0;
+    pro->flag = 0;
     pro->pass.clear();
     pro->stepResult.clear();
     pro->itPass.clear();
@@ -39,7 +40,8 @@ void sDataPacket::clear(int id)
     pro->no.clear();
     pro->itemName.clear();
     pro->uploadPass.clear();
-    pro->softwareVersion.clear();  
+    pro->softwareVersion.clear();
+    pro->sureItem.clear();
 }
 
 

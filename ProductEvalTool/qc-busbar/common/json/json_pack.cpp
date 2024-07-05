@@ -28,14 +28,13 @@ void Json_Pack::head(QJsonObject &obj)
 {
     QDateTime t = QDateTime::currentDateTime();
     mPro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
-    mPro->order_id = mItem->user;
     mPro->order_num = mItem->cnt.all;
 
     obj.insert("product_sn", mPro->product_sn);
-    obj.insert("soft_version", "");
+    obj.insert("soft_version", mPro->softwareVersion);
     obj.insert("start_time", mPro->testStartTime);
     obj.insert("end_time", mPro->testEndTime);
-    obj.insert("test_type", "");
+    obj.insert("module_sn", mPro->moduleSN);
     obj.insert("test_step", mPro->test_step);
     obj.insert("test_item", mPro->test_item);
     obj.insert("test_request", mPro->itemRequest);
@@ -49,7 +48,6 @@ void Json_Pack::head(QJsonObject &obj)
     mPro->uploadPassResult = 1;
     for(int i=0; i<num; ++i)
     {
-        qDebug()<<"mPro->pass.at(i)"<<mPro->itPass.at(i);
         if(mPro->itPass.at(i) == 0) {
             mPro->uploadPassResult = 0; break;
         }
@@ -93,15 +91,14 @@ void Json_Pack::head_English(QJsonObject &obj)
 {
     QDateTime t = QDateTime::currentDateTime();
     ePro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
-    ePro->order_id = mItem->user;
     ePro->order_num = mItem->cnt.all;
 
     ePro->testStartTime = mPro->testStartTime;
     obj.insert("product_sn", ePro->product_sn);
-    obj.insert("soft_version", "");
+    obj.insert("soft_version", ePro->softwareVersion);
     obj.insert("start_time", ePro->testStartTime);
     obj.insert("end_time", ePro->testEndTime);
-    obj.insert("test_type", "");
+    obj.insert("module_sn", ePro->moduleSN);
     obj.insert("test_step", ePro->test_step);
     obj.insert("test_item", ePro->test_item);
     obj.insert("test_request", ePro->itemRequest);
@@ -136,10 +133,10 @@ void Json_Pack::head_English(QJsonObject &obj)
 void Json_Pack::SendJson_Safe()
 {
     QJsonObject json;
-    head(json); http_post("busbarreport/add",mPro->Service,json);
+    head(json); http_post("admin-api/bus/testData",mPro->Service,json);
     json.empty();
     sDataPacket::bulid()->delay(1);
-    head_English(json);http_post("busbarreport/add",mPro->Service,json);//安规测试的英文版本
+    head_English(json);http_post("admin-api/bus/testData",mPro->Service,json);//安规测试的英文版本
     json.empty();
     sDataPacket::bulid()->delay(1);
     SafeData(); sDataPacket::bulid()->delay(1);
@@ -170,14 +167,13 @@ void Json_Pack::SafeData()
     QDateTime t = QDateTime::currentDateTime();
     mPro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
 
-    mPro->order_id = mItem->user;
     mPro->order_num = mItem->cnt.all;
 
     obj.insert("product_sn", mPro->product_sn);
-    obj.insert("soft_version", "");
+    obj.insert("soft_version", mPro->softwareVersion);
     obj.insert("start_time", mPro->testStartTime);
     obj.insert("end_time", mPro->testEndTime);
-    obj.insert("test_type", "");
+    obj.insert("module_sn", mPro->moduleSN);
     obj.insert("order_id", mPro->order_id);
     obj.insert("order_num", mPro->order_num);
     obj.insert("test_num", "");
@@ -200,7 +196,7 @@ void Json_Pack::SafeData()
         obj.insert("test_process" ,mPro->itemData.at(i));
         obj.insert("test_result" ,mPro->stepResult.at(i));
         obj.insert("test_request" ,mPro->stepRequest.at(i));
-        stephttp_post("busbarreport/add",mPro->Service,obj);
+        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 }
 
@@ -210,14 +206,13 @@ void Json_Pack::SafeData_Lan()
     QDateTime t = QDateTime::currentDateTime();
     ePro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
 
-    ePro->order_id = mItem->user;
     ePro->order_num = mItem->cnt.all;
 
     obj.insert("product_sn", ePro->product_sn);
-    obj.insert("soft_version", "");
+    obj.insert("soft_version", ePro->softwareVersion);
     obj.insert("start_time", ePro->testStartTime);
     obj.insert("end_time", ePro->testEndTime);
-    obj.insert("test_type", "");
+    obj.insert("module_sn", ePro->moduleSN);
     obj.insert("order_id", ePro->order_id);
     obj.insert("order_num", ePro->order_num);
     obj.insert("test_num", "");
@@ -240,7 +235,7 @@ void Json_Pack::SafeData_Lan()
         obj.insert("test_process" ,ePro->itemData.at(i));
         obj.insert("test_result" ,ePro->stepResult.at(i));
         obj.insert("test_request" ,ePro->stepRequest.at(i));
-        stephttp_post("busbarreport/add",ePro->Service,obj);
+        stephttp_post("admin-api/bus/testData",ePro->Service,obj);
     }
 }
 
@@ -250,14 +245,13 @@ void Json_Pack::stepData()
     QDateTime t = QDateTime::currentDateTime();
     mPro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
 
-    mPro->order_id = mItem->user;
     mPro->order_num = mItem->cnt.all;
 
     obj.insert("product_sn", mPro->product_sn);
-    obj.insert("soft_version", "");
+    obj.insert("soft_version", mPro->softwareVersion);
     obj.insert("start_time", mPro->testStartTime);
     obj.insert("end_time", mPro->testEndTime);
-    obj.insert("test_type", "");
+    obj.insert("module_sn", mPro->moduleSN);
     obj.insert("order_id", mPro->order_id);
     obj.insert("order_num", mPro->order_num);
     obj.insert("test_num", "");
@@ -280,7 +274,7 @@ void Json_Pack::stepData()
         obj.insert("test_process" ,mPro->itemData.at(i));
         obj.insert("test_result" ,mPro->stepResult.at(i));
         obj.insert("test_request" ,mPro->stepRequest.at(i));
-        stephttp_post("busbarreport/add",mPro->Service,obj);
+        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 }
 
@@ -290,14 +284,14 @@ void Json_Pack::stepData_Eng()//功能测试的英文版本
     QDateTime t = QDateTime::currentDateTime();
     ePro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
     ePro->testStartTime = mPro->testStartTime;
-    ePro->order_id = mItem->user;
+
     ePro->order_num = mItem->cnt.all;
 
     obj.insert("product_sn", ePro->product_sn);
-    obj.insert("soft_version", "");
+    obj.insert("soft_version", ePro->softwareVersion);
     obj.insert("start_time", ePro->testStartTime);
     obj.insert("end_time", ePro->testEndTime);
-    obj.insert("test_type", "");
+    obj.insert("module_sn", ePro->moduleSN);
     obj.insert("order_id", ePro->order_id);
     obj.insert("order_num", ePro->order_num);
     obj.insert("test_num", "");
@@ -320,7 +314,7 @@ void Json_Pack::stepData_Eng()//功能测试的英文版本
         obj.insert("test_process" ,ePro->itemData.at(i));
         obj.insert("test_result" ,ePro->stepResult.at(i));
         obj.insert("test_request" ,ePro->stepRequest.at(i));
-        stephttp_post("busbarreport/add",mPro->Service,obj);
+        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 }
 
@@ -344,18 +338,17 @@ void Json_Pack::stephttp_post(const QString &method, const QString &ip,QJsonObje
 
 void Json_Pack::FuncData()
 {
-    QJsonObject obj;
+    QJsonObject obj; QJsonObject obj_en;
     QDateTime t = QDateTime::currentDateTime();
     mPro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
 
-    mPro->order_id = mItem->user;
     mPro->order_num = mItem->cnt.all;
 
     obj.insert("product_sn", mPro->product_sn);
-    obj.insert("soft_version", "");
+    obj.insert("soft_version", mPro->softwareVersion);
     obj.insert("start_time", mPro->testStartTime);
     obj.insert("end_time", mPro->testEndTime);
-    obj.insert("test_type", "");
+    obj.insert("module_sn", mPro->moduleSN);
     obj.insert("order_id", mPro->order_id);
     obj.insert("order_num", mPro->order_num);
     obj.insert("test_num", "");
@@ -364,40 +357,45 @@ void Json_Pack::FuncData()
 
     obj.insert("tool_name", "qc-busbar");
 
-    if(mPro->work_mode >=2) {
+    if(mPro->work_mode >= 2) {
         QString str1 = mPro->itemContent.join("；");
         obj.insert("test_cfg" ,str1);
     }
 
     int num = mPro->stepResult.size();
     int fag = 0;
-    for(int i=0; i<num; ++i)
-    {
-        if(mPro->test_function.at(i).contains("极性检查"))
+    if(num){
+        for(int i=0; i<num; ++i)
         {
-            fag = i; break;
+            if(mPro->test_function.at(i).contains("极性检查"))
+        {
+                fag = i; break;
+            }
+        }
+        for(int i=0; i<=fag; ++i)
+        {
+            obj.insert("test_item", mPro->test_function.at(i));
+            obj.insert("test_step", mPro->test_step);
+            obj.insert("test_process" ,mPro->itemData.at(i));
+            obj.insert("test_result" ,mPro->stepResult.at(i));
+            obj.insert("test_request" ,mPro->stepRequest.at(i));
+            stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+        }
+        int j = 0;
+        if((fag != 0) && ((fag +1) < num)){
+            for(int i= fag +1; i<num; ++i)
+            {
+                obj.insert("test_item", mPro->test_function.at(i));
+                obj.insert("test_step", mPro->sureItem.at(j));
+                obj.insert("test_process" ,mPro->itemData.at(i));
+                obj.insert("test_result" ,mPro->stepResult.at(i));
+                obj.insert("test_request" ,mPro->stepRequest.at(i));
+                stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+                j++;
+            }
         }
     }
-    for(int i=0; i<=fag; ++i)
-    {
-        obj.insert("test_item", mPro->test_function.at(i));
-        obj.insert("test_step", mPro->test_step);
-        obj.insert("test_process" ,mPro->itemData.at(i));
-        obj.insert("test_result" ,mPro->stepResult.at(i));
-        obj.insert("test_request" ,mPro->stepRequest.at(i));
-        stephttp_post("busbarreport/add",mPro->Service,obj);
-    }
-    int j = 0;
-    for(int i= fag +1; i<num; ++i)
-    {
-        obj.insert("test_item", mPro->test_function.at(i));
-        obj.insert("test_step", mPro->sureItem.at(j));
-        obj.insert("test_process" ,mPro->itemData.at(i));
-        obj.insert("test_result" ,mPro->stepResult.at(i));
-        obj.insert("test_request" ,mPro->stepRequest.at(i));
-        stephttp_post("busbarreport/add",mPro->Service,obj);
-        j++;
-    }
+
 }
 
 void Json_Pack::FuncData_Lan()
@@ -406,14 +404,13 @@ void Json_Pack::FuncData_Lan()
     QDateTime t = QDateTime::currentDateTime();
     ePro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
 
-    ePro->order_id = mItem->user;
     ePro->order_num = mItem->cnt.all;
 
     obj.insert("product_sn", ePro->product_sn);
-    obj.insert("soft_version", "");
+    obj.insert("soft_version", ePro->softwareVersion);
     obj.insert("start_time", ePro->testStartTime);
     obj.insert("end_time", ePro->testEndTime);
-    obj.insert("test_type", "");
+    obj.insert("module_sn", ePro->moduleSN);
     obj.insert("order_id", ePro->order_id);
     obj.insert("order_num", ePro->order_num);
     obj.insert("test_num", "");
@@ -429,31 +426,36 @@ void Json_Pack::FuncData_Lan()
 
     int num = mPro->stepResult.size();
     int fag = 0;
-    for(int i=0; i<num; ++i)
-    {
-        if(mPro->test_function.at(i).contains("极性检查"))
+    if(num){
+        for(int i=0; i<num; ++i)
         {
-            fag = i; break;
+            if(mPro->test_function.at(i).contains("极性检查"))
+        {
+                fag = i; break;
+            }
+        }
+        for(int i=0; i<=fag; ++i)
+        {
+            obj.insert("test_item", ePro->test_function.at(i));
+            obj.insert("test_step", ePro->test_step);
+            obj.insert("test_process" ,ePro->itemData.at(i));
+            obj.insert("test_result" ,ePro->stepResult.at(i));
+            obj.insert("test_request" ,ePro->stepRequest.at(i));
+            stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+        }
+        int j = 0;
+        if((fag != 0) && ((fag +1) < num)){
+            for(int i= fag +1; i<num; ++i)
+            {
+                obj.insert("test_item", ePro->test_function.at(i));
+                obj.insert("test_step", ePro->sureItem.at(j));
+                obj.insert("test_process" ,ePro->itemData.at(i));
+                obj.insert("test_result" ,ePro->stepResult.at(i));
+                obj.insert("test_request" ,ePro->stepRequest.at(i));
+                stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+                j++;
+            }
         }
     }
-    for(int i=0; i<=fag; ++i)
-    {
-        obj.insert("test_item", ePro->test_function.at(i));
-        obj.insert("test_step", ePro->test_step);
-        obj.insert("test_process" ,ePro->itemData.at(i));
-        obj.insert("test_result" ,ePro->stepResult.at(i));
-        obj.insert("test_request" ,ePro->stepRequest.at(i));
-        stephttp_post("busbarreport/add",mPro->Service,obj);
-    }
-    int j = 0;
-    for(int i= fag +1; i<num; ++i)
-    {
-        obj.insert("test_item", ePro->test_function.at(i));
-        obj.insert("test_step", ePro->sureItem.at(j));
-        obj.insert("test_process" ,ePro->itemData.at(i));
-        obj.insert("test_result" ,ePro->stepResult.at(i));
-        obj.insert("test_request" ,ePro->stepRequest.at(i));
-        stephttp_post("busbarreport/add",mPro->Service,obj);
-        j++;
-    }
+
 }

@@ -4,13 +4,15 @@
 #include <QObject>
 #include <QtNetwork>
 #include <windows.h>
+#include "http/httpclient.h"
 
 struct sBarTend {
-    QString pn;//"物料编码"
+    QString pn;//"成品代码"
+    QString on;//"订单号"
     QString hw;//"硬件版本"
     QString fw;//"软件版本"
-    QString sn;//"暂时不用"
-    QString code;//"暂时不用"
+    QString sn;//"序列号"
+    QString code;//
 };
 
 class Printer_BarTender : public QObject
@@ -23,7 +25,7 @@ public:
     QString createOrder(sBarTend &it);
     bool printMAC(QString cmd);
     bool printerInfo(sBarTend &it);
-
+    QString http_post(const QString &method, const QString &ip, sBarTend &it, int port=80);
 protected:
     void delay(int msec);
     bool recvResponse(int sec);
@@ -38,6 +40,7 @@ protected slots:
 
 private:
     bool mRes;
+    QString mRcvData;
     QUdpSocket *mSocket;
 };
 

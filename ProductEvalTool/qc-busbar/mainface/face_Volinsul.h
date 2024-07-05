@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "test_transthread.h"
 #include "json_pack.h"
+#include "sn_serialnum.h"
 
 namespace Ui {
 class Face_Volinsul;
@@ -21,6 +22,7 @@ public:
     // void progressSlot();
     void startSlot();
     void resultSlot();
+    bool printer();
 signals:
     void StatusSig(bool ret);
     void finshSig();
@@ -38,6 +40,8 @@ private:
     QTimer *timer;
     TestDataSave *mDataSave;
     sCfgItem *mCfg;
+    Sn_SerialNum *mSn;
+    sDevData *mDev;
 };
 
 #endif // VOL_INSUL_H

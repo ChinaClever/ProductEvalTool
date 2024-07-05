@@ -11,8 +11,8 @@ class Json_Pack:public QObject
     explicit Json_Pack(QObject *parent = nullptr);
 public:
     static Json_Pack *bulid(QObject *parent = nullptr);
-    void http_post(const QString &method, const QString &ip, QJsonObject json, int port=8000);
-    void stephttp_post(const QString &method, const QString &ip,QJsonObject &json, int port=8000);
+    void http_post(const QString &method, const QString &ip, QJsonObject json, int port=48088);
+    void stephttp_post(const QString &method, const QString &ip,QJsonObject &json, int port=48088);
     void getJson(QJsonObject &json, QByteArray &ba);
     void stepData();
     void stepData_Eng();

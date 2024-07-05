@@ -11,9 +11,9 @@
 
 Printer_BarTender::Printer_BarTender(QObject *parent) : QObject(parent)
 {
-//    mSocket = new QUdpSocket(this);
-//    mSocket->bind(QHostAddress::AnyIPv4, 47755);
-//    connect(mSocket,SIGNAL(readyRead()),this,SLOT(recvSlot()));
+   mSocket = new QUdpSocket(this);
+   mSocket->bind(QHostAddress::LocalHost, 47755);
+   connect(mSocket,SIGNAL(readyRead()),this,SLOT(recvSlot()));
 }
 
 Printer_BarTender *Printer_BarTender::bulid(QObject *parent)
@@ -24,12 +24,39 @@ Printer_BarTender *Printer_BarTender::bulid(QObject *parent)
     return sington;
 }
 
+QString Printer_BarTender::http_post(const QString &method, const QString &ip, sBarTend &it, int port)
+{
+    QByteArray json; QString str;
+    QString order = createOrder(it);
+    json.append(order.toLocal8Bit());
+    qDebug()<<"json"<<json;
+    AeaQt::HttpClient http;
+    http.clearAccessCache();
+    http.clearConnectionCache();
+    QString url = "http://%1:%2/%3";
+    http.post(url.arg(ip).arg(port).arg(method))
+        .header("content-type", "plain")
+        .onSuccess([&](QString result) {qDebug()<<"result"<<result; str = result;})
+        .onFailed([&](QString error) {qDebug()<<"error"<<error; str = error;})
+        .onTimeout([&](QNetworkReply *) {qDebug()<<"http_post timeout";}) // 超时处理
+        .timeout(1) // 1s超时
+        .block()
+        .body(json)
+        .exec();
+
+    return str;
+}
+
 QString Printer_BarTender::createOrder(sBarTend &it)
 {
-    QString str = "PN,HW,FW,Date\n";
-    str += it.pn + ","; str += it.hw + ","; str += it.fw + ",";
-    QString date = QDate::currentDate().toString("yyyy-MM-dd");
-    str += date;
+    QString str = "ON,PN,SN,FW,HW,Date,QR\n";
+    str += it.on + ","; str += it.pn + ","; str += it.sn + ",";
+    str += it.fw + ","; str += it.hw + ",";
+    QDateTime dateTime;
+    QString dateTime_str = dateTime.currentDateTime().toString("yyyy/MM/dd hh:mm:ss");
+    str += dateTime_str + ",";
+    str += QString("%1+%2+%3").arg(it.on).arg(it.pn).arg(it.sn);
+
     return str;
 }
 
@@ -52,19 +79,21 @@ bool Printer_BarTender::recvResponse(int sec)
 
 bool Printer_BarTender::printer(sBarTend &it)
 {
-    int port = 30044;
-    QHostAddress host = QHostAddress::Broadcast;
-    sendMsg("start", port, host);
+    int port = 4000;
+    // QHostAddress host = QHostAddress::Broadcast;
+    sendMsg("start", port, QHostAddress::LocalHost);
 
     QString order = createOrder(it);
-    sendMsg(order.toLocal8Bit(), port+1, host);
+    sendMsg(order.toLocal8Bit(), port+1, QHostAddress::LocalHost);
+    sendMsg(order.toLocal8Bit(), port, QHostAddress::LocalHost);
+
     return recvResponse(10);
 }
 
 int Printer_BarTender::sendMsg(const QByteArray &msg, quint16 port, const QHostAddress &host)
 {
     int ret = mSocket->writeDatagram(msg, host, port);
-    if(ret > 0) mSocket->flush(); delay(100);
+    if(ret > 0) mSocket->flush(); delay(1000);
     return ret;
 }
 
@@ -72,7 +101,9 @@ void Printer_BarTender::recvSlot()
 {
     while (mSocket->hasPendingDatagrams()) {
         QNetworkDatagram datagram = mSocket->receiveDatagram();
-        if(datagram.data().size()) mRes = true;
+        if(datagram.data().size()) {
+            mRes = true; mRcvData = datagram.data();
+        }
     }
 }
 

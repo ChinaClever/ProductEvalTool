@@ -16,7 +16,8 @@ Home_WorkWid::Home_WorkWid(QWidget *parent) :
     initWid();
     initLayout();
     initTypeComboBox();
-
+    Cfg::bulid()->readQRcode();
+    ui->codeEit->setText(mCfgm->pn);
     ui->stopFag->hide();
     QTimer::singleShot(7*1000,this,SLOT(PingSlot())); //延时初始化
 }
@@ -228,9 +229,20 @@ void Home_WorkWid::updateWid()
     QString str = mDev->devType.sn;
     mPro->moduleSN = str;
     ePro->moduleSN = str;
-    mItem->sn.sn = ui->codeEit->text();
-    mPro->product_sn = ui->codeEit->text();
-    ePro->product_sn = ui->codeEit->text();
+
+
+    QString mPn = ui->codeEit->text();//订单号+成品代码
+    QStringList list = mPn.split("+");
+    for(int i = 0; i < list.count(); i++)
+    {
+        if(i == 0) mPro->order_id = list.at(i);
+        if(i == 1) mPro->product_sn = list.at(i);
+    }
+    ePro->product_sn = mPro->product_sn;
+    ePro->order_id = mPro->order_id;
+    mCfgm->user = mPro->order_id;
+
+    mCfgm->pn = ui->codeEit->text();//订单号+成品代码
 
     str = mDev->devType.dev_type;
     mPro->productType = str;
@@ -281,6 +293,8 @@ bool Home_WorkWid::initSerialVol()
     QString str;  mId = 1; mFirst = 1;
     sSerial *coms = &(mCfgm->coms);
     ui->textEdit->clear();
+    Cfg::bulid()->writeQRcode();
+
     bool ret = false;
     ret = coms->ser1->isOpened();
     if(!ret){MsgBox::critical(this, tr("请先打Acw/Ir串口")); return ret;}
@@ -293,6 +307,7 @@ bool Home_WorkWid::initSerialGND()
     QString str;  mId = 1; mFirst = 1;
     sSerial *coms = &(mCfgm->coms);
     ui->textEdit->clear();
+    Cfg::bulid()->writeQRcode();
     bool ret = false;
     if(mCfgm->modeId == TEMPER_BUSBAR){
         ret = true;
@@ -309,6 +324,7 @@ bool Home_WorkWid::initSerial()
     mId = 1; mFirst = 1;
     sSerial *coms = &(mCfgm->coms);
     ui->textEdit->clear();
+    Cfg::bulid()->writeQRcode();
     bool ret = false;
     if(mCfgm->modeId == TEMPER_BUSBAR){
         ret = true;
@@ -400,7 +416,7 @@ void Home_WorkWid::on_vol_insulBtn_clicked()//耐压--绝缘
     mPro->work_mode = 0;
     if(mPro->step == Test_End){
         bool ret = initSerialVol();
-        if(ret) ret = checkUesr();
+        // if(ret) ret = checkUesr();
         if(ret) {
             mPacket->init(); mPacketEng->init();
             ItemStatus();
@@ -425,7 +441,7 @@ void Home_WorkWid::on_groundBtn_clicked()//接地
     mPro->work_mode = 1;
     if(mPro->step == Test_End){
         bool ret = initSerialGND();
-        if(ret) ret = checkUesr();
+        // if(ret) ret = checkUesr();
         if(ret) {
             mPacket->init(); mPacketEng->init();
             ItemStatus();
@@ -450,7 +466,7 @@ void Home_WorkWid::on_funcBtn_clicked()
     mPro->work_mode = 2;
     if(mPro->step == Test_End) {
         bool ret = initSerial();
-        if(ret) ret = checkUesr();
+        // if(ret) ret = checkUesr();
         if(ret) {
             mPacket->init(); mPacketEng->init();
             ItemStatus();
@@ -479,6 +495,7 @@ void Home_WorkWid::on_codeEit_textChanged(const QString &arg1)
 {
     ui->textEdit->clear();
     ui->codeEit->setClearButtonEnabled(1);
+    mCfgm->pn = ui->codeEit->text();
 }
 
 void Home_WorkWid::on_comBox_currentIndexChanged(int index)

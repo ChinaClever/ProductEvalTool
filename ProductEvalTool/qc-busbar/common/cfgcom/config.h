@@ -246,6 +246,8 @@ public:
     void writeErrData();
     void writeCfgDev();
     void setAddr(int addr);
+    void writeQRcode();
+    void readQRcode();
 
     void setCurrentNum();
     void write(const QString &key, const QVariant& v, const QString &g="Cfg");

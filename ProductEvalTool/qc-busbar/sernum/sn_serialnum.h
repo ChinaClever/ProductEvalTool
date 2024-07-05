@@ -22,8 +22,10 @@ class Sn_SerialNum : public Dev_Object
 public:
     static Sn_SerialNum *bulid(QObject *parent = nullptr);
     bool snEnter();
+    void createSn();
 
 protected:
+    bool writeSn(sSnItem &itSn);
     void toSnStr(sSnItem &it);
     bool checkSn(uchar *sn, int len);
     void initReadCmd(sRtuItem &item);
@@ -36,7 +38,7 @@ protected:
     void initWriteCmd(sRtuSetItems &item, uchar *data, int len);
     void createSn(sSnItem &it);
     int toSnData(sSnItem &it, uchar *data);
-    bool writeSn(sSnItem &itSn);
+
 private:
     sSnItem mSnItem;
     Sn_DevId *mTypeId;

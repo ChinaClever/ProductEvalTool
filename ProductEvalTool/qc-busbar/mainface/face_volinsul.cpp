@@ -1,5 +1,6 @@
 #include "face_Volinsul.h"
 #include "ui_face_Volinsul.h"
+#include "printer_bartender.h"
 
 Face_Volinsul::Face_Volinsul(QWidget *parent)
     : QWidget(parent)
@@ -11,6 +12,9 @@ Face_Volinsul::Face_Volinsul(QWidget *parent)
     mPro = mPacket->getPro();
     mDataSave = new TestDataSave(this);
     mCfg = Cfg::bulid()->item;
+    Printer_BarTender::bulid(this);
+    mSn = Sn_SerialNum::bulid(this);
+    mDev = mPacket->getDev();
     initWid();
 }
 
@@ -42,6 +46,47 @@ void Face_Volinsul::startSlot()
 
 }
 
+bool Face_Volinsul::printer()
+{
+    QString method = "Integration/Busbar-Test/Execute";
+    QString ip = "192.168.1.151";
+    bool ret = true;
+    QString str = tr("标签打印 "); QString str1;
+        if(mPro->result != Test_Fail){
+        sBarTend it;
+        QString mPn = mCfg->pn;//订单号+成品代码
+        QStringList list = mPn.split("+");
+        for(int i = 0; i < list.count(); i++)
+        {
+            if(i == 0) it.on = list.at(i);
+            if(i == 1) it.pn = list.at(i);
+        }
+        mSn->createSn();
+        QString mSn = mDev->devType.sn;//模块序列号
+        it.sn =  mSn.remove(QRegExp("\\s"));
+        it.fw = "0.0.0";
+        it.hw = "0.0.0";
+        if(it.sn.isEmpty()){
+            mPro->result = Test_Fail;
+            ret  = false;
+            if(it.sn.isEmpty()) str += tr(" 读取到序列号SN为空 ");
+        }
+        if(ret){
+            str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it);
+            if(str1 == "Success") {
+                ret = true;
+            }else {
+                str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it);
+                if(str1 == "Success") {
+                    ret = true;
+                }else ret = false;
+            }
+        }
+        if(ret) str += tr("正常"); else str += tr("错误");
+    } else str = tr("因测试未通过，标签未打印");
+    return mPacket->updatePro(str, ret);
+}
+
 void Face_Volinsul::resultSlot()
 {
     bool p = true;
@@ -63,7 +108,9 @@ void Face_Volinsul::resultSlot()
             }
         }
     }
+
     bool res = false;
+
     QString str = tr("测试结果 ");
     if(!p)
     {
@@ -73,11 +120,20 @@ void Face_Volinsul::resultSlot()
         res = false; str += tr("失败");
         mPro->uploadPassResult = 0;
     } else {
-        res = true; str += tr("通过");
-        mPro->uploadPassResult = 1;
-        if(mCfg->cnt.num > 0) {
-            if(mPro->work_mode == 0 && mCfg->modeId == 2)
+        if(mPro->work_mode == 0 && mCfg->modeId == 2)
+        {
+            res = printer();
+            if(res) {
+                str += tr("通过");mPro->uploadPassResult = 1;
+            }else {
+                str += tr("失败");mPro->uploadPassResult = 0;
+            }
+            if(mCfg->cnt.num > 0) {
                 mCfg->cnt.num -= 1;
+            }
+        }else {
+            res = true; str += tr("成功");
+            mPro->uploadPassResult = 1;
         }
     }
     mPacket->updatePro(str, res);

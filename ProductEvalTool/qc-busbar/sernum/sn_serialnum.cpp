@@ -174,7 +174,28 @@ void Sn_SerialNum::writeStatus(bool ret)
     }
     str += mSnItem.sn;
 
-    mPacket->updatePro(str, ret);
+    // mPacket->updatePro(str, ret);
+}
+
+void Sn_SerialNum::createSn()
+{
+    bool ret = true;
+    for(int i= 0;i<4;i++)
+    {
+        mSnItem.date[i] = 0;
+        mSnItem.devType[i] = 0;
+    }
+    mSnItem.exor = 0; mSnItem.num = 0;
+    mSnItem.pc = 0; mSnItem.sn.clear();
+
+    mDev->devType.devId = 12546;
+    initDevType(mSnItem);
+    createSn(mSnItem);
+    uchar buf[32] = {0};
+    toSnData(mSnItem, buf);
+
+    writeStatus(ret);
+    mDev->devType.sn = mSnItem.sn;
 }
 
 bool Sn_SerialNum::snEnter()
@@ -183,7 +204,9 @@ bool Sn_SerialNum::snEnter()
     if(ret) {
         initDevType(mSnItem);
         ret = readSn(mSnItem);
-        if(ret) mDev->devType.sn = mSnItem.sn;
+        if(ret) {
+            mDev->devType.sn = mSnItem.sn;
+        }
     }
 
     return ret;

@@ -127,6 +127,16 @@ void Cfg::initCfgDev()
     initIpData(q);
 }
 
+void Cfg::readQRcode()
+{
+    item->pn = read("on_pn", "", "BusbarSys").toString();
+}
+
+void Cfg::writeQRcode()
+{
+    write("on_pn", item->pn, "BusbarSys");
+}
+
 void Cfg::writeCfgDev()
 {
     write("addr", item->addr, "BusbarSys");

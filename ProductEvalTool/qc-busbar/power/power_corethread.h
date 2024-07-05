@@ -31,7 +31,7 @@ public slots:
 protected:
     void run();
     void workDown();
-
+    bool printer();
     bool initDev();
     void StartErrRange();
     void EnvErrRange();

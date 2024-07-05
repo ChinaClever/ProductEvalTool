@@ -249,6 +249,7 @@ enum  sSetPlugType{
     ,PlugPowerMAX_L9_1       = 243           //功率上限
     ,PlugPowerMAX_L9_2       = 244           //功率上限
 
+    ,PlugRestoreFactory       = 604           //恢复出厂设置
 };
 
 /**

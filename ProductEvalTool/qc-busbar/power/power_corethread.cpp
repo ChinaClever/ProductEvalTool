@@ -797,6 +797,20 @@ bool Power_CoreThread::factorySet()
     if(mItem->modeId == START_BUSBAR)
         mRead->SetInfo(mRead->getConnectModeOid(),QString::number(tag));//切换成SNMP模式
 
+    //恢复出厂设置
+    if(ret) {
+        if(mItem->modeId == START_BUSBAR){//始端箱
+            str = tr("始端箱恢复出厂设置");
+            Dev_IpSnmp::bulid()->SetInfo(Dev_IpSnmp::bulid()->getRestoreOid(), "12");
+            if(ret) str += tr("成功"); else str  += tr("失败");
+        }else {
+            str = tr("插接箱恢复出厂设置");
+            Ctrl_SiRtu::bulid()->setBusbarInsertRestore(12);
+            if(ret) str += tr("成功"); else str  += tr("失败");
+        }
+        mLogs->updatePro(str, res);
+    }
+
     return res;
 }
 
@@ -807,27 +821,76 @@ void Power_CoreThread::clearStartEleSlot()
     return;
 }
 
+bool Power_CoreThread::printer()
+{
+    QString method = "Integration/Busbar-Test/Execute";
+    QString ip = "192.168.1.151";
+    bool ret = true;
+    QString str = tr("标签打印 "); QString str1;
+    if(mPro->result != Test_Fail){
+        sBarTend it;
+        QString mPn = mItem->pn;//订单号+成品代码
+        QStringList list = mPn.split("+");
+        for(int i = 0; i < list.count(); i++)
+        {
+            if(i == 0) it.on = list.at(i);
+            if(i == 1) it.pn = list.at(i);
+        }
+
+        QString mSn = mDev->devType.sn;//模块序列号
+        it.sn =  mSn.remove(QRegExp("\\s"));
+
+        int ver = get_share_mem()->box[mItem->addr-1].version;//软件版本号
+        it.fw = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
+        it.hw = "0.0.0";
+        if(it.sn.isEmpty() || it.fw.isEmpty()){
+            mPro->result = Test_Fail;
+            ret  = false;
+            if(it.sn.isEmpty()) str += tr(" 读取到序列号SN为空 ");
+            if(it.fw.isEmpty()) str += tr(" 读取到软件版本FW为空 ");
+        }
+
+        if(ret){
+            str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it);
+            if(str1 == "Success") {
+                ret = true;
+            }else {
+                str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it);
+                if(str1 == "Success") {
+                    ret = true;
+                }else ret = false;
+            }
+        }
+        if(ret) str += tr("正常"); else str += tr("错误");
+    } else str = tr("因测试未通过，标签未打印");
+    return mPacket->updatePro(str, ret);
+}
+
 void Power_CoreThread::workResult(bool)
 {
     mLogs->updatePro(tr("测试结束"));
-
     bool res = false;
     QString str = tr("测试结果 ");
     if(mPro->result != Test_Fail) {
+        ////////////============res = printer();
+        ////////////============if(res)
+        ////////////============    str += tr("通过");
+        ////////////============else
+        ////////////============    str += tr("失败");
         res = true;
         str += tr("通过");
+
     }else {
         res = false;
         str += tr("失败");
     }
     mPacket->updatePro(str, res);
+
     mPro->loopNum = QString::number(mBusData->box[mItem->addr-1].loopNum);
-    mPro->itemContent << "模块序列号：" + mPro->moduleSN;
     mPro->itemContent << "设备类型：" + mPro->productType;
     mPro->itemContent << "告警滤波次数：" + QString::number(mBusData->box[mItem->addr-1].alarmTime);
 
     ePro->loopNum = QString::number(mBusData->box[mItem->addr-1].loopNum);
-    ePro->itemContent << "Module serial number:" + mPro->moduleSN;
     ePro->itemContent << "Equipment type:" + mPro->productType;
     ePro->itemContent << "Alarm filtering frequency:" + QString::number(mBusData->box[mItem->addr-1].alarmTime);
 
@@ -841,25 +904,24 @@ void Power_CoreThread::workResult(bool)
             }
         }
     }
+
     mPro->work_mode = 3;
     mLogs->saveLogs();
 
     if(mPro->online) {
-        // Json_Pack::bulid()->stepData();//全流程才发送记录(http)
         Json_Pack::bulid()->FuncData();
+
         msleep(20);
         Json_Pack::bulid()->FuncData_Lan();
     }
     mCfg->work_mode = 2; emit finshSig(res);
 
-    bool ret = false;
+    bool ret = true;
     if(mPro->online) {
         if(mPro->flag == 0) {
             str = tr("数据发送失败");
-            ret = false;
-        }else {
+        }else if(mPro->flag == 1) {
             str = tr("数据发送成功");
-            ret = true;
         }
         mPacket->updatePro(str, ret);
     }
@@ -1345,8 +1407,8 @@ void Power_CoreThread::workDown()
     mPro->step = Test_Start;
     bool ret = false; sBoxData *b = &(mBusData->box[mItem->addr - 1]);
     loopNum = mBusData->box[mItem->addr-1].loopNum;
-    // ret = initDev();
-    mCfg->work_mode = 3; emit JudgSig(); //极性测试弹窗
+    ret = initDev();
+
     if(mItem->modeId == INSERT_BUSBAR)
     {
         if(ret) ret = mRead->readDev();
@@ -1358,8 +1420,8 @@ void Power_CoreThread::workDown()
             emit TipSig(str); sleep(2); ret = false; mLogs->updatePro(str, ret);
         }
     }
-    if(ret)
-    {
+
+    if(ret){
         BaseErrRange();                                 //检查IN OUT口 网口对比始端箱/插接箱基本信息
         EnvErrRange();                                  //温度模块检测
 
@@ -1374,11 +1436,12 @@ void Power_CoreThread::workDown()
       // if(ret) ret = checkLoadErrRange();
 
         ret = stepLoadTest();                    //电流测试
-        ret = factorySet();                      //清除电能
+        ret = factorySet(); sleep(2);                      //清除电能
         QString str = tr("请将电源输出端L1、L2、L3关闭");
         emit TipSig(str); emit ImageSig(2);
 
-        mCfg->work_mode = 3; emit JudgSig(); //极性测试弹窗
+        mCfg->work_mode = 3;
+        emit JudgSig(); //极性测试弹窗
 
         if(mItem->modeId == START_BUSBAR)
         {

@@ -204,6 +204,14 @@ bool Ctrl_SiRtu::setBusbarInsertFilter(int val)
     return ret;
 }
 
+bool Ctrl_SiRtu::setBusbarInsertRestore(int val)
+{
+    bool ret = true;
+    ret = sentRtuCmd(PlugRestoreFactory, val);
+
+    return ret;
+}
+
 bool Ctrl_SiRtu::setBusbarStartShuntRelease(int val)
 {
     bool ret = true;

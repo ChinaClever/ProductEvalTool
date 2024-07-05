@@ -19,9 +19,8 @@ void Home_DataWid::initWid()
 void Home_DataWid::appendItem(sBoxData *box)
 {
     sObjectData *dev = &(box->data);
-    initDataWid(header,box->loopNum,"测试数据");
-
-    if(mCfgm->work_mode == 2) {
+    // initDataWid(header,box->loopNum,"测试数据");
+    if(box->loopNum){
         for(int i=0; i<box->loopNum; ++i) {
             QStringList listStr;
             listStr << QString::number(dev->vol.value[i]/COM_RATE_VOL,'f',1);

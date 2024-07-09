@@ -254,11 +254,11 @@ void Home_WorkWid::updateWid()
 
     switch (ui->comBox->currentIndex()) {
     case 0: {
-        mPro->dev_name = tr("始端箱"); ePro->dev_name = tr("Starting box");
+        mPro->dev_name = tr("始端箱"); ePro->dev_name = tr("Busbar feeder box");
         break;
     }
     case 1: {
-        mPro->dev_name = tr("插接箱"); ePro->dev_name = tr("Plug in box");
+        mPro->dev_name = tr("插接箱"); ePro->dev_name = tr("Busbar tap-off box");
         break;
     }
     case 2: {
@@ -293,7 +293,7 @@ bool Home_WorkWid::initSerialVol()
     QString str;  mId = 1; mFirst = 1;
     sSerial *coms = &(mCfgm->coms);
     ui->textEdit->clear();
-    Cfg::bulid()->writeQRcode();
+    Cfg::bulid()->writeQRcode();//成品sn===成品代码+订单号
 
     bool ret = false;
     ret = coms->ser1->isOpened();
@@ -309,7 +309,7 @@ bool Home_WorkWid::initSerialGND()
     ui->textEdit->clear();
     Cfg::bulid()->writeQRcode();
     bool ret = false;
-    if(mCfgm->modeId == TEMPER_BUSBAR){
+    if(mCfgm->modeId == 2){//母线槽
         ret = true;
     } else{
         ret = coms->ser2->isOpened();
@@ -326,7 +326,7 @@ bool Home_WorkWid::initSerial()
     ui->textEdit->clear();
     Cfg::bulid()->writeQRcode();
     bool ret = false;
-    if(mCfgm->modeId == TEMPER_BUSBAR){
+    if(mCfgm->modeId == 2){//母线槽
         ret = true;
     }else{
         ret = coms->ser3->isOpened();
@@ -524,5 +524,17 @@ void Home_WorkWid::initTypeComboBox()
     ui->comBox->setCurrentIndex(index);
 }
 
-
+void Home_WorkWid::on_snprintBtn_clicked()
+{
+    if(mPro->result != Test_Fail){
+        if(mCfgm->modeId == 2)//母线槽
+        {
+            qDebug()<<"printer";
+            mVolInsul->printer();
+            qDebug()<<"mVolInsul";
+        }else if(mCfgm->modeId == 0 || mCfgm->modeId == 1){
+            mPowThread->printer();
+        }
+    }
+}
 

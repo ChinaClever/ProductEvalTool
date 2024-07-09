@@ -11,7 +11,7 @@ class Power_CoreThread : public Power_Object
 public:
     explicit Power_CoreThread(QObject *parent = nullptr);
     void clearStartEleSlot();
-
+    bool printer();
 protected slots:
     void initFunSlot();
 
@@ -31,7 +31,6 @@ public slots:
 protected:
     void run();
     void workDown();
-    bool printer();
     bool initDev();
     void StartErrRange();
     void EnvErrRange();

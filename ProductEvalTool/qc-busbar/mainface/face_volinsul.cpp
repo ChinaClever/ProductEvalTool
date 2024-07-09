@@ -61,7 +61,7 @@ bool Face_Volinsul::printer()
             if(i == 0) it.on = list.at(i);
             if(i == 1) it.pn = list.at(i);
         }
-        mSn->createSn();
+        mSn->createSn();//给母线槽设置序列号
         QString mSn = mDev->devType.sn;//模块序列号
         it.sn =  mSn.remove(QRegExp("\\s"));
         it.fw = "0.0.0";
@@ -120,21 +120,23 @@ void Face_Volinsul::resultSlot()
         res = false; str += tr("失败");
         mPro->uploadPassResult = 0;
     } else {
-        if(mPro->work_mode == 0 && mCfg->modeId == 2)
-        {
-            res = printer();
-            if(res) {
-                str += tr("通过");mPro->uploadPassResult = 1;
-            }else {
-                str += tr("失败");mPro->uploadPassResult = 0;
-            }
-            if(mCfg->cnt.num > 0) {
-                mCfg->cnt.num -= 1;
-            }
-        }else {
-            res = true; str += tr("成功");
-            mPro->uploadPassResult = 1;
-        }
+        // if(mPro->work_mode == 0 && mCfg->modeId == 2)============
+        // {
+        //     res = printer();
+        //     if(res) {
+        //         str += tr("通过");mPro->uploadPassResult = 1;
+        //     }else {
+        //         str += tr("失败");mPro->uploadPassResult = 0;
+        //     }
+        //     if(mCfg->cnt.num > 0) {
+        //         mCfg->cnt.num -= 1;
+        //     }
+        // }else {
+        //     res = true; str += tr("成功");
+        //     mPro->uploadPassResult = 1;
+        // }
+        res = true; str += tr("成功");
+        mPro->uploadPassResult = 1;
     }
     mPacket->updatePro(str, res);
 

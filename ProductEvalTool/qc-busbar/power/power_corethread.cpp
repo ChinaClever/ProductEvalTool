@@ -842,7 +842,7 @@ bool Power_CoreThread::printer()
 
         int ver = get_share_mem()->box[mItem->addr-1].version;//软件版本号
         it.fw = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
-        it.hw = "0.0.0";
+        it.hw = "0.0.0";//暂时设置默认值
         if(it.sn.isEmpty() || it.fw.isEmpty()){
             mPro->result = Test_Fail;
             ret  = false;
@@ -1367,10 +1367,10 @@ void Power_CoreThread::getDelaySlot()
     mLogs->updatePro(str, ret);
 
     if(mCurBoxNum == 2) {
-        str = tr("插接箱 IN口接错"); eng = tr("The IN port of the plug-in box is connected incorrectly");
+        str = tr("插接箱 IN口接错"); eng = tr("The IN port of the busbar tap-off box is connected incorrectly");
     }
     if(mCurBoxNum == 3) {
-        str = tr("插接箱 OUT口接错"); eng = tr("The OUT port of the plug-in box is connected incorrectly");
+        str = tr("插接箱 OUT口接错"); eng = tr("The OUT port of the busbar tap-off box is connected incorrectly");
     }
     emit TipSig(str);
     mLogs->updatePro(str, ret);

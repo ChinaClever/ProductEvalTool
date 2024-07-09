@@ -413,6 +413,19 @@
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="QPushButton" name="snprintBtn">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>750</y>
+      <width>191</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>打印标签</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox_5">
    <property name="geometry">

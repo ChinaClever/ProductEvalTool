@@ -99,6 +99,8 @@ private slots:
     void JudgSlots();
     void on_funcBtn_clicked();
 
+    void on_snprintBtn_clicked();
+
 private:
     Ui::Home_WorkWid *ui;
 

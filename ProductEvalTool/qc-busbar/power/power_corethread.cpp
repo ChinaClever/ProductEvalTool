@@ -502,8 +502,9 @@ void Power_CoreThread::InsertErrRange()
     }else {
         str2 = tr("不符合要求"); eng2 = tr("Not Satisfiable");
     }
+    mLogs->updatePro(str,ret);
     mLogs->writeData(str1, str2 ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
-    mLogs->updatePro(str,ret);ret = false;
+    ret = false;
 
     str1 = tr("单相或三相与规格书要求一致"); str3 = tr("输出插座类型");
     eng1 = tr("Single or three-phase in accordance with the specifications"); eng3 = tr("Output socket type");
@@ -516,8 +517,9 @@ void Power_CoreThread::InsertErrRange()
     }else {
         str2 = tr("不符合要求"); eng2 = tr("Not Satisfiable");
     }
+    mLogs->updatePro(str,ret);
     mLogs->writeData(str1, str2 ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
-    mLogs->updatePro(str,ret);ret = false;
+    ret = false;
 
     str1 = tr("回路数量与规格书要求一致"); str3 = tr("输出回路数量");
     eng1 = tr("The number of circuits is consistent with the requirements of the specification sheet"); eng3 = tr("Number of output circuits");
@@ -530,10 +532,10 @@ void Power_CoreThread::InsertErrRange()
     }else {
         str2 = tr("不符合要求"); eng2 = tr("Not Satisfiable");
     }
+    mLogs->updatePro(str,ret);
     mLogs->writeData(str1, str2 ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
-    mLogs->updatePro(str,ret);ret = false;
-
     ret = false;
+
     for(int i=0; i< b->loopNum; ++i) {
         ret = curAlarmErr(i);
     }
@@ -563,8 +565,8 @@ void Power_CoreThread::InsertErrRange()
     QString expectVer = QString::number(expect/100)+"."+QString::number(expect/10%10)+"."+QString::number(expect%10);
     str = tr("版本信息实际值：%1 , 期待值：%2").arg(curVer).arg(expectVer);
     str2 = tr("插接箱：V%1").arg(expectVer); eng2 = tr("Plug in box:V%1").arg(expectVer);
-    mLogs->writeData(str1, str2 ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
     mLogs->updatePro(str,ret);
+    mLogs->writeData(str1, str2 ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
 
 }
 
@@ -671,8 +673,8 @@ void Power_CoreThread::EnvErrRange()
         str += tr("失败，温度%1检测异常，请检查该温度传感器是否正常").arg(i+1); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
     }
     str2 = tr("温度值检查");
-    mLogs->writeData(str1, str3, str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
     mLogs->updatePro(str, ret);
+    mLogs->writeData(str1, str3, str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
 }
 
 void Power_CoreThread::BaseErrRange()   //比较基本配置信息
@@ -908,24 +910,7 @@ void Power_CoreThread::workResult(bool)
     mPro->work_mode = 3;
     mLogs->saveLogs();
 
-    if(mPro->online) {
-        Json_Pack::bulid()->FuncData();
-
-        msleep(20);
-        Json_Pack::bulid()->FuncData_Lan();
-    }
-    mCfg->work_mode = 2; emit finshSig(res);
-
-    bool ret = true;
-    if(mPro->online) {
-        if(mPro->flag == 0) {
-            str = tr("数据发送失败");
-        }else if(mPro->flag == 1) {
-            str = tr("数据发送成功");
-        }
-        mPacket->updatePro(str, ret);
-    }
-
+    mCfg->work_mode = 2; emit finshSig(res);   
     mPro->step = Test_Over;
 }
 
@@ -955,6 +940,16 @@ bool Power_CoreThread::Vol_ctrlOne()
     str = tr("关闭电源输出端L2");  //b1,b2,b3
     emit TipSig(str); emit ImageSig(0);
     QString eng3 = tr("Meet a requirement"); QString eng4 = tr("Circuit voltage check");
+    if(loop == 9){
+        str2 = tr("断开电源输出端断路器L2，读取B1/B2/B3电压为0V，A1/A2/A3/C1/C2/C3正常");
+        eng2 = tr("Disconnect the power output circuit breaker L2, read the voltage of B1/B2/B3 as 0V, A1/A2/A3/C1/C2/C3 is normal");
+    }else if(loop == 6){
+        str2 = tr("断开电源输出端断路器L2，读取B1/B2电压为0V，A1/A2/C1/C2正常");
+        eng2 = tr("Disconnect the power output circuit breaker L2, read B1/B2 voltage as 0V, A1/A2/C1/C2 normal");
+    }else if(loop == 3){
+        str2 = tr("断开电源输出端断路器L2，检查B电压为0V，A/C电压正常");
+        eng2 = tr("Disconnect the power output circuit breaker L2 and check that the voltage of B is 0V, and the voltage of A/C is normal");
+    }
 
     while(1)
     {
@@ -982,8 +977,6 @@ bool Power_CoreThread::Vol_ctrlOne()
                     str1 += str;
                 }
                 mLogs->updatePro(str1, ret);
-                str2 = tr("断开电源输出端断路器L2，读取B1/B2/B3电压为0V，A1/A2/A3/C1/C2/C3正常");
-                eng2 = tr("Disconnect the power output circuit breaker L2, read the voltage of B1/B2/B3 as 0V, A1/A2/A3/C1/C2/C3 is normal");
                 str = tr("B路电压检测成功 "); mLogs->updatePro(str, ret);
                 mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
                 str1.clear(); break;
@@ -1009,8 +1002,6 @@ bool Power_CoreThread::Vol_ctrlOne()
                     str1 += str;
                 }
                 mLogs->updatePro(str1, ret);
-                str2 = tr("断开电源输出端断路器L2，读取B1/B2电压为0V，A1/A2/C1/C2正常");
-                eng2 = tr("Disconnect the power output circuit breaker L2, read B1/B2 voltage as 0V, A1/A2/C1/C2 normal");
                 str = tr("B路电压检测成功 ");mLogs->updatePro(str, ret);
                 str += str1; mLogs->writeData(str2,str3,str4,ret);
                 mLogs->writeDataEng(eng2,eng3,eng4,ret); str1.clear();break;
@@ -1032,8 +1023,6 @@ bool Power_CoreThread::Vol_ctrlOne()
                     str1 += str;
                 }
                 mLogs->updatePro(str1, ret);
-                str2 = tr("断开电源输出端断路器L2，检查B电压为0V，A/C电压正常");
-                eng2 = tr("Disconnect the power output circuit breaker L2 and check that the voltage of B is 0V, and the voltage of A/C is normal");
                 str = tr("B路电压检测成功 "); mLogs->updatePro(str, ret);
                 str += str1; mLogs->writeData(str2,str3,str4,ret);
                 mLogs->writeDataEng(eng2,eng3,eng4,ret); str1.clear();break;}
@@ -1073,6 +1062,17 @@ bool Power_CoreThread::Vol_ctrlTwo()
     emit TipSig(str); emit ImageSig(0);
     QString eng3 = tr("Meet a requirement"); QString eng4 = tr("Circuit voltage check");
 
+    if(loop == 9){
+        str2 = tr("断开电源输出端断路器L3，读取C1/C2/C3电压为0V ，A1/A2/A3/B1/B2/B3正常");
+        eng2 = tr("Disconnect circuit breaker L3 at the power output terminal, read the voltage of C1/C2/C3 as 0V, A1/A2/A3/B1/B2/B3 is normal");
+    }else if(loop == 6){
+        str2 = tr("断开电源输出端断路器L3，读取C1/C2电压为0V，A1/A2/B1/B2/正常");
+        eng2 = tr("Disconnect circuit breaker L3 at the power output terminal, read C1/C2 voltage as 0V, A1/A2/B1/B2/normal");
+    }else if(loop == 3){
+        str2 = tr("断开电源输出端断路器L3，检查C电压为0V，A/B电压正常");
+        eng2 = tr("Disconnect the power output circuit breaker L3 and check that the voltage of C is 0V, and the voltage of A/B is normal");
+    }
+
     while(1)
     {
         int a=0, b=0, c=0;
@@ -1099,8 +1099,6 @@ bool Power_CoreThread::Vol_ctrlTwo()
                         str1 += str;
                     }
                     mLogs->updatePro(str1, ret);
-                    str2 = tr("断开电源输出端断路器L3，读取C1/C2/C3电压为0V ，A1/A2/A3/B1/B2/B3正常");
-                    eng2 = tr("Disconnect circuit breaker L3 at the power output terminal, read the voltage of C1/C2/C3 as 0V, A1/A2/A3/B1/B2/B3 is normal");
                     str = tr("C路电压检测成功 ");mLogs->updatePro(str, ret);
                     mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
                     str1.clear(); break;
@@ -1124,9 +1122,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
                         str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                         str1 += str;
                     }
-                    mLogs->updatePro(str1, ret);
-                    str2 = tr("断开电源输出端断路器L3，读取C1/C2电压为0V，A1/A2/B1/B2/正常");
-                    eng2 = tr("Disconnect circuit breaker L3 at the power output terminal, read C1/C2 voltage as 0V, A1/A2/B1/B2/normal");
+                    mLogs->updatePro(str1, ret);              
                     str = tr("C路电压检测成功 ");mLogs->updatePro(str, ret);
                     mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
                     str1.clear(); break;
@@ -1148,8 +1144,6 @@ bool Power_CoreThread::Vol_ctrlTwo()
                         str1 += str;
                     }
                     mLogs->updatePro(str1, ret);
-                    str2 = tr("断开电源输出端断路器L3，检查C电压为0V，A/B电压正常");
-                    eng2 = tr("Disconnect the power output circuit breaker L3 and check that the voltage of C is 0V, and the voltage of A/B is normal");
                     str = tr("C路电压检测成功 ");mLogs->updatePro(str, ret);
                     mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
                     str1.clear(); break;
@@ -1292,6 +1286,8 @@ bool Power_CoreThread::Vol_ctrlThree()
 
             str = tr("电压超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit TipSig(str); sleep(3);
+            str2 = tr("闭合断路器，各回路电压正常");
+            eng2 = tr("Close the circuit breaker and ensure that the voltage of each circuit is normal");
             mLogs->writeData(str2,str3,str4,ret);
             mLogs->writeDataEng(eng2,eng3,eng4,ret);str1.clear(); break;
         }
@@ -1435,11 +1431,12 @@ void Power_CoreThread::workDown()
       // else mPro->result = Test_Fail;
       // if(ret) ret = checkLoadErrRange();
 
-        ret = stepLoadTest();                    //电流测试
-        ret = factorySet(); sleep(2);                      //清除电能
-        QString str = tr("请将电源输出端L1、L2、L3关闭");
-        emit TipSig(str); emit ImageSig(2);
-
+        //==========================
+        // ret = stepLoadTest();               //电流测试
+        // ret = factorySet(); sleep(2);                      //清除电能
+        // QString str = tr("请将电源输出端L1、L2、L3关闭");
+        // emit TipSig(str); emit ImageSig(2);
+        //===========================
         mCfg->work_mode = 3;
         emit JudgSig(); //极性测试弹窗
 

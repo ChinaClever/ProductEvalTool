@@ -111,7 +111,6 @@ bool Power_Logs::updatePro(const QString &str, bool pass, int sec)
 void Power_Logs::writeData(const QString &str1,const QString &str2, const QString &str3, bool pass)
 {
     if(mPro->step < Test_End) {
-        mPro->testStartTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
         if(pass) {
             mPro->stepResult << "1";
         } else {
@@ -119,13 +118,18 @@ void Power_Logs::writeData(const QString &str1,const QString &str2, const QStrin
         }
         mPro->stepRequest << str1; mPro->itemData << str2;
         mPro->test_function << str3;
+        if(mPro->online)
+        {
+            msleep(20);
+            Json_Pack::bulid()->FuncData(mPro->stepNum);
+            mPro->stepNum++;
+        }
     }
 }
 
 void Power_Logs::writeDataEng(const QString &str1,const QString &str2, const QString &str3, bool pass)
 {
-    if(mPro->step < Test_End) {
-        ePro->testStartTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+    if(mPro->step < Test_End) {        
         if(pass) {
             ePro->stepResult << "1";
         } else {
@@ -133,5 +137,11 @@ void Power_Logs::writeDataEng(const QString &str1,const QString &str2, const QSt
         }
         ePro->stepRequest << str1; ePro->itemData << str2;
         ePro->test_function << str3;
+        if(mPro->online)
+        {
+            msleep(20);
+            Json_Pack::bulid()->FuncData_Lan(mPro->stepNumEng);
+            mPro->stepNumEng++;
+        }
     }
 }

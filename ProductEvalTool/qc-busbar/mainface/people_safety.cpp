@@ -29,8 +29,7 @@ void People_Safety::initData()
 void People_Safety::writeData(const QString &str1,const QString &str2, const QString &str3,bool pass)
 {
     mPro->stepRequest << str1; mPro->itemData << str2;
-    mPro->test_function << str3;
-    mPro->testStartTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+    mPro->test_function << str3;   
     if(pass) {
         mPro->stepResult << "1";
     } else {
@@ -42,8 +41,7 @@ void People_Safety::writeData(const QString &str1,const QString &str2, const QSt
 void People_Safety::writeData_Eng(const QString &str1,const QString &str2, const QString &str3,bool pass)
 {
     ePro->stepRequest << str1; ePro->itemData << str2;
-    ePro->test_function << str3;
-    ePro->testStartTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+    ePro->test_function << str3;   
     if(pass) {
         ePro->stepResult << "1";
     } else {
@@ -54,6 +52,9 @@ void People_Safety::writeData_Eng(const QString &str1,const QString &str2, const
 
 void People_Safety::on_sureButton_clicked()
 {
+    mPacket->delayMs(10);
+    mPro->issure = 1; this->close();
+
     QString str2 = tr("符合要求"); QString eng2 = tr("Meet a requirement");
     QString str3 = tr("不符合要求"); QString eng3 = tr("Not Satisfiable");
     QString str4 = tr("外观检查"); QString eng4 = tr("Inspection");
@@ -206,6 +207,5 @@ void People_Safety::on_sureButton_clicked()
         writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
     }
 
-    mPro->issure = 1;
-    this->close();
+
 }

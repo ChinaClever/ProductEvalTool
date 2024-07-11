@@ -493,9 +493,22 @@ void Home_WorkWid::SafeSlot()
 
 void Home_WorkWid::on_codeEit_textChanged(const QString &arg1)
 {
-    ui->textEdit->clear();
     ui->codeEit->setClearButtonEnabled(1);
     mCfgm->pn = ui->codeEit->text();
+
+    QString mPn = ui->codeEit->text();//订单号+成品代码
+    QStringList list = mPn.split("+");
+    for(int i = 0; i < list.count(); i++)
+    {
+        if(i == 0) mPro->order_id = list.at(i);
+        if(i == 1) mPro->product_sn = list.at(i);
+    }
+    ePro->product_sn = mPro->product_sn;
+    ePro->order_id = mPro->order_id;
+    mCfgm->user = mPro->order_id;
+
+    mCfgm->pn = ui->codeEit->text();//订单号+成品代码
+    Cfg::bulid()->writeQRcode();
 }
 
 void Home_WorkWid::on_comBox_currentIndexChanged(int index)
@@ -529,9 +542,7 @@ void Home_WorkWid::on_snprintBtn_clicked()
     if(mPro->result != Test_Fail){
         if(mCfgm->modeId == 2)//母线槽
         {
-            qDebug()<<"printer";
             mVolInsul->printer();
-            qDebug()<<"mVolInsul";
         }else if(mCfgm->modeId == 0 || mCfgm->modeId == 1){
             mPowThread->printer();
         }

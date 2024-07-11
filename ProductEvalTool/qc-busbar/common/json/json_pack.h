@@ -19,8 +19,8 @@ public:
     void SendJson_Safe();
     void SafeData();
     void SafeData_Lan();
-    void FuncData();
-    void FuncData_Lan();
+    void FuncData(int num);
+    void FuncData_Lan(int num);
 signals:
     void httpSig(const QString &msg, bool pass);
 protected:

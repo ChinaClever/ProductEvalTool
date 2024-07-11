@@ -109,11 +109,11 @@ void Json_Pack::head_English(QJsonObject &obj)
     obj.insert("language_select", 1);
     obj.insert("order_num", ePro->order_num);
 
-    int num = ePro->itPass.size();
-    ePro->uploadPassResult = 1;
+    int num = mPro->itPass.size();
+    mPro->uploadPassResult = 1;
     for(int i=0; i<num; ++i)
     {
-        if(ePro->itPass.at(i) == 0) {
+        if(mPro->itPass.at(i) == 0) {
             ePro->uploadPassResult = 0; break;
         }
     }
@@ -155,7 +155,7 @@ void Json_Pack::http_post(const QString &method, const QString &ip, QJsonObject 
         .onSuccess([&](QString result) {qDebug()<<"result"<<result; mPro->flag = 1;})
         .onFailed([&](QString error) {qDebug()<<"error"<<error; mPro->flag = 0;})
         .onTimeout([&](QNetworkReply *) {qDebug()<<"http_post timeout"; mPro->flag = 0;}) // 超时处理
-        .timeout(1) // 1s超时
+        .timeoutMs(200) // 1s超时
         .block()
         .body(json)
         .exec();
@@ -330,13 +330,13 @@ void Json_Pack::stephttp_post(const QString &method, const QString &ip,QJsonObje
         .onSuccess([&](QString result) {qDebug()<<"result"<<result; mPro->flag = 1; })
         .onFailed([&](QString error) {qDebug()<<"error"<<error; mPro->flag = 0; })
         .onTimeout([&](QNetworkReply *) {qDebug()<<"http_post timeout"; mPro->flag = 0;}) // 超时处理
-        .timeout(1) // 1s超时
+        .timeoutMs(200) // 1s超时
         .block()
         .body(json)
         .exec();
 }
 
-void Json_Pack::FuncData()
+void Json_Pack::FuncData(int num)
 {
     QJsonObject obj; QJsonObject obj_en;
     QDateTime t = QDateTime::currentDateTime();
@@ -362,43 +362,50 @@ void Json_Pack::FuncData()
         obj.insert("test_cfg" ,str1);
     }
 
-    int num = mPro->stepResult.size();
-    int fag = 0;
-    if(num){
-        for(int i=0; i<num; ++i)
-        {
-            if(mPro->test_function.at(i).contains("极性检查"))
-        {
-                fag = i; break;
-            }
-        }
-        for(int i=0; i<=fag; ++i)
-        {
-            obj.insert("test_item", mPro->test_function.at(i));
-            obj.insert("test_step", mPro->test_step);
-            obj.insert("test_process" ,mPro->itemData.at(i));
-            obj.insert("test_result" ,mPro->stepResult.at(i));
-            obj.insert("test_request" ,mPro->stepRequest.at(i));
-            stephttp_post("admin-api/bus/testData",mPro->Service,obj);
-        }
-        int j = 0;
-        if((fag != 0) && ((fag +1) < num)){
-            for(int i= fag +1; i<num; ++i)
-            {
-                obj.insert("test_item", mPro->test_function.at(i));
-                obj.insert("test_step", mPro->sureItem.at(j));
-                obj.insert("test_process" ,mPro->itemData.at(i));
-                obj.insert("test_result" ,mPro->stepResult.at(i));
-                obj.insert("test_request" ,mPro->stepRequest.at(i));
-                stephttp_post("admin-api/bus/testData",mPro->Service,obj);
-                j++;
-            }
-        }
-    }
+    obj.insert("test_item", mPro->test_function.at(num));
+    obj.insert("test_step", mPro->test_step);
+    obj.insert("test_process" ,mPro->itemData.at(num));
+    obj.insert("test_result" ,mPro->stepResult.at(num));
+    obj.insert("test_request" ,mPro->stepRequest.at(num));
+    stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+
+    // int num = mPro->stepResult.size();
+    // int fag = 0;
+    // if(num){
+    //     for(int i=0; i<num; ++i)
+    //     {
+    //         if(mPro->test_function.at(i).contains("极性检查"))
+    //     {
+    //             fag = i; break;
+    //         }
+    //     }
+    //     for(int i=0; i<=fag; ++i)
+    //     {
+    //         obj.insert("test_item", mPro->test_function.at(i));
+    //         obj.insert("test_step", mPro->test_step);
+    //         obj.insert("test_process" ,mPro->itemData.at(i));
+    //         obj.insert("test_result" ,mPro->stepResult.at(i));
+    //         obj.insert("test_request" ,mPro->stepRequest.at(i));
+    //         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+    //     }
+    //     int j = 0;
+    //     if((fag != 0) && ((fag +1) < num)){
+    //         for(int i= fag +1; i<num; ++i)
+    //         {
+    //             obj.insert("test_item", mPro->test_function.at(i));
+    //             obj.insert("test_step", mPro->sureItem.at(j));
+    //             obj.insert("test_process" ,mPro->itemData.at(i));
+    //             obj.insert("test_result" ,mPro->stepResult.at(i));
+    //             obj.insert("test_request" ,mPro->stepRequest.at(i));
+    //             stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+    //             j++;
+    //         }
+    //     }
+    // }
 
 }
 
-void Json_Pack::FuncData_Lan()
+void Json_Pack::FuncData_Lan(int num)
 {
     QJsonObject obj;
     QDateTime t = QDateTime::currentDateTime();
@@ -424,38 +431,45 @@ void Json_Pack::FuncData_Lan()
         obj.insert("test_cfg" ,str1);
     }
 
-    int num = mPro->stepResult.size();
-    int fag = 0;
-    if(num){
-        for(int i=0; i<num; ++i)
-        {
-            if(mPro->test_function.at(i).contains("极性检查"))
-        {
-                fag = i; break;
-            }
-        }
-        for(int i=0; i<=fag; ++i)
-        {
-            obj.insert("test_item", ePro->test_function.at(i));
-            obj.insert("test_step", ePro->test_step);
-            obj.insert("test_process" ,ePro->itemData.at(i));
-            obj.insert("test_result" ,ePro->stepResult.at(i));
-            obj.insert("test_request" ,ePro->stepRequest.at(i));
-            stephttp_post("admin-api/bus/testData",mPro->Service,obj);
-        }
-        int j = 0;
-        if((fag != 0) && ((fag +1) < num)){
-            for(int i= fag +1; i<num; ++i)
-            {
-                obj.insert("test_item", ePro->test_function.at(i));
-                obj.insert("test_step", ePro->sureItem.at(j));
-                obj.insert("test_process" ,ePro->itemData.at(i));
-                obj.insert("test_result" ,ePro->stepResult.at(i));
-                obj.insert("test_request" ,ePro->stepRequest.at(i));
-                stephttp_post("admin-api/bus/testData",mPro->Service,obj);
-                j++;
-            }
-        }
-    }
+    obj.insert("test_item", ePro->test_function.at(num));
+    obj.insert("test_step", ePro->test_step);
+    obj.insert("test_process" ,ePro->itemData.at(num));
+    obj.insert("test_result" ,ePro->stepResult.at(num));
+    obj.insert("test_request" ,ePro->stepRequest.at(num));
+    stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+
+    // int num = mPro->stepResult.size();
+    // int fag = 0;
+    // if(num){
+    //     for(int i=0; i<num; ++i)
+    //     {
+    //         if(mPro->test_function.at(i).contains("极性检查"))
+    //     {
+    //             fag = i; break;
+    //         }
+    //     }
+    //     for(int i=0; i<=fag; ++i)
+    //     {
+    //         obj.insert("test_item", ePro->test_function.at(i));
+    //         obj.insert("test_step", ePro->test_step);
+    //         obj.insert("test_process" ,ePro->itemData.at(i));
+    //         obj.insert("test_result" ,ePro->stepResult.at(i));
+    //         obj.insert("test_request" ,ePro->stepRequest.at(i));
+    //         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+    //     }
+    //     int j = 0;
+    //     if((fag != 0) && ((fag +1) < num)){
+    //         for(int i= fag +1; i<num; ++i)
+    //         {
+    //             obj.insert("test_item", ePro->test_function.at(i));
+    //             obj.insert("test_step", ePro->sureItem.at(j));
+    //             obj.insert("test_process" ,ePro->itemData.at(i));
+    //             obj.insert("test_result" ,ePro->stepResult.at(i));
+    //             obj.insert("test_request" ,ePro->stepRequest.at(i));
+    //             stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+    //             j++;
+    //         }
+    //     }
+    // }
 
 }

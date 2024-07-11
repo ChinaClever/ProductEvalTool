@@ -2,6 +2,7 @@
 #define POWER_OBJECT_H
 
 #include "ctrl_sirtu.h"
+#include "json_pack.h"
 
 class Power_Object : public QThread
 {

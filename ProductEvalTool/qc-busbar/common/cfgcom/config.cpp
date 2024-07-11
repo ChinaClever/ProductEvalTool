@@ -130,11 +130,13 @@ void Cfg::initCfgDev()
 void Cfg::readQRcode()
 {
     item->pn = read("on_pn", "", "BusbarSys").toString();
+    item->user = read("user", "", "BusbarUser").toString();
 }
 
 void Cfg::writeQRcode()
 {
     write("on_pn", item->pn, "BusbarSys");
+    write("user", item->user, "BusbarUser");
 }
 
 void Cfg::writeCfgDev()

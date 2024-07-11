@@ -643,7 +643,8 @@ struct sProgress
     QList<bool> pass, itPass;
     QStringList stepResult;
     QStringList status, item;
-
+    int stepNum;
+    int stepNumEng;
     int num;
     bool stopFlag;
     int work_mode;
@@ -705,7 +706,7 @@ public:
     void share_mem_del();
     bool updatePro(const QString &str, bool pass=true, int sec=1);
     bool delay(int s=1);
-
+    bool delayMs(int secs=1);
 protected:
     void clear(int id=1);
     sDevData *dev[DEV_NUM];

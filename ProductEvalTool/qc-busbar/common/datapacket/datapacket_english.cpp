@@ -72,4 +72,6 @@ void datapacket_English::init()
     pro->order_num = 0;
     pro->test_num = 0;
     pro->Lan_flag = 0;
+    pro->stepNum = 0;
+    pro->stepNumEng = 0;
 }

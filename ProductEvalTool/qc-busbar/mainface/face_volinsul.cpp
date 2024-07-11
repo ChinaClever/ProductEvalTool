@@ -142,20 +142,8 @@ void Face_Volinsul::resultSlot()
 
     mDataSave->saveTestData();
     if(mPro->online) {
-        mPacket->delay(1);
+        mPacket->delayMs(20);
         Json_Pack::bulid()->SendJson_Safe();
-    }
-
-    bool ret = false;
-    if(mPro->online) {
-        if(mPro->flag == 0) {
-            str = tr("数据发送失败");
-            ret = false;
-        }else {
-            str = tr("数据发送成功");
-            ret = true;
-        }
-        mPacket->updatePro(str, ret);
     }
 
     if(mPro->result == Test_Fail) res = false;

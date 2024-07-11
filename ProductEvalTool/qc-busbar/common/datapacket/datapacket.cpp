@@ -79,6 +79,8 @@ void sDataPacket::init()
     pro->order_num = 0;
     pro->test_num = 0;
     pro->Lan_flag = 0;
+    pro->stepNum = 0;
+    pro->stepNumEng = 0;
 }
 
 bool sDataPacket::updatePro(const QString &str, bool pass, int sec)
@@ -111,6 +113,20 @@ bool sDataPacket::delay(int s)
     return ret;
 }
 
+bool sDataPacket::delayMs(int secs)
+{
+    bool ret = true;
+    for(int i=0; i<secs; ++i) {
+        if((pro->step < Test_Over)  || (pro->step > Test_End)){
+            QThread::msleep(1);
+        } else {
+            ret = false;
+            break;
+        }
+    }
+
+    return ret;
+}
 /**
  * 获取共享内存
  */

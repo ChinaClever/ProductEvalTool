@@ -51,31 +51,41 @@ void People_judg::initData()
 void People_judg::writeData(const QString &str1,const QString &str2, const QString &str3,bool pass)
 {
     mPro->stepRequest << str1; mPro->itemData << str2;
-    mPro->test_function << str3;
-    mPro->testStartTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+    mPro->test_function << str3;   
     if(pass) {
         mPro->stepResult << "1";
     } else {
         mPro->stepResult << "0";
     }
-
+    if(mPro->online)
+    {
+        mPacket->delayMs(20);
+        Json_Pack::bulid()->FuncData(mPro->stepNum);
+        mPro->stepNum++;
+    }
 }
 
 void People_judg::writeData_Eng(const QString &str1,const QString &str2, const QString &str3,bool pass)
 {
     ePro->stepRequest << str1; ePro->itemData << str2;
     ePro->test_function << str3;
-    ePro->testStartTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
     if(pass) {
         ePro->stepResult << "1";
     } else {
         ePro->stepResult << "0";
     }
-
+    if(mPro->online)
+    {
+        mPacket->delayMs(20);
+        Json_Pack::bulid()->FuncData_Lan(mPro->stepNumEng);
+        mPro->stepNumEng++;
+    }
 }
 
 void People_judg::on_sureButton_clicked()
 {
+    mPacket->delayMs(10);
+    this->close(); mPro->issure = 1;
     QString str2 = tr("符合要求"); QString eng2 = tr("Meet a requirement");
     QString str3 = tr("不符合要求"); QString eng3 = tr("Not Satisfiable");
 
@@ -131,7 +141,8 @@ void People_judg::on_sureButton_clicked()
 
 //=================================================================================//
     QString str4 = tr("外观检查"); QString eng4 = tr("Inspection");
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
+    mPro->test_step = "外观检查"; ePro->test_step = "Inspection";
 
     str = tr("产品外观"); eng = tr("Appearance");
     ret = ui->appearBox->isChecked();
@@ -143,7 +154,7 @@ void People_judg::on_sureButton_clicked()
         writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
     }
 
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("外观丝印"); eng = tr("Appearance screen printing");
     str1 = ui->appearBox_2->text();
     eng1 = tr("All silk and mold prints on the components are clear and visible, without any defects, blurriness, or other abnormal phenomena");
@@ -154,7 +165,7 @@ void People_judg::on_sureButton_clicked()
         writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
     }
 
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("内观"); eng = tr("Vipassana");
     str1 = ui->appearBox_3->text();
     eng1 = tr("The interior of the product is clean and free of foreign objects. It is not allowed to have any abnormal items such as wire or screws inside the product, and there should be no abnormal noise when shaken");
@@ -165,7 +176,7 @@ void People_judg::on_sureButton_clicked()
         writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
     }
 
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("产品标识"); eng = tr("Product identification");
     str1 = ui->appearBox_4->text();
     eng1 = tr("Labels, without any errors or omissions, with consistent placement and clear content, and no lifting or falling off of labels");
@@ -178,7 +189,8 @@ void People_judg::on_sureButton_clicked()
 
 //============================================================================================//
     str4 = tr("包装检查"); eng4 = tr("Packaging inspection");
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
+    mPro->test_step = "包装检查"; ePro->test_step = "Packaging inspection";
 
     str = tr("包装方式"); eng = tr("Packaging method");
     str1 = ui->packBox->text();
@@ -190,7 +202,7 @@ void People_judg::on_sureButton_clicked()
         writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
     }
 
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("配件"); eng = tr("Accessory");
     str1 = ui->packBox_2->text();
     eng1 = tr("No missing or incorrectly installed accessories");
@@ -201,11 +213,11 @@ void People_judg::on_sureButton_clicked()
         writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
     }
 
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("包装标签"); eng = tr("Labeling");
-    str1 = ui->packBox_2->text();
+    str1 = ui->packBox_3->text();
     eng1 = tr("The contents of packaging labels, color box labels, and pallet labels are correct and consistent");
-    ret = ui->packBox_2->isChecked();
+    ret = ui->packBox_3->isChecked();
     if(ret) {
         writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
     }else  {
@@ -214,8 +226,9 @@ void People_judg::on_sureButton_clicked()
 
 //==========================================================================//
     str4 = tr("装配检查"); eng4 = tr("Assembly inspection");
+    mPro->test_step = "装配检查"; ePro->test_step = "Assembly inspection";
 
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("配件型号"); eng = tr("Accessory model");
     str1 = ui->assemBox->text();
     eng1 = tr("The product component model should be consistent with the BOM list");
@@ -226,7 +239,7 @@ void People_judg::on_sureButton_clicked()
         writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
     }
 
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("产品一致性"); eng = tr("Product consistency");
     str1 = ui->assemBox_2->text();
     eng1 = tr("Maintain consistency in the assembly position and direction of each group of components in the product");
@@ -237,7 +250,7 @@ void People_judg::on_sureButton_clicked()
         writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
     }
 
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("装配效果"); eng = tr("Assembly effect");
     str1 = ui->assemBox_3->text();
     eng1 = tr("All components are installed in place without any abnormal gaps or gaps");
@@ -248,7 +261,7 @@ void People_judg::on_sureButton_clicked()
         writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
     }
 
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("组装"); eng = tr("Assemble");
     str1 = ui->assemBox_4->text();
     eng1 = tr("There are no abnormal phenomena such as missing screws, slipping teeth, floating height, or loose components in the entire machine");
@@ -259,7 +272,7 @@ void People_judg::on_sureButton_clicked()
         writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
     }
 
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("线缆"); eng = tr("Cable");
     str1 = ui->assemBox_5->text();
     eng1 = tr("There are no abnormal phenomena such as incorrect connection, missed connection, cable damage, or copper leakage in the internal cables of the entire machine");
@@ -270,7 +283,7 @@ void People_judg::on_sureButton_clicked()
         writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
     }
 
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("扭力"); eng = tr("Torque force");
     str1 = ui->assemBox_6->text();
     eng1 = tr("The torque of each screw meets the SOP requirements");
@@ -281,7 +294,7 @@ void People_judg::on_sureButton_clicked()
         writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
     }
 
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("端子"); eng = tr("Terminal");
     str1 = ui->assemBox_7->text();
     eng1 = tr("The internal cable terminal connections of the product are not allowed to be loose, detached, not installed properly, and the crimping screws are not tightened");
@@ -292,7 +305,7 @@ void People_judg::on_sureButton_clicked()
         writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
     }
 
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("接地"); eng = tr("Grounding");
     str1 = ui->assemBox_8->text();
     eng1 = tr("The main body, surface shell and other related components need to be grounded. The grounding screw and the surrounding area of the main panel position should not be obstructed by foreign objects");
@@ -303,7 +316,7 @@ void People_judg::on_sureButton_clicked()
         writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
     }
 
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("表头插拔"); eng = tr("Meter head insertion and removal");
     str1 = ui->assemBox_9->text();
     eng1 = tr("After inserting the meter head, no abnormal phenomena such as shaking, loosening, or inability to insert are allowed. The pulling force is (50 ± 5N)");
@@ -316,7 +329,7 @@ void People_judg::on_sureButton_clicked()
     if(mItem->modeId == START_BUSBAR)
     {
         ui->assemBox_10->show();
-        mPro->sureItem << str4; ePro->sureItem << eng4;
+        // mPro->sureItem << str4; ePro->sureItem << eng4;
         str = tr("防雷"); eng = tr("Lightning protection");
         str1 = ui->assemBox_10->text();
         eng1 = tr("There is no shortage or omission of lightning protection insurance. The lid is closed without any looseness or detachment");
@@ -330,8 +343,9 @@ void People_judg::on_sureButton_clicked()
 
 //===============================================================================================//
     str4 = tr("基本使用功能"); eng4 = tr("Basic usage functions");
+    mPro->test_step = "基本使用功能"; ePro->test_step = "Basic usage functions";
 
-    mPro->sureItem << str4; ePro->sureItem << eng4;
+    // mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("表头按键"); eng = tr("Meter head button");
     str1 = ui->funcBox->text();
     eng1 = tr("The buttons can be used normally and have a consistent feel");
@@ -344,7 +358,7 @@ void People_judg::on_sureButton_clicked()
 
     if(mItem->modeId == START_BUSBAR)
     {
-        mPro->sureItem << str4; ePro->sureItem << eng4;
+        // mPro->sureItem << str4; ePro->sureItem << eng4;
         str = tr("面板圆锁"); eng = tr("Panel circular lock");
         str1 = ui->funcBox_2->text();
         eng1 = tr("Both keys of the panel lock can be opened and closed normally");
@@ -356,7 +370,7 @@ void People_judg::on_sureButton_clicked()
         }
     }else if(mItem->modeId == INSERT_BUSBAR) {
 
-        mPro->sureItem << str4; ePro->sureItem << eng4;
+        // mPro->sureItem << str4; ePro->sureItem << eng4;
         str = tr("卡爪"); eng = tr("Claw");
         str1 = ui->funcBox_3->text();
         eng1 = tr("Press the claw button, and the claw can be unfolded and locked to both sides normally. Press the locking button, the claw can rebound normally");
@@ -367,7 +381,7 @@ void People_judg::on_sureButton_clicked()
             writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
         }
 
-        mPro->sureItem << str4; ePro->sureItem << eng4;
+        // mPro->sureItem << str4; ePro->sureItem << eng4;
         str = tr("取电模块"); eng = tr("Power intake module");
         str1 = ui->funcBox_4->text();
         eng1 = tr("The handle of the power module is pressed smoothly without any abnormal interference or jamming, and the locking mechanism can be activated. After the locking mechanism is activated, the power module cannot sink");
@@ -378,7 +392,7 @@ void People_judg::on_sureButton_clicked()
             writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
         }
 
-        mPro->sureItem << str4; ePro->sureItem << eng4;
+        // mPro->sureItem << str4; ePro->sureItem << eng4;
         str = tr("插座模块"); eng = tr("Socket module");
         str1 = ui->funcBox_5->text();
         eng1 = tr("Copper sleeve tin, standard plug can be used normally without any inability to insert, protective cover can automatically rebound");
@@ -390,7 +404,7 @@ void People_judg::on_sureButton_clicked()
         }
     }
 
-    mPro->issure = 1;
-    this->close();
+
+
 }
 

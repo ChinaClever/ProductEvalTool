@@ -39,7 +39,7 @@ QString Printer_BarTender::http_post(const QString &method, const QString &ip, s
         .onSuccess([&](QString result) {qDebug()<<"result"<<result; str = result;})
         .onFailed([&](QString error) {qDebug()<<"error"<<error; str = error;})
         .onTimeout([&](QNetworkReply *) {qDebug()<<"http_post timeout";}) // 超时处理
-        .timeout(1) // 1s超时
+        .timeout(2) // 1s超时
         .block()
         .body(json)
         .exec();
@@ -49,14 +49,15 @@ QString Printer_BarTender::http_post(const QString &method, const QString &ip, s
 
 QString Printer_BarTender::createOrder(sBarTend &it)
 {
+    QString web = "http://172.16.21.120:88/report?";
     QString str = "ON,PN,SN,FW,HW,Date,QR\n";
     str += it.on + ","; str += it.pn + ","; str += it.sn + ",";
     str += it.fw + ","; str += it.hw + ",";
     QDateTime dateTime;
     QString dateTime_str = dateTime.currentDateTime().toString("yyyy/MM/dd hh:mm:ss");
     str += dateTime_str + ",";
-    str += QString("%1+%2+%3").arg(it.on).arg(it.pn).arg(it.sn);
-
+    web += QString("productSN=%1&orderId=%2&moduleSN=%3").arg(it.on).arg(it.pn).arg(it.sn);
+    str += web;
     return str;
 }
 

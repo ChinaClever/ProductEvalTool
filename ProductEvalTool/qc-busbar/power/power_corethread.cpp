@@ -826,7 +826,7 @@ void Power_CoreThread::clearStartEleSlot()
 bool Power_CoreThread::printer()
 {
     QString method = "Integration/Busbar-Test/Execute";
-    QString ip = "192.168.1.151";
+    QString ip = "127.0.0.1";
     bool ret = true;
     QString str = tr("标签打印 "); QString str1;
     if(mPro->result != Test_Fail){
@@ -1403,6 +1403,7 @@ void Power_CoreThread::workDown()
     mPro->step = Test_Start;
     bool ret = false; sBoxData *b = &(mBusData->box[mItem->addr - 1]);
     loopNum = mBusData->box[mItem->addr-1].loopNum;
+
     ret = initDev();
 
     if(mItem->modeId == INSERT_BUSBAR)
@@ -1431,12 +1432,11 @@ void Power_CoreThread::workDown()
       // else mPro->result = Test_Fail;
       // if(ret) ret = checkLoadErrRange();
 
-        //==========================
-        // ret = stepLoadTest();               //电流测试
-        // ret = factorySet(); sleep(2);                      //清除电能
-        // QString str = tr("请将电源输出端L1、L2、L3关闭");
-        // emit TipSig(str); emit ImageSig(2);
-        //===========================
+        ret = stepLoadTest();               //电流测试
+        ret = factorySet(); sleep(2);                      //清除电能
+        QString str = tr("请将电源输出端L1、L2、L3关闭");
+        emit TipSig(str); emit ImageSig(2);
+
         mCfg->work_mode = 3;
         emit JudgSig(); //极性测试弹窗
 

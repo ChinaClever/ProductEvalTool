@@ -227,8 +227,8 @@ void Home_WorkWid::updateResult()
 void Home_WorkWid::updateWid()
 {
     QString str = mDev->devType.sn;
-    mPro->moduleSN = str;
-    ePro->moduleSN = str;
+    mPro->moduleSN = str.remove(QRegExp("\\s"));
+    ePro->moduleSN = mPro->moduleSN;
 
 
     QString mPn = ui->codeEit->text();//订单号+成品代码

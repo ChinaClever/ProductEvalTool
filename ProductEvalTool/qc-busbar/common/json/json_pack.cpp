@@ -30,20 +30,20 @@ void Json_Pack::head(QJsonObject &obj)
     mPro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
     mPro->order_num = mItem->cnt.all;
 
-    obj.insert("product_sn", mPro->product_sn);
-    obj.insert("soft_version", mPro->softwareVersion);
-    obj.insert("start_time", mPro->testStartTime);
-    obj.insert("end_time", mPro->testEndTime);
-    obj.insert("module_sn", mPro->moduleSN);
-    obj.insert("test_step", mPro->test_step);
-    obj.insert("test_item", mPro->test_item);
-    obj.insert("test_request", mPro->itemRequest);
-    obj.insert("tool_name", "qc-busbar");
-    obj.insert("order_id", mPro->order_id);
-    obj.insert("test_num", "");
-    obj.insert("dev_name", mPro->dev_name);
-    obj.insert("language_select", 0);
-    obj.insert("order_num", mPro->order_num);
+    obj.insert("productSn", mPro->product_sn);
+    obj.insert("softVersion", mPro->softwareVersion);
+    obj.insert("startTime", mPro->testStartTime);
+    obj.insert("endTime", mPro->testEndTime);
+    obj.insert("moduleSn", mPro->moduleSN);
+    obj.insert("testStep", mPro->test_step);
+    obj.insert("testItem", mPro->test_item);
+    obj.insert("testRequest", mPro->itemRequest);
+    obj.insert("toolName", "qc-busbar");
+    obj.insert("orderId", mPro->order_id);
+    obj.insert("testNum", "");
+    obj.insert("devName", mPro->dev_name);
+    obj.insert("languageSelect", 0);
+    obj.insert("orderNum", mPro->order_num);
     int num = mPro->itPass.size();
     mPro->uploadPassResult = 1;
     for(int i=0; i<num; ++i)
@@ -52,15 +52,15 @@ void Json_Pack::head(QJsonObject &obj)
             mPro->uploadPassResult = 0; break;
         }
     }
-    obj.insert("test_result", mPro->uploadPassResult);
+    obj.insert("testResult", mPro->uploadPassResult);
 
     if(mPro->work_mode >=2) {
         QString str1 = mPro->itemContent.join(";");
-        obj.insert("test_cfg" ,str1);
+        obj.insert("testCfg" ,str1);
     }
 
     QString str = mPro->itemData.join("；");
-    obj.insert("test_process" ,str);
+    obj.insert("testProcess" ,str);
 
     // pduInfo(obj);
 }
@@ -75,7 +75,7 @@ int Json_Pack::objData(QJsonObject &obj)
     int num = mPro->uploadPass.size();
 
     QString str1 = mPro->itemData.join(";");
-    obj.insert("test_process" ,str1);
+    obj.insert("testProcess" ,str1);
 
     return num;
 }
@@ -94,20 +94,20 @@ void Json_Pack::head_English(QJsonObject &obj)
     ePro->order_num = mItem->cnt.all;
 
     ePro->testStartTime = mPro->testStartTime;
-    obj.insert("product_sn", ePro->product_sn);
-    obj.insert("soft_version", ePro->softwareVersion);
-    obj.insert("start_time", ePro->testStartTime);
-    obj.insert("end_time", ePro->testEndTime);
-    obj.insert("module_sn", ePro->moduleSN);
-    obj.insert("test_step", ePro->test_step);
-    obj.insert("test_item", ePro->test_item);
-    obj.insert("test_request", ePro->itemRequest);
-    obj.insert("tool_name", "qc-busbar");
-    obj.insert("order_id", ePro->order_id);
-    obj.insert("test_num", "");
-    obj.insert("dev_name", ePro->dev_name);
-    obj.insert("language_select", 1);
-    obj.insert("order_num", ePro->order_num);
+    obj.insert("productSn", ePro->product_sn);
+    obj.insert("softVersion", ePro->softwareVersion);
+    obj.insert("startTime", ePro->testStartTime);
+    obj.insert("endTime", ePro->testEndTime);
+    obj.insert("moduleSn", ePro->moduleSN);
+    obj.insert("testStep", ePro->test_step);
+    obj.insert("testItem", ePro->test_item);
+    obj.insert("testRequest", ePro->itemRequest);
+    obj.insert("toolName", "qc-busbar");
+    obj.insert("orderId", ePro->order_id);
+    obj.insert("testNum", "");
+    obj.insert("devName", ePro->dev_name);
+    obj.insert("languageSelect", 1);
+    obj.insert("orderNum", ePro->order_num);
 
     int num = mPro->itPass.size();
     mPro->uploadPassResult = 1;
@@ -117,15 +117,15 @@ void Json_Pack::head_English(QJsonObject &obj)
             ePro->uploadPassResult = 0; break;
         }
     }
-    obj.insert("test_result", ePro->uploadPassResult);
+    obj.insert("testResult", ePro->uploadPassResult);
 
     if(mPro->work_mode >=2) {
         QString str1 = ePro->itemContent.join(";");
-        obj.insert("test_cfg" ,str1);
+        obj.insert("testCfg" ,str1);
     }
 
     QString str = ePro->itemData.join(";");
-    obj.insert("test_process" ,str);
+    obj.insert("testProcess" ,str);
 
     // pduInfo(obj);
 }
@@ -169,33 +169,33 @@ void Json_Pack::SafeData()
 
     mPro->order_num = mItem->cnt.all;
 
-    obj.insert("product_sn", mPro->product_sn);
-    obj.insert("soft_version", mPro->softwareVersion);
-    obj.insert("start_time", mPro->testStartTime);
-    obj.insert("end_time", mPro->testEndTime);
-    obj.insert("module_sn", mPro->moduleSN);
-    obj.insert("order_id", mPro->order_id);
-    obj.insert("order_num", mPro->order_num);
-    obj.insert("test_num", "");
-    obj.insert("dev_name", mPro->dev_name);
-    obj.insert("language_select", 0);
+    obj.insert("productSn", mPro->product_sn);
+    obj.insert("softVersion", mPro->softwareVersion);
+    obj.insert("startTime", mPro->testStartTime);
+    obj.insert("endTime", mPro->testEndTime);
+    obj.insert("moduleSn", mPro->moduleSN);
+    obj.insert("orderId", mPro->order_id);
+    obj.insert("orderNum", mPro->order_num);
+    obj.insert("testNum", "");
+    obj.insert("devName", mPro->dev_name);
+    obj.insert("languageSelect", 0);
 
-    obj.insert("tool_name", "qc-busbar");
+    obj.insert("toolName", "qc-busbar");
 
     if(mPro->work_mode >=2) {
         QString str1 = mPro->itemContent.join("；");
-        obj.insert("test_cfg" ,str1);
+        obj.insert("testCfg" ,str1);
     }
 
     int num = mPro->stepResult.size();
     QString str;
     for(int i=0; i<num; ++i)
     {
-        obj.insert("test_item", mPro->test_function.at(i));
-        obj.insert("test_step", mPro->sureItem.at(i));
-        obj.insert("test_process" ,mPro->itemData.at(i));
-        obj.insert("test_result" ,mPro->stepResult.at(i));
-        obj.insert("test_request" ,mPro->stepRequest.at(i));
+        obj.insert("testItem", mPro->test_function.at(i));
+        obj.insert("testStep", mPro->sureItem.at(i));
+        obj.insert("testProcess" ,mPro->itemData.at(i));
+        obj.insert("testResult" ,mPro->stepResult.at(i));
+        obj.insert("testRequest" ,mPro->stepRequest.at(i));
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 }
@@ -208,33 +208,33 @@ void Json_Pack::SafeData_Lan()
 
     ePro->order_num = mItem->cnt.all;
 
-    obj.insert("product_sn", ePro->product_sn);
-    obj.insert("soft_version", ePro->softwareVersion);
-    obj.insert("start_time", ePro->testStartTime);
-    obj.insert("end_time", ePro->testEndTime);
-    obj.insert("module_sn", ePro->moduleSN);
-    obj.insert("order_id", ePro->order_id);
-    obj.insert("order_num", ePro->order_num);
-    obj.insert("test_num", "");
-    obj.insert("dev_name", ePro->dev_name);
-    obj.insert("language_select", 0);
+    obj.insert("productSn", ePro->product_sn);
+    obj.insert("softVersion", ePro->softwareVersion);
+    obj.insert("startTime", ePro->testStartTime);
+    obj.insert("endTime", ePro->testEndTime);
+    obj.insert("moduleSn", ePro->moduleSN);
+    obj.insert("orderId", ePro->order_id);
+    obj.insert("orderNum", ePro->order_num);
+    obj.insert("testNum", "");
+    obj.insert("devName", ePro->dev_name);
+    obj.insert("languageSelect", 0);
 
-    obj.insert("tool_name", "qc-busbar");
+    obj.insert("toolName", "qc-busbar");
 
     if(mPro->work_mode >=2) {
         QString str1 = ePro->itemContent.join("；");
-        obj.insert("test_cfg" ,str1);
+        obj.insert("testCfg" ,str1);
     }
 
     int num = ePro->stepResult.size();
     QString str;
     for(int i=0; i<num; ++i)
     {
-        obj.insert("test_item", ePro->test_function.at(i));
-        obj.insert("test_step", ePro->sureItem.at(i));
-        obj.insert("test_process" ,ePro->itemData.at(i));
-        obj.insert("test_result" ,ePro->stepResult.at(i));
-        obj.insert("test_request" ,ePro->stepRequest.at(i));
+        obj.insert("testItem", ePro->test_function.at(i));
+        obj.insert("testStep", ePro->sureItem.at(i));
+        obj.insert("testProcess" ,ePro->itemData.at(i));
+        obj.insert("testResult" ,ePro->stepResult.at(i));
+        obj.insert("testRequest" ,ePro->stepRequest.at(i));
         stephttp_post("admin-api/bus/testData",ePro->Service,obj);
     }
 }
@@ -247,33 +247,33 @@ void Json_Pack::stepData()
 
     mPro->order_num = mItem->cnt.all;
 
-    obj.insert("product_sn", mPro->product_sn);
-    obj.insert("soft_version", mPro->softwareVersion);
-    obj.insert("start_time", mPro->testStartTime);
-    obj.insert("end_time", mPro->testEndTime);
-    obj.insert("module_sn", mPro->moduleSN);
-    obj.insert("order_id", mPro->order_id);
-    obj.insert("order_num", mPro->order_num);
-    obj.insert("test_num", "");
-    obj.insert("dev_name", mPro->dev_name);
-    obj.insert("language_select", 0);
+    obj.insert("productSn", mPro->product_sn);
+    obj.insert("softVersion", mPro->softwareVersion);
+    obj.insert("startTime", mPro->testStartTime);
+    obj.insert("endTime", mPro->testEndTime);
+    obj.insert("moduleSn", mPro->moduleSN);
+    obj.insert("orderId", mPro->order_id);
+    obj.insert("orderNum", mPro->order_num);
+    obj.insert("testNum", "");
+    obj.insert("devName", mPro->dev_name);
+    obj.insert("languageSelect", 0);
 
-    obj.insert("tool_name", "qc-busbar");
+    obj.insert("toolName", "qc-busbar");
 
     if(mPro->work_mode >=2) {
         QString str1 = mPro->itemContent.join("；");
-        obj.insert("test_cfg" ,str1);
+        obj.insert("testCfg" ,str1);
     }
 
     int num = mPro->stepResult.size();
     QString str;
     for(int i=0; i<num; ++i)
     {
-        obj.insert("test_item", mPro->test_function.at(i));
-        obj.insert("test_step", mPro->test_step);
-        obj.insert("test_process" ,mPro->itemData.at(i));
-        obj.insert("test_result" ,mPro->stepResult.at(i));
-        obj.insert("test_request" ,mPro->stepRequest.at(i));
+        obj.insert("testItem", mPro->test_function.at(i));
+        obj.insert("testStep", mPro->test_step);
+        obj.insert("testProcess" ,mPro->itemData.at(i));
+        obj.insert("testResult" ,mPro->stepResult.at(i));
+        obj.insert("testRequest" ,mPro->stepRequest.at(i));
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 }
@@ -287,33 +287,33 @@ void Json_Pack::stepData_Eng()//功能测试的英文版本
 
     ePro->order_num = mItem->cnt.all;
 
-    obj.insert("product_sn", ePro->product_sn);
-    obj.insert("soft_version", ePro->softwareVersion);
-    obj.insert("start_time", ePro->testStartTime);
-    obj.insert("end_time", ePro->testEndTime);
-    obj.insert("module_sn", ePro->moduleSN);
-    obj.insert("order_id", ePro->order_id);
-    obj.insert("order_num", ePro->order_num);
-    obj.insert("test_num", "");
-    obj.insert("dev_name", ePro->dev_name);
-    obj.insert("language_select", 1);
+    obj.insert("productSn", ePro->product_sn);
+    obj.insert("softVersion", ePro->softwareVersion);
+    obj.insert("startTime", ePro->testStartTime);
+    obj.insert("endTime", ePro->testEndTime);
+    obj.insert("moduleSn", ePro->moduleSN);
+    obj.insert("orderId", ePro->order_id);
+    obj.insert("orderNum", ePro->order_num);
+    obj.insert("testNum", "");
+    obj.insert("devName", ePro->dev_name);
+    obj.insert("languageSelect", 1);
 
-    obj.insert("tool_name", "qc-busbar");
+    obj.insert("toolName", "qc-busbar");
 
     if(mPro->work_mode >=2) {
         QString str1 = ePro->itemContent.join(";");
-        obj.insert("test_cfg" ,str1);
+        obj.insert("testCfg" ,str1);
     }
 
     int num = ePro->stepResult.size();
     QString str;
     for(int i=0; i<num; ++i)
     {
-        obj.insert("test_item", ePro->test_function.at(i));
-        obj.insert("test_step", ePro->test_step);
-        obj.insert("test_process" ,ePro->itemData.at(i));
-        obj.insert("test_result" ,ePro->stepResult.at(i));
-        obj.insert("test_request" ,ePro->stepRequest.at(i));
+        obj.insert("testItem", ePro->test_function.at(i));
+        obj.insert("testStep", ePro->test_step);
+        obj.insert("testProcess" ,ePro->itemData.at(i));
+        obj.insert("testResult" ,ePro->stepResult.at(i));
+        obj.insert("testRequest" ,ePro->stepRequest.at(i));
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 }
@@ -344,29 +344,29 @@ void Json_Pack::FuncData(int num)
 
     mPro->order_num = mItem->cnt.all;
 
-    obj.insert("product_sn", mPro->product_sn);
-    obj.insert("soft_version", mPro->softwareVersion);
-    obj.insert("start_time", mPro->testStartTime);
-    obj.insert("end_time", mPro->testEndTime);
-    obj.insert("module_sn", mPro->moduleSN);
-    obj.insert("order_id", mPro->order_id);
-    obj.insert("order_num", mPro->order_num);
-    obj.insert("test_num", "");
-    obj.insert("dev_name", mPro->dev_name);
-    obj.insert("language_select", 0);
+    obj.insert("productSn", mPro->product_sn);
+    obj.insert("softVersion", mPro->softwareVersion);
+    obj.insert("startTime", mPro->testStartTime);
+    obj.insert("endTime", mPro->testEndTime);
+    obj.insert("moduleSn", mPro->moduleSN);
+    obj.insert("orderId", mPro->order_id);
+    obj.insert("orderNum", mPro->order_num);
+    obj.insert("testNum", "");
+    obj.insert("devName", mPro->dev_name);
+    obj.insert("languageSelect", 0);
 
-    obj.insert("tool_name", "qc-busbar");
+    obj.insert("toolName", "qc-busbar");
 
     if(mPro->work_mode >= 2) {
         QString str1 = mPro->itemContent.join("；");
-        obj.insert("test_cfg" ,str1);
+        obj.insert("testCfg" ,str1);
     }
 
-    obj.insert("test_item", mPro->test_function.at(num));
-    obj.insert("test_step", mPro->test_step);
-    obj.insert("test_process" ,mPro->itemData.at(num));
-    obj.insert("test_result" ,mPro->stepResult.at(num));
-    obj.insert("test_request" ,mPro->stepRequest.at(num));
+    obj.insert("testItem", mPro->test_function.at(num));
+    obj.insert("testStep", mPro->test_step);
+    obj.insert("testProcess" ,mPro->itemData.at(num));
+    obj.insert("testResult" ,mPro->stepResult.at(num));
+    obj.insert("testRequest" ,mPro->stepRequest.at(num));
     stephttp_post("admin-api/bus/testData",mPro->Service,obj);
 
     // int num = mPro->stepResult.size();
@@ -413,29 +413,29 @@ void Json_Pack::FuncData_Lan(int num)
 
     ePro->order_num = mItem->cnt.all;
 
-    obj.insert("product_sn", ePro->product_sn);
-    obj.insert("soft_version", ePro->softwareVersion);
-    obj.insert("start_time", ePro->testStartTime);
-    obj.insert("end_time", ePro->testEndTime);
-    obj.insert("module_sn", ePro->moduleSN);
-    obj.insert("order_id", ePro->order_id);
-    obj.insert("order_num", ePro->order_num);
-    obj.insert("test_num", "");
-    obj.insert("dev_name", ePro->dev_name);
-    obj.insert("language_select", 1);
+    obj.insert("productSn", ePro->product_sn);
+    obj.insert("softVersion", ePro->softwareVersion);
+    obj.insert("startTime", ePro->testStartTime);
+    obj.insert("endTime", ePro->testEndTime);
+    obj.insert("moduleSn", ePro->moduleSN);
+    obj.insert("orderId", ePro->order_id);
+    obj.insert("orderNum", ePro->order_num);
+    obj.insert("testNum", "");
+    obj.insert("devName", ePro->dev_name);
+    obj.insert("languageSelect", 1);
 
-    obj.insert("tool_name", "qc-busbar");
+    obj.insert("toolName", "qc-busbar");
 
     if(mPro->work_mode >=2) {
         QString str1 = ePro->itemContent.join("；");
-        obj.insert("test_cfg" ,str1);
+        obj.insert("testCfg" ,str1);
     }
 
-    obj.insert("test_item", ePro->test_function.at(num));
-    obj.insert("test_step", ePro->test_step);
-    obj.insert("test_process" ,ePro->itemData.at(num));
-    obj.insert("test_result" ,ePro->stepResult.at(num));
-    obj.insert("test_request" ,ePro->stepRequest.at(num));
+    obj.insert("testItem", ePro->test_function.at(num));
+    obj.insert("testStep", ePro->test_step);
+    obj.insert("testProcess" ,ePro->itemData.at(num));
+    obj.insert("testResult" ,ePro->stepResult.at(num));
+    obj.insert("testRequest" ,ePro->stepRequest.at(num));
     stephttp_post("admin-api/bus/testData",mPro->Service,obj);
 
     // int num = mPro->stepResult.size();

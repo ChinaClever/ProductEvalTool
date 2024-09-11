@@ -204,6 +204,14 @@ bool Ctrl_SiRtu::setBusbarInsertFilter(int val)
     return ret;
 }
 
+bool Ctrl_SiRtu::setBusbarStartRestore(int val)//清始端箱电能
+{
+    bool ret = true;
+    ret = sentRtuCmd(StartRestore, val);
+
+    return ret;
+}
+
 bool Ctrl_SiRtu::setBusbarInsertRestore(int val)
 {
     bool ret = true;

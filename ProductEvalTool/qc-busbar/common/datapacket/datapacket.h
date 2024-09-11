@@ -75,7 +75,7 @@ enum  sSetStartType{
     ,SetStartLps             = 10           //0:没有 1:正常 2:损坏
     ,SetStartShuntRelease    = 14           //12：断路器分闸 （连续发两条命令方可控制断路器分闸）
 
-//    ,StartEle_1   = 34           //电能清零
+    ,StartRestore   = 34           //恢复出厂设置
 //    ,StartEle_2   = 51
 //    ,StartEle_3   = 68
     ,StartEle_3031   = 106           //电能清零

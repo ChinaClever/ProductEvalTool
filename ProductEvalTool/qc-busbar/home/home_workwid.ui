@@ -193,7 +193,7 @@
      </font>
     </property>
     <property name="text">
-     <string>成品二维码:</string>
+     <string>规格书二维码:</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="codeEit">

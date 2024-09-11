@@ -29,6 +29,7 @@ QString Printer_BarTender::http_post(const QString &method, const QString &ip, s
     QByteArray json; QString str;
     QString order = createOrder(it);
     json.append(order.toLocal8Bit());
+    qDebug()<<"createOrder"<<order;
     qDebug()<<"json"<<json;
     AeaQt::HttpClient http;
     http.clearAccessCache();
@@ -50,11 +51,11 @@ QString Printer_BarTender::http_post(const QString &method, const QString &ip, s
 QString Printer_BarTender::createOrder(sBarTend &it)
 {
     QString web = "http://172.16.21.120:88/report?";
-    QString str = "ON,PN,SN,FW,HW,Date,QR\n";
+    QString str = "ON,PN,SN,Date,QR\n";
     str += it.on + ","; str += it.pn + ","; str += it.sn + ",";
-    str += it.fw + ","; str += it.hw + ",";
+
     QDateTime dateTime;
-    QString dateTime_str = dateTime.currentDateTime().toString("yyyy/MM/dd hh:mm:ss");
+    QString dateTime_str = dateTime.currentDateTime().toString("yyyy/MM/dd hh:mm");
     str += dateTime_str + ",";
     web += QString("productSN=%1&orderId=%2&moduleSN=%3").arg(it.on).arg(it.pn).arg(it.sn);
     str += web;

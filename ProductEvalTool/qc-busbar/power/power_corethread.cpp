@@ -803,12 +803,10 @@ bool Power_CoreThread::factorySet()
     if(ret) {
         if(mItem->modeId == START_BUSBAR){//始端箱
             str = tr("始端箱恢复出厂设置");
-            Dev_IpSnmp::bulid()->SetInfo(Dev_IpSnmp::bulid()->getRestoreOid(), "12");
-            if(ret) str += tr("成功"); else str  += tr("失败");
+            ret = Ctrl_SiRtu::bulid()->setBusbarStartRestore(12);
         }else {
             str = tr("插接箱恢复出厂设置");
             Ctrl_SiRtu::bulid()->setBusbarInsertRestore(12);
-            if(ret) str += tr("成功"); else str  += tr("失败");
         }
         mLogs->updatePro(str, res);
     }
@@ -825,7 +823,7 @@ void Power_CoreThread::clearStartEleSlot()
 
 bool Power_CoreThread::printer()
 {
-    QString method = "Integration/Busbar-Test/Execute";
+    QString method = "Integration/Busbar-Product/Execute";
     QString ip = "127.0.0.1";
     bool ret = true;
     QString str = tr("标签打印 "); QString str1;
@@ -844,13 +842,13 @@ bool Power_CoreThread::printer()
 
         int ver = get_share_mem()->box[mItem->addr-1].version;//软件版本号
         it.fw = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
-        it.hw = "0.0.0";//暂时设置默认值
-        if(it.sn.isEmpty() || it.fw.isEmpty()){
-            mPro->result = Test_Fail;
-            ret  = false;
-            if(it.sn.isEmpty()) str += tr(" 读取到序列号SN为空 ");
-            if(it.fw.isEmpty()) str += tr(" 读取到软件版本FW为空 ");
-        }
+        it.hw = "V1.0";//暂时设置默认值
+        // if(it.sn.isEmpty() || it.fw.isEmpty()){
+        //     mPro->result = Test_Fail;
+        //     ret  = false;
+        //     if(it.sn.isEmpty()) str += tr(" 读取到序列号SN为空 ");
+        //     if(it.fw.isEmpty()) str += tr(" 读取到软件版本FW为空 ");
+        // }
 
         if(ret){
             str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it);
@@ -874,13 +872,13 @@ void Power_CoreThread::workResult(bool)
     bool res = false;
     QString str = tr("测试结果 ");
     if(mPro->result != Test_Fail) {
-        ////////////============res = printer();
-        ////////////============if(res)
-        ////////////============    str += tr("通过");
-        ////////////============else
-        ////////////============    str += tr("失败");
-        res = true;
-        str += tr("通过");
+        res = printer();
+        if(res)
+            str += tr("通过");
+        else
+            str += tr("失败");
+        // res = true;
+        // str += tr("通过");
 
     }else {
         res = false;
@@ -1405,7 +1403,6 @@ void Power_CoreThread::workDown()
     loopNum = mBusData->box[mItem->addr-1].loopNum;
 
     ret = initDev();
-
     if(mItem->modeId == INSERT_BUSBAR)
     {
         if(ret) ret = mRead->readDev();

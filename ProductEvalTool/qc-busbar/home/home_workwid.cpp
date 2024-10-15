@@ -555,11 +555,11 @@ void Home_WorkWid::initTypeComboBox()
 
 void Home_WorkWid::on_snprintBtn_clicked()
 {
-    if(mPro->result != Test_Fail){
-        if(mCfgm->modeId == 2)//母线槽
+    if(mPro->step == Test_End){
+        if(mCfgm->modeId == 2 || mPro->type == 0)//母线槽/基本型
         {
             mVolInsul->printer();
-        }else if(mCfgm->modeId == 0 || mCfgm->modeId == 1){
+        }else if(mPro->type == 1){
             mPowThread->printer();
         }
     }

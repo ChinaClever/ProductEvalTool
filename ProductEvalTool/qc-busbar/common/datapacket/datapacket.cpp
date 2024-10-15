@@ -81,6 +81,7 @@ void sDataPacket::init()
     pro->Lan_flag = 0;
     pro->stepNum = 0;
     pro->stepNumEng = 0;
+    pro->type = 0;
 }
 
 bool sDataPacket::updatePro(const QString &str, bool pass, int sec)

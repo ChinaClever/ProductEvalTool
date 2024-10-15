@@ -93,6 +93,7 @@ void Json_Pack::head_English(QJsonObject &obj)
     ePro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
     ePro->order_num = mItem->cnt.all;
 
+    ePro->moduleSN = mPro->moduleSN;
     ePro->testStartTime = mPro->testStartTime;
     obj.insert("productSn", ePro->product_sn);
     obj.insert("softVersion", ePro->softwareVersion);

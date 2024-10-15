@@ -101,6 +101,8 @@ private slots:
 
     void on_snprintBtn_clicked();
 
+    void on_safeSnEit_textChanged(const QString &arg1);
+
 private:
     Ui::Home_WorkWid *ui;
 

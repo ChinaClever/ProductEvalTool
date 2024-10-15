@@ -219,6 +219,7 @@ void Home_WorkWid::updateResult()
     ui->timeLab->setStyleSheet(style);
 
     mPower->ClearText();
+
     str = QTime::currentTime().toString("hh:mm:ss");
     ui->endLab->setText(str);
     mPro->step = Test_End;
@@ -226,11 +227,6 @@ void Home_WorkWid::updateResult()
 
 void Home_WorkWid::updateWid()
 {
-    QString str = mDev->devType.sn;
-    mPro->moduleSN = str.remove(QRegExp("\\s"));
-    ePro->moduleSN = mPro->moduleSN;
-
-
     QString mPn = ui->codeEit->text();//订单号+成品代码
     QStringList list = mPn.split("+");
     for(int i = 0; i < list.count(); i++)
@@ -243,8 +239,24 @@ void Home_WorkWid::updateWid()
     mCfgm->user = mPro->order_id;
 
     mCfgm->pn = ui->codeEit->text();//订单号+成品代码
+    if(mPro->product_sn.mid(3,1) == 'M') mPro->type = 1;//判断是智能型还是基本型
 
-    str = mDev->devType.dev_type;
+    if(mPro->type == 1 && (mPro->work_mode == 0 || mPro->work_mode == 1)) //智能型，耐压绝缘、接地测试---解析序列号
+    {
+        QString mSn = ui->safeSnEit->text();//订单号+成品代码
+        QStringList mList = mSn.split("+");
+        for(int i = 0; i < mList.count(); i++)
+        {
+            if(i == 2) mPro->moduleSN = mList.at(i);
+        }
+        ePro->moduleSN = mPro->moduleSN;
+    }else if(mPro->type == 1 && mPro->work_mode == 2){
+        QString str = mDev->devType.sn;
+        mPro->moduleSN = str.remove(QRegExp("\\s"));
+        ePro->moduleSN = mPro->moduleSN;
+    }
+
+    QString str = mDev->devType.dev_type;
     mPro->productType = str;
     ePro->productType = str;
 
@@ -551,5 +563,12 @@ void Home_WorkWid::on_snprintBtn_clicked()
             mPowThread->printer();
         }
     }
+}
+
+
+
+void Home_WorkWid::on_safeSnEit_textChanged(const QString &arg1)
+{
+    ui->safeSnEit->setClearButtonEnabled(1);
 }
 

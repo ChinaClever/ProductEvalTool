@@ -110,7 +110,7 @@ void Json_Pack::head_English(QJsonObject &obj)
     obj.insert("orderNum", ePro->order_num);
 
     int num = mPro->itPass.size();
-    mPro->uploadPassResult = 1;
+    ePro->uploadPassResult = 1;
     for(int i=0; i<num; ++i)
     {
         if(mPro->itPass.at(i) == 0) {

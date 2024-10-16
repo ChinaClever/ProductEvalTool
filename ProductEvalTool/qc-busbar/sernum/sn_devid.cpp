@@ -51,15 +51,15 @@ bool Sn_DevId::readDevId()
 {
     sRtuItem it;
     initReadType(it);
-    QString str = tr("请确认插接箱的IN口与OUT口是否连接");
+    // QString str = tr("请确认插接箱的IN口与OUT口是否连接");
     int len = 0;
     static uchar recv[256] = {0};
     for(int i=0; i<5; ++i) {
         len = mModbus->readSn(it, recv);
-        if(len) break; else if(!mPacket->delay(4)) break;
-        if(i>=0) {
-            emit TipImageSig(3); emit TipSig(str);
-        }
+        if(len==4) break; else if(!mPacket->delay(3+i)) break;
+        // if(i>=0) {
+        //     // emit TipImageSig(3); emit TipSig(str);
+        // }
     }
 
     return analysDevType(recv, len);

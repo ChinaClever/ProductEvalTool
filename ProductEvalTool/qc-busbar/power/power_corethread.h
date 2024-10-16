@@ -89,7 +89,7 @@ private:
     RtuRw *mModbus;
     Dev_Source *mSource;
     People_judg *mJudg;
-    uchar loopNum;
+    // uchar loopNum;
     Dev_SiRtu *mSiRtu;
     Power_ErrRange *mErr;
     sCfgItem *mItem;

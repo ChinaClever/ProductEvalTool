@@ -281,9 +281,6 @@ void Home_WorkWid::updateWid()
         break;
     }
 
-    int ver = get_share_mem()->box[mCfgm->addr-1].version;
-    mPro->softwareVersion = "V" +QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
-    ePro->softwareVersion = mPro->softwareVersion;
 
     if(mPro->step < Test_Over) {
         updateTime();

@@ -1417,6 +1417,10 @@ void Power_CoreThread::workDown()
     }
 
     if(ret){
+        int ver = get_share_mem()->box[mItem->addr-1].version;
+        mPro->softwareVersion = "V" +QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
+        ePro->softwareVersion = mPro->softwareVersion;
+
         BaseErrRange();                                 //检查IN OUT口 网口对比始端箱/插接箱基本信息
         EnvErrRange();                                  //温度模块检测
 

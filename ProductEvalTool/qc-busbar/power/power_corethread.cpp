@@ -34,13 +34,16 @@ bool Power_CoreThread::initDev()
 {
     mLogs->updatePro(tr("即将开始"));
     bool ret  = false;
-    QString str = tr("开始测试插接箱串口通讯");           //自动分配地址
-    emit TipSig(str); sleep(2);
+    if(mItem->modeId == INSERT_BUSBAR){
+        QString str = tr("开始测试插接箱串口通讯");           //自动分配地址
+        emit TipSig(str); sleep(2);
 
-    str = tr("请将插接箱IN口与测试治具IN口对接，OUT口与测试治具OUT口对接");
-    emit TipSig(str); emit ImageSig(3);
+        str = tr("请将插接箱IN口与测试治具IN口对接，OUT口与测试治具OUT口对接");
+        emit TipSig(str); emit ImageSig(3);
 
-    mModbus->autoSetAddress(); emit ImageSig(4);
+        mModbus->autoSetAddress(); emit ImageSig(4);
+
+    }
 
     ret = mRead->readSn();
     mItem->modeId = mDt->devType;

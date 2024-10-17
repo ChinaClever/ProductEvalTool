@@ -257,7 +257,7 @@ void Rtu_Write::autoSetAddress()
     buffer[sizeof(buffer)-1] = ((cr) >> 8); /*高8位*/
     int rtn = writeSerial(buffer, sizeof(buffer));//打开自动设置地址模式
     //    hexToStr((char*)buffer , rtn);
-    sleep(3);
+    sleep(2);
     uchar recvbuffer[1024];
     memset(recvbuffer,0,sizeof(recvbuffer));
     rtn = readSerial(recvbuffer,10);

@@ -39,8 +39,10 @@ void Test_safety::timeoutDone()
         if(!ret) {
             Breaker = false ;
             mTrans->sentStep(mStep , Reset , sendStr);//RESET
+            mPro->result = Test_Fail;
+
         }else{
-            Breaker = false ;
+            Breaker = true ;
         }
     }
 }

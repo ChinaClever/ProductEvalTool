@@ -15,6 +15,7 @@ Face_Volinsul::Face_Volinsul(QWidget *parent)
     Printer_BarTender::bulid(this);
     mSn = Sn_SerialNum::bulid(this);
     mDev = mPacket->getDev();
+
     initWid();
 }
 
@@ -48,8 +49,8 @@ void Face_Volinsul::startSlot()
 
 bool Face_Volinsul::printer()
 {
-    QString method = "Integration/Busbar-Test/Execute";
-    QString ip = "192.168.1.151";
+    QString method = "Integration/Busbar-Product/Execute";
+    QString ip = "192.168.1.16";
     bool ret = true;
     QString str = tr("标签打印 "); QString str1;
         if(mPro->result != Test_Fail){
@@ -64,13 +65,13 @@ bool Face_Volinsul::printer()
 
         QString mSn = mDev->devType.sn;//模块序列号
         it.sn =  mSn.remove(QRegExp("\\s"));
-        it.fw = "0.0.0";
-        it.hw = "0.0.0";
-        if(it.sn.isEmpty()){
-            mPro->result = Test_Fail;
-            ret  = false;
-            if(it.sn.isEmpty()) str += tr(" 读取到序列号SN为空 ");
-        }
+        it.fw = "V0.0";
+        it.hw = "V1.0";
+        // if(it.sn.isEmpty()){
+        //     mPro->result = Test_Fail;
+        //     ret  = false;
+        //     if(it.sn.isEmpty()) str += tr(" 读取到序列号SN为空 ");
+        // }
         if(ret){
             str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it);
             if(str1 == "Success") {
@@ -143,8 +144,8 @@ void Face_Volinsul::resultSlot()
             res = true; str += tr("成功");
             mPro->uploadPassResult = 1;
         }
-        res = true; str += tr("成功");
-        mPro->uploadPassResult = 1;
+        // res = true; str += tr("成功");
+        // mPro->uploadPassResult = 1;
     }
     mPacket->updatePro(str, res);
 

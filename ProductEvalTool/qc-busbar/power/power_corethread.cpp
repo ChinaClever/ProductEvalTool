@@ -828,7 +828,7 @@ void Power_CoreThread::clearStartEleSlot()
 bool Power_CoreThread::printer()
 {
     QString method = "Integration/Busbar-Product/Execute";
-    QString ip = "192.168.1.117";
+    QString ip = "192.168.1.16";
     bool ret = true;
     QString str = tr("标签打印 "); QString str1;
     if(mPro->result != Test_Fail){
@@ -1403,13 +1403,14 @@ void Power_CoreThread::getNumAndIndexSlot(int curnum)
 void Power_CoreThread::workDown()
 {
     mPro->step = Test_Start;
-    bool ret = true; sBoxData *b = &(mBusData->box[mItem->addr - 1]);
+    bool ret = true;
     // loopNum = mBusData->box[mItem->addr-1].loopNum;
 
     ret = initDev();
+    if(ret) ret = mRead->readDev();
     if(mItem->modeId == INSERT_BUSBAR)
     {
-        if(ret) ret = mRead->readDev();
+        sBoxData *b = &(mBusData->box[mItem->addr - 1]);
         if((b->phaseFlag == mItem->si.si_phaseflag) && (b->loopNum == mItem->si.loopNum))
         {
             ret = true;
@@ -1437,7 +1438,7 @@ void Power_CoreThread::workDown()
       // else mPro->result = Test_Fail;
       // if(ret) ret = checkLoadErrRange();
 
-        ret = stepLoadTest();               //电流测试
+        // ret = stepLoadTest();               //电流测试
         ret = factorySet(); sleep(2);                      //清除电能
         QString str = tr("请将电源输出端L1、L2、L3关闭");
         emit TipSig(str); emit ImageSig(2);

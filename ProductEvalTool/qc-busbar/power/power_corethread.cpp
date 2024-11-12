@@ -1438,7 +1438,7 @@ void Power_CoreThread::workDown()
       // else mPro->result = Test_Fail;
       // if(ret) ret = checkLoadErrRange();
 
-        // ret = stepLoadTest();               //电流测试
+        ret = stepLoadTest();               //电流测试
         ret = factorySet(); sleep(2);                      //清除电能
         QString str = tr("请将电源输出端L1、L2、L3关闭");
         emit TipSig(str); emit ImageSig(2);

@@ -685,6 +685,7 @@ struct sProgress
     uchar Lan_flag;//0---中文，1---英文
     uchar issure;
     uchar type;
+    bool oning;
 };
 
 

@@ -5,6 +5,7 @@
  *      Author: Lzy
  */
 #include "test_safety.h"
+#define SERIAL_TIMEOUT 2000  // 1000MS
 
 Test_safety::Test_safety(QObject *parent) : QThread(parent)
 {
@@ -12,8 +13,13 @@ Test_safety::Test_safety(QObject *parent) : QThread(parent)
     mTrans = new Test_TransThread(this);
     mPacket = sDataPacket::bulid();
     mPacketEng = datapacket_English::bulid();
+    mRead = Power_DevRead::bulid(this);
     mPro = mPacket->getPro();
     ePro = mPacketEng->getPro();
+    mCfg = Cfg::bulid()->item;
+    Breaker = true;
+
+
 }
 
 Test_safety::~Test_safety()
@@ -21,6 +27,22 @@ Test_safety::~Test_safety()
     quit();
     terminate();
     wait();
+}
+
+void Test_safety::timeoutDone()
+{
+    if(mPro->oning)
+    {
+        bool ret = mRead->readDevBus();
+        QString sendStr = "";
+
+        if(!ret) {
+            Breaker = false ;
+            mTrans->sentStep(mStep , Reset , sendStr);//RESET
+        }else{
+            Breaker = false ;
+        }
+    }
 }
 
 void Test_safety::startThread()
@@ -102,6 +124,15 @@ bool Test_safety::testReady()
     bool ret = true;
     sTestDataItem item;
     item.item = tr("测试前准备");
+
+    mRead->readDevBus();
+
+    if(mCfg->modeId == 2 && mItem->work_mode == 0)      //母线槽的耐压绝缘
+    {
+        timer = new QTimer(this);
+        timer->start(SERIAL_TIMEOUT);
+        connect(timer, SIGNAL(timeout()),this, SLOT(timeoutDone()));
+    }
 
     return ret;
 }
@@ -187,7 +218,7 @@ bool Test_safety::testGND( QString & recv)//acw
         }else{item.measured = tr("读取测试结果失败");item.status = false;}
         item.expect = tr("大于20MΩ");
         mPro->gnd = mItem->sn.gnd;
-        appendResult(item);
+        appendResult(item);       
     }
     QString str = tr("接地测试结果：%1 mΩ").arg(mPro->gnd);
     mPacket->updatePro(str, true); mPro->itemData << str;
@@ -210,6 +241,11 @@ bool Test_safety::testIR(QString & recv)
 
     for(int i = 0; i < stepTotal ; i++)
     {
+        if(!Breaker)
+        {
+            QString str = tr("始端箱断路器断开"); mPacket->updatePro(str, false);
+            mPro->result = Test_Fail; break;
+        }
         mTestStep = ReadData;
         recv = mTrans->sentStep(mStep , mTestStep , sendStr , i+1);//*IDN?+回车 连接命令 1
         item.subItem = tr("第%1次绝缘测试读取测试结果").arg(i+1);
@@ -227,12 +263,14 @@ bool Test_safety::testIR(QString & recv)
         }else{item.measured = tr("读取测试结果失败");item.status = false;}
         item.expect = tr("大于500MΩ");
         mPro->ir = mItem->sn.ir;
-        appendResult(item);      
+        appendResult(item);
+
     }
     QString str = tr("绝缘测试结果：%1 MΩ").arg(mPro->ir);
     mPacket->updatePro(str, true); mPro->itemData << str;
     QString str1 = tr("Insulation test results:%1 MΩ").arg(mPro->ir);
     ePro->itemData << str1; mItem->sn.ir.clear();
+
 
     return ret;
 }
@@ -250,6 +288,12 @@ bool Test_safety::testACW(QString & recv)
 
     for(int i = 0; i < stepTotal ; i++)
     {
+        if(!Breaker)
+        {
+            QString str = tr("始端箱断路器断开"); mPacket->updatePro(str, false);
+            mPro->result = Test_Fail; break;
+        }
+
         mTestStep = ReadData;
         recv = mTrans->sentStep(mStep , mTestStep , sendStr , i+1);//*IDN?+回车 连接命令 1
         item.subItem = tr("第%1次交流耐压测试读取测试结果").arg(i+1);
@@ -267,7 +311,7 @@ bool Test_safety::testACW(QString & recv)
         }else{item.measured = tr("读取测试结果失败");item.status = false;}
         item.expect = tr("小于10mA");
         mPro->acw = mItem->sn.acw;
-        appendResult(item);
+        appendResult(item);       
     }
     QString str = tr("交流耐压测试结果：%1 mA").arg(mPro->acw);
     mPacket->updatePro(str, true); mPro->itemData << str;
@@ -279,13 +323,14 @@ bool Test_safety::testACW(QString & recv)
 
 void Test_safety::run()
 {
+    mPro->oning = true;
     testReady();
 
     if(!mItem->work_mode) {
         mItem->progress.allNum = 22;
         QString recv = "";
         testACW(recv); testIR(recv);    //先耐压再绝缘
-        emit overSig();
+        mPro->oning = false; emit overSig();
     } else {
         mItem->progress.allNum = 9;
         QString recv = "";

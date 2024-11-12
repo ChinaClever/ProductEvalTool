@@ -15,16 +15,19 @@ class Dev_IpSnmp : public Dev_Object
 public:
     static Dev_IpSnmp *bulid(QObject *parent = nullptr);
     bool readPduData();
+    QString readBreakValue();
     void resetSnmp();
     bool SetInfo(QString o , QString val);
     QString getConnectModeOid(){return "1.3.6.1.4.1.30966.12.1.1.2.5.0";}
     QString getFilterOid(){return "1.3.6.1.4.1.30966.12.1.1.2.10.0";}
     QString setShuntReleaseCtrlOid(){return "1.3.6.1.4.1.30966.12.1.1.2.17.0";}
     QString getRestoreOid(){return "1.3.6.1.4.1.30966.12.1.1.1.22.0";}//恢复出厂设置
+    QString getBreakOid(){return "1.3.6.1.4.1.30966.12.1.1.3.8.0";}//始端箱断路器状态
 
 protected:
     bool lineNumV3();
     bool devDataV3();
+    QString devDataBreak();
     bool devDataV1();
     int getItemByOid(const QString &oid, int id);
 

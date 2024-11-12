@@ -13,6 +13,7 @@ public:
 
     bool readSn();
     bool readDev();
+    bool readDevBus();
     bool readNet();
     bool checkNet();
     bool readDevData();
@@ -20,6 +21,7 @@ public:
     QString getConnectModeOid();
     QString getFilterOid();
     QString setShuntReleaseCtrlOid();
+    QString getBreakCtrlOid();
     bool SetInfo(QString o , QString val);
     QString trans(int index);
     //九回路三个输出位

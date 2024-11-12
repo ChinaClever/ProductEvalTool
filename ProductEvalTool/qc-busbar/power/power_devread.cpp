@@ -65,6 +65,35 @@ bool Power_DevRead::readData()
     return ret;
 }
 
+bool Power_DevRead::readDevBus()
+{
+    bool ret = mPacket->delay(3);
+    if(ret) {
+        if( mItem->modeId == 2 ){
+
+            ret = checkNet();
+            if(ret) {
+                QString str = mIpSnmp->readBreakValue();
+                qDebug()<<"readDevBus"<<str;
+                if(str == "2")
+                {
+                    // str = tr("防雷告警"); mLogs->updatePro(str, false);
+                    ret = false;
+                }else if(str == "1")
+                {
+                    // str = tr("防雷告警"); mLogs->updatePro(str, false);
+                    ret = true;
+                }
+            }else{
+                QString str = tr("始端箱通讯失败"); mPro->result = Test_Fail;
+                ret = true;
+            }
+        }
+    }
+
+    return ret;
+}
+
 bool Power_DevRead::readDev()
 {
     bool ret = mPacket->delay(5);
@@ -77,30 +106,30 @@ bool Power_DevRead::readDev()
             }
             if(ret) str += tr("成功");
             else{ str += tr("失败"); mPro->result = Test_Fail;}
-            mLogs->updatePro(str, ret);
+                                   mLogs->updatePro(str, ret);
 
-            if(ret) {
-                ret = checkNet();
-                if(ret) ret = mIpSnmp->readPduData();
-                str = tr("始端箱SNMP通讯");
-                if(ret) str += tr("成功");
-                else{ str += tr("失败"); mPro->result = Test_Fail;}
-                mLogs->updatePro(str, ret);
-            }
-        }else{
-            for(int i=0; i<5; ++i) {
-                ret = mSiRtu->readPduData();
-                if(ret) break; else if(!mPacket->delay(3)) break;
-            }
-            QString str = tr("插接箱串口RTU通讯");
-            if(ret) str += tr("成功");
-            else{ str += tr("失败"); mPro->result = Test_Fail;}
-            mLogs->updatePro(str, ret);
-        }
-    }
+                if(ret) {
+                    ret = checkNet();
+                    if(ret) ret = mIpSnmp->readPduData();
+                    str = tr("始端箱SNMP通讯");
+                    if(ret) str += tr("成功");
+                    else{ str += tr("失败"); mPro->result = Test_Fail;}
+                                           mLogs->updatePro(str, ret);
+                    }
+                }else{
+                    for(int i=0; i<5; ++i) {
+                        ret = mSiRtu->readPduData();
+                        if(ret) break; else if(!mPacket->delay(3)) break;
+                    }
+                    QString str = tr("插接箱串口RTU通讯");
+                    if(ret) str += tr("成功");
+                    else{ str += tr("失败"); mPro->result = Test_Fail;}
+                                           mLogs->updatePro(str, ret);
+                    }
+                }
 
-    return ret;
-}
+                return ret;
+            }
 
 QString Power_DevRead::getConnectModeOid()
 {
@@ -111,6 +140,12 @@ QString Power_DevRead::setShuntReleaseCtrlOid()
 {
     return mIpSnmp->setShuntReleaseCtrlOid();
 }
+
+QString Power_DevRead::getBreakCtrlOid()
+{
+    return mIpSnmp->getBreakOid();
+}
+
 
 QString Power_DevRead::getFilterOid()
 {

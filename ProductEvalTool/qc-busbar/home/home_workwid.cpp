@@ -440,6 +440,7 @@ void Home_WorkWid::on_vol_insulBtn_clicked()//耐压--绝缘
             emit startSig(mode);
         }
     }else {
+        mPro->oning = false;
         overTest();
         AcwStatus(false);
         mPro->result = Test_Fail;

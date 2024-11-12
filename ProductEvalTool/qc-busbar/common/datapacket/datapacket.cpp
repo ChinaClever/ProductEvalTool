@@ -82,6 +82,7 @@ void sDataPacket::init()
     pro->stepNum = 0;
     pro->stepNumEng = 0;
     pro->type = 0;
+    pro->oning = false;
 }
 
 bool sDataPacket::updatePro(const QString &str, bool pass, int sec)

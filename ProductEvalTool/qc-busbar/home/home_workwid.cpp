@@ -51,6 +51,7 @@ void Home_WorkWid::initWid()
 
     mSafrtyThread = new Test_safety(this);
     connect(mSafrtyThread, SIGNAL(overSig()), this, SLOT(overSlot()));
+    connect(mVolInsul, &Face_Volinsul::overSig, mSafrtyThread, &Test_safety::timeoutDone);
 
     mPower = new Face_Power(ui->stackedWid2);
     ui->stackedWid2->addWidget(mPower);

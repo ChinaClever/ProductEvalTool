@@ -77,16 +77,16 @@ bool Power_DevRead::readDevBus()
                 qDebug()<<"readDevBus"<<str;
                 if(str == "2")
                 {
-                    // str = tr("防雷告警"); mLogs->updatePro(str, false);
+                     str = tr("防雷告警"); mLogs->updatePro(str, false);
                     ret = false;
                 }else if(str == "1")
                 {
-                    // str = tr("防雷告警"); mLogs->updatePro(str, false);
+                     str = tr("防雷告警"); mLogs->updatePro(str, true);
                     ret = true;
                 }
             }else{
-                QString str = tr("始端箱通讯失败"); mPro->result = Test_Fail;
-                ret = true;
+                QString str = tr("始端箱通讯失败"); mLogs->updatePro(str, false);
+                ret = false;
             }
         }
     }

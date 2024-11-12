@@ -26,6 +26,7 @@ public:
 signals:
     void StatusSig(bool ret);
     void finshSig();
+    void overSig();
 public slots:
     // void startSlot();
     void progressSlot();

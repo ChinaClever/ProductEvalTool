@@ -45,6 +45,7 @@ QString Test_TransThread::sentStep(int step , int i , QString & command , int ex
     return recv;
 }
 
+
 QString Test_TransThread::sentResisCommand(int command , int extra)
 {
     QString str;

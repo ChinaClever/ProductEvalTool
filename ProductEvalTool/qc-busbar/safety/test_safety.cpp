@@ -29,13 +29,36 @@ Test_safety::~Test_safety()
     wait();
 }
 
+bool Test_safety::testReady()
+{
+    bool ret = true;
+    sTestDataItem item;
+    item.item = tr("测试前准备");
+    qDebug()<<"testReady";
+
+//    mRead->readDevBus();
+
+//    if(mCfg->modeId == 2 && mItem->work_mode == 0)      //母线槽的耐压绝缘
+//    {
+//        timer = new QTimer();
+//        timer->start(SERIAL_TIMEOUT);
+//        connect(timer, SIGNAL(timeout()),this, SLOT(timeoutDone()));
+
+//        qDebug()<<"SERIAL_TIMEOUT";
+
+//    }
+    qDebug()<<"timeoutDone";
+    return ret;
+}
+
 void Test_safety::timeoutDone()
 {
+    qDebug()<<"mPro->oning"<<mPro->oning;
     if(mPro->oning)
     {
         bool ret = mRead->readDevBus();
         QString sendStr = "";
-
+        qDebug()<<"mStep"<<mStep<<Breaker;
         if(!ret) {
             Breaker = false ;
             mTrans->sentStep(mStep , Reset , sendStr);//RESET
@@ -121,23 +144,7 @@ void Test_safety::delayItem(sTestDataItem &item, int s)
     msleep(s);
 }
 
-bool Test_safety::testReady()
-{
-    bool ret = true;
-    sTestDataItem item;
-    item.item = tr("测试前准备");
 
-    mRead->readDevBus();
-
-    if(mCfg->modeId == 2 && mItem->work_mode == 0)      //母线槽的耐压绝缘
-    {
-        timer = new QTimer(this);
-        timer->start(SERIAL_TIMEOUT);
-        connect(timer, SIGNAL(timeout()),this, SLOT(timeoutDone()));
-    }
-
-    return ret;
-}
 
 bool Test_safety::startTest(sTestDataItem &item,QString & recv , const QString &test , int step , int &stepTotal)
 {
@@ -325,6 +332,10 @@ bool Test_safety::testACW(QString & recv)
 
 void Test_safety::run()
 {
+    timer = new QTimer();
+    timer->setInterval(SERIAL_TIMEOUT);
+    connect(timer, SIGNAL(timeout()),this, SLOT(timeoutDone()));
+
     mPro->oning = true;
     testReady();
 
@@ -332,7 +343,9 @@ void Test_safety::run()
         mItem->progress.allNum = 22;
         QString recv = "";
         testACW(recv); testIR(recv);    //先耐压再绝缘
-        mPro->oning = false; emit overSig();
+
+//        mPro->oning = false;
+        emit overSig();
     } else {
         mItem->progress.allNum = 9;
         QString recv = "";

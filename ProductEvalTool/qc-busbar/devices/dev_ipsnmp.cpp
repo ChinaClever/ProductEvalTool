@@ -271,7 +271,7 @@ QString Dev_IpSnmp::devDataBreak()
     }
     Pdu pdu;
     Vb vb;
-    vb.set_oid(oid);
+    vb.set_oid("1.3.6.1.4.1.30966.12.1.1.2.16.0");
     pdu += vb;
 
     address.set_port(port);
@@ -351,8 +351,7 @@ QString Dev_IpSnmp::devDataBreak()
     if (version == version3){
         target = &utarget;
     }
-    else target = &ctarget;
-    do{
+    else target = &ctarget;  
         status = snmp.get(pdu,*target);
         if (status == SNMP_CLASS_SUCCESS){
             for ( int z = 0 ; z < pdu.get_vb_count() ; z++) {
@@ -368,9 +367,7 @@ QString Dev_IpSnmp::devDataBreak()
                     Snmp::socket_cleanup();
                     return 0;
                 }
-                if (( vb.get_syntax() == sNMP_SYNTAX_ENDOFMIBVIEW) ||
-                   (vb.get_syntax() == sNMP_SYNTAX_NOSUCHINSTANCE) ||
-                   (vb.get_syntax() == sNMP_SYNTAX_NOSUCHOBJECT))
+                if ( vb.get_syntax() != sNMP_SYNTAX_ENDOFMIBVIEW)
                 {
                     QString id = vb.get_printable_oid();
                     QString id_value = vb.get_printable_value();
@@ -379,7 +376,7 @@ QString Dev_IpSnmp::devDataBreak()
                     // if(id == "1.3.6.1.4.1.30966.12.1.1.2.18.0" || id == "1.3.6.1.4.1.30966.12.1.1.2.19.0") continue;
                     // praseMasterVal(id , id_value);
                     // ret = true;
-                    // qDebug()<<id  <<"       id_value   " <<id_value;
+                    qDebug()<<id  <<"       id_value   " <<id_value;
                 }
                 else{
                     Snmp::socket_cleanup();
@@ -387,8 +384,7 @@ QString Dev_IpSnmp::devDataBreak()
                 }
             }
             // pdu.set_vblist(&vb, 1);
-        }
-    }while(status == SNMP_CLASS_SUCCESS);
+        }   
     qDebug() << "after Error initializing v3MP: ";
     Snmp::socket_cleanup();
     if(v3_MP) {

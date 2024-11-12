@@ -20,6 +20,7 @@ public:
 
     QString sentStep(int step, int i , QString & command, int extra = 1);
     QString sentResisCommand(int command, int extra);
+    bool readDevBus();
 
 signals:
 

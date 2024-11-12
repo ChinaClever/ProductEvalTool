@@ -27,7 +27,7 @@ Face_Volinsul::~Face_Volinsul()
 void Face_Volinsul::initWid()
 {
     timer = new QTimer(this);
-    timer->start(100);
+    timer->start(1000);
     connect(timer, SIGNAL(timeout()), this, SLOT(progressSlot()));
 }
 
@@ -162,6 +162,7 @@ void Face_Volinsul::resultSlot()
 
 void Face_Volinsul::progressSlot()
 {
+//    overSig();
     sTestProgress *arg = &(mItem->progress);
 
     int progress = (arg->finishNum * 100.0) / arg->allNum;
@@ -173,4 +174,6 @@ void Face_Volinsul::progressSlot()
         if(mItem->work_mode == 0) ui->progressBar->setStyleSheet("QProgressBar {border:2px solid;background-color:transparent;border-radius: 5px;text-align: center;color:red;}" );
         else if(mItem->work_mode == 1) ui->progressBar2->setStyleSheet("QProgressBar {border:2px solid;background-color:transparent;border-radius: 5px;text-align: center;color:red;}" );
     }
+
+
 }

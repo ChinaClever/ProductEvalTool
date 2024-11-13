@@ -7,12 +7,10 @@
 Test_Thread::Test_Thread(QObject *parent) : QThread(parent)
 {
     mRead = Power_DevRead::bulid(this);
+    mItem = TestConfig::bulid()->item;
     mTrans = new Test_TransThread(this);
     mPacket = sDataPacket::bulid();
     mPro = mPacket->getPro();
-
-//     timer = new QTimer(this);
-//     connect(timer, &QTimer::timeout, this, &Test_Thread::timeoutDone);
 }
 
 Test_Thread::~Test_Thread()
@@ -35,22 +33,21 @@ void Test_Thread::stopThread()
 
 void Test_Thread::timeoutDone()
 {
-    // timer->stop();
     qDebug()<<"mPro->oning"<<mPro->oning;
     if(mPro->oning)
     {
         bool ret = mRead->readDevBus();
         QString sendStr = "";
-        qDebug()<<"ret"<<ret;
+
         if(!ret) {
             Breaker = false ;
             mTrans->sentStep(mStep , Reset , sendStr);//RESET
-            mPro->result = Test_Fail; mPro->step = Test_Over;
+            mTrans->sentStep(mStep , Reset , sendStr);//RESET
+            mPro->result = Test_Fail; mPro->oning = false;
         }else{
             Breaker = true ;
         }
     }
-    qDebug()<<"mStep"<<mStep<<Breaker;
 }
 
 void Test_Thread::run()
@@ -58,8 +55,9 @@ void Test_Thread::run()
     while(Breaker)
     {
         timeoutDone();
-        msleep(200);
+        msleep(100);
     }
-
-    // emit messageSig();
+    mItem->progress.errNum += 1;
+    mItem->progress.finishNum += 1;
+    emit messageSig();
 }

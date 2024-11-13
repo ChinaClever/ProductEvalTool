@@ -78,7 +78,7 @@ void Test_safety::stopThread()
 {
     quit();
     terminate();
-    emit overSig();
+    wait();
 }
 
 void Test_safety::conditionExec(bool s)
@@ -248,7 +248,6 @@ bool Test_safety::testIR(QString & recv)
     {
         if(!Breaker)
         {
-            QString str = tr("始端箱断路器断开"); mPacket->updatePro(str, false);
             break;
         }
         mTestStep = ReadData;
@@ -295,7 +294,6 @@ bool Test_safety::testACW(QString & recv)
     {
         if(!Breaker)
         {
-            QString str = tr("始端箱断路器断开"); mPacket->updatePro(str, false);
             break;
         }
 

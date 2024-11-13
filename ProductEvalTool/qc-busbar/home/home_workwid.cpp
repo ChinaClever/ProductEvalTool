@@ -51,9 +51,9 @@ void Home_WorkWid::initWid()
 
     mSafrtyThread = new Test_safety(this);
     connect(mSafrtyThread, SIGNAL(overSig()), this, SLOT(overSlot()));
-    connect(mVolInsul, &Face_Volinsul::overSig, mSafrtyThread, &Test_safety::timeoutDone);
 
     mThread = new Test_Thread(this);
+    connect(mThread, &Test_Thread::messageSig, this, &Home_WorkWid::SafeStop);
 
     mPower = new Face_Power(ui->stackedWid2);
     ui->stackedWid2->addWidget(mPower);
@@ -285,7 +285,6 @@ void Home_WorkWid::updateWid()
         break;
     }
 
-
     if(mPro->step < Test_Over) {
         updateTime();
     } else if(mPro->step < Test_End) {
@@ -436,7 +435,7 @@ void Home_WorkWid::on_vol_insulBtn_clicked()//耐压--绝缘
         // if(ret) ret = checkUesr();
         if(ret) {
             mPacket->init(); mPacketEng->init();
-            ItemStatus();
+            ItemStatus(); Breaker = true;
             int mode = Test_Over;
             if(mItem->mode != Test_Start) {
                 mode = Test_Start;
@@ -444,7 +443,7 @@ void Home_WorkWid::on_vol_insulBtn_clicked()//耐压--绝缘
             emit startSig(mode);
         }
     }else {
-        mPro->oning = false;
+        mPro->oning = false; Breaker = false;
         overTest();
         AcwStatus(false);
         mPro->result = Test_Fail;
@@ -467,6 +466,7 @@ void Home_WorkWid::on_groundBtn_clicked()//接地
             if(mItem->mode != Test_Start) {
                 mode = Test_Start;
             }
+
             emit startSig(mode);
         }
     }else {
@@ -507,6 +507,12 @@ void Home_WorkWid::JudgSlots()
 void Home_WorkWid::SafeSlot()
 {
     mSafePeo->exec();
+}
+
+void Home_WorkWid::SafeStop()
+{
+    mSafrtyThread->stopThread();
+    overSlot();
 }
 
 void Home_WorkWid::on_codeEit_textChanged(const QString &arg1)

@@ -65,6 +65,8 @@ protected slots:
     void polarSlot(QString str);
     void StatusSlot(bool ret);
     void SafeSlot();
+    void SafeStop();
+
 protected:
     void initLayout();
     void insertText();
@@ -136,4 +138,5 @@ private:
     Sn_DevId *mDevSn;
 };
 
+extern bool Breaker;
 #endif // HOME_WORKWID_H

@@ -105,9 +105,9 @@ void Face_Volinsul::resultSlot()
         mPro->moduleSN = str.remove(QRegExp("\\s"));
 
     }
-
-    if(mCfg->modeId == 2) emit finshSig();
-    if(mCfg->modeId == 2){
+    qDebug()<<"mCfg->modeId"<<mCfg->modeId<<mPro->result;
+    if(mCfg->modeId == 2 && mPro->result != Test_Fail) emit finshSig();
+    if(mCfg->modeId == 2 && mPro->result != Test_Fail){
         while(1)
         {
             mPacket->delay(1);
@@ -117,7 +117,6 @@ void Face_Volinsul::resultSlot()
             }
         }
     }
-
     bool res = false;
 
     QString str = tr("测试结果 ");
@@ -157,7 +156,8 @@ void Face_Volinsul::resultSlot()
 
     if(mPro->result == Test_Fail) res = false;
     else {res = true;}
-    emit StatusSig(res); mPro->step = Test_Over;
+    emit StatusSig(res);
+    mPro->step = Test_Over;
 }
 
 void Face_Volinsul::progressSlot()

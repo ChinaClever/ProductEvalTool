@@ -3,15 +3,17 @@
 
 #include <QThread>
 #include <QTimer>
-#include "test_transthread.h"
+#include "test_safety.h"
 #include "power_devctrl.h"
+#include "face_Volinsul.h"
 
-class Test_Thread : public QThread
+class Test_Thread  : public QThread
 {Q_OBJECT
 signals:
     void message(const QString& info);
     void progress(int present);
     void messageSig();
+
 public:
     Test_Thread(QObject* par);
     ~Test_Thread();
@@ -21,7 +23,6 @@ public:
     void stopThread();
     void doSomething();
 
-public slots:
     void timeoutDone();
 
 private:
@@ -30,6 +31,7 @@ private:
     sDataPacket *mPacket;
     Test_TransThread *mTrans;
     Power_DevRead *mRead;
+    sTestConfigItem  *mItem;
 };
 
 extern int mStep;

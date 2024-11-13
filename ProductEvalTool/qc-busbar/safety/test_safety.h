@@ -5,6 +5,7 @@
 #include "power_devctrl.h"
 #include "config.h"
 
+
 class Test_safety : public QThread
 {
     Q_OBJECT
@@ -13,13 +14,13 @@ public:
     ~Test_safety();
 
     void startThread();
-
+    void stopThread();
 signals:
     void overSig();
 
 protected:
     void run();
-    void stopThread();
+
     //void updateData(int i);
     void conditionExec(bool s);
     void updateProgress(bool status, QString &str);

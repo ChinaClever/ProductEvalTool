@@ -38,9 +38,9 @@ public slots:
 private:
     int mItemId;
     int mTestStep;
-    int mStep;
-    QTimer *timer = nullptr;
-    bool Breaker;
+
+    QTimer *timer;
+
     sTestConfigItem  *mItem;
     Test_TransThread *mTrans;
     sCfgItem *mCfg;
@@ -49,6 +49,7 @@ private:
     sDataPacket *mPacket;
     datapacket_English *mPacketEng;
     Power_DevRead *mRead;
+    // QThread *m_pThread;
 };
 
 #endif // TEST_SAFETY_H

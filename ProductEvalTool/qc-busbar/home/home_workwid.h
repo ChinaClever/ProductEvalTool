@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "config.h"
+#include "test_thread.h"
 #include "test_safety.h"
 #include "mainface/face_volinsul.h"
 #include "mainface/face_power.h"
@@ -116,6 +117,7 @@ private:
     sDataPacket *mPacket;
     datapacket_English *mPacketEng;
 
+    Test_Thread *mThread;
     Face_Power *mPower;
     Test_safety *mSafrtyThread;
     Face_Volinsul *mVolInsul;

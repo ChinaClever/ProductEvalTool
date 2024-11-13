@@ -81,7 +81,7 @@ bool Power_DevRead::readDevBus()
                     ret = false;
                 }else if(str == "1")
                 {
-                     str = tr("防雷告警"); mLogs->updatePro(str, true);
+                     str = tr("防雷状态正常"); mLogs->updatePro(str, true);
                     ret = true;
                 }
             }else{

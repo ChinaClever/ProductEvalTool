@@ -53,6 +53,8 @@ void Home_WorkWid::initWid()
     connect(mSafrtyThread, SIGNAL(overSig()), this, SLOT(overSlot()));
     connect(mVolInsul, &Face_Volinsul::overSig, mSafrtyThread, &Test_safety::timeoutDone);
 
+    mThread = new Test_Thread(this);
+
     mPower = new Face_Power(ui->stackedWid2);
     ui->stackedWid2->addWidget(mPower);
 
@@ -124,6 +126,7 @@ void Home_WorkWid::startTest()
     if(ret == QDialog::Accepted ) {
         mItem->mode = Test_Start;
         mSafrtyThread->startThread();
+        mThread->startThread();
         mVolInsul->startSlot();
     }
 }
@@ -287,7 +290,7 @@ void Home_WorkWid::updateWid()
         updateTime();
     } else if(mPro->step < Test_End) {
         updateResult();
-    }
+     }
 }
 
 void Home_WorkWid::timeoutDone()

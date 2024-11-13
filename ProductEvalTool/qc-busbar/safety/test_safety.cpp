@@ -5,7 +5,10 @@
  *      Author: Lzy
  */
 #include "test_safety.h"
-#define SERIAL_TIMEOUT 2000  // 1000MS
+#define SERIAL_TIMEOUT 1000  // 1000MS
+
+int mStep;
+bool Breaker;
 
 Test_safety::Test_safety(QObject *parent) : QThread(parent)
 {
@@ -19,6 +22,8 @@ Test_safety::Test_safety(QObject *parent) : QThread(parent)
     mCfg = Cfg::bulid()->item;
     Breaker = true;
 
+    // timer = new QTimer(this);
+    // connect(timer, &QTimer::timeout, this, &Test_safety::timeoutDone);
 
 }
 
@@ -36,23 +41,12 @@ bool Test_safety::testReady()
     item.item = tr("测试前准备");
     qDebug()<<"testReady";
 
-//    mRead->readDevBus();
-
-//    if(mCfg->modeId == 2 && mItem->work_mode == 0)      //母线槽的耐压绝缘
-//    {
-//        timer = new QTimer();
-//        timer->start(SERIAL_TIMEOUT);
-//        connect(timer, SIGNAL(timeout()),this, SLOT(timeoutDone()));
-
-//        qDebug()<<"SERIAL_TIMEOUT";
-
-//    }
-    qDebug()<<"timeoutDone";
     return ret;
 }
 
 void Test_safety::timeoutDone()
 {
+    // timer->stop();
     qDebug()<<"mPro->oning"<<mPro->oning;
     if(mPro->oning)
     {
@@ -75,7 +69,9 @@ void Test_safety::startThread()
     mItemId = 1;
     mTestStep = 1;
     mStep = 1;
+
     start();
+
 }
 
 void Test_safety::stopThread()
@@ -253,7 +249,7 @@ bool Test_safety::testIR(QString & recv)
         if(!Breaker)
         {
             QString str = tr("始端箱断路器断开"); mPacket->updatePro(str, false);
-            mPro->result = Test_Fail; break;
+            break;
         }
         mTestStep = ReadData;
         recv = mTrans->sentStep(mStep , mTestStep , sendStr , i+1);//*IDN?+回车 连接命令 1
@@ -300,7 +296,7 @@ bool Test_safety::testACW(QString & recv)
         if(!Breaker)
         {
             QString str = tr("始端箱断路器断开"); mPacket->updatePro(str, false);
-            mPro->result = Test_Fail; break;
+            break;
         }
 
         mTestStep = ReadData;
@@ -332,10 +328,6 @@ bool Test_safety::testACW(QString & recv)
 
 void Test_safety::run()
 {
-    timer = new QTimer();
-    timer->setInterval(SERIAL_TIMEOUT);
-    connect(timer, SIGNAL(timeout()),this, SLOT(timeoutDone()));
-
     mPro->oning = true;
     testReady();
 
@@ -343,8 +335,7 @@ void Test_safety::run()
         mItem->progress.allNum = 22;
         QString recv = "";
         testACW(recv); testIR(recv);    //先耐压再绝缘
-
-//        mPro->oning = false;
+        mPro->oning = false;
         emit overSig();
     } else {
         mItem->progress.allNum = 9;

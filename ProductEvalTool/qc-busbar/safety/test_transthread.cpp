@@ -70,7 +70,7 @@ QString Test_TransThread::sentResisCommand(int command , int extra)
             str = QString("RD %1?\r\n").arg(extra);
             break;
         case TestParm://7
-            str = QString("LS %1?\r\n").arg(extra);
+            str = QString("LS2 %1?\r\n").arg(extra);
             break;
 
     }

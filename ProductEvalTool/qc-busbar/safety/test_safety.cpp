@@ -161,6 +161,7 @@ bool Test_safety::startTest(sTestDataItem &item,QString & recv , const QString &
     appendResult(item);
     if(!recv.isEmpty())stepTotal = recv.toUInt();
 
+
 //=================================================================
     QString str;
     mTestStep = TestParm;
@@ -169,9 +170,9 @@ bool Test_safety::startTest(sTestDataItem &item,QString & recv , const QString &
         recv = mTrans->sentStep(mStep , mTestStep , sendStr , i+1);//ST ?+回车 连接命令 1
         str += recv;
     }
-    // item.subItem = tr("读取参数");
-    // item.status = !str.isEmpty();
-    // appendResult(item);
+     item.subItem = tr("读取参数");
+     item.status = !str.isEmpty();
+     appendResult(item);
     if(!str.isEmpty())
     {
         if(mStep == GNDTest) mItem->sn.gndParm = str.split(",");      //gnd
@@ -188,6 +189,7 @@ bool Test_safety::startTest(sTestDataItem &item,QString & recv , const QString &
     item.subItem = tr("%1测试开始").arg(test);
     item.status = !recv.isEmpty();
     appendResult(item);
+
 
     return item.status;
 }

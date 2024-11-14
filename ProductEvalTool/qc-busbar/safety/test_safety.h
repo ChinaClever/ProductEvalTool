@@ -33,8 +33,6 @@ protected:
     bool testACW(QString &recv);
     bool startTest(sTestDataItem &item,QString & recv , const QString &test , int step , int &stepTotal);
 
-public slots:
-    void timeoutDone();
 
 private:
     int mItemId;

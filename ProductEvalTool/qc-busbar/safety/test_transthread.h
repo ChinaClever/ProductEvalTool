@@ -9,7 +9,8 @@ enum TestResisEnum {
     ChoseeFile = 3,
     StepTotal = 4,
     Test = 5,
-    ReadData = 6
+    ReadData = 6,
+    TestParm = 7
 };
 
 class Test_TransThread : public QObject
@@ -18,7 +19,7 @@ class Test_TransThread : public QObject
 public:
     explicit Test_TransThread(QObject *parent = nullptr);
 
-    QString sentStep(int step, int i , QString & command, int extra = 1);
+    QString sentStep(int step, int i , QString & command , int extra = 1);
     QString sentResisCommand(int command, int extra);
     bool readDevBus();
 

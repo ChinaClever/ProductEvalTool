@@ -44,25 +44,6 @@ bool Test_safety::testReady()
     return ret;
 }
 
-void Test_safety::timeoutDone()
-{
-    // timer->stop();
-    qDebug()<<"mPro->oning"<<mPro->oning;
-    if(mPro->oning)
-    {
-        bool ret = mRead->readDevBus();
-        QString sendStr = "";
-        qDebug()<<"mStep"<<mStep<<Breaker;
-        if(!ret) {
-            Breaker = false ;
-            mTrans->sentStep(mStep , Reset , sendStr);//RESET
-            mPro->result = Test_Fail;
-
-        }else{
-            Breaker = true ;
-        }
-    }
-}
 
 void Test_safety::startThread()
 {
@@ -179,6 +160,28 @@ bool Test_safety::startTest(sTestDataItem &item,QString & recv , const QString &
     item.status = !recv.isEmpty();
     appendResult(item);
     if(!recv.isEmpty())stepTotal = recv.toUInt();
+
+//=================================================================
+    QString str;
+    mTestStep = TestParm;
+    for(int i = 0; i < stepTotal ; i++)
+    {
+        recv = mTrans->sentStep(mStep , mTestStep , sendStr , i+1);//ST ?+回车 连接命令 1
+        str += recv;
+    }
+    // item.subItem = tr("读取参数");
+    // item.status = !str.isEmpty();
+    // appendResult(item);
+    if(!str.isEmpty())
+    {
+        if(mStep == GNDTest) mItem->sn.gndParm = str.split(",");      //gnd
+        else if(mStep == IRTest) mItem->sn.irParm = str.split(",");   //ir
+        else if(mStep == ACWTest) mItem->sn.acwParm = str.split(",");      //acw
+
+        str += tr("----Parameter");
+        updateProgress(item.status, str);
+    }
+//=================================================================
 
     mTestStep = Test;
     recv = mTrans->sentStep(mStep , mTestStep , sendStr);//TEST+回车 连接命令 1

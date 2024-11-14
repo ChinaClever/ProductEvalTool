@@ -19,7 +19,7 @@ void Delay_MSec(unsigned int msec)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
-QString Test_TransThread::sentStep(int step , int i , QString & command , int extra)
+QString Test_TransThread::sentStep(int step , int i , QString & command ,int extra)
 {
     QByteArray recv;
     if(step == 1)
@@ -69,6 +69,10 @@ QString Test_TransThread::sentResisCommand(int command , int extra)
         case ReadData://6
             str = QString("RD %1?\r\n").arg(extra);
             break;
+        case TestParm://7
+            str = QString("LS %1?\r\n").arg(extra);
+            break;
+
     }
     return str ;
 }

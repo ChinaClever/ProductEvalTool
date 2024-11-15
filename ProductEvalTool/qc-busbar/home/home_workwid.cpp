@@ -128,6 +128,7 @@ void Home_WorkWid::startTest()
         mSafrtyThread->startThread();
         mThread->startThread();
         mVolInsul->startSlot();
+
     }
 }
 
@@ -389,27 +390,52 @@ void Home_WorkWid::ItemStatus()
              // mPro->itemRequest = "交流耐压：1、PE-N/L1/L2/L3，2、N-PE/L1/L2/L3，3、L1-PE/N/L2/L3，4、L2-PE/N/L1/L3，5、L3-PE/N/L1/L2，漏电流≤5mA；绝缘电阻：N-PE/L1/L2/L3，绝缘电阻 >10MΩ";
              // ePro->itemRequest = "AC withstand voltage:1、PE-N/L1/L2/L3,2、N-PE/L1/L2/L3,3、L1-PE/N/L2/L3,4、L2-PE/N/L1/L3,5、L3-PE/N/L1/L2,Leakage current <5mA; Insulation resistance:N-PE/L1/L2/L3,insulation resistance>10MΩ";
              // break;
-
-             mPro->itemRequest = tr("始端箱或插接箱的交流耐压测试（不接电流表），分别对以下测试点输入电压 %1V，%2s：").arg(mPro->acwParm.at(2)).arg(mPro->acwParm.at(6))
+             if((mPro->acwParm.size() > 6) && (mPro->irParm.size() > 7)){
+                    mPro->itemRequest = tr("始端箱或插接箱的交流耐压测试（不接电流表），分别对以下测试点输入电压 %1V，%2s：").arg(mPro->acwParm.at(2)).arg(mPro->acwParm.at(6))
                                  + tr("1、PE-N/L1/L2/L3，2、N-PE/L1/L2/L3，3、L1-PE，4、L2-PE，5、L3-PE，漏电流≤10mA；")
                                  + tr("绝缘测试，分别对以下测试点输入电压 %1V，%2s：").arg(mPro->irParm.at(2)).arg(mPro->irParm.at(7))
                                  + tr("N-PE/L1/L2/L3，绝缘电阻 >10MΩ");
 
-             ePro->itemRequest = tr("AC withstand voltage test for the starting box or plug-in box (without an ammeter), input voltage to the following test points respectively %1V，%2s：").arg(mPro->acwParm.at(2)).arg(mPro->acwParm.at(6))
-                                 + tr("1、PE-N/L1/L2/L3,2、N-PE/L1/L2/L3,3、L1-PE,4、L2-PE,5、L3-PE,Leakage current <10mA; ")
-                                 + tr("Insulation resistance,input voltage to the following test points respectively %1V，%2s：").arg(mPro->irParm.at(2)).arg(mPro->irParm.at(7))
-                                 + tr("N-PE/L1/L2/L3,insulation resistance>10MΩ");
+                 ePro->itemRequest = tr("AC withstand voltage test for the starting box or plug-in box (without an ammeter), input voltage to the following test points respectively %1V，%2s：").arg(mPro->acwParm.at(2)).arg(mPro->acwParm.at(6))
+                                     + tr("1、PE-N/L1/L2/L3,2、N-PE/L1/L2/L3,3、L1-PE,4、L2-PE,5、L3-PE,Leakage current <10mA; ")
+                                     + tr("Insulation resistance,input voltage to the following test points respectively %1V，%2s：").arg(mPro->irParm.at(2)).arg(mPro->irParm.at(7))
+                                     + tr("N-PE/L1/L2/L3,insulation resistance>10MΩ");
+             }else {
+                    mPro->itemRequest = tr("始端箱或插接箱的交流耐压测试（不接电流表），分别对以下测试点输入电压 2500V，5s：")
+                                 + tr("1、PE-N/L1/L2/L3，2、N-PE/L1/L2/L3，3、L1-PE，4、L2-PE，5、L3-PE，漏电流≤10mA；")
+                                 + tr("绝缘测试，分别对以下测试点输入电压 500V，5s：")
+                                 + tr("N-PE/L1/L2/L3，绝缘电阻 >10MΩ");
+
+                 ePro->itemRequest = tr("AC withstand voltage test for the starting box or plug-in box (without an ammeter), input voltage to the following test points respectively 2500V，5s：")
+                                     + tr("1、PE-N/L1/L2/L3,2、N-PE/L1/L2/L3,3、L1-PE,4、L2-PE,5、L3-PE,Leakage current <10mA; ")
+                                     + tr("Insulation resistance,input voltage to the following test points respectively 500V，5s：")
+                                     + tr("N-PE/L1/L2/L3,insulation resistance>10MΩ");
+             }
+
+
+
              break;
     }
     case 1: {mPro->test_step = "安规测试"; mPro->test_item = ui->groundBtn->text();
              ePro->test_step = "Safety testing"; ePro->test_item = "Grounding test";
              ui->gndLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
 
-             mPro->itemRequest = tr("始端箱或插接箱的接地测试（不接电流表），分别对以下测试点输入电流 %1A，%2s：").arg(mPro->gndParm.at(2)).arg(mPro->gndParm.at(8))
+             if(mPro->acwParm.size() > 8)
+             {
+                    mPro->itemRequest = tr("始端箱或插接箱的接地测试（不接电流表），分别对以下测试点输入电流 %1A，%2s：").arg(mPro->gndParm.at(2)).arg(mPro->gndParm.at(8))
                                  + tr("PE-箱体面壳接地螺钉，接地电阻<100mΩ");
 
-             ePro->itemRequest =tr("Grounding test of the starting box or plug-in box (without an ammeter), input current to the following test points respectively %1V，%2s：").arg(mPro->gndParm.at(2)).arg(mPro->gndParm.at(8))
+                    ePro->itemRequest =tr("Grounding test of the starting box or plug-in box (without an ammeter), input current to the following test points respectively %1A，%2s：").arg(mPro->gndParm.at(2)).arg(mPro->gndParm.at(8))
                                  + tr("PE - box surface shell grounding screw,grounding resistance<100m Ω");
+             }else {
+                    mPro->itemRequest = tr("始端箱或插接箱的接地测试（不接电流表），分别对以下测试点输入电流 25A，5s：")
+                                 + tr("PE-箱体面壳接地螺钉，接地电阻<100mΩ");
+
+                    ePro->itemRequest =tr("Grounding test of the starting box or plug-in box (without an ammeter), input current to the following test points respectively 25A，5s：")
+                                 + tr("PE - box surface shell grounding screw,grounding resistance<100m Ω");
+             }
+
+
              break;
     }
     case 2: {mPro->test_step = "功能测试"; ePro->test_step = "Functional testing";
@@ -446,12 +472,12 @@ void Home_WorkWid::on_vol_insulBtn_clicked()//耐压--绝缘
         // if(ret) ret = checkUesr();
         if(ret) {
             mPacket->init(); mPacketEng->init();
-            ItemStatus(); Breaker = true;
+            Breaker = true;
             int mode = Test_Over;
             if(mItem->mode != Test_Start) {
                 mode = Test_Start;
             }
-            emit startSig(mode);
+            emit startSig(mode);  ItemStatus();
         }
     }else {
         mPro->oning = false; Breaker = false;
@@ -472,13 +498,13 @@ void Home_WorkWid::on_groundBtn_clicked()//接地
         // if(ret) ret = checkUesr();
         if(ret) {
             mPacket->init(); mPacketEng->init();
-            ItemStatus();
+
             int mode = Test_Over;
             if(mItem->mode != Test_Start) {
                 mode = Test_Start;
             }
 
-            emit startSig(mode);
+            emit startSig(mode); ItemStatus();
         }
     }else {
         overTest();

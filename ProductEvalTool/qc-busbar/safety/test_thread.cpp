@@ -33,7 +33,6 @@ void Test_Thread::stopThread()
 
 void Test_Thread::timeoutDone()
 {
-    qDebug()<<"mPro->oning"<<mPro->oning;
     if(mPro->oning)
     {
         bool ret = mRead->readDevBus();

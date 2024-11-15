@@ -105,7 +105,7 @@ void Face_Volinsul::resultSlot()
         mPro->moduleSN = str.remove(QRegExp("\\s"));
 
     }
-    qDebug()<<"mCfg->modeId"<<mCfg->modeId<<mPro->result;
+
     if(mCfg->modeId == 2 && mPro->result != Test_Fail) emit finshSig();
     if(mCfg->modeId == 2 && mPro->result != Test_Fail){
         while(1)
@@ -162,7 +162,6 @@ void Face_Volinsul::resultSlot()
 
 void Face_Volinsul::progressSlot()
 {
-//    overSig();
     sTestProgress *arg = &(mItem->progress);
 
     int progress = (arg->finishNum * 100.0) / arg->allNum;

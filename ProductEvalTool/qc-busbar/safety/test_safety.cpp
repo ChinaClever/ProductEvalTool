@@ -39,7 +39,6 @@ bool Test_safety::testReady()
     bool ret = true;
     sTestDataItem item;
     item.item = tr("测试前准备");
-    qDebug()<<"testReady";
 
     return ret;
 }

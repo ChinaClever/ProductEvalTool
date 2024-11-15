@@ -162,8 +162,8 @@ bool Test_safety::startTest(sTestDataItem &item,QString & recv , const QString &
 
 
 //=================================================================
-    QString str;
-    mTestStep = TestParm;
+    QString str; mTestStep = TestParm;
+    if(mStep == GNDTest) mTestStep = GndParm;
     for(int i = 0; i < stepTotal ; i++)
     {
         recv = mTrans->sentStep(mStep , mTestStep , sendStr , i+1);//ST ?+回车 连接命令 1
@@ -174,9 +174,14 @@ bool Test_safety::startTest(sTestDataItem &item,QString & recv , const QString &
      appendResult(item);
     if(!str.isEmpty())
     {
-        if(mStep == GNDTest) mItem->sn.gndParm = str.split(",");      //gnd
-        else if(mStep == IRTest) mItem->sn.irParm = str.split(",");   //ir
-        else if(mStep == ACWTest) mItem->sn.acwParm = str.split(",");      //acw
+
+         if(mStep == GNDTest) {
+             mItem->sn.gndParm = str.split(","); mPro->gndParm = mItem->sn.gndParm;
+         } else if(mStep == IRTest){
+             mItem->sn.irParm = str.split(","); mPro->irParm = mItem->sn.gndParm;
+         } else if(mStep == ACWTest) {
+             mItem->sn.acwParm = str.split(","); mPro->acwParm = mItem->sn.gndParm;
+         }
     }
 //=================================================================
 

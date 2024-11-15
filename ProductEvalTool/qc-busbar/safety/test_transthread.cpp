@@ -72,6 +72,9 @@ QString Test_TransThread::sentResisCommand(int command , int extra)
         case TestParm://7
             str = QString("LS2 %1?\r\n").arg(extra);
             break;
+        case GndParm://8
+            str = QString("LS %1?\r\n").arg(extra);
+            break;
 
     }
     return str ;

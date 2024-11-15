@@ -3,7 +3,6 @@
 
 #include <QThread>
 #include <QTimer>
-#include "test_safety.h"
 #include "power_devctrl.h"
 #include "face_Volinsul.h"
 

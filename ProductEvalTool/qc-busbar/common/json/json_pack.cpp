@@ -136,12 +136,16 @@ void Json_Pack::SendJson_Safe()
     QJsonObject json;
     head(json); http_post("admin-api/bus/testData",mPro->Service,json);
     json.empty();
-    sDataPacket::bulid()->delay(1);
+    sDataPacket::bulid()->delay(2);
     head_English(json);http_post("admin-api/bus/testData",mPro->Service,json);//安规测试的英文版本
-    json.empty();
-    sDataPacket::bulid()->delay(1);
-    SafeData(); sDataPacket::bulid()->delay(1);
-    SafeData_Lan();
+
+    if(mItem->modeId == 2)
+    {
+        json.empty();
+        sDataPacket::bulid()->delay(1);
+        SafeData(); sDataPacket::bulid()->delay(1);
+        SafeData_Lan();
+    }
 }
 
 void Json_Pack::http_post(const QString &method, const QString &ip, QJsonObject json, int port)
@@ -236,7 +240,7 @@ void Json_Pack::SafeData_Lan()
         obj.insert("testProcess" ,ePro->itemData.at(i));
         obj.insert("testResult" ,ePro->stepResult.at(i));
         obj.insert("testRequest" ,ePro->stepRequest.at(i));
-        stephttp_post("admin-api/bus/testData",ePro->Service,obj);
+        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 }
 

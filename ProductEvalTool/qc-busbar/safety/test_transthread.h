@@ -10,7 +10,8 @@ enum TestResisEnum {
     StepTotal = 4,
     Test = 5,
     ReadData = 6,
-    TestParm = 7
+    TestParm = 7,
+    GndParm = 8
 };
 
 class Test_TransThread : public QObject

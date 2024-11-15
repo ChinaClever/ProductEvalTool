@@ -1,5 +1,4 @@
 #include "test_thread.h"
-#include "test_safety.h"
 #include "config.h"
 
 #define SERIAL_TIMEOUT 1000

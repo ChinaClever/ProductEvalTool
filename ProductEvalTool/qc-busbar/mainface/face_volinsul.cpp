@@ -128,7 +128,7 @@ void Face_Volinsul::resultSlot()
         res = false; str += tr("失败");
         mPro->uploadPassResult = 0;
     } else {
-        if(mPro->work_mode == 1 && (mCfg->modeId == 2 || mPro->type == 0))//母线槽与基本型始端箱和插接箱只需安规测试，接地测试成功打印标签
+        if(mCfg->modeId == 2 && (mPro->work_mode == 1 || mPro->type == 0))//母线槽与基本型始端箱和插接箱只需安规测试，接地测试成功打印标签
         {
             res = printer();
             if(res) {

@@ -186,12 +186,13 @@ void Power_CoreThread::StartErrRange()
                 }
             }
             str = tr("始端箱防雷模块状态：%1").arg(b->lpsState ==1?tr("工作正常"):tr("损坏"));
-            if(ret) {
-                str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
-            }else {
-                str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
-            }
-            mLogs->updatePro(str,ret); mLogs->writeData(str1, str3, str2, ret);
+            eng3 = tr("Initial box lightning protection module status:%1").arg(b->lpsState ==1?tr("normal operation"):tr("damage"));
+            // if(ret) {
+            //     str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
+            // }else {
+            //     str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
+            // }
+            mLogs->updatePro(str,ret); mLogs->writeData(str1, str, str2, ret);
             mLogs->writeDataEng(eng1, eng3, eng2, ret);
 
             if(ret) {
@@ -212,16 +213,19 @@ void Power_CoreThread::StartErrRange()
                 str1 = tr("检查SPD防雷模块报警状态，报警与恢复状态正常");
                 eng1 = tr("Check the alarm status of the SPD lightning protection module, and ensure that the alarm and recovery status are normal");
                 str = tr("始端箱防雷模块状态：%1，（模拟）").arg(b->lpsState ==1?tr("工作正常"):tr("损坏"));
+                eng3 = tr("Initial box lightning protection module status:%1, (simulated)").arg(b->lpsState ==1?tr("normal operation"):tr("damage"));
+
                 mLogs->updatePro(str,ret);
+                mLogs->writeData(str1, str, str2, ret);
+                mLogs->writeDataEng(eng1, eng3, eng2, ret);
 
                 str = tr("始端箱防雷模块检查");
                 if(ret) {
-                    str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
+                    str += tr("成功");
                 }else {
-                    str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
+                    str += tr("失败");
                 }
-                mLogs->updatePro(str,ret); mLogs->writeData(str1, str3, str2, ret);
-                mLogs->writeDataEng(eng1, eng3, eng2, ret);
+                mLogs->updatePro(str,ret);
 
                 str = tr("请将始端箱防雷模块插入原位");
                 emit TipSig(str);
@@ -247,16 +251,13 @@ void Power_CoreThread::StartErrRange()
     curValue = b->iOF;
     expect = mItem->ip.ip_iOF;
     if(curValue == expect) ret = true;
-    str = tr("始端箱iOF辅助触点实际值：%1 ， 期待值：%2！").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
+    str = tr("始端箱iOF辅助触点实际值：%1 ， 期待值：%2").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
+    eng3 = tr("Initial box iOF auxiliary contact actual value:%1, expected value:%2").arg(curValue?tr("have"):tr("nothing")).arg(expect?tr("have"):tr("nothing"));
     mLogs->updatePro(str,ret); flag = 0;
-    if(ret) {
-        str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
-    }else {
-        str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
-    }
+
     str1 = tr("依据产品规格书核对始端箱iOF辅助触点");
     eng1 = tr("Verify the iOF auxiliary contacts of the starting box according to the product specifications");
-    mLogs->writeData(str1, str3, str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
+    mLogs->writeData(str1, str, str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
     str1.clear();
 
     if(1) {
@@ -319,14 +320,11 @@ void Power_CoreThread::StartErrRange()
     expect = mItem->ip.ip_ISD;
     if(curValue == expect) ret = true;
     str = tr("始端箱ISD报警触点实际值：%1 ， 期待值：%2").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
+    eng3 = tr("Initial box ISD alarm contact actual value:%1, expected value:%2").arg(curValue?tr("have"):tr("nothing")).arg(expect?tr("have"):tr("nothing"));
     mLogs->updatePro(str,ret); flag = 0;
-    if(ret) {
-        str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
-    }else {
-        str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
-    }
+
     str1 = tr("依据产品规格书核对始端箱ISD报警触点"); eng1 = tr("Verify the ISD alarm contacts of the starting box according to the product specifications");
-    mLogs->writeData(str1, str3, str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
+    mLogs->writeData(str1, str, str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
 
     // if(ret) {
     //     if(curValue == 1) {
@@ -454,8 +452,9 @@ void Power_CoreThread::StartErrRange()
     QString curVer = QString::number(curValue/100)+"."+QString::number(curValue/10%10)+"."+QString::number(curValue%10);
     QString expectVer = QString::number(expect/100)+"."+QString::number(expect/10%10)+"."+QString::number(expect%10);
     str = tr("版本信息实际值：%1 , 期待值：%2").arg(curVer).arg(expectVer);
-    eng3 = tr("Starting box:%1").arg(expectVer);  str3 = tr("始端箱：%1").arg(expectVer);
-    mLogs->writeData(str1, str3 ,str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
+    eng3 = tr("Version information actual value:%1, expected value:%2").arg(curVer).arg(expectVer);
+
+    mLogs->writeData(str1, str ,str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
     mLogs->updatePro(str,ret);
 }
 
@@ -501,13 +500,10 @@ void Power_CoreThread::InsertErrRange()
     expect = mItem->si.si_iOF;
     if(curValue == expect) ret = true;
     str = tr("插接箱iOF辅助触点实际值：%1 , 期待值：%2").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
-    if(ret) {
-        str2 = tr("符合要求"); eng2 = tr("Meet a requirement");
-    }else {
-        str2 = tr("不符合要求"); eng2 = tr("Not Satisfiable");
-    }
+    eng2 = tr("Busbar tap-off box iOF auxiliary contact actual value:%1, expected value:%2").arg(curValue?tr("have"):tr("nothing")).arg(expect?tr("have"):tr("nothing"));
+
     mLogs->updatePro(str,ret);
-    mLogs->writeData(str1, str2 ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
+    mLogs->writeData(str1, str ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
     ret = false;
 
     str1 = tr("单相或三相与规格书要求一致"); str3 = tr("输出插座类型");
@@ -516,13 +512,10 @@ void Power_CoreThread::InsertErrRange()
     expect = mItem->si.si_phaseflag;
     if(curValue == expect) ret = true;
     str = tr("插接箱输出位类型实际值：%1 , 期待值：%2").arg(curValue?tr("三相"):tr("单相")).arg(expect?tr("三相"):tr("单相"));
-    if(ret) {
-        str2 = tr("符合要求"); eng2 = tr("Meet a requirement");
-    }else {
-        str2 = tr("不符合要求"); eng2 = tr("Not Satisfiable");
-    }
+    eng2 = tr("Busbar tap-off box output bit type actual value:%1, expected value:%2").arg(curValue?tr("three phase"):tr("single phase")).arg(expect?tr("three phase"):tr("single phase"));
+
     mLogs->updatePro(str,ret);
-    mLogs->writeData(str1, str2 ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
+    mLogs->writeData(str1, str ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
     ret = false;
 
     str1 = tr("回路数量与规格书要求一致"); str3 = tr("输出回路数量");
@@ -531,13 +524,10 @@ void Power_CoreThread::InsertErrRange()
     expect = mItem->si.loopNum;
     if(curValue == expect) ret = true;
     str = tr("插接箱回路数量实际值：%1 , 期待值：%2").arg(curValue).arg(expect);
-    if(ret) {
-        str2 = tr("符合要求"); eng2 = tr("Meet a requirement");
-    }else {
-        str2 = tr("不符合要求"); eng2 = tr("Not Satisfiable");
-    }
+    eng2 = tr("Actual number of plug-in box circuits:%1, expected value:%2").arg(curValue).arg(expect);
+
     mLogs->updatePro(str,ret);
-    mLogs->writeData(str1, str2 ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
+    mLogs->writeData(str1, str ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
     ret = false;
 
     for(int i=0; i< b->loopNum; ++i) {
@@ -568,9 +558,10 @@ void Power_CoreThread::InsertErrRange()
     QString curVer = QString::number(curValue/100)+"."+QString::number(curValue/10%10)+"."+QString::number(curValue%10);
     QString expectVer = QString::number(expect/100)+"."+QString::number(expect/10%10)+"."+QString::number(expect%10);
     str = tr("版本信息实际值：%1 , 期待值：%2").arg(curVer).arg(expectVer);
-    str2 = tr("插接箱：V%1").arg(expectVer); eng2 = tr("Plug in box:V%1").arg(expectVer);
+    eng2 = tr("Version information actual value:%1, expected value:%2").arg(curVer).arg(expectVer);
+
     mLogs->updatePro(str,ret);
-    mLogs->writeData(str1, str2 ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
+    mLogs->writeData(str1, str ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
 
 }
 
@@ -644,7 +635,7 @@ void Power_CoreThread::EnvErrRange()
     sDataValue *unit = &(mBusData->box[mItem->addr - 1].env.tem);
     QString str1 = tr("所有值在平均值的±5℃范围内");
     QString eng1 = tr("All values are within the range of ± 5 ℃ of the average value");
-    QString eng2 = tr("Temperature value check"); QString eng3 = tr("Meet a requirement");
+    QString eng2 = tr("Temperature value check"); QString eng3;
     str = tr("温度检测");
     str2 = tr("温度模块检测：");
     QVector<ushort> myNumbers = {0};
@@ -658,6 +649,8 @@ void Power_CoreThread::EnvErrRange()
     for(int i = 0; i<4; i++)
     {
         str2 += tr("温度%1 %2℃ ").arg(i+1).arg(QString::number(unit->value[i],'f',1));
+        str3 += tr("温度%1 %2℃ ").arg(i+1).arg(QString::number(unit->value[i],'f',1));
+        eng3 += tr("Temperature%1 %2℃ ").arg(i+1).arg(QString::number(unit->value[i],'f',1));
         if(ret) ret = mErr->checkErrRange(average, unit->value[i], 5.0);
         pass << ret;
     }
@@ -672,10 +665,11 @@ void Power_CoreThread::EnvErrRange()
         }
     }
     if(ret) {
-        str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
+        str += tr("成功");
     }else {
-        str += tr("失败，温度%1检测异常，请检查该温度传感器是否正常").arg(i+1); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
+        str += tr("失败，温度%1检测异常，请检查该温度传感器是否正常").arg(i+1);
     }
+
     str2 = tr("温度值检查");
     mLogs->updatePro(str, ret);
     mLogs->writeData(str1, str3, str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
@@ -938,10 +932,10 @@ bool Power_CoreThread::Vol_ctrlOne()
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
     QString str, str1, str2, str3, str4; QString eng2;
-    str3 = tr("符合要求"); str4 = tr("回路电压检查");
+    str4 = tr("回路电压检查");
     str = tr("关闭电源输出端L2");  //b1,b2,b3
     emit TipSig(str); emit ImageSig(0);
-    QString eng3 = tr("Meet a requirement"); QString eng4 = tr("Circuit voltage check");
+    QString eng3; QString eng4 = tr("Circuit voltage check");
     if(loop == 9){
         str2 = tr("断开电源输出端断路器L2，读取B1/B2/B3电压为0V，A1/A2/A3/C1/C2/C3正常");
         eng2 = tr("Disconnect the power output circuit breaker L2, read the voltage of B1/B2/B3 as 0V, A1/A2/A3/C1/C2/C3 is normal");
@@ -976,11 +970,12 @@ bool Power_CoreThread::Vol_ctrlOne()
                 {
                     QString temp = trans(i);
                     str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                    str1 += str;
+                    str3 = tr("%1voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                    str1 += str; eng3 += str3;
                 }
                 mLogs->updatePro(str1, ret);
                 str = tr("B路电压检测成功 "); mLogs->updatePro(str, ret);
-                mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+                mLogs->writeData(str2,str1,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
                 str1.clear(); break;
             }
         }else if(loop == 6) {
@@ -1001,11 +996,12 @@ bool Power_CoreThread::Vol_ctrlOne()
                     QString temp;
                     temp = trans(i);
                     str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                    str1 += str;
+                    str3 = tr("%1voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                    str1 += str; eng3 += str3;
                 }
                 mLogs->updatePro(str1, ret);
                 str = tr("B路电压检测成功 ");mLogs->updatePro(str, ret);
-                str += str1; mLogs->writeData(str2,str3,str4,ret);
+                mLogs->writeData(str2,str1,str4,ret);
                 mLogs->writeDataEng(eng2,eng3,eng4,ret); str1.clear();break;
             }
         }else if(loop == 3){
@@ -1022,11 +1018,12 @@ bool Power_CoreThread::Vol_ctrlOne()
                 {
                     QString temp = trans(i);
                     str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                    str1 += str;
+                    str3 = tr("%1voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                    str1 += str; eng3 += str3;
                 }
                 mLogs->updatePro(str1, ret);
                 str = tr("B路电压检测成功 "); mLogs->updatePro(str, ret);
-                str += str1; mLogs->writeData(str2,str3,str4,ret);
+                mLogs->writeData(str2,str1,str4,ret);
                 mLogs->writeDataEng(eng2,eng3,eng4,ret); str1.clear();break;}
         }
         flag++;
@@ -1035,17 +1032,18 @@ bool Power_CoreThread::Vol_ctrlOne()
             {
                 QString temp = trans(i);
                 str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                str1 += str;
+                str3 = tr("%1voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret);
-            ret = false; str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
+            ret = false;
             if(mItem->modeId == START_BUSBAR)
                 str = tr("B路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->ip.ip_vol).arg(mItem->ip.ip_volErr);
             else str = tr("B路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->si.si_vol).arg(mItem->si.si_volErr);
             mLogs->updatePro(str, ret);
             str = tr("电压超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit TipSig(str); sleep(3);
-            mLogs->writeData(str2,str3,str4,ret);
+            mLogs->writeData(str2,str1,str4,ret);
             mLogs->writeDataEng(eng2,eng3,eng4,ret); str1.clear(); break;
         }
     }
@@ -1059,10 +1057,10 @@ bool Power_CoreThread::Vol_ctrlTwo()
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
 
-    str3 = tr("符合要求"); str4 = tr("回路电压检查"); QString eng2;
+    str4 = tr("回路电压检查"); QString eng2;
     QString str = tr("打开电源输出端L2，关闭电源输出端L3");//c1,c2,c3
     emit TipSig(str); emit ImageSig(0);
-    QString eng3 = tr("Meet a requirement"); QString eng4 = tr("Circuit voltage check");
+    QString eng3; QString eng4 = tr("Circuit voltage check");
 
     if(loop == 9){
         str2 = tr("断开电源输出端断路器L3，读取C1/C2/C3电压为0V ，A1/A2/A3/B1/B2/B3正常");
@@ -1098,11 +1096,12 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     {
                         QString temp = trans(i);
                         str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        str1 += str;
+                        str3 = tr("%1voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                        str1 += str; eng3 += str3;
                     }
                     mLogs->updatePro(str1, ret);
                     str = tr("C路电压检测成功 ");mLogs->updatePro(str, ret);
-                    mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+                    mLogs->writeData(str2,str1,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
                     str1.clear(); break;
                 }
             }else if(loop == 6) {
@@ -1122,11 +1121,12 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     {
                         QString temp = trans(i);
                         str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        str1 += str;
+                        str3 = tr("%1voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                        str1 += str; eng3 += str3;
                     }
                     mLogs->updatePro(str1, ret);              
                     str = tr("C路电压检测成功 ");mLogs->updatePro(str, ret);
-                    mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+                    mLogs->writeData(str2,str1,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
                     str1.clear(); break;
                 }
             }else if(loop == 3){
@@ -1143,11 +1143,12 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     {
                         QString temp = trans(i);
                         str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        str1 += str;
+                        str3 = tr("%1voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                        str1 += str; eng3 += str3;
                     }
                     mLogs->updatePro(str1, ret);
                     str = tr("C路电压检测成功 ");mLogs->updatePro(str, ret);
-                    mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+                    mLogs->writeData(str2,str1,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
                     str1.clear(); break;
                 }
             }
@@ -1158,10 +1159,11 @@ bool Power_CoreThread::Vol_ctrlTwo()
             {
                 QString temp = trans(i);
                 str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                str1 += str;
+                str3 = tr("%1voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret);
-            ret = false; str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
+            ret = false;
 
             if(mItem->modeId == START_BUSBAR)
                 str = tr("C路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->ip.ip_vol).arg(mItem->ip.ip_volErr);
@@ -1169,7 +1171,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
             mLogs->updatePro(str, ret);
             str = tr("电压超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit TipSig(str); sleep(3);
-            mLogs->writeData(str2,str3,str4,ret);
+            mLogs->writeData(str2,str1,str4,ret);
             mLogs->writeDataEng(eng2,eng3,eng4,ret); str1.clear(); break;
         }
     }
@@ -1183,10 +1185,10 @@ bool Power_CoreThread::Vol_ctrlThree()
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
 
-    str3 = tr("符合要求"); str4 = tr("回路电压检查");
+    str4 = tr("回路电压检查");
     QString str = tr("打开电源输出端L3");//c1,c2,c3
     emit TipSig(str); emit ImageSig(0); QString eng2;
-    QString eng3 = tr("Meet a requirement"); QString eng4 = tr("Circuit voltage check");
+    QString eng3; QString eng4 = tr("Circuit voltage check");
 
     while(1)
     {
@@ -1211,13 +1213,14 @@ bool Power_CoreThread::Vol_ctrlThree()
                     {
                         QString temp = trans(i);
                         str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        str1 += str;
+                        str3 = tr("%1voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                        str1 += str; eng3+= str3;
                     }
                     mLogs->updatePro(str1, ret);
                     str2 = tr("闭合断路器，各回路电压正常");
                     eng2 = tr("Close the circuit breaker and ensure that the voltage of each circuit is normal");
                     str = tr("A路电压检测成功 ");mLogs->updatePro(str, ret);
-                    mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+                    mLogs->writeData(str2,str1,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
                     str1.clear(); break;
                 }
             }else if(loop == 6) {
@@ -1237,13 +1240,14 @@ bool Power_CoreThread::Vol_ctrlThree()
                     {
                         QString temp = trans(i);
                         str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        str1 += str;
+                        str3 = tr("%1voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                        str1 += str; eng3+= str3;
                     }
                     mLogs->updatePro(str1, ret);
                     str2 = tr("闭合断路器，各回路电压正常");
                     eng2 = tr("Close the circuit breaker and ensure that the voltage of each circuit is normal");
                     str = tr("A路电压检测成功 ");mLogs->updatePro(str, ret);
-                    mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+                    mLogs->writeData(str2,str1,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
                     str1.clear(); break;
                 }
             }else if(loop == 3){
@@ -1260,13 +1264,14 @@ bool Power_CoreThread::Vol_ctrlThree()
                     {
                         QString temp = trans(i);
                         str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                        str1 += str;
+                        str3 = tr("%1voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                        str1 += str; eng3+= str3;
                     }
                     mLogs->updatePro(str1, ret);
                     str2 = tr("闭合断路器，各回路电压正常");
                     eng2 = tr("Close the circuit breaker and ensure that the voltage of each circuit is normal");
                     str = tr("A路电压检测成功 ");mLogs->updatePro(str, ret);
-                    mLogs->writeData(str2,str3,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+                    mLogs->writeData(str2,str1,str4,ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
                     str1.clear(); break;
                 }
             }
@@ -1277,10 +1282,11 @@ bool Power_CoreThread::Vol_ctrlThree()
             {
                 QString temp = trans(i);
                 str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
-                str1 += str;
+                str3 = tr("%1voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
+                str1 += str; eng3+= str3;
             }
             mLogs->updatePro(str1, ret);
-            ret = false; str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
+            ret = false;
             if(mItem->modeId == START_BUSBAR)
                 str = tr("A路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->ip.ip_vol).arg(mItem->ip.ip_volErr);
             else str = tr("A路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->si.si_vol).arg(mItem->si.si_volErr);
@@ -1290,7 +1296,7 @@ bool Power_CoreThread::Vol_ctrlThree()
             emit TipSig(str); sleep(3);
             str2 = tr("闭合断路器，各回路电压正常");
             eng2 = tr("Close the circuit breaker and ensure that the voltage of each circuit is normal");
-            mLogs->writeData(str2,str3,str4,ret);
+            mLogs->writeData(str2,str1,str4,ret);
             mLogs->writeDataEng(eng2,eng3,eng4,ret);str1.clear(); break;
         }
     }
@@ -1393,7 +1399,7 @@ void Power_CoreThread::getNumAndIndexSlot(int curnum)
         ret = true;
         emit TipSig(str);
         mLogs->updatePro(str, ret);
-        str = tr("符合要求"); QString eng = tr("Meet a requirement");
+        str = tr("分配地址正常"); QString eng = tr("Address allocation is normal");
         QString str1 = tr("级联治具IN口与被测插接箱IN口直连，OUT口与OUT口直连，级联通讯测试正常");
         QString str2 = tr("IN/OUT接口检查");
         mLogs->writeData(str1,str,str2,ret); mLogs->writeDataEng(eng1,eng,eng2,ret);

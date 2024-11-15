@@ -178,9 +178,6 @@ bool Test_safety::startTest(sTestDataItem &item,QString & recv , const QString &
         if(mStep == GNDTest) mItem->sn.gndParm = str.split(",");      //gnd
         else if(mStep == IRTest) mItem->sn.irParm = str.split(",");   //ir
         else if(mStep == ACWTest) mItem->sn.acwParm = str.split(",");      //acw
-
-        str += tr("----Parameter");
-        updateProgress(item.status, str);
     }
 //=================================================================
 

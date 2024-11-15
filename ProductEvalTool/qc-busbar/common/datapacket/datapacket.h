@@ -663,9 +663,11 @@ struct sProgress
     QString productType;
     QString moduleSN;
     QString gnd;
+    QStringList gndParm;
     QString ir;
-    QString dcw;
+    QStringList irParm;
     QString acw;
+    QStringList acwParm;
     QString pn;
     QString softwareVersion;
     QStringList no, itemName;

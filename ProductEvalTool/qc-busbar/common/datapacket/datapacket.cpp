@@ -83,6 +83,10 @@ void sDataPacket::init()
     pro->stepNumEng = 0;
     pro->type = 0;
     pro->oning = false;
+
+    pro->gndParm.clear();
+    pro->irParm.clear();
+    pro->acwParm.clear();
 }
 
 bool sDataPacket::updatePro(const QString &str, bool pass, int sec)

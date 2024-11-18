@@ -178,9 +178,9 @@ bool Test_safety::startTest(sTestDataItem &item,QString & recv , const QString &
          if(mStep == GNDTest) {
              mItem->sn.gndParm = str.split(","); mPro->gndParm = mItem->sn.gndParm;
          } else if(mStep == IRTest){
-             mItem->sn.irParm = str.split(","); mPro->irParm = mItem->sn.gndParm;
+             mItem->sn.irParm = str.split(","); mPro->irParm = mItem->sn.irParm;
          } else if(mStep == ACWTest) {
-             mItem->sn.acwParm = str.split(","); mPro->acwParm = mItem->sn.gndParm;
+             mItem->sn.acwParm = str.split(","); mPro->acwParm = mItem->sn.acwParm;
          }
     }
 //=================================================================

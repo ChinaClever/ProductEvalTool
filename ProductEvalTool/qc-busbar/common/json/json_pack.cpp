@@ -36,31 +36,35 @@ void Json_Pack::head(QJsonObject &obj)
     obj.insert("endTime", mPro->testEndTime);
     obj.insert("moduleSn", mPro->moduleSN);
     obj.insert("testStep", mPro->test_step);
-    obj.insert("testItem", mPro->test_item);
-    obj.insert("testRequest", mPro->itemRequest);
     obj.insert("toolName", "qc-busbar");
     obj.insert("orderId", mPro->order_id);
     obj.insert("testNum", "");
     obj.insert("devName", mPro->dev_name);
     obj.insert("languageSelect", 0);
     obj.insert("orderNum", mPro->order_num);
-    int num = mPro->itPass.size();
-    mPro->uploadPassResult = 1;
+
+    QStringList list = mPro->itemRequest.split("。");
+
+    QStringList step;
+    if(mPro->work_mode == 0) {step.clear(); step << "交流耐压测试";  step << "绝缘测试";}
+            else {step.clear(); step << "接地测试";}
+
+    int num = mPro->safe_result.size();
     for(int i=0; i<num; ++i)
     {
-        if(mPro->itPass.at(i) == 0) {
-            mPro->uploadPassResult = 0; break;
-        }
+        obj.insert("testResult", (uchar)mPro->safe_result.at(i));
+        obj.insert("testRequest",list.at(i));
+        obj.insert("testItem", step.at(i));
+        obj.insert("testProcess" ,mPro->itemData.at(i));
+        obj.insert("testResult" ,mPro->safe_result.at(i));
+        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
-    obj.insert("testResult", mPro->uploadPassResult);
+
 
     if(mPro->work_mode >=2) {
         QString str1 = mPro->itemContent.join(";");
         obj.insert("testCfg" ,str1);
     }
-
-    QString str = mPro->itemData.join("；");
-    obj.insert("testProcess" ,str);
 
     // pduInfo(obj);
 }
@@ -101,8 +105,8 @@ void Json_Pack::head_English(QJsonObject &obj)
     obj.insert("endTime", ePro->testEndTime);
     obj.insert("moduleSn", ePro->moduleSN);
     obj.insert("testStep", ePro->test_step);
-    obj.insert("testItem", ePro->test_item);
-    obj.insert("testRequest", ePro->itemRequest);
+    // obj.insert("testItem", ePro->test_item);
+    // obj.insert("testRequest", ePro->itemRequest);
     obj.insert("toolName", "qc-busbar");
     obj.insert("orderId", ePro->order_id);
     obj.insert("testNum", "");
@@ -110,34 +114,39 @@ void Json_Pack::head_English(QJsonObject &obj)
     obj.insert("languageSelect", 1);
     obj.insert("orderNum", ePro->order_num);
 
-    int num = mPro->itPass.size();
-    ePro->uploadPassResult = 1;
+    QStringList list = ePro->itemRequest.split(".");
+
+    QStringList step;
+    if(mPro->work_mode == 0) {step << "Communication voltage withstand test";  step << "Insulation test";}
+    else step << "Grounding test";
+
+    int num = mPro->safe_result.size();
     for(int i=0; i<num; ++i)
     {
-        if(mPro->itPass.at(i) == 0) {
-            ePro->uploadPassResult = 0; break;
-        }
+        obj.insert("testResult", ePro->safe_result.at(i));
+        obj.insert("testRequest",list.at(i));
+        obj.insert("testItem", step.at(i));
+        obj.insert("testProcess" ,ePro->itemData.at(i));
+        obj.insert("testResult" ,ePro->safe_result.at(i));
+        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
-    obj.insert("testResult", ePro->uploadPassResult);
 
     if(mPro->work_mode >=2) {
         QString str1 = ePro->itemContent.join(";");
         obj.insert("testCfg" ,str1);
     }
-
-    QString str = ePro->itemData.join(";");
-    obj.insert("testProcess" ,str);
-
     // pduInfo(obj);
 }
 
 void Json_Pack::SendJson_Safe()
 {
     QJsonObject json;
-    head(json); http_post("admin-api/bus/testData",mPro->Service,json);
+    head(json);
+    // http_post("admin-api/bus/testData",mPro->Service,json);
     json.empty();
     sDataPacket::bulid()->delay(2);
-    head_English(json);http_post("admin-api/bus/testData",mPro->Service,json);//安规测试的英文版本
+    head_English(json);
+    // http_post("admin-api/bus/testData",mPro->Service,json);//安规测试的英文版本
 
     if(mItem->modeId == 2)
     {

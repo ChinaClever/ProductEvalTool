@@ -3,6 +3,7 @@
 #include <QtCore>
 #include <QColor>
 #include "serialportdlg.h"
+// #include "json_pack.h"
 
 #define LINE_NUM  9
 #define SENOR_NUM 1
@@ -693,6 +694,7 @@ struct sProgress
     uchar issure;
     uchar type;
     bool oning;
+    QList<bool> safe_result;
 };
 
 

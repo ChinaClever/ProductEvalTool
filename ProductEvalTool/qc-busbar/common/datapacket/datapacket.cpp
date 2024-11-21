@@ -87,6 +87,7 @@ void sDataPacket::init()
     pro->gndParm.clear();
     pro->irParm.clear();
     pro->acwParm.clear();
+    pro->safe_result.clear();
 }
 
 bool sDataPacket::updatePro(const QString &str, bool pass, int sec)
@@ -102,7 +103,6 @@ bool sDataPacket::updatePro(const QString &str, bool pass, int sec)
 
     return pass;
 }
-
 
 bool sDataPacket::delay(int s)
 {

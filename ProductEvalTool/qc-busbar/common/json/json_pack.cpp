@@ -144,15 +144,15 @@ void Json_Pack::SendJson_Safe()
     head(json);
     // http_post("admin-api/bus/testData",mPro->Service,json);
     json.empty();
-    sDataPacket::bulid()->delay(2);
+    sDataPacket::bulid()->delayMs(5);
     head_English(json);
     // http_post("admin-api/bus/testData",mPro->Service,json);//安规测试的英文版本
 
     if(mItem->modeId == 2)
     {
         json.empty();
-        sDataPacket::bulid()->delay(1);
-        SafeData(); sDataPacket::bulid()->delay(1);
+        sDataPacket::bulid()->delayMs(3);
+        SafeData(); sDataPacket::bulid()->delayMs(3);
         SafeData_Lan();
     }
 }

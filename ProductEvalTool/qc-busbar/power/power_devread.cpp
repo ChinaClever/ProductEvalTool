@@ -261,13 +261,13 @@ bool Power_DevRead::NineInsertOne_CtrlOne()
             str1.clear(); break;
 
         }
-        if(flag >35) {
+        if(flag >50) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >50) {
+        if(flag >90) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -322,13 +322,13 @@ bool Power_DevRead::NineInsertOne_CtrlTwo()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >35) {
+        if(flag >50) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >50) {
+        if(flag >90) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -383,13 +383,13 @@ bool Power_DevRead::NineInsertOne_CtrlThree()
             str1.clear(); break;
 
         }
-        if(flag >35) {
+        if(flag >50) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >50) {
+        if(flag >90) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -537,13 +537,13 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
             str1.clear(); break;
 
         }
-        if(flag >35) {
+        if(flag >50) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >50) {
+        if(flag >90) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -599,13 +599,13 @@ bool Power_DevRead::NineInsertTwo_CtrlTwo()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >35) {
+        if(flag >50) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >50) {
+        if(flag >90) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -662,13 +662,13 @@ bool Power_DevRead::NineInsertTwo_CtrlThree()
             str1.clear(); break;
 
         }
-        if(flag >35) {
+        if(flag >50) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >50) {
+        if(flag >90) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -814,13 +814,13 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >35) {
+        if(flag >50) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >50) {
+        if(flag >90) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -876,13 +876,13 @@ bool Power_DevRead::NineInsertThree_CtrlTwo()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >35) {
+        if(flag >50) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >50) {
+        if(flag >90) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -937,13 +937,13 @@ bool Power_DevRead::NineInsertThree_CtrlThree()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-       if(flag >35) {
+       if(flag >50) {
            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
            emit StepSig(str);
        }
 
         flag++;
-        if(flag >50) {
+        if(flag >90) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);

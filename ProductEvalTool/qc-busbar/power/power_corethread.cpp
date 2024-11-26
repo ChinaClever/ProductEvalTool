@@ -892,7 +892,7 @@ void Power_CoreThread::workResult(bool)
     ePro->itemContent << "Equipment type:" + mPro->productType;
     ePro->itemContent << "Alarm filtering frequency:" + QString::number(mBusData->box[mItem->addr-1].alarmTime);
 
-    if(mCfg->work_mode == 3){
+    if(mCfg->work_mode == 3 && mPro->result != Test_Fail){
         while(1)
         {
             msleep(100);
@@ -1410,8 +1410,6 @@ void Power_CoreThread::workDown()
 {
     mPro->step = Test_Start;
     bool ret = true;
-    // loopNum = mBusData->box[mItem->addr-1].loopNum;
-
     ret = initDev();
     if(ret) ret = mRead->readDev();
     if(mItem->modeId == INSERT_BUSBAR)
@@ -1437,20 +1435,20 @@ void Power_CoreThread::workDown()
         if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(),"0");
         else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
 
-        ret = BreakerTest();                            //断路器测试
-        ret = stepVolTest();                            //电压测试
+        if(ret) ret = BreakerTest();                            //断路器测试
+        if(ret) ret = stepVolTest();                            //电压测试
 
       // if(ret) ret = mSource->read();
       // else mPro->result = Test_Fail;
       // if(ret) ret = checkLoadErrRange();
 
-        ret = stepLoadTest();               //电流测试
-        ret = factorySet(); sleep(2);                      //清除电能
+        if(ret) ret = stepLoadTest();               //电流测试
+        if(ret) ret = factorySet(); sleep(2);                      //清除电能
         QString str = tr("请将电源输出端L1、L2、L3关闭");
         emit TipSig(str); emit ImageSig(2);
 
         mCfg->work_mode = 3;
-        emit JudgSig(); //极性测试弹窗
+        if(ret) emit JudgSig(); //极性测试弹窗
 
         if(mItem->modeId == START_BUSBAR)
         {

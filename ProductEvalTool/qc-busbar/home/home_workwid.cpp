@@ -65,18 +65,19 @@ void Home_WorkWid::initWid()
     mPowThread = new Power_CoreThread(this);
     // connect(this , SIGNAL(clearStartEleSig()), mPowThread, SLOT(clearStartEleSlot()));
     connect(mPowThread,&Power_CoreThread::finshSig, this, &Home_WorkWid::StatusSlot);
-    connect(mPowThread, &Power_CoreThread::TipSig , mPower, &Face_Power::TextSlot);
     connect(mPowThread,&Power_CoreThread::JudgSig, this, &Home_WorkWid::JudgSlots);
-    connect(mPowThread, &Power_CoreThread::ImageSig , mPower, &Face_Power::ImageSlot);
+    // connect(mPowThread, &Power_CoreThread::TipSig , mPower, &Face_Power::TextSlot);
+    // connect(mPowThread, &Power_CoreThread::ImageSig , mPower, &Face_Power::ImageSlot);
 
     mPowDev = Power_DevRead::bulid(this);
-    connect(mPowDev, &Power_DevRead::StepSig , mPower, &Face_Power::TextSlot);
+
     connect(mPowDev, &Power_DevRead::PloarSig , this, &Home_WorkWid::polarSlot);
-    connect(mPowDev, &Power_DevRead::CurImageSig , mPower, &Face_Power::ImageSlot);
+    // connect(mPowDev, &Power_DevRead::StepSig , mPower, &Face_Power::TextSlot);
+    // connect(mPowDev, &Power_DevRead::CurImageSig , mPower, &Face_Power::ImageSlot);
 
     mDevSn = Sn_DevId::bulid(this);
-    connect(mDevSn, &Sn_DevId::TipImageSig , mPower, &Face_Power::ImageSlot);
-    connect(mDevSn, &Sn_DevId::TipSig , mPower, &Face_Power::TextSlot);
+    // connect(mDevSn, &Sn_DevId::TipImageSig , mPower, &Face_Power::ImageSlot);
+    // connect(mDevSn, &Sn_DevId::TipSig , mPower, &Face_Power::TextSlot);
 
     timer = new QTimer(this);
     timer->start(100);
@@ -225,9 +226,26 @@ void Home_WorkWid::updateResult()
 
     mPower->ClearText();
 
+    disconnect(mDevSn, &Sn_DevId::TipImageSig , mPower, &Face_Power::ImageSlot);
+    disconnect(mDevSn, &Sn_DevId::TipSig , mPower, &Face_Power::TextSlot);
+    disconnect(mPowDev, &Power_DevRead::StepSig , mPower, &Face_Power::TextSlot);
+    disconnect(mPowDev, &Power_DevRead::CurImageSig , mPower, &Face_Power::ImageSlot);
+    disconnect(mPowThread, &Power_CoreThread::TipSig , mPower, &Face_Power::TextSlot);
+    disconnect(mPowThread, &Power_CoreThread::ImageSig , mPower, &Face_Power::ImageSlot);
+
     str = QTime::currentTime().toString("hh:mm:ss");
     ui->endLab->setText(str);
     mPro->step = Test_End;
+}
+
+void Home_WorkWid::updateSig()
+{
+    connect(mDevSn, &Sn_DevId::TipImageSig , mPower, &Face_Power::ImageSlot);
+    connect(mDevSn, &Sn_DevId::TipSig , mPower, &Face_Power::TextSlot);
+    connect(mPowDev, &Power_DevRead::StepSig , mPower, &Face_Power::TextSlot);
+    connect(mPowDev, &Power_DevRead::CurImageSig , mPower, &Face_Power::ImageSlot);
+    connect(mPowThread, &Power_CoreThread::TipSig , mPower, &Face_Power::TextSlot);
+    connect(mPowThread, &Power_CoreThread::ImageSig , mPower, &Face_Power::ImageSlot);
 }
 
 void Home_WorkWid::updateWid()
@@ -521,6 +539,7 @@ void Home_WorkWid::on_funcBtn_clicked()
     mItem->work_mode = 2;
     mPro->work_mode = 2;
     if(mPro->step == Test_End) {
+        updateSig();
         bool ret = initSerial();
         // if(ret) ret = checkUesr();
         if(ret) {

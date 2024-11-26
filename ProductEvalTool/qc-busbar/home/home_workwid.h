@@ -78,7 +78,7 @@ protected:
     void updateWid();
     void updateTime();
     void updateResult();
-
+    void updateSig();
     bool initSerial();
     bool initSerialVol();
     bool initSerialGND();

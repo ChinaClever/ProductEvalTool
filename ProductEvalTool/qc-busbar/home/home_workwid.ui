@@ -275,7 +275,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>耐压+绝缘测试</string>
+     <string>绝缘+交流耐压测试</string>
     </property>
    </widget>
    <widget class="QLabel" name="acwLab">

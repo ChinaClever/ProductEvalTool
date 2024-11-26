@@ -94,6 +94,7 @@ void Face_Volinsul::resultSlot()
     if(mItem->progress.errNum)  p = false;
 
     mItem->progress.allNum = mItem->progress.finishNum;
+    if(mItem->progress.allNum == 0) {mItem->progress.okNum = 0; mItem->progress.allNum = 1; p = false;}
     int ok = (mItem->progress.okNum * 100.0) / mItem->progress.allNum;
     QString str1 = tr("测试项目数:%1  失败项目数：%2  项目测试通过率：%3%").arg(mItem->progress.allNum).arg(mItem->progress.errNum).arg(ok);
     mPacket->updatePro(str1);
@@ -106,8 +107,8 @@ void Face_Volinsul::resultSlot()
 
     }
 
-    if(mCfg->modeId == 2 && mPro->result != Test_Fail) emit finshSig();
-    if(mCfg->modeId == 2 && mPro->result != Test_Fail){
+    if(mCfg->modeId == 2 && mPro->result != Test_Fail && mItem->work_mode == 0) emit finshSig();
+    if(mCfg->modeId == 2 && mPro->result != Test_Fail && mItem->work_mode == 0){
         while(1)
         {
             mPacket->delay(1);
@@ -128,7 +129,7 @@ void Face_Volinsul::resultSlot()
         res = false; str += tr("失败");
         mPro->uploadPassResult = 0;
     } else {
-        if(mCfg->modeId == 2 && (mPro->work_mode == 1 || mPro->type == 0))//母线槽与基本型始端箱和插接箱只需安规测试，接地测试成功打印标签
+        if((mCfg->modeId == 2 && mPro->work_mode == 0)|| (mPro->work_mode == 1 && mPro->type == 0))//母线槽与基本型始端箱和插接箱只需安规测试，接地测试成功打印标签
         {
             res = printer();
             if(res) {

@@ -341,7 +341,7 @@ void Test_safety::run()
     if(!mItem->work_mode) {
         mItem->progress.allNum = 22;
         QString recv = "";
-        testACW(recv); testIR(recv);    //先耐压再绝缘
+        testIR(recv); testACW(recv);   //先绝缘再耐压
         mPro->oning = false;
         emit overSig();
     } else {

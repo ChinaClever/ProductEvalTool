@@ -46,7 +46,7 @@ void Json_Pack::head(QJsonObject &obj)
     QStringList list = mPro->itemRequest.split("。");
 
     QStringList step;
-    if(mPro->work_mode == 0) {step.clear(); step << "交流耐压测试";  step << "绝缘测试";}
+    if(mPro->work_mode == 0) {step.clear(); step << "绝缘测试";  step << "交流耐压测试";}
             else {step.clear(); step << "接地测试";}
 
     int num = mPro->safe_result.size();
@@ -117,7 +117,7 @@ void Json_Pack::head_English(QJsonObject &obj)
     QStringList list = ePro->itemRequest.split(".");
 
     QStringList step;
-    if(mPro->work_mode == 0) {step << "Communication voltage withstand test";  step << "Insulation test";}
+    if(mPro->work_mode == 0) {step << "Insulation test";  step << "Communication voltage withstand test";}
     else step << "Grounding test";
 
     int num = mPro->safe_result.size();

@@ -1059,32 +1059,19 @@ bool Power_DevRead::Load_NineLoop()
     // emit PloarSig(str2);
     emit StepSig(str2); emit CurImageSig(1); sleep(5);
 
-    if(mPro->stopFlag == 0) {           //插接位1电流控制1
-        if(ret) ret = NineInsertOne_CtrlOne();
-        if(ret) ret = NineInsertOne_CtrlTwo();
-        if(ret) ret = NineInsertOne_CtrlThree();
 
-        if(ret) ret = NineInsertTwo_CtrlOne();
-        if(ret) ret = NineInsertTwo_CtrlTwo();
-        if(ret) ret = NineInsertTwo_CtrlThree();
+    if(ret) ret = NineInsertOne_CtrlOne();
+    if(ret) ret = NineInsertOne_CtrlTwo();
+    if(ret) ret = NineInsertOne_CtrlThree();
 
-        if(ret) ret = NineInsertThree_CtrlOne();
-        if(ret) ret = NineInsertThree_CtrlTwo();
-        if(ret) ret = NineInsertThree_CtrlThree();
-    }else {
-        if(ret) ret = NineInsertOne_CtrlOne();
-        ret = NineInsertOne_CtrlTwo();
-        ret = NineInsertOne_CtrlThree();
+    if(ret) ret = NineInsertTwo_CtrlOne();
+    if(ret) ret = NineInsertTwo_CtrlTwo();
+    if(ret) ret = NineInsertTwo_CtrlThree();
 
-        ret = NineInsertTwo_CtrlOne();
-        ret = NineInsertTwo_CtrlTwo();
-        ret = NineInsertTwo_CtrlThree();
+    if(ret) ret = NineInsertThree_CtrlOne();
+    if(ret) ret = NineInsertThree_CtrlTwo();
+    if(ret) ret = NineInsertThree_CtrlThree();
 
-        ret = NineInsertThree_CtrlOne();
-        ret = NineInsertThree_CtrlTwo();
-        ret = NineInsertThree_CtrlThree();
-
-    }
     emit CurImageSig(4);
 
     return ret;
@@ -1094,8 +1081,8 @@ bool Power_DevRead::Break_NineLoop()
 {
     bool ret = true;
     ret = NineInsertOne_BreakerOne();
-    ret = NineInsertOne_BreakerTwo();
-    ret = NineInsertOne_BreakerThree();
+    if(ret) ret = NineInsertOne_BreakerTwo();
+    if(ret) ret = NineInsertOne_BreakerThree();
     // emit CurImageSig(4);
 
     return ret;
@@ -1654,25 +1641,15 @@ bool Power_DevRead::Load_SixLoop()
     QString str3 = tr("请检测输出口1位置的极性测试是否合格?");
     // emit PloarSig(str3);
     emit StepSig(str3); emit CurImageSig(1); sleep(5);
-    if(mPro->stopFlag == 0) {           //插接位1电流控制1
-        if(ret) ret = SixInsertOne_CtrlOne();
-        if(ret) ret = SixInsertOne_CtrlTwo();
-        if(ret) ret = SixInsertOne_CtrlThree();
 
-        if(ret) ret = SixInsertTwo_CtrlOne();
-        if(ret) ret = SixInsertTwo_CtrlTwo();
-        if(ret) ret = SixInsertTwo_CtrlThree();
+    if(ret) ret = SixInsertOne_CtrlOne();
+    if(ret) ret = SixInsertOne_CtrlTwo();
+    if(ret) ret = SixInsertOne_CtrlThree();
 
-    }else {
-        ret = SixInsertOne_CtrlOne();
-        ret = SixInsertOne_CtrlTwo();
-        ret = SixInsertOne_CtrlThree();
+    if(ret) ret = SixInsertTwo_CtrlOne();
+    if(ret) ret = SixInsertTwo_CtrlTwo();
+    if(ret) ret = SixInsertTwo_CtrlThree();
 
-        ret = SixInsertTwo_CtrlOne();
-        ret = SixInsertTwo_CtrlTwo();
-        ret = SixInsertTwo_CtrlThree();
-
-    }
     emit CurImageSig(4);
 
     return ret;
@@ -1682,7 +1659,7 @@ bool Power_DevRead::Break_SixLoop()
 {
     bool ret = true;
     ret = SixInsertOne_BreakerOne();
-    ret = SixInsertOne_BreakerTwo();
+    if(ret) ret = SixInsertOne_BreakerTwo();
     emit CurImageSig(4);
 
     return ret;
@@ -2456,27 +2433,17 @@ bool Power_DevRead::Load_ThreeLoop()
             }
             mLogs->updatePro(str, res); //mLogs->writeData(str1,str3,str4,res);
         }
-        if(mPro->stopFlag == 0) {           //插接位1电流控制1
-            if(ret) ret = Three_CtrlOne();
-            if(ret) ret = Three_CtrlTwo();
-            if(ret) ret = Three_CtrlThree();
-        }else {
-            ret = Three_CtrlOne();
-            ret = Three_CtrlTwo();
-            ret = Three_CtrlThree();
 
-        }
+        if(ret) ret = Three_CtrlOne();
+        if(ret) ret = Three_CtrlTwo();
+        if(ret) ret = Three_CtrlThree();
+
     }else if((mItem->modeId != START_BUSBAR) && (mBusData->box[mItem->addr-1].phaseFlag == 0)) {    //单相三回路三个输出位
-        if(mPro->stopFlag == 0) {           //插接位1电流控制1
-            if(ret) ret = Three_One();
-            if(ret) ret = Three_Two();
-            if(ret) ret = Three_Three();
-        }else {
-            ret = Three_One();
-            ret = Three_Two();
-            ret = Three_Three();
 
-        }
+        if(ret) ret = Three_One();
+        if(ret) ret = Three_Two();
+        if(ret) ret = Three_Three();
+
     }
     emit CurImageSig(4);
 
@@ -2487,8 +2454,8 @@ bool Power_DevRead::Three_Break()
     bool ret = true;
 
     ret = Three_OneBreaker();
-    ret = Three_TwoBreaker();
-    ret = Three_ThreeBreaker();
+    if(ret) ret = Three_TwoBreaker();
+    if(ret) ret = Three_ThreeBreaker();
     // emit CurImageSig(4);
 
     return ret;

@@ -166,7 +166,7 @@ bool Test_safety::startTest(sTestDataItem &item,QString & recv , const QString &
     if(mStep == GNDTest) mTestStep = GndParm;
     for(int i = 0; i < stepTotal ; i++)
     {
-        recv = mTrans->sentStep(mStep , mTestStep , sendStr , i+1);//ST ?+回车 连接命令 1
+        recv = mTrans->sentStep(mStep , mTestStep , sendStr , i+1);//LS ?+回车 连接命令 1
         str += recv;
     }
      item.subItem = tr("读取参数");
@@ -174,13 +174,15 @@ bool Test_safety::startTest(sTestDataItem &item,QString & recv , const QString &
      appendResult(item);
     if(!str.isEmpty())
     {
-
          if(mStep == GNDTest) {
              mItem->sn.gndParm = str.split(","); mPro->gndParm = mItem->sn.gndParm;
+             mItem->sn.gndParm.clear();
          } else if(mStep == IRTest){
              mItem->sn.irParm = str.split(","); mPro->irParm = mItem->sn.irParm;
+             mItem->sn.irParm.clear();
          } else if(mStep == ACWTest) {
              mItem->sn.acwParm = str.split(","); mPro->acwParm = mItem->sn.acwParm;
+             mItem->sn.acwParm.clear();
          }
     }
 //=================================================================
@@ -345,7 +347,7 @@ void Test_safety::run()
         mPro->oning = false;
         emit overSig();
     } else {
-        mItem->progress.allNum = 9;
+        mItem->progress.allNum = 10;
         QString recv = "";
         testGND(recv);  
         emit overSig();

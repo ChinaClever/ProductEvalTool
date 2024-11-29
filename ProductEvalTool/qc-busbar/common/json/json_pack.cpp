@@ -52,7 +52,7 @@ void Json_Pack::head(QJsonObject &obj)
     int num = mPro->safe_result.size();
     for(int i=0; i<num; ++i)
     {
-        obj.insert("testResult", (uchar)mPro->safe_result.at(i));
+        obj.insert("testResult", QString::number(mPro->safe_result.at(i)));
         obj.insert("testRequest",list.at(i));
         obj.insert("testItem", step.at(i));
         obj.insert("testProcess" ,mPro->itemData.at(i));

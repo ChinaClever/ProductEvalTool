@@ -33,11 +33,11 @@ void Power_CoreThread::initFunSlot()
 bool Power_CoreThread::initDev()
 {
     mLogs->updatePro(tr("即将开始"));
-    bool ret  = false;
+    bool ret  = true;
     if(mItem->modeId == INSERT_BUSBAR){
+
         QString str = tr("开始测试插接箱串口通讯");           //自动分配地址
         emit TipSig(str); sleep(2);
-
         str = tr("请将插接箱IN口与测试治具IN口对接，OUT口与测试治具OUT口对接");
         emit TipSig(str); emit ImageSig(3);
 
@@ -46,7 +46,7 @@ bool Power_CoreThread::initDev()
     }
 
     ret = mRead->readSn();
-    mItem->modeId = mDt->devType;
+    if(ret) mItem->modeId = mDt->devType;
 
     return ret;
 }
@@ -1307,22 +1307,13 @@ bool Power_CoreThread::Vol_ctrlThree()
 bool Power_CoreThread::stepVolTest()
 {
     bool ret = true;
-    if(mPro->stopFlag == 0) {   //失败即停止测试
-        if((mItem->modeId == START_BUSBAR) || (mBusData->box[mItem->addr-1].phaseFlag ==1))
-        {
-            if(ret) ret = Vol_ctrlOne();
-            if(ret) ret = Vol_ctrlTwo();
-            if(ret) ret = Vol_ctrlThree();
-        }
-    }else {
-        if((mItem->modeId == START_BUSBAR) || (mBusData->box[mItem->addr-1].phaseFlag ==1))
-        {
-            QString str = tr("请将电源输出端L1、L2、L3打开");
-            emit TipSig(str); sleep(4);
-            ret = Vol_ctrlOne();
-            ret = Vol_ctrlTwo();
-            ret = Vol_ctrlThree();
-        }
+    if((mItem->modeId == START_BUSBAR) || (mBusData->box[mItem->addr-1].phaseFlag ==1))
+    {
+        QString str = tr("请将电源输出端L1、L2、L3打开");
+        emit TipSig(str); sleep(4);
+        ret = Vol_ctrlOne();
+        if(ret) ret = Vol_ctrlTwo();
+        if(ret) ret = Vol_ctrlThree();
     }
     emit ImageSig(4);
 
@@ -1444,6 +1435,7 @@ void Power_CoreThread::workDown()
 
         if(ret) ret = stepLoadTest();               //电流测试
         if(ret) ret = factorySet(); sleep(2);                      //清除电能
+
         QString str = tr("请将电源输出端L1、L2、L3关闭");
         emit TipSig(str); emit ImageSig(2);
 

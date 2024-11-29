@@ -79,6 +79,7 @@ void Home_WorkWid::initWid()
     // connect(mDevSn, &Sn_DevId::TipImageSig , mPower, &Face_Power::ImageSlot);
     // connect(mDevSn, &Sn_DevId::TipSig , mPower, &Face_Power::TextSlot);
 
+    // updateSig();
     timer = new QTimer(this);
     timer->start(100);
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
@@ -408,7 +409,7 @@ void Home_WorkWid::ItemStatus()
              // mPro->itemRequest = "交流耐压：1、PE-N/L1/L2/L3，2、N-PE/L1/L2/L3，3、L1-PE/N/L2/L3，4、L2-PE/N/L1/L3，5、L3-PE/N/L1/L2，漏电流≤5mA；绝缘电阻：N-PE/L1/L2/L3，绝缘电阻 >10MΩ";
              // ePro->itemRequest = "AC withstand voltage:1、PE-N/L1/L2/L3,2、N-PE/L1/L2/L3,3、L1-PE/N/L2/L3,4、L2-PE/N/L1/L3,5、L3-PE/N/L1/L2,Leakage current <5mA; Insulation resistance:N-PE/L1/L2/L3,insulation resistance>10MΩ";
              // break;
-             if((mPro->acwParm.size() > 6) && (mPro->irParm.size() > 7)){
+             if((mPro->acwParm.size() > 7) && (mPro->irParm.size() > 8)){
                  mPro->itemRequest = tr("始端箱或插接箱的交流耐压测试（不接电流表），分别对以下测试点输入电压 %1V，%2s：").arg(mPro->acwParm.at(2)).arg(mPro->acwParm.at(6))
                                  + tr("1、PE-N/L1/L2/L3，2、N-PE/L1/L2/L3，3、L1-PE，4、L2-PE，5、L3-PE，漏电流≤10mA。")
                                  + tr("始端箱或插接箱的绝缘测试（不接电流表），分别对以下测试点输入电压 %1V，%2s：").arg(mPro->irParm.at(2)).arg(mPro->irParm.at(7))
@@ -439,7 +440,7 @@ void Home_WorkWid::ItemStatus()
              ePro->test_step = "Safety testing"; ePro->test_item = "Grounding test";
              ui->gndLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
 
-             if(mPro->gndParm.size() > 8)
+             if(mPro->gndParm.size() > 9)
              {
                     mPro->itemRequest = tr("始端箱或插接箱的接地测试（不接电流表），分别对以下测试点输入电流 %1A，%2s：").arg(mPro->gndParm.at(2)).arg(mPro->gndParm.at(8))
                                  + tr("PE-箱体面壳接地螺钉，接地电阻<100mΩ。");

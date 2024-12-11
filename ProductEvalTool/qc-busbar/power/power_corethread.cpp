@@ -58,8 +58,8 @@ void Power_CoreThread::StartErrRange()
     QString str1 = tr("串口线接入IN接口，Modbus RTU串口命令正常返回，IN接口通讯正常");
     QString str2 = tr("接口检查"); QString str3 = tr("符合要求");
 
-    QString eng1 = tr("Serial cable connected to IN interface, Modbus RTU serial port command returned normally, IN interface communication is normal");
-    QString eng2 = tr("Interface inspection"); QString eng3 = tr("Meet a requirement");
+    QString eng1 = tr("The serial cable is connected to the IN interface, and the Modbus RTU serial command returns normally, indicating that the IN interface communication is normal.");
+    QString eng2 = tr("Interface inspection"); QString eng3 = tr("Meeting the requirements");
 
     str = tr("请将串口线接入到始端箱IN口");           //IN OUT口通讯正常，及网口
     emit TipSig(str); sleep(3);
@@ -75,7 +75,7 @@ void Power_CoreThread::StartErrRange()
     }
     str = tr("始端箱IN口通讯");
     if(ret) {
-        str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
+        str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meeting the requirements");
     }else {
         str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
     }
@@ -111,7 +111,7 @@ void Power_CoreThread::StartErrRange()
     eng1 = tr("The serial cable is connected to the OUT interface, and the Modbus RTU serial command returns normally. The OUT interface communication is normal");
     str = tr("始端箱OUT口通讯");
     if(ret) {
-        str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
+        str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meeting the requirements");
     }else {
         str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
     }
@@ -135,7 +135,7 @@ void Power_CoreThread::StartErrRange()
     eng1 = tr("Ping function is normal, NET interface communication is normal");
     str = tr("始端箱NET口通讯");
     if(ret) {
-        str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
+        str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meeting the requirements");
     }else {
         str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
     }
@@ -186,9 +186,9 @@ void Power_CoreThread::StartErrRange()
                 }
             }
             str = tr("始端箱防雷模块状态：%1").arg(b->lpsState ==1?tr("工作正常"):tr("损坏"));
-            eng3 = tr("Initial box lightning protection module status:%1").arg(b->lpsState ==1?tr("normal operation"):tr("damage"));
+            eng3 = tr("Busbar feeder box lightning protection module status:%1").arg(b->lpsState ==1?tr("normal operation"):tr("damage"));
             // if(ret) {
-            //     str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
+            //     str3 = tr("符合要求"); eng3 = tr("Meeting the requirements");
             // }else {
             //     str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
             // }
@@ -213,7 +213,7 @@ void Power_CoreThread::StartErrRange()
                 str1 = tr("检查SPD防雷模块报警状态，报警与恢复状态正常");
                 eng1 = tr("Check the alarm status of the SPD lightning protection module, and ensure that the alarm and recovery status are normal");
                 str = tr("始端箱防雷模块状态：%1，（模拟）").arg(b->lpsState ==1?tr("工作正常"):tr("损坏"));
-                eng3 = tr("Initial box lightning protection module status:%1, (simulated)").arg(b->lpsState ==1?tr("normal operation"):tr("damage"));
+                eng3 = tr("Busbar feeder box lightning protection module status:%1, (simulated)").arg(b->lpsState ==1?tr("normal operation"):tr("damage"));
 
                 mLogs->updatePro(str,ret);
                 mLogs->writeData(str1, str, str2, ret);
@@ -252,7 +252,7 @@ void Power_CoreThread::StartErrRange()
     expect = mItem->ip.ip_iOF;
     if(curValue == expect) ret = true;
     str = tr("始端箱iOF辅助触点实际值：%1 ， 期待值：%2").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
-    eng3 = tr("Initial box iOF auxiliary contact actual value:%1, expected value:%2").arg(curValue?tr("have"):tr("nothing")).arg(expect?tr("have"):tr("nothing"));
+    eng3 = tr("Busbar feeder box iOF auxiliary contact actual value:%1, expected value:%2").arg(curValue?tr("have"):tr("nothing")).arg(expect?tr("have"):tr("nothing"));
     mLogs->updatePro(str,ret); flag = 0;
 
     str1 = tr("依据产品规格书核对始端箱iOF辅助触点");
@@ -292,7 +292,7 @@ void Power_CoreThread::StartErrRange()
         str2 = tr("断路器检查"); eng2 = tr("Circuit breaker inspection");
         eng1 = tr("The status of the disconnected circuit breaker is displayed as open");
         if(ret) {
-            str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
+            str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meeting the requirements");
         }else {
             str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
         }
@@ -320,7 +320,7 @@ void Power_CoreThread::StartErrRange()
     expect = mItem->ip.ip_ISD;
     if(curValue == expect) ret = true;
     str = tr("始端箱ISD报警触点实际值：%1 ， 期待值：%2").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
-    eng3 = tr("Initial box ISD alarm contact actual value:%1, expected value:%2").arg(curValue?tr("have"):tr("nothing")).arg(expect?tr("have"):tr("nothing"));
+    eng3 = tr("Busbar feeder box ISD alarm contact actual value:%1, expected value:%2").arg(curValue?tr("have"):tr("nothing")).arg(expect?tr("have"):tr("nothing"));
     mLogs->updatePro(str,ret); flag = 0;
 
     str1 = tr("依据产品规格书核对始端箱ISD报警触点"); eng1 = tr("Verify the ISD alarm contacts of the starting box according to the product specifications");
@@ -346,7 +346,7 @@ void Power_CoreThread::StartErrRange()
     //         eng1 = tr("Press the yellow test button with a screwdriver to check the circuit breaker status: tripped");
     //         str = tr("始端箱ISD报警触点检查");
     //         if(ret) {
-    //             str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meet a requirement");
+    //             str += tr("成功"); str3 = tr("符合要求"); eng3 = tr("Meeting the requirements");
     //         }else {
     //             str += tr("失败"); str3 = tr("不符合要求"); eng3 = tr("Not Satisfiable");
     //         }
@@ -494,7 +494,7 @@ void Power_CoreThread::InsertErrRange()
     QString str1 = tr("是否包含此功能与规格书要求一致");
     QString str2 = tr("符合要求"); QString str3 = tr("断路器iOF辅助触点检查");
     QString eng1 = tr("Does it include this function that is consistent with the specifications");
-    QString eng2 = tr("Meet a requirement"); QString eng3 = tr("Circuit breaker iOF auxiliary contact inspection");
+    QString eng2 = tr("Meeting the requirements"); QString eng3 = tr("Circuit breaker iOF auxiliary contact inspection");
 
     curValue = b->iOF;
     expect = mItem->si.si_iOF;
@@ -592,6 +592,7 @@ bool Power_CoreThread::CurErrRange()
     bool ret = true , res = true; QString str;
     sBoxData *b = &(mBusData->box[mItem->addr - 1]);
     for(int i=0; i<mBusData->box[mItem->addr - 1].loopNum; ++i) {
+        ret = true ;
         if(mItem->modeId == START_BUSBAR) {
             str = tr("始端箱电流 L%1，实际值：%2A ").arg(i+1).arg(QString::number((b->data.cur.value[i]/COM_RATE_CUR),'f',3));
         }else {

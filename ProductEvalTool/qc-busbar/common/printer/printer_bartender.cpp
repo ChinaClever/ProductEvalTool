@@ -40,7 +40,7 @@ QString Printer_BarTender::http_post(const QString &method, const QString &ip, s
         .onSuccess([&](QString result) {qDebug()<<"result"<<result; str = result;})
         .onFailed([&](QString error) {qDebug()<<"error"<<error; str = error;})
         .onTimeout([&](QNetworkReply *) {qDebug()<<"http_post timeout";}) // 超时处理
-        .timeout(4) // 1s超时
+        .timeout(5) // 1s超时
         .block()
         .body(json)
         .exec();

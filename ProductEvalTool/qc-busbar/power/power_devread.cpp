@@ -261,7 +261,7 @@ bool Power_DevRead::NineInsertOne_CtrlOne()
             str1.clear(); break;
 
         }
-        if(flag >50) {
+        if(flag >70) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
@@ -322,7 +322,7 @@ bool Power_DevRead::NineInsertOne_CtrlTwo()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >50) {
+        if(flag >70) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
@@ -383,7 +383,7 @@ bool Power_DevRead::NineInsertOne_CtrlThree()
             str1.clear(); break;
 
         }
-        if(flag >50) {
+        if(flag >70) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
@@ -492,16 +492,19 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
     QString eng4 = tr("Socket 2 current check");
 
     while(1){
-        int a=0;
+        int a=0, b=0, c = 0;
         if(ret) {
             ret = readData();
-            a = Obj->cur.value[3];
-            if(a) {
+            for(int i =3;i<6;i++) {
+                Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
+            }
+            a = Obj->cur.status[3]; b = Obj->cur.status[4]; c = Obj->cur.status[5];
+            if(a &&b &&c) {
                 ret = true; break;
             }
         }
         flag++;
-        if(flag >60) {
+        if(flag >80) {
             ret = false;
             str = tr("输出口2 无电流");mLogs->updatePro(str, ret);
             break;
@@ -537,7 +540,7 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
             str1.clear(); break;
 
         }
-        if(flag >50) {
+        if(flag >70) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
@@ -599,7 +602,7 @@ bool Power_DevRead::NineInsertTwo_CtrlTwo()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >50) {
+        if(flag >70) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
@@ -662,7 +665,7 @@ bool Power_DevRead::NineInsertTwo_CtrlThree()
             str1.clear(); break;
 
         }
-        if(flag >50) {
+        if(flag >70) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
@@ -770,16 +773,19 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
     QString eng4 = tr("Socket 3 current check");
 
     while(1){
-        int a=0;
+        int a=0, b=0, c = 0;
         if(ret) {
             ret = readData();
-            a = Obj->cur.value[6];
-            if(a) {
+            for(int i =6;i<9;i++) {
+                Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
+            }
+            a = Obj->cur.status[6]; b = Obj->cur.status[7]; c = Obj->cur.status[8];
+            if(a &&b &&c) {
                ret = true; break;
             }
         }
         flag++;
-        if(flag >60) {
+        if(flag >80) {
             ret = false;
             str = tr("输出口3 无电流");mLogs->updatePro(str, ret);
             break;
@@ -814,7 +820,7 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >50) {
+        if(flag >70) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
@@ -876,7 +882,7 @@ bool Power_DevRead::NineInsertThree_CtrlTwo()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >50) {
+        if(flag >70) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
@@ -937,7 +943,7 @@ bool Power_DevRead::NineInsertThree_CtrlThree()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-       if(flag >50) {
+       if(flag >70) {
            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
            emit StepSig(str);
        }
@@ -959,8 +965,8 @@ bool Power_DevRead::NineInsertThree_CtrlThree()
             str1.clear(); break;
         }
     }
-    str = tr("打开负载输入端L3");
-    emit StepSig(str); sleep(3);
+    // str = tr("打开负载输入端L3");
+    // emit StepSig(str); sleep(3);
 
     return ret;
 }
@@ -1040,16 +1046,20 @@ bool Power_DevRead::Load_NineLoop()
     emit StepSig(str); emit CurImageSig(2);
 
     while(1){
-        int a=0;
+        int a=0, b=0, c=0;
         if(ret) {
             ret = readData();
-            a = Obj->cur.value[0];
-            if(a) {
+            for(int i =0;i<3;i++) {
+                Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
+            }
+            a = Obj->cur.status[0]; b = Obj->cur.status[1]; c = Obj->cur.status[2];
+            if(a &&b &&c) {
+
                 ret = true; break;
             }
         }
         flag++;
-        if(flag >60) {
+        if(flag >80) {
             ret = false;
             str = tr("输出口1 无电流");mLogs->updatePro(str, ret);
             break;
@@ -1123,13 +1133,13 @@ bool Power_DevRead::SixInsertOne_CtrlOne()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >30) {
+        if(flag >70) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >40) {
+        if(flag >90) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -1185,12 +1195,12 @@ bool Power_DevRead::SixInsertOne_CtrlTwo()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-       if(flag >30) {
+       if(flag >70) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
        }
         flag++;
-        if(flag >40) {
+        if(flag >90) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -1246,13 +1256,13 @@ bool Power_DevRead::SixInsertOne_CtrlThree()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >30) {
+        if(flag >70) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >40) {
+        if(flag >90) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -1355,16 +1365,19 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
     QString eng4 = tr("Socket 2 current check");
 
     while(1){
-        int a=0;
+        int a=0, b=0, c=0;
         if(ret) {
             ret = readData();
-            a = Obj->cur.value[3];
-            if(a) {
+            for(int i =0;i<3;i++) {
+                Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
+            }
+            a = Obj->cur.status[3]; b = Obj->cur.status[4]; c = Obj->cur.status[5];
+            if(a &&b &&c) {
                 ret = true; break;
             }
         }
         flag++;
-        if(flag >40) {
+        if(flag >80) {
             ret = false;
             str = tr("输出口2 无电流功率");mLogs->updatePro(str, ret);
             break;
@@ -1399,13 +1412,13 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >30) {
+        if(flag >70) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >40) {
+        if(flag >90) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -1460,13 +1473,13 @@ bool Power_DevRead::SixInsertTwo_CtrlTwo()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >30) {
+        if(flag >70) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >40) {
+        if(flag >90) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -1521,13 +1534,13 @@ bool Power_DevRead::SixInsertTwo_CtrlThree()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >30) {
+        if(flag >70) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >40) {
+        if(flag >90) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -1543,8 +1556,8 @@ bool Power_DevRead::SixInsertTwo_CtrlThree()
             str1.clear(); break;
         }
     }
-    str = tr("打开负载输入端L3");
-    emit StepSig(str); sleep(3);
+    // str = tr("打开负载输入端L3");
+    // emit StepSig(str); sleep(3);
 
     return ret;
 }
@@ -1623,16 +1636,19 @@ bool Power_DevRead::Load_SixLoop()
     emit StepSig(str); emit CurImageSig(2);
 
     while(1){
-        int a=0;
+        int a=0, b=0, c=0;
         if(ret) {
             ret = readData();
-            a = Obj->cur.value[0];
-            if(a) {
+            for(int i =0;i<3;i++) {
+                Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
+            }
+            a = Obj->cur.status[0]; b = Obj->cur.status[1]; c = Obj->cur.status[2];
+            if(a &&b &&c) {
                 ret = true; break;
             }
         }
         flag++;
-        if(flag >40) {
+        if(flag >80) {
             ret = false;
             str = tr("输出口1 无电流");mLogs->updatePro(str, ret);
             break;
@@ -1700,13 +1716,13 @@ bool Power_DevRead::Three_CtrlOne()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >30) {
+        if(flag >60) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >40) {
+        if(flag >70) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -1767,13 +1783,13 @@ bool Power_DevRead::Three_CtrlTwo()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >30) {
+        if(flag >60) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >40) {
+        if(flag >70) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -1831,13 +1847,13 @@ bool Power_DevRead::Three_CtrlThree()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >30) {
+        if(flag >60) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >40) {
+        if(flag >70) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -1855,8 +1871,8 @@ bool Power_DevRead::Three_CtrlThree()
             str1.clear(); break;
         }
     }
-    str = tr("打开负载输入端L3");  //三相回路电流、功率
-    emit StepSig(str); sleep(3);
+    // str = tr("打开负载输入端L3");  //三相回路电流、功率
+    // emit StepSig(str); sleep(3);
 
     return ret;
 }
@@ -1938,17 +1954,16 @@ bool Power_DevRead::Three_One()
 
     while(1)
     {
-        int a=0;
         if(ret) {
             ret = readData();
-            a = Obj->cur.value[0];
-            if(a){
+            Obj->cur.status[0] = mErr->checkErrRange(exValue, Obj->cur.value[0], err);
+            if(Obj->cur.status[0]){
                     ret = true;
                     break;
                 }
         }
         flag++;
-        if(flag >40) {
+        if(flag >90) {
             ret = false;
             str = tr("输出口1 无电流");mLogs->updatePro(str, ret);
                 break;
@@ -1984,13 +1999,13 @@ bool Power_DevRead::Three_One()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >30) {
+        if(flag >50) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >40) {
+        if(flag >60) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -2091,15 +2106,14 @@ bool Power_DevRead::Three_Two()
 
     while(1)
     {
-        int a=0;
         if(ret) {
             ret = readData();
-            a = Obj->cur.value[1];            
-            if(a) {
+            Obj->cur.status[1] = mErr->checkErrRange(exValue, Obj->cur.value[1], err);
+            if(Obj->cur.status[1]) {
                ret = true; break;}
         }
         flag++;
-        if(flag >40) {
+        if(flag >90) {
             ret = false;
             str = tr("输出口2 无电流");mLogs->updatePro(str, ret);
                 break;
@@ -2136,13 +2150,13 @@ bool Power_DevRead::Three_Two()
                 str1.clear(); break;
 
         }
-        if(flag >30) {
+        if(flag >50) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >40) {
+        if(flag >60) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -2243,15 +2257,14 @@ bool Power_DevRead::Three_Three()
 
     while(1)
     {
-        int a=0;
         if(ret) {
             ret = readData();
-            a = Obj->cur.value[2];
-            if(a) {
+            Obj->cur.status[2] = mErr->checkErrRange(exValue, Obj->cur.value[2], err);
+            if(Obj->cur.status[2]) {
                ret = true; break;}
             }
         flag++;
-        if(flag >40) {
+        if(flag >90) {
             ret = false;
             str = tr("输出口3 无电流");mLogs->updatePro(str, ret);
             break;
@@ -2287,13 +2300,13 @@ bool Power_DevRead::Three_Three()
             str1.clear(); break;
 
         }
-        if(flag >30) {
+        if(flag >50) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >40) {
+        if(flag >60) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -2309,8 +2322,8 @@ bool Power_DevRead::Three_Three()
             str1.clear(); break;
         }
     }
-    str = tr("打开负载输入端L1");
-    emit StepSig(str); sleep(3);
+    // str = tr("打开负载输入端L1");
+    // emit StepSig(str); sleep(3);
 
     return ret;
 }
@@ -2388,20 +2401,23 @@ bool Power_DevRead::Load_ThreeLoop()
         emit StepSig(str); emit CurImageSig(2);
 
         while(1){
-            int a=0;
+            int a=0, b=0, c=0;
             ret = readData();
-            a = Obj->cur.value[0];
-            if(a) {
+            for(int i =0;i<3;i++) {
+                Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
+            }
+            a = Obj->cur.status[0]; b = Obj->cur.status[1]; c = Obj->cur.status[2];
+            if(a && b && c) {
                 ret = true; break;
             }
             flag++;
-            if(flag >40) {
+            if(flag >80) {
                 ret = false;
                 str = tr("该输出口 无电流");mLogs->updatePro(str, ret);
                  break;
             }
         }
-        QString str5 = tr("请检测输出口2位置的极性测试是否合格?");
+        QString str5 = tr("请检测该输出口位置的极性测试是否合格?");
         // emit PloarSig(str5);
         emit StepSig(str5); emit CurImageSig(1); sleep(5);
 

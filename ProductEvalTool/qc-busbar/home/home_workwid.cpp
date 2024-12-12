@@ -263,7 +263,7 @@ void Home_WorkWid::updateWid()
     mCfgm->user = mPro->order_id;
 
     mCfgm->pn = ui->codeEit->text();//订单号+成品代码
-    if(mPro->product_sn.mid(3,1) == 'M') mPro->type = 1;//判断是智能型还是基本型
+    if(mPro->product_sn.mid(3,1) != 'B') mPro->type = 1;//判断是智能型还是基本型
 
     if(mPro->type == 1 && (mPro->work_mode == 0 || mPro->work_mode == 1)) //智能型，耐压绝缘、接地测试---解析序列号
     {

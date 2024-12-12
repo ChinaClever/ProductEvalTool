@@ -1336,7 +1336,7 @@ bool Power_CoreThread::stepLoadTest()       //电流测试
 }
 bool Power_CoreThread::BreakerTest()        //断路器测试
 {
-    bool ret = false;
+    bool ret = true;
     if(mBusData->box[mItem->addr-1].loopNum == 9) {
         ret = mRead->Break_NineLoop();
     }else if(mBusData->box[mItem->addr-1].loopNum == 6) {

@@ -49,7 +49,7 @@ void Face_Volinsul::startSlot()
 
 bool Face_Volinsul::printer()
 {
-    QString method = "Integration/Busbar-Product/Execute";
+    QString method = "Integration/Busbar-Busway/Execute";
     QString ip = "192.168.1.16";
     bool ret = true;
     QString str = tr("标签打印 "); QString str1;
@@ -73,11 +73,11 @@ bool Face_Volinsul::printer()
         //     if(it.sn.isEmpty()) str += tr(" 读取到序列号SN为空 ");
         // }
         if(ret){
-            str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it);
+            str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it, 81);
             if(str1 == "Success") {
                 ret = true;
             }else {
-                str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it);
+                str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it, 81);
                 if(str1 == "Success") {
                     ret = true;
                 }else ret = false;

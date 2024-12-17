@@ -267,7 +267,7 @@ void Home_WorkWid::updateWid()
 
     if(mPro->type == 1 && (mPro->work_mode == 0 || mPro->work_mode == 1)) //智能型，耐压绝缘、接地测试---解析序列号
     {
-        QString mSn = ui->safeSnEit->text();//订单号+成品代码
+        QString mSn = ui->safeSnEit->text();//订单号+序列号
         QStringList mList = mSn.split("+");
         for(int i = 0; i < mList.count(); i++)
         {

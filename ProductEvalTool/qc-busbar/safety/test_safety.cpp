@@ -89,7 +89,6 @@ void Test_safety::updateProgress(bool status, QString &str)
     p->finishNum++;
     p->status = tr("测试项:%1  %2").arg(p->finishNum).arg(str);
     mPacket->updatePro(str, status);
-    msleep(100);
 }
 
 bool Test_safety::appendResult(sTestDataItem &item)
@@ -167,11 +166,12 @@ bool Test_safety::startTest(sTestDataItem &item,QString & recv , const QString &
     for(int i = 0; i < stepTotal ; i++)
     {
         recv = mTrans->sentStep(mStep , mTestStep , sendStr , i+1);//LS ?+回车 连接命令 1
-        str += recv;
+        str = recv;
     }
      item.subItem = tr("读取参数");
      item.status = !str.isEmpty();
      appendResult(item);
+
     if(!str.isEmpty())
     {
          if(mStep == GNDTest) {
@@ -297,8 +297,11 @@ bool Test_safety::testACW(QString & recv)
     mStep = ACWTest;
     int stepTotal = 0;
     item.item = tr("交流耐压测试");
-    ret = startTest(item, recv , tr("交流耐压") , ACWFile , stepTotal);
-    delayItem(item, 26*1000);//25
+    int value = ACWFile;
+    if((mCfg->si.itemType == 1)&&(mCfg->modeId == 1)) { value = ACWFile_MAL;}
+
+    ret = startTest(item, recv , tr("交流耐压") , value , stepTotal);
+    delayItem(item, stepTotal*5000 +1000);//25
 
     for(int i = 0; i < stepTotal ; i++)
     {

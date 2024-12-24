@@ -12,8 +12,6 @@ Setting::Setting(QWidget *parent)
     mItem = Cfg::bulid()->item;
     ui->label_8->hide();
     ui->filterspinBox->hide();
-    ui->label_14->hide();
-    ui->filterspinBox_2->hide();
 
     QTimer::singleShot(10,this,SLOT(initFunSlot()));
 }
@@ -75,6 +73,8 @@ void Setting::initType()
     int sion = dv->version;
     QString str1 = QString::number(sion/100)+"."+QString::number(sion/10%10)+"."+QString::number(sion%10);
     ui->si_versionEdit->setText(str1);
+
+    ui->itemBox->setCurrentIndex(dv->itemType);
 }
 
 void Setting::updateType()
@@ -119,6 +119,8 @@ void Setting::updateType()
     dv->si_curMax = ui->si_curMaxSpin->value();
     dv->version = ui->si_versionEdit->text().remove(".").toUInt();
     // qDebug()<<"---temp---"<<dv->si_vol<<dv->si_cur<<dv->si_volErr<<dv->si_curErr;
+
+    dv->itemType = ui->itemBox->currentIndex();
 }
 
 bool Setting::dataSave()

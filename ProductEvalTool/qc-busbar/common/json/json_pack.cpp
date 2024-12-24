@@ -56,7 +56,6 @@ void Json_Pack::head(QJsonObject &obj)
         obj.insert("testRequest",list.at(i));
         obj.insert("testItem", step.at(i));
         obj.insert("testProcess" ,mPro->itemData.at(i));
-        obj.insert("testResult" ,mPro->safe_result.at(i));
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 
@@ -114,7 +113,7 @@ void Json_Pack::head_English(QJsonObject &obj)
     obj.insert("languageSelect", 1);
     obj.insert("orderNum", ePro->order_num);
 
-    QStringList list = ePro->itemRequest.split(".");
+    QStringList list = ePro->itemRequest.split("。");
 
     QStringList step;
     if(mPro->work_mode == 0) {step << "Insulation test";  step << "Communication voltage withstand test";}
@@ -123,11 +122,10 @@ void Json_Pack::head_English(QJsonObject &obj)
     int num = mPro->safe_result.size();
     for(int i=0; i<num; ++i)
     {
-        obj.insert("testResult", ePro->safe_result.at(i));
         obj.insert("testRequest",list.at(i));
         obj.insert("testItem", step.at(i));
         obj.insert("testProcess" ,ePro->itemData.at(i));
-        obj.insert("testResult" ,ePro->safe_result.at(i));
+        obj.insert("testResult" ,QString::number(ePro->safe_result.at(i)));
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 

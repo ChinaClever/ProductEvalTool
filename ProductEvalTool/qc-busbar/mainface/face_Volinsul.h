@@ -23,6 +23,7 @@ public:
     void startSlot();
     void resultSlot();
     bool printer();
+    void updateData();
 signals:
     void StatusSig(bool ret);
     void finshSig();
@@ -43,6 +44,8 @@ private:
     sCfgItem *mCfg;
     Sn_SerialNum *mSn;
     sDevData *mDev;
+    datapacket_English *mPacketEng;
+    sProgress *ePro;
 };
 
 #endif // VOL_INSUL_H

@@ -40,12 +40,19 @@ void People_judg::initData()
         ui->funcBox_3->hide();
         ui->funcBox_4->hide();
         ui->funcBox_5->hide();
-    }else if(mItem->modeId == INSERT_BUSBAR) {
+        ui->testBox->show();
+        ui->label_5->show();
+    }else if(mItem->modeId == INSERT_BUSBAR && mPro->type == 1) {
         ui->assemBox_10->hide();
         ui->funcBox_2->hide();
         ui->funcBox_3->show();
         ui->funcBox_4->show();
         ui->funcBox_5->show();
+        ui->testBox->show();
+        ui->label_5->show();
+    } else if(mItem->modeId == INSERT_BUSBAR && mPro->type == 0) {//基本型没有极性检查
+        ui->testBox->hide();
+        ui->label_5->hide();
     }
 }
 void People_judg::writeData(const QString &str1,const QString &str2, const QString &str3,bool pass)
@@ -128,15 +135,19 @@ void People_judg::on_sureButton_clicked()
         writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
     }
 
-    str = tr("极性检查"); eng = tr("Polarity check");
-    ret = ui->testBox->isChecked();
-    str1 = ui->testBox->text();
-    eng1 = tr("Connect the output end to the load and check that the polarity test module indicator lights 1 and 2 are on");
-    if(ret) {
-        writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
-    }else {
-        writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+    if(mPro->type == 1 && (mPro->work_mode == 0 || mPro->work_mode == 1))
+    {
+        str = tr("极性检查"); eng = tr("Polarity check");
+        ret = ui->testBox->isChecked();
+        str1 = ui->testBox->text();
+        eng1 = tr("Connect the output end to the load and check that the polarity test module indicator lights 1 and 2 are on");
+        if(ret) {
+            writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
+        }else {
+            writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+        }
     }
+
     // Cfg::bulid()->writeJudgItem();
 
 //=================================================================================//

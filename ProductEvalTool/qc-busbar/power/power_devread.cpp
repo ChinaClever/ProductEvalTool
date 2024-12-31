@@ -1368,7 +1368,7 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
         int a=0, b=0, c=0;
         if(ret) {
             ret = readData();
-            for(int i =0;i<3;i++) {
+            for(int i =3;i<6;i++) {
                 Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
             }
             a = Obj->cur.status[3]; b = Obj->cur.status[4]; c = Obj->cur.status[5];
@@ -1377,9 +1377,9 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
             }
         }
         flag++;
-        if(flag >80) {
+        if(flag >90) {
             ret = false;
-            str = tr("输出口2 无电流功率");mLogs->updatePro(str, ret);
+            str = tr("输出口2 无电流");mLogs->updatePro(str, ret);
             break;
         }
     }

@@ -92,7 +92,7 @@ void Cfg::initCfgDev()
     item->addr = read("addr", 1, "BusbarSys").toInt();
     item->modeId = read("modeId", 0, "BusbarSys").toInt();
     item->user = read("user", "", "BusbarUser").toString();
-
+    item->moduleType = read("moduleType", "", "BusbarUser").toInt();
 
     QString g = "BusbarInsertCfg";
     item->si.si_iOF = read("si_iOF", 0, g).toInt();
@@ -132,11 +132,14 @@ void Cfg::readQRcode()
 {
     item->pn = read("on_pn", "", "BusbarSys").toString();
     item->user = read("user", "", "BusbarUser").toString();
+    item->moduleSn = read("moduleSn", "", "BusbarSys").toString();
 }
 
 void Cfg::writeQRcode()
 {
+    qDebug()<<"writeQRcode"<<item->moduleSn;
     write("on_pn", item->pn, "BusbarSys");
+    write("moduleSn", item->moduleSn, "BusbarSys");
     write("user", item->user, "BusbarUser");
 }
 
@@ -145,6 +148,7 @@ void Cfg::writeCfgDev()
     write("addr", item->addr, "BusbarSys");
     write("modeId", item->modeId, "BusbarSys");
     write("user", item->user, "BusbarUser");
+    write("moduleType", item->moduleType, "BusbarUser");
 
     QString g = "BusbarStartCfg";
     write("ip_buzzer", item->ip.ip_buzzer, g);

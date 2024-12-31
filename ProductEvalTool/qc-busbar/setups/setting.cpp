@@ -26,9 +26,13 @@ void Setting::initFunSlot()
     ui->groupBox2->setEnabled(false);
     ui->groupBox3->setEnabled(false);
     ui->groupBox4->setEnabled(false);
+    ui->label_17->setEnabled(false);
+    ui->moduleBox->setEnabled(false);
+
     ui->userEdit->setText(mItem->user);
     ui->cntSpin->setValue(mItem->cnt.num);//剩余数量
     ui->orderBox->setValue(mItem->cnt.all);//订单数量
+    ui->moduleBox->setCurrentIndex(mItem->moduleType);
     initType(); mCnt = 0;
 }
 
@@ -82,6 +86,8 @@ void Setting::updateType()
     mItem->user = ui->userEdit->text();
     mItem->cnt.num = ui->cntSpin->value();
     mItem->cnt.all = ui->orderBox->value();
+    mItem->moduleType = ui->moduleBox->currentIndex();
+
 
     sIpCfg *dt = &(mItem->ip); //设备类型
     dt->ip_buzzer = 0;
@@ -145,6 +151,9 @@ void Setting::enabledSlot(bool en)
     ui->groupBox2->setEnabled(en);
     ui->groupBox3->setEnabled(en);
     ui->groupBox4->setEnabled(en);
+    ui->label_17->setEnabled(en);
+    ui->moduleBox->setEnabled(en);
+
     if(!en) {
         en = dataSave();
         if(en) {

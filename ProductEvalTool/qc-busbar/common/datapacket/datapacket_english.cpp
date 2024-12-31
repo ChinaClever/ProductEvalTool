@@ -36,6 +36,8 @@ void datapacket_English::clear(int id)
     pro->uploadPass.clear();
     pro->softwareVersion.clear();
     pro->safe_result.clear();
+
+    pro->moduleSN.clear();
 }
 
 

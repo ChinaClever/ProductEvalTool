@@ -42,6 +42,8 @@ void sDataPacket::clear(int id)
     pro->uploadPass.clear();
     pro->softwareVersion.clear();
     pro->sureItem.clear();
+
+    pro->moduleSN.clear();
 }
 
 

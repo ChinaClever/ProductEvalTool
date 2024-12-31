@@ -220,6 +220,9 @@ struct sCfgItem
     QString sn;//成品序列号
     QString supCheck1;
     QString supCheck2;
+
+    uchar moduleType;//监测模块定制或者自己的模块
+    QString moduleSn;
 };
 
 

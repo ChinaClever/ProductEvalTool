@@ -137,7 +137,6 @@ void Cfg::readQRcode()
 
 void Cfg::writeQRcode()
 {
-    qDebug()<<"writeQRcode"<<item->moduleSn;
     write("on_pn", item->pn, "BusbarSys");
     write("moduleSn", item->moduleSn, "BusbarSys");
     write("user", item->user, "BusbarUser");

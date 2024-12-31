@@ -16,7 +16,7 @@ void datapacket_English::clear(int id)
     ptr->devType.ip[0] = 0;
     ptr->devType.devType = 0;
     ptr->devType.version = 0;
-    ptr->devType.sn.clear();
+    // ptr->devType.sn.clear();
     ptr->devType.dev_type.clear();
     memset(&(ptr->line), 0, sizeof(sObjData));
     memset(&(ptr->env), 0, sizeof(sEnvData));

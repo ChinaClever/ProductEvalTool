@@ -264,8 +264,8 @@ void Home_WorkWid::updateWid()
     mCfgm->user = mPro->order_id;
 
     mCfgm->pn = ui->codeEit->text();//订单号+成品代码
-    if(mPro->product_sn.mid(3,1) != 'B') mPro->type = 1;//判断是智能型还是基本型
-
+    if(mPro->product_sn.mid(3,1) != 'B' && mCfgm->moduleType == 0) mPro->type = 1;//判断是智能型还是基本型
+    else mPro->type = 0;
     if(mPro->type == 1 && (mPro->work_mode == 0 || mPro->work_mode == 1)) //智能型，耐压绝缘、接地测试---解析序列号
     {
         QString mSn = ui->safeSnEit->text();//订单号+序列号
@@ -326,6 +326,10 @@ bool Home_WorkWid::initSerialVol()
     QString str;  mId = 1; mFirst = 1;
     sSerial *coms = &(mCfgm->coms);
     ui->textEdit->clear();
+    if(mPro->type == 0 && mCfgm->modeId != 2){
+        mDev->devType.sn.clear(); mCfgm->moduleSn.clear();
+    }
+
     Cfg::bulid()->writeQRcode();//成品sn===成品代码+订单号
 
     bool ret = false;
@@ -340,6 +344,11 @@ bool Home_WorkWid::initSerialGND()
     QString str;  mId = 1; mFirst = 1;
     sSerial *coms = &(mCfgm->coms);
     ui->textEdit->clear();
+
+    if(mPro->type == 0 && mCfgm->modeId != 2){
+        Cfg::bulid()->readQRcode();
+        mDev->devType.sn = mCfgm->moduleSn;
+    }
     Cfg::bulid()->writeQRcode();
     bool ret = false;
     if(mCfgm->modeId == 2){//母线槽

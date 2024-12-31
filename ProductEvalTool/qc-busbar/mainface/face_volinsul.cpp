@@ -103,10 +103,10 @@ void Face_Volinsul::resultSlot()
 
     if(mCfg->modeId == 2 || mPro->type == 0)
     {
-        mSn->createSn();//设置序列号
+        if(mDev->devType.sn.isEmpty() || mCfg->modeId == 2) mSn->createSn();//设置序列号
         QString str = mDev->devType.sn;
         mPro->moduleSN = str.remove(QRegExp("\\s"));
-
+        mCfg->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
     }
 
     if(mCfg->modeId == 2 && mPro->result != Test_Fail && mItem->work_mode == 0) emit finshSig();

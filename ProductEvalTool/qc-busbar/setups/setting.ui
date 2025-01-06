@@ -816,12 +816,12 @@
        <widget class="QComboBox" name="itemBox">
         <item>
          <property name="text">
-          <string>标准</string>
+          <string>标准(3000V)</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>马来西亚</string>
+          <string>马来西亚(2500V)</string>
          </property>
         </item>
        </widget>

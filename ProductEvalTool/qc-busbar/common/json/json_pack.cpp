@@ -424,7 +424,7 @@ void Json_Pack::FuncData_Lan(int num)
     ePro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
 
     ePro->order_num = mItem->cnt.all;
-
+    ePro->moduleSN = mPro->moduleSN;
     obj.insert("productSn", ePro->product_sn);
     obj.insert("softVersion", ePro->softwareVersion);
     obj.insert("startTime", ePro->testStartTime);

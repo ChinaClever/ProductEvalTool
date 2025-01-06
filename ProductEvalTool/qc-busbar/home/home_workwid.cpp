@@ -228,6 +228,8 @@ void Home_WorkWid::updateResult()
 
     mPower->ClearText();
 
+    if(mItem->work_mode == 2) ui->safeSnEit->clear();
+
     disconnect(mDevSn, &Sn_DevId::TipImageSig , mPower, &Face_Power::ImageSlot);
     disconnect(mDevSn, &Sn_DevId::TipSig , mPower, &Face_Power::TextSlot);
     disconnect(mPowDev, &Power_DevRead::StepSig , mPower, &Face_Power::TextSlot);

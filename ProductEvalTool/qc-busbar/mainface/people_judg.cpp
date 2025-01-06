@@ -91,10 +91,16 @@ void People_judg::writeData_Eng(const QString &str1,const QString &str2, const Q
 
 void People_judg::on_sureButton_clicked()
 {
+    mPro->stepResult.clear(); ePro->stepResult.clear();
+    mPro->stepRequest.clear(); ePro->stepRequest.clear();
+    mPro->test_function.clear(); ePro->test_function.clear();
+    mPro->itemData.clear(); ePro->itemData.clear();
+
     mPacket->delayMs(10);
     this->close(); mPro->issure = 1;
     QString str2 = tr("符合要求"); QString eng2 = tr("Meet a requirement");
     QString str3 = tr("不符合要求"); QString eng3 = tr("Not Satisfiable");
+    mPro->test_step = "功能测试"; ePro->test_step = "Functional testing";
 
     QString str = tr("指示灯检查"); QString eng = tr("Indicator light inspection");
     QString str1 = ui->lcdBox->text();
@@ -116,6 +122,7 @@ void People_judg::on_sureButton_clicked()
     }
 
     str = tr("蜂鸣器开关检查"); eng = tr("Buzzer switch inspection");
+    mPro->test_step = "功能测试"; ePro->test_step = "Functional testing";
     ret = ui->alarmBox->isChecked();
     str1 = ui->alarmBox->text();
     eng1 = tr("Generate an alarm, the buzzer sounds loud and clear");
@@ -126,6 +133,7 @@ void People_judg::on_sureButton_clicked()
     }
 
     str = tr("蜂鸣器开关检查");
+    mPro->test_step = "功能测试"; ePro->test_step = "Functional testing";
     ret = ui->beepBox->isChecked();
     str1 = ui->beepBox->text();
     eng1 = tr("Release the alarm and stop the buzzer sound");

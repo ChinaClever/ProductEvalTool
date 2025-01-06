@@ -109,6 +109,12 @@ void Face_Volinsul::resultSlot()
         mCfg->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
     }
 
+    updateData();
+    if(mPro->online) {
+        mPacket->delayMs(20);
+        Json_Pack::bulid()->SendJson_Safe();
+    }
+
     if(mCfg->modeId == 2 && mPro->result != Test_Fail && mItem->work_mode == 0) emit finshSig();
     if(mCfg->modeId == 2 && mPro->result != Test_Fail && mItem->work_mode == 0){
         while(1)
@@ -121,8 +127,8 @@ void Face_Volinsul::resultSlot()
         }
     }
 
-    if(mCfg->modeId == 1 && mPro->result != Test_Fail && mItem->work_mode == 1 && mPro->type == 0) emit overSig();
-    if(mCfg->modeId == 1 && mPro->result != Test_Fail && mItem->work_mode == 1 && mPro->type == 0){
+    if(mPro->result != Test_Fail && mItem->work_mode == 1 && mPro->type == 0) emit overSig();
+    if(mPro->result != Test_Fail && mItem->work_mode == 1 && mPro->type == 0){
         while(1)
         {
             mPacket->delay(1);
@@ -164,13 +170,7 @@ void Face_Volinsul::resultSlot()
     }
     mPacket->updatePro(str, res);
 
-    updateData();
-
     mDataSave->saveTestData();
-    if(mPro->online) {
-        mPacket->delayMs(20);
-        Json_Pack::bulid()->SendJson_Safe();
-    }
 
     if(mPro->result == Test_Fail) res = false;
     else {res = true;}

@@ -49,13 +49,12 @@ void Face_Volinsul::startSlot()
 
 }
 
-bool Face_Volinsul::printer()
+bool Face_Volinsul::printer(QString url, int port)
 {
-    QString method = "Integration/Busbar-Busway/Execute";
     QString ip = "192.168.1.16";
     bool ret = true;
     QString str = tr("标签打印 "); QString str1;
-        if(mPro->result != Test_Fail){
+        // if(mPro->result != Test_Fail){
         sBarTend it;
         QString mPn = mCfg->pn;//订单号+成品代码
         QStringList list = mPn.split("+");
@@ -75,18 +74,18 @@ bool Face_Volinsul::printer()
         //     if(it.sn.isEmpty()) str += tr(" 读取到序列号SN为空 ");
         // }
         if(ret){
-            str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it, 81);
+            str1 = Printer_BarTender::bulid(this)->http_post(url, ip, it, port);
             if(str1 == "Success") {
                 ret = true;
             }else {
-                str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it, 81);
+                str1 = Printer_BarTender::bulid(this)->http_post(url, ip, it, port);
                 if(str1 == "Success") {
                     ret = true;
                 }else ret = false;
             }
         }
         if(ret) str += tr("正常"); else str += tr("错误");
-    } else str = tr("因测试未通过，标签未打印");
+    // } else str = tr("因测试未通过，标签未打印");
     return mPacket->updatePro(str, ret);
 }
 
@@ -111,7 +110,7 @@ void Face_Volinsul::resultSlot()
 
     updateData();
     if(mPro->online) {
-        mPacket->delayMs(20);
+        mPacket->delayMs(5);
         Json_Pack::bulid()->SendJson_Safe();
     }
 
@@ -152,7 +151,10 @@ void Face_Volinsul::resultSlot()
     } else {
         if((mCfg->modeId == 2 && mPro->work_mode == 0)|| (mPro->work_mode == 1 && mPro->type == 0))//母线槽与基本型始端箱和插接箱只需安规测试，接地测试成功打印标签
         {
-            res = printer();
+            QString method; int port = 0;
+            if(mCfg->modeId == 2) {method = "Integration/Busbar-Busway/Execute"; port = 81;}
+            else {method = "Integration/Busbar-Product/Execute"; port = 80;}
+            res = printer(method, port);
             if(res) {
                 str += tr("通过");mPro->uploadPassResult = 1;
             }else {
@@ -208,7 +210,7 @@ void Face_Volinsul::updateData()
     if(mPro->work_mode == 1){
          if(mPro->gndParm.size())
          {
-                mPro->itemRequest = tr("始端箱或插接箱的接地测试（不接电流表），分别对以下测试点输入电流 %1A，%2s：").arg(mPro->gndParm.at(2)).arg(mPro->gndParm.at(8))
+                mPro->itemRequest = tr("始端箱或插接箱的接地测试（不接电流表），分别对以下测试点输入电流 %1A，%2s：").arg(mPro->gndParm.at(3)).arg(mPro->gndParm.at(2))
                              + tr("PE-箱体面壳接地螺钉，接地电阻<100mΩ。");
 
                 ePro->itemRequest =tr("Grounding test of the starting box or plug-in box (without an ammeter), input current to the following test points respectively %1A，%2s：").arg(mPro->gndParm.at(2)).arg(mPro->gndParm.at(8))

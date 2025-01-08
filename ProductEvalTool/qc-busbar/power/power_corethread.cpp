@@ -826,7 +826,7 @@ bool Power_CoreThread::printer()
     QString ip = "192.168.1.16";
     bool ret = true;
     QString str = tr("标签打印 "); QString str1;
-    if(mPro->result != Test_Fail){
+    // if(mPro->result != Test_Fail){
         sBarTend it;
         QString mPn = mItem->pn;//订单号+成品代码
         QStringList list = mPn.split("+");
@@ -861,7 +861,7 @@ bool Power_CoreThread::printer()
             }
         }
         if(ret) str += tr("正常"); else str += tr("错误");
-    } else str = tr("因测试未通过，标签未打印");
+    // } else str = tr("因测试未通过，标签未打印");
     return mPacket->updatePro(str, ret);
 }
 

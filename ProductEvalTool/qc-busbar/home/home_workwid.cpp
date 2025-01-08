@@ -266,8 +266,11 @@ void Home_WorkWid::updateWid()
     mCfgm->user = mPro->order_id;
 
     mCfgm->pn = ui->codeEit->text();//订单号+成品代码
-    if(mPro->product_sn.mid(3,1) != 'B' && mCfgm->moduleType == 0) mPro->type = 1;//判断是智能型还是基本型
-    else mPro->type = 0;
+    if(mCfgm->modeId != 2){
+        if(mPro->product_sn.mid(3,1) != 'B' && mCfgm->moduleType == 0) mPro->type = 1;//判断是智能型还是基本型
+        else mPro->type = 0;
+    }else {mPro->type = 2;}
+
     if(mPro->type == 1 && (mPro->work_mode == 0 || mPro->work_mode == 1)) //智能型，耐压绝缘、接地测试---解析序列号
     {
         QString mSn = ui->safeSnEit->text();//订单号+序列号
@@ -416,11 +419,7 @@ void Home_WorkWid::ItemStatus()
     switch (mItem->work_mode) {
     case 0: {mPro->test_step = "安规测试"; mPro->test_item = ui->vol_insulBtn->text();
              ePro->test_step = "Safety testing"; ePro->test_item = "Voltage withstand/insulation test";
-             ui->acwLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");
-
-             // mPro->itemRequest = "交流耐压：1、PE-N/L1/L2/L3，2、N-PE/L1/L2/L3，3、L1-PE/N/L2/L3，4、L2-PE/N/L1/L3，5、L3-PE/N/L1/L2，漏电流≤5mA；绝缘电阻：N-PE/L1/L2/L3，绝缘电阻 >10MΩ";
-             // ePro->itemRequest = "AC withstand voltage:1、PE-N/L1/L2/L3,2、N-PE/L1/L2/L3,3、L1-PE/N/L2/L3,4、L2-PE/N/L1/L3,5、L3-PE/N/L1/L2,Leakage current <5mA; Insulation resistance:N-PE/L1/L2/L3,insulation resistance>10MΩ";
-             // break;
+             ui->acwLab->setStyleSheet("background-color:yellow; color:rgb(0, 0, 0);");          
 
              break;
     }
@@ -596,7 +595,10 @@ void Home_WorkWid::on_snprintBtn_clicked()
     if(mPro->step == Test_End){
         if(mCfgm->modeId == 2 || mPro->type == 0)//母线槽/基本型
         {
-            if(mItem->work_mode == 1) mVolInsul->printer();
+            QString method; int port = 0;
+            if(mCfgm->modeId == 2) {method = "Integration/Busbar-Busway/Execute"; port = 81;}
+            else {method = "Integration/Busbar-Product/Execute"; port = 80;}
+            if(mItem->work_mode == 1) mVolInsul->printer(method, port);
         }else if(mPro->type == 1){
             if(mItem->work_mode == 2) mPowThread->printer();
         }

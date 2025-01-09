@@ -22,7 +22,7 @@ public:
     // void progressSlot();
     void startSlot();
     void resultSlot();
-    bool printer(QString url, int port);
+    bool printer(QString ip, QString url, int port);
     void updateData();
 signals:
     void StatusSig(bool ret);

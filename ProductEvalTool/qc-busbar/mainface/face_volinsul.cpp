@@ -49,9 +49,9 @@ void Face_Volinsul::startSlot()
 
 }
 
-bool Face_Volinsul::printer(QString url, int port)
+bool Face_Volinsul::printer(QString ip ,QString url, int port)
 {
-    QString ip = "192.168.1.16";
+    // QString ip = "192.168.1.13";
     bool ret = true;
     QString str = tr("标签打印 "); QString str1;
         // if(mPro->result != Test_Fail){
@@ -151,10 +151,11 @@ void Face_Volinsul::resultSlot()
     } else {
         if((mCfg->modeId == 2 && mPro->work_mode == 0)|| (mPro->work_mode == 1 && mPro->type == 0))//母线槽与基本型始端箱和插接箱只需安规测试，接地测试成功打印标签
         {
-            QString method; int port = 0;
-            if(mCfg->modeId == 2) {method = "Integration/Busbar-Busway/Execute"; port = 81;}
-            else {method = "Integration/Busbar-Product/Execute"; port = 80;}
-            res = printer(method, port);
+            QString method; int port = 0; QString ip;
+            if(mCfg->modeId == 2) {method = "Integration/Busbar-Busway/Execute"; port = 81; ip = "192.168.1.18"; }
+            else { ip = "192.168.1.13"; method = "Integration/Busbar-Product/Execute"; port = 80;}
+
+            res = printer(ip, method, port);
             if(res) {
                 str += tr("通过");mPro->uploadPassResult = 1;
             }else {

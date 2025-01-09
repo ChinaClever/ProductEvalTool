@@ -823,7 +823,7 @@ void Power_CoreThread::clearStartEleSlot()
 bool Power_CoreThread::printer()
 {
     QString method = "Integration/Busbar-Product/Execute";
-    QString ip = "192.168.1.16";
+    QString ip = "192.168.1.13";
     bool ret = true;
     QString str = tr("标签打印 "); QString str1;
     // if(mPro->result != Test_Fail){

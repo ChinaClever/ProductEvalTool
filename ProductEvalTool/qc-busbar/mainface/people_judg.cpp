@@ -40,19 +40,19 @@ void People_judg::initData()
         ui->funcBox_3->hide();
         ui->funcBox_4->hide();
         ui->funcBox_5->hide();
-        ui->testBox->show();
-        ui->label_5->show();
+        // ui->testBox->show();
+        // ui->label_5->show();
     }else if(mItem->modeId == INSERT_BUSBAR && mPro->type == 1) {
         ui->assemBox_10->hide();
         ui->funcBox_2->hide();
         ui->funcBox_3->show();
         ui->funcBox_4->show();
         ui->funcBox_5->show();
-        ui->testBox->show();
-        ui->label_5->show();
+        // ui->testBox->show();
+        // ui->label_5->show();
     } else if(mItem->modeId == INSERT_BUSBAR && mPro->type == 0) {//基本型没有极性检查
-        ui->testBox->hide();
-        ui->label_5->hide();
+        // ui->testBox->hide();
+        // ui->label_5->hide();
     }
 }
 void People_judg::writeData(const QString &str1,const QString &str2, const QString &str3,bool pass)

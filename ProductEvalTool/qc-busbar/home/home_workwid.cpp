@@ -596,7 +596,7 @@ void Home_WorkWid::on_snprintBtn_clicked()
         if(mCfgm->modeId == 2 || mPro->type == 0)//母线槽/基本型
         {
             QString method; int port = 0; QString ip;
-            if(mCfgm->modeId == 2) {method = "Integration/Busbar-Busway/Execute"; port = 81; ip = "192.168.1.18";}
+            if(mCfgm->modeId == 2) {method = "Integration/Busbar-Busway/Execute"; port = 81; ip = "192.168.1.100";}
             else {method = "Integration/Busbar-Product/Execute"; port = 80; ip = "192.168.1.13";}
             if((mItem->work_mode == 1 && mPro->type == 0) || mCfgm->modeId == 2) mVolInsul->printer(ip, method, port);
         }else if(mPro->type == 1){

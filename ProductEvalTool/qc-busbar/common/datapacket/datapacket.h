@@ -59,9 +59,10 @@ enum sTestStep{
 
 };
 enum sTestFile{
-    GNDFile = 1,
+
     ACWFile = 1,
     IRFile = 2,
+    GNDFile = 3,
     ACWFile_MAL
 
 };

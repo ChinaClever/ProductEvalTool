@@ -152,7 +152,7 @@ void Face_Volinsul::resultSlot()
         if((mCfg->modeId == 2 && mPro->work_mode == 0)|| (mPro->work_mode == 1 && mPro->type == 0))//母线槽与基本型始端箱和插接箱只需安规测试，接地测试成功打印标签
         {
             QString method; int port = 0; QString ip;
-            if(mCfg->modeId == 2) {method = "Integration/Busbar-Busway/Execute"; port = 81; ip = "192.168.1.18"; }
+            if(mCfg->modeId == 2) {method = "Integration/Busbar-Busway/Execute"; port = 81; ip = "192.168.1.100"; }
             else { ip = "192.168.1.13"; method = "Integration/Busbar-Product/Execute"; port = 80;}
 
             res = printer(ip, method, port);

@@ -76,7 +76,7 @@ bool Power_DevRead::readDevBus()
                 QString str = mIpSnmp->readBreakValue();
                 if(str == "2")
                 {
-                     str = tr("防雷告警"); mLogs->updatePro(str, false);
+                     str = tr("光栅告警，附近请勿站人！"); mLogs->updatePro(str, false);
                     ret = false;
                 }else if(str == "1")
                 {

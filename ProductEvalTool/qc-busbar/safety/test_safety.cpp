@@ -344,15 +344,18 @@ void Test_safety::run()
     testReady();
 
     if(!mItem->work_mode) {
+        mTrans->sendCtrlGnd(0);
         mItem->progress.allNum = 22;
         QString recv = "";
         testIR(recv); testACW(recv);   //先绝缘再耐压
         mPro->oning = false;
         emit overSig();
     } else {
+        mTrans->sendCtrlGnd(16);
         mItem->progress.allNum = 10;
         QString recv = "";
-        testGND(recv);  
+        testGND(recv);
+        mTrans->sendCtrlGnd(0);
         emit overSig();
     }
 }

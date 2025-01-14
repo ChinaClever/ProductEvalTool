@@ -1,7 +1,10 @@
 ﻿#ifndef TEST_TRANSTHREAD_H
 #define TEST_TRANSTHREAD_H
-
+#include <iomanip>
+#include <sstream>
 #include "testdatasave.h"
+// #include <QString>
+// #include <QDebug>
 
 enum TestResisEnum {
     ConnectReady = 1,//1
@@ -23,6 +26,11 @@ public:
     QString sentStep(int step, int i , QString & command , int extra = 1);
     QString sentResisCommand(int command, int extra);
     bool readDevBus();
+    void sendCtrlGnd(int command);
+    void recvPolarity(int command);
+
+    ushort calccrc (ushort crc, uchar crcbuf);
+    ushort rtu_crc(const uchar *buf, int len);
 
 signals:
 

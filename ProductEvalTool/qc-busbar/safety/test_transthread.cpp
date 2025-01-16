@@ -151,8 +151,6 @@ void Test_TransThread::sendCtrlGnd(int command)
 
     if(ret>0) {str += tr("成功"); mPacket->updatePro(str, true);}
     else {str += tr("失败"); mPacket->updatePro(str, false);}
-
-    mPacket->updatePro(recv.toHex()+"recv", false);
 }
 
 
@@ -201,7 +199,8 @@ bool Test_TransThread::recvPolarity()
         //单相设备-----------------------------
         int volValue = 0;  int loop = mItem->si.loopNum/3;
         if(mItem->si.si_phaseflag == 0){
-            for(int i=0;i<3;i +=4){
+            for(int i=0;i<9;i +=4){
+                qDebug()<<"ffffffff"<<(Intresult.at(i)*3 /100);
                 volValue = Intresult.at(i)*3 /100;// result.at(1);
                 if(i==0){
                     if(volValue <15) { res = false; mPacket->updatePro("第一组单相，A相线序故障", res); }

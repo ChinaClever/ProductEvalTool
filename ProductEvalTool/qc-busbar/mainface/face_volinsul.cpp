@@ -221,7 +221,7 @@ void Face_Volinsul::updateData()
     if(mPro->work_mode == 1){
          if(mPro->gndParm.size())
          {
-                mPro->itemRequest = tr("始端箱或插接箱的接地测试（不接电流表），分别对以下测试点输入电流 %1A，%2s：").arg(mPro->gndParm.at(3)).arg(mPro->gndParm.at(2))
+                mPro->itemRequest = tr("始端箱或插接箱的接地测试（不接电流表），分别对以下测试点输入电流 %1A，%2s：").arg(mPro->gndParm.at(2)).arg(mPro->gndParm.at(6))
                              + tr("PE-箱体面壳接地螺钉，接地电阻<100mΩ。");
 
                 ePro->itemRequest =tr("Grounding test of the starting box or plug-in box (without an ammeter), input current to the following test points respectively %1A，%2s：").arg(mPro->gndParm.at(2)).arg(mPro->gndParm.at(8))

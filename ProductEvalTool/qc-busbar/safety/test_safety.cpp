@@ -162,7 +162,7 @@ bool Test_safety::startTest(sTestDataItem &item,QString & recv , const QString &
 
 //=================================================================
     QString str; mTestStep = TestParm;
-    if(mStep == GNDTest) mTestStep = GndParm;
+//    if(mStep == GNDTest) mTestStep = GndParm;
     for(int i = 0; i < stepTotal ; i++)
     {
         recv = mTrans->sentStep(mStep , mTestStep , sendStr , i+1);//LS ?+回车 连接命令 1
@@ -364,7 +364,7 @@ void Test_safety::run()
         mTrans->sendCtrlGnd(0);
         mItem->progress.allNum = 22;
         QString recv = "";
-//        testIR(recv); testACW(recv);   //先绝缘再耐压
+        testIR(recv); testACW(recv);   //先绝缘再耐压
         if(mCfg->modeId != 2) testPolar();  //母线槽除外，其它都要做极性测试
         mPro->oning = false;
         emit overSig();

@@ -220,6 +220,7 @@ int SerialPort::read(QByteArray &array, int secs)
                 msleep(350);
                 QWriteLocker locker(&mRwLock);
                 array += mSerialData;
+                qDebug()<<"rtn"<<array;
                 mSerialData.clear();
                 break;
             } else {                

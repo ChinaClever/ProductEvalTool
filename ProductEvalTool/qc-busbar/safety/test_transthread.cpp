@@ -139,11 +139,14 @@ QByteArray Test_TransThread::sendCmd(int command)
 //串口3控制器
 void Test_TransThread::sendCtrlGnd(int command)
 {
+    qDebug()<<"1111111";
     QByteArray arry = sendCmd(command);
+    qDebug()<<"2222222";
     QByteArray recv;
     int ret = mSerialCtrl->transmit(arry,recv,20);
     if(!ret) mSerialCtrl->transmit(arry,recv,20);
     recv.clear();
+    qDebug()<<"33333333";
     QString str = tr("控制器指令%1，ret = %2").arg(command).arg(ret);
 
     if(ret>0) {str += tr("成功"); mPacket->updatePro(str, true);}
@@ -156,27 +159,27 @@ void Test_TransThread::sendCtrlGnd(int command)
 //串口4---极性测试  010300180019
 bool Test_TransThread::recvPolarity()
 {
-    sendCtrlGnd(0); Delay_MSec(1000); sendCtrlGnd(128);
+    sendCtrlGnd(0); Delay_MSec(2000); sendCtrlGnd(128);
     uchar initialCmd[] = {0x01, 0x03, 0x00, 0x18, 0x00, 0x19};
     int cmdLength = sizeof(initialCmd) / sizeof(initialCmd[0]);
     QByteArray cmdArray(reinterpret_cast<const char*>(initialCmd), cmdLength);
     ushort crc = rtu_crc(reinterpret_cast<const uchar*>(cmdArray.constData()), cmdArray.size());
     cmdArray.append(crc & 0xFF); // 低字节
     cmdArray.append(crc >> 8);   // 高字节
-
+    qDebug()<<"44444444";
     QByteArray recv;
     int ret = mSerialPolar->transmit(cmdArray,recv,20);
     if(!ret){
         ret = mSerialPolar->transmit(cmdArray,recv,20);
         if(!ret) return 0;
     }
-    mPacket->updatePro(recv.toHex()+"recv", false);
+    qDebug()<<"5555555"<<recv.toHex();
 
-    int size = recv.size(); QString str;
+    int size = recv.size(); QString str = recv.toHex();
 
-    for (int i = 0; i < size; ++i) {
-        str.append(QString::number(static_cast<unsigned char>(recv.at(i)), 16).rightJustified(2, '0').toUpper());
-    }
+//    for (int i = 0; i < size; ++i) {
+//        str.append(QString::number(static_cast<unsigned char>(recv.at(i)), 16).rightJustified(2, '0').toUpper());
+//    }
     recv.clear();
     int start = 6; // 从第七个字符开始（注意：QString的索引从0开始）
     int length = 4; // 长度为4
@@ -184,16 +187,21 @@ bool Test_TransThread::recvPolarity()
     QStringList result;
     QList<int> Intresult;
     bool res = true;
+    qDebug()<<"6666666666"<<str.size()<<str;
 
-    if(str.size()>6) {
+    if(str.size()>42) {
         for (int i = start; i <= (start + length*9); i += length) {
+
+            qDebug()<<"aaaaaaa"<<(start + length*9);
             QString subString = str.mid(i, length);
             result.append(subString);
             bool ok;
+            qDebug()<<"cccccc"<<subString<<result.at(i)<<result.at(i).toInt(&ok, 16);
             int value = result.at(i).toInt(&ok, 16);
             Intresult.append(value);
+            qDebug()<<"bbbbbbbb"<<i<<value<<subString;
         }
-
+        qDebug()<<"7777777777";
         //单相设备-----------------------------
         int volValue = 0;  int loop = mItem->si.loopNum/3;
         if(mItem->si.si_phaseflag == 0){
@@ -229,7 +237,7 @@ bool Test_TransThread::recvPolarity()
     }else {
         res = false; mPacket->updatePro("极性采集数据失败", false);
     }
-
+    qDebug()<<"888888888";
     sendCtrlGnd(0);
 
     return res;

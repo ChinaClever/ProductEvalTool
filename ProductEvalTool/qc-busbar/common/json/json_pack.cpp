@@ -55,7 +55,7 @@ void Json_Pack::head(QJsonObject &obj)
         obj.insert("testResult", QString::number(mPro->safe_result.at(i)));
         obj.insert("testRequest",list.at(i));
         obj.insert("testItem", step.at(i));
-        obj.insert("testProcess" ,mPro->itemData.at(i));
+        obj.insert("testProcess" ,mPro->safeData.at(i));
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 
@@ -124,7 +124,7 @@ void Json_Pack::head_English(QJsonObject &obj)
     {
         obj.insert("testRequest",list.at(i));
         obj.insert("testItem", step.at(i));
-        obj.insert("testProcess" ,ePro->itemData.at(i));
+        obj.insert("testProcess" ,ePro->safeData.at(i));
         obj.insert("testResult" ,QString::number(ePro->safe_result.at(i)));
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }

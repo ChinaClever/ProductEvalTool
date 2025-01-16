@@ -234,10 +234,10 @@ bool Test_safety::testGND( QString & recv)//acw
         appendResult(item);       
     }
     QString str = tr("接地测试结果：%1 mΩ").arg(mPro->gnd);
-    mPacket->updatePro(str, true); mPro->itemData << str;
+    mPacket->updatePro(str, true); mPro->safeData << str;
     mPro->safe_result << item.status; ePro->safe_result << item.status;
     QString str1 = tr("Grounding test results:%1 mΩ").arg(mPro->gnd);
-    ePro->itemData << str1; mItem->sn.gnd.clear();
+    ePro->safeData << str1; mItem->sn.gnd.clear();
 
     return ret;
 }
@@ -280,10 +280,10 @@ bool Test_safety::testIR(QString & recv)
 
     }
     QString str = tr("绝缘测试结果：%1 MΩ").arg(mPro->ir);
-    mPacket->updatePro(str, true); mPro->itemData << str;
+    mPacket->updatePro(str, true); mPro->safeData << str;
     mPro->safe_result << item.status; ePro->safe_result << item.status;
     QString str1 = tr("Insulation test results:%1 MΩ").arg(mPro->ir);
-    ePro->itemData << str1; mItem->sn.ir.clear();
+    ePro->safeData << str1; mItem->sn.ir.clear();
 
 
     return ret;
@@ -330,10 +330,10 @@ bool Test_safety::testACW(QString & recv)
         appendResult(item);       
     }
     QString str = tr("交流耐压测试结果：%1 mA").arg(mPro->acw);
-    mPacket->updatePro(str, true); mPro->itemData << str;
+    mPacket->updatePro(str, true); mPro->safeData << str;
     mPro->safe_result << item.status; ePro->safe_result << item.status;
     QString str1 = tr("AC withstand voltage test results:%1 mA").arg(mPro->acw);
-    ePro->itemData << str1; mItem->sn.acw.clear();
+    ePro->safeData << str1; mItem->sn.acw.clear();
 
     return ret;
 }

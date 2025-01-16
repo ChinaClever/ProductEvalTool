@@ -89,16 +89,6 @@ QString Test_TransThread::sentResisCommand(int command , int extra)
     return str ;
 }
 
-// void rightHexPadded(int command, int totalLength = 2) {
-//     std::stringstream ss;
-//     ss << std::hex << std::setw(totalLength) << std::setfill('0') << command;
-//     std::string hexStr = ss.str();
-//     // 如果totalLength大于command的十六进制表示长度，则字符串会被填充前导零。
-//     // 我们只需要返回这个字符串，因为它已经是我们需要的长度了。
-//     // 但为了明确起见，我们仍然可以取最右边的totalLength个字符（虽然这通常是多余的）。
-//     return hexStr.substr(hexStr.size() - totalLength);
-// }
-
 ushort Test_TransThread::calccrc (ushort crc, uchar crcbuf)
 {
     uchar x, kkk=0;

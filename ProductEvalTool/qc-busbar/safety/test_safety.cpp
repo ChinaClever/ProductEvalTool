@@ -362,7 +362,7 @@ void Test_safety::run()
 
     if(!mItem->work_mode) {
         mTrans->sendCtrlGnd(0);
-        mItem->progress.allNum = 22;
+        mItem->progress.allNum = 15;
         QString recv = "";
         testIR(recv); testACW(recv);   //先绝缘再耐压
         if(mCfg->modeId != 2) testPolar();  //母线槽除外，其它都要做极性测试
@@ -370,7 +370,7 @@ void Test_safety::run()
         emit overSig();
     } else {
         mTrans->sendCtrlGnd(16);
-        mItem->progress.allNum = 10;
+        mItem->progress.allNum = 8;
         QString recv = "";
         testGND(recv);
         mTrans->sendCtrlGnd(0);

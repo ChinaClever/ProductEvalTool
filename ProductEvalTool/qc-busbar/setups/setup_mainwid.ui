@@ -171,10 +171,8 @@
          </font>
         </property>
         <property name="text">
-         <string>
-
-耐压绝缘测试仪串口
-(波特率 38400)</string>
+         <string>安规测试串口
+(波特率 9600)</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -190,10 +188,8 @@
          </font>
         </property>
         <property name="text">
-         <string>
-
-接地测试仪串口
-(波特率 38400)</string>
+         <string>极性测试串口
+(波特率 9600)</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -209,10 +205,8 @@
          </font>
         </property>
         <property name="text">
-         <string>
-
-设备串口
-(波特率 57600)</string>
+         <string>控制器串口
+(波特率 9600)</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>

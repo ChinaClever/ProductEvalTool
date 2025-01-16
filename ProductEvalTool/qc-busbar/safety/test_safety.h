@@ -32,7 +32,7 @@ protected:
     bool testIR(QString &recv);
     bool testACW(QString &recv);
     bool startTest(sTestDataItem &item,QString & recv , const QString &test , int step , int &stepTotal);
-
+    bool testPolar();
 
 private:
     int mItemId;

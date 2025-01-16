@@ -1,5 +1,8 @@
 ﻿#include "test_transthread.h"
 #include <cstring> // 为了使用 std::memcpy
+
+#define CMD_SIZE 8
+
 Test_TransThread::Test_TransThread(QObject *parent) : QObject(parent)
 {
      QTimer::singleShot(300,this,SLOT(initFunSLot()));
@@ -8,8 +11,13 @@ Test_TransThread::Test_TransThread(QObject *parent) : QObject(parent)
 
 void Test_TransThread::initFunSLot()
 {
-    mSerial = Cfg::bulid()->item->coms.ser1;
-    mSerialGND  = Cfg::bulid()->item->coms.ser2;
+    mSerial = Cfg::bulid()->item->coms.ser1;//串口5
+    mSerialPolar  = Cfg::bulid()->item->coms.ser2;//串口4
+    mSerialCtrl = Cfg::bulid()->item->coms.ser3;//串口3
+
+
+    mItem = Cfg::bulid()->item;
+    mPacket = sDataPacket::bulid();
 }
 
 void Delay_MSec(unsigned int msec)
@@ -120,44 +128,133 @@ ushort Test_TransThread::rtu_crc(const uchar *buf, int len)
     return crc;
 }
 
-void Test_TransThread::sendCtrlGnd(int command)
+QByteArray Test_TransThread::sendCmd(int command)
 {
-    uchar initialCmd[] = {0x01, 0x0F, 0x00, 0x00, 0x00, 0x08, 0x01};
-    int cmdLength = sizeof(initialCmd) / sizeof(initialCmd[0]);
-
-    QString hexCommand = QString::number(command, 16).toUpper().rightJustified(2, '0');
-    QByteArray cmdArray(reinterpret_cast<const char*>(initialCmd), cmdLength);
+    uchar initialCmd[CMD_SIZE] = {0x01, 0x0F, 0x00, 0x00, 0x00, 0x08, 0x01};
+    QString hexCommand = QString::number(command, 16).rightJustified(2, '0');
 
     bool ok;
-    uchar commandByte = hexCommand.right(2).toInt(&ok, 16); // 只取前两个字符进行转换
-    if (ok && commandByte <= 0xFF) { // 检查转换是否成功且值在 uchar 范围内
-        cmdArray.append(commandByte);
-    } else {
-        qDebug() << "Failed to convert command to hex byte.";
-    }
+    int decimalNumber = hexCommand.toInt(&ok,16);
+    uchar value = static_cast<uchar>(decimalNumber);
+    initialCmd[sizeof(initialCmd)-1] = static_cast<int>(value);
 
-    // 计算 CRC 并添加到数组中（注意：这里 CRC 的计算应该基于修改后的数组大小）
+    int cmdLength = sizeof(initialCmd) / sizeof(initialCmd[0]);
+    QByteArray cmdArray(reinterpret_cast<const char*>(initialCmd), cmdLength);
+
     ushort crc = rtu_crc(reinterpret_cast<const uchar*>(cmdArray.constData()), cmdArray.size());
+    cmdArray.append(crc & 0xFF); // 低字节
+    cmdArray.append(crc >> 8);   // 高字节
 
-    cmdArray.append(static_cast<uchar>(crc & 0xFF)); // 低字节
-    cmdArray.append(static_cast<uchar>(crc >> 8));   // 高字节
+    qDebug() << "cmdArray"<<cmdArray;
 
-    // int size = cmdArray.size();
-    // std::vector<uchar> ucharArray(size);
-
-    // // 将 QByteArray 中的数据复制到 uchar 数组中
-    // for (int i = 0; i < size; ++i) {
-    //     ucharArray[i] = static_cast<uchar>(cmdArray.at(i));
-    // }
-
-    QByteArray recv;
-
-    mSerial->transmit(cmdArray,recv,10);
-
-    qDebug() << cmdArray;
+    return cmdArray;
 }
 
-void Test_TransThread::recvPolarity(int command)
+//串口3控制器
+void Test_TransThread::sendCtrlGnd(int command)
 {
+    QByteArray arry = sendCmd(command);
+    QByteArray recv;
+    int ret = mSerialCtrl->transmit(arry,recv,10);
+    if(!ret) mSerialCtrl->transmit(arry,recv,10);
+    QString str = tr("控制器指令%1，ret = %2").arg(command).arg(ret);
 
+    if(ret>0) {str += tr("成功"); mPacket->updatePro(str, true);}
+    else {str += tr("失败"); mPacket->updatePro(str, false);}
+
+}
+
+
+//串口4---极性测试  010300180019
+bool Test_TransThread::recvPolarity()
+{
+    sendCtrlGnd(0); Delay_MSec(500); sendCtrlGnd(128);
+    uchar initialCmd[] = {0x01, 0x03, 0x00, 0x18, 0x00, 0x19};
+    int cmdLength = sizeof(initialCmd) / sizeof(initialCmd[0]);
+    QByteArray cmdArray(reinterpret_cast<const char*>(initialCmd), cmdLength);
+    ushort crc = rtu_crc(reinterpret_cast<const uchar*>(cmdArray.constData()), cmdArray.size());
+    cmdArray.append(crc & 0xFF); // 低字节
+    cmdArray.append(crc >> 8);   // 高字节
+
+    QByteArray recv;
+    int ret = mSerialPolar->transmit(cmdArray,recv,10);
+    if(!ret){
+        ret = mSerialPolar->transmit(cmdArray,recv,10);
+        if(!ret) return 0;
+    }
+
+    int size = recv.size(); QString str;
+
+    for (int i = 0; i < size; ++i) {
+        str.append(QString::number(static_cast<unsigned char>(recv.at(i)), 16).rightJustified(2, '0').toUpper());
+    }
+
+    int start = 6; // 从第七个字符开始（注意：QString的索引从0开始）
+    int length = 4; // 长度为4
+
+    QStringList result;
+    QList<int> Intresult;
+
+    for (int i = start; i <= (start + length*9); i += length) {
+        QString subString = str.mid(i, length);
+        result.append(subString);
+        bool ok;
+        int value = result.at(i).toInt(&ok, 16);
+        Intresult.append(value);
+    }
+
+    //单相设备-----------------------------
+    int volValue = 0; bool res = true; int loop = mItem->si.loopNum/3;
+    if(mItem->si.si_phaseflag == 0){
+        for(int i=0;i<3;i +=4){
+            volValue = Intresult.at(i)*3 /100;// result.at(1);
+            if(i==0){
+                if(volValue <15) { res = false; mPacket->updatePro("第一组单相，A相线序故障", res); }
+            }else if(i==4){
+                if(volValue <8) {res = false; mPacket->updatePro("第二组单相，B相线序故障", res); }
+            }else if(i==8){
+                if(volValue <3) {res = false; mPacket->updatePro("第三组单相，C相线序故障", res); }
+            }
+        }
+    }else {
+        QString error;
+        for(int i=0;i<3*loop;i++){
+            volValue = Intresult.at(i)*3 /100;// result.at(1);
+            if((i==0) || (i==3) ||(i==6)){
+                if(volValue <15) {
+                    res = false; error = tr("第%1组单相，A相线序故障").arg(transStr(i));
+                    mPacket->updatePro(error, res); }
+            }else if((i==1) || (i==4) ||(i==7)){
+                if(volValue <8) {
+                    res = false; error = tr("第%1组单相，B相线序故障").arg(transStr(i));
+                    mPacket->updatePro(error, res); }
+            }else if((i==2) || (i==5) ||(i==8)){
+                if(volValue <3) {
+                    res = false; error = tr("第%1组单相，C相线序故障").arg(transStr(i));
+                    mPacket->updatePro(error, res); }
+            }
+        }
+    }
+    sendCtrlGnd(0);
+
+    return res;
+}
+
+QString Test_TransThread::transStr(int command)
+{
+    QString str;
+    switch(command){
+    case 0: str = "一"; break;
+    case 1: str = "一"; break;
+    case 2: str = "一"; break;
+    case 3: str = "二"; break;
+    case 4: str = "二"; break;
+    case 5: str = "二"; break;
+    case 6: str = "三"; break;
+    case 7: str = "三"; break;
+    case 8: str = "三"; break;
+    default: break;
+    }
+
+    return str;
 }

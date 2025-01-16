@@ -125,26 +125,26 @@ bool Test_safety::startTest(sTestDataItem &item,QString & recv , const QString &
 {
     QString sendStr = "";
 
-    mTestStep = Reset;
-    item.subItem = tr("%1复位").arg(test);
-    item.status = true;
-    recv = mTrans->sentStep(mStep , mTestStep , sendStr);//RESET+回车 连接命令 1
-    appendResult(item);
+    // mTestStep = Reset;
+    // item.subItem = tr("%1复位").arg(test);
+    // item.status = true;
+    // recv = mTrans->sentStep(mStep , mTestStep , sendStr);//RESET+回车 连接命令 1
+    // appendResult(item);
 
-    mTestStep = Reset;
-    recv = mTrans->sentStep(mStep , mTestStep , sendStr);//RESET+回车 连接命令 1
-    appendResult(item);
+    // mTestStep = Reset;
+    // recv = mTrans->sentStep(mStep , mTestStep , sendStr);//RESET+回车 连接命令 1
+    // appendResult(item);
 
-    mTestStep = ConnectReady;
-    recv = mTrans->sentStep(mStep , mTestStep , sendStr);//*IDN?+回车 连接命令 1
-    item.subItem = tr("握手");
-    item.status = !recv.isEmpty();
-    appendResult(item);
+    // mTestStep = ConnectReady;
+    // recv = mTrans->sentStep(mStep , mTestStep , sendStr);//*IDN?+回车 连接命令 1
+    // item.subItem = tr("握手");
+    // item.status = !recv.isEmpty();
+    // appendResult(item);
 
-    mTestStep = ConnectReady;
-    recv = mTrans->sentStep(mStep , mTestStep , sendStr);//*IDN?+回车 连接命令 1
-    item.status = !recv.isEmpty();
-    appendResult(item);
+    // mTestStep = ConnectReady;
+    // recv = mTrans->sentStep(mStep , mTestStep , sendStr);//*IDN?+回车 连接命令 1
+    // item.status = !recv.isEmpty();
+    // appendResult(item);
 
     mTestStep = ChoseeFile;
     recv = mTrans->sentStep(mStep , mTestStep , sendStr , step);//FL 1+回车 连接命令 1
@@ -338,6 +338,23 @@ bool Test_safety::testACW(QString & recv)
     return ret;
 }
 
+bool Test_safety::testPolar()
+{
+    bool ret = true; QString str = "极性测试";
+    QString result1,result2;
+    ret = mTrans->recvPolarity();        //极性测试
+    if(ret) {
+        str += "成功"; result1 = "符合要求"; result2 = "Meet a requirement";
+    }else {
+        str += "失败"; result1 = "不符合要求"; result2 = "Not Satisfiable";
+    }
+    mPacket->updatePro(str, ret);
+    mPro->itemData << result1; ePro->itemData << result2;
+    mPro->safe_result << ret; ePro->safe_result << ret;
+
+    return ret;
+}
+
 void Test_safety::run()
 {
     mPro->oning = true;
@@ -348,6 +365,7 @@ void Test_safety::run()
         mItem->progress.allNum = 22;
         QString recv = "";
         testIR(recv); testACW(recv);   //先绝缘再耐压
+        if(mCfg->modeId != 2) testPolar();  //母线槽除外，其它都要做极性测试
         mPro->oning = false;
         emit overSig();
     } else {

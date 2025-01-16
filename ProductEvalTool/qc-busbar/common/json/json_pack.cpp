@@ -46,16 +46,18 @@ void Json_Pack::head(QJsonObject &obj)
     QStringList list = mPro->itemRequest.split("。");
 
     QStringList step;
-    if(mPro->work_mode == 0) {step.clear(); step << "绝缘测试";  step << "交流耐压测试";}
+    if(mPro->work_mode == 0) {step.clear(); step << "绝缘测试";  step << "交流耐压测试"; step << "极性测试";}
             else {step.clear(); step << "接地测试";}
 
     int num = mPro->safe_result.size();
+
     for(int i=0; i<num; ++i)
     {
         obj.insert("testResult", QString::number(mPro->safe_result.at(i)));
         obj.insert("testRequest",list.at(i));
         obj.insert("testItem", step.at(i));
         obj.insert("testProcess" ,mPro->itemData.at(i));
+        if(i == 2) {mPro->test_step = "功能测试"; obj.insert("testStep", mPro->test_step);}
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 
@@ -116,7 +118,7 @@ void Json_Pack::head_English(QJsonObject &obj)
     QStringList list = ePro->itemRequest.split("。");
 
     QStringList step;
-    if(mPro->work_mode == 0) {step << "Insulation test";  step << "Communication voltage withstand test";}
+    if(mPro->work_mode == 0) {step << "Insulation test";  step << "Communication voltage withstand test"; step <<"Polarity check";}
     else step << "Grounding test";
 
     int num = mPro->safe_result.size();
@@ -126,6 +128,7 @@ void Json_Pack::head_English(QJsonObject &obj)
         obj.insert("testItem", step.at(i));
         obj.insert("testProcess" ,ePro->itemData.at(i));
         obj.insert("testResult" ,QString::number(ePro->safe_result.at(i)));
+        if(i == 2) {ePro->test_step = "Functional testing"; obj.insert("testStep", ePro->test_step);}
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 
@@ -133,24 +136,23 @@ void Json_Pack::head_English(QJsonObject &obj)
         QString str1 = ePro->itemContent.join(";");
         obj.insert("testCfg" ,str1);
     }
-    // pduInfo(obj);
 }
 
 void Json_Pack::SendJson_Safe()
 {
     QJsonObject json;
     head(json);
-    // http_post("admin-api/bus/testData",mPro->Service,json);
+
     json.empty();
     sDataPacket::bulid()->delayMs(5);
     head_English(json);
-    // http_post("admin-api/bus/testData",mPro->Service,json);//安规测试的英文版本
 
     if(mItem->modeId == 2)
     {
         json.empty();
         sDataPacket::bulid()->delayMs(3);
-        SafeData(); sDataPacket::bulid()->delayMs(3);
+        SafeData();
+        sDataPacket::bulid()->delayMs(3);
         SafeData_Lan();
     }
 }

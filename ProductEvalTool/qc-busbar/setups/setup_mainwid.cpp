@@ -68,13 +68,13 @@ void Setup_MainWid::checkPcNumSlot()
 void Setup_MainWid::initSerial()
 {
     mComWid = new SerialStatusWid(ui->comWid);
-    mItem->coms.ser1 = mComWid->initSerialPort(tr("Acw/Ir 串口"));
+    mItem->coms.ser1 = mComWid->initSerialPort(tr("Safety 串口"));
 
     mSourceWid = new SerialStatusWid(ui->sourceWid);
-    mItem->coms.ser2 = mSourceWid->initSerialPort(tr("Gnd 串口"));
+    mItem->coms.ser2 = mSourceWid->initSerialPort(tr("Polarity 串口"));
 
     mControlWid = new SerialStatusWid(ui->controlWid);
-    mItem->coms.ser3 = mControlWid->initSerialPort(tr("Dev 串口"));
+    mItem->coms.ser3 = mControlWid->initSerialPort(tr("Control 串口"));
 }
 
 void Setup_MainWid::initLogCount()

@@ -27,7 +27,9 @@ public:
     QString sentResisCommand(int command, int extra);
     bool readDevBus();
     void sendCtrlGnd(int command);
-    void recvPolarity(int command);
+    bool recvPolarity();
+    QByteArray sendCmd(int command);
+    QString transStr(int command);
 
     ushort calccrc (ushort crc, uchar crcbuf);
     ushort rtu_crc(const uchar *buf, int len);
@@ -39,7 +41,11 @@ protected slots:
 
 private:
     SerialPort *mSerial;
-    SerialPort *mSerialGND;
+    SerialPort *mSerialCtrl;
+    SerialPort *mSerialPolar;
+
+    sCfgItem *mItem;
+    sDataPacket *mPacket;
 };
 
 #endif // TEST_TRANSTHREAD_H

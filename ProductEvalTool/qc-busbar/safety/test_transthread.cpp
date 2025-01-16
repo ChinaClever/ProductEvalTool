@@ -141,8 +141,9 @@ void Test_TransThread::sendCtrlGnd(int command)
 {
     QByteArray arry = sendCmd(command);
     QByteArray recv;
-    int ret = mSerialCtrl->transmit(arry,recv,10);
-    if(!ret) mSerialCtrl->transmit(arry,recv,10);
+    int ret = mSerialCtrl->transmit(arry,recv,20);
+    if(!ret) mSerialCtrl->transmit(arry,recv,20);
+    recv.clear();
     QString str = tr("控制器指令%1，ret = %2").arg(command).arg(ret);
 
     if(ret>0) {str += tr("成功"); mPacket->updatePro(str, true);}
@@ -164,12 +165,11 @@ bool Test_TransThread::recvPolarity()
     cmdArray.append(crc >> 8);   // 高字节
 
     QByteArray recv;
-    int ret = mSerialPolar->transmit(cmdArray,recv,10);
+    int ret = mSerialPolar->transmit(cmdArray,recv,20);
     if(!ret){
-        ret = mSerialPolar->transmit(cmdArray,recv,10);
+        ret = mSerialPolar->transmit(cmdArray,recv,20);
         if(!ret) return 0;
     }
-
     mPacket->updatePro(recv.toHex()+"recv", false);
 
     int size = recv.size(); QString str;
@@ -177,53 +177,59 @@ bool Test_TransThread::recvPolarity()
     for (int i = 0; i < size; ++i) {
         str.append(QString::number(static_cast<unsigned char>(recv.at(i)), 16).rightJustified(2, '0').toUpper());
     }
-
+    recv.clear();
     int start = 6; // 从第七个字符开始（注意：QString的索引从0开始）
     int length = 4; // 长度为4
 
     QStringList result;
     QList<int> Intresult;
+    bool res = true;
 
-    for (int i = start; i <= (start + length*9); i += length) {
-        QString subString = str.mid(i, length);
-        result.append(subString);
-        bool ok;
-        int value = result.at(i).toInt(&ok, 16);
-        Intresult.append(value);
-    }
+    if(str.size()>6) {
+        for (int i = start; i <= (start + length*9); i += length) {
+            QString subString = str.mid(i, length);
+            result.append(subString);
+            bool ok;
+            int value = result.at(i).toInt(&ok, 16);
+            Intresult.append(value);
+        }
 
-    //单相设备-----------------------------
-    int volValue = 0; bool res = true; int loop = mItem->si.loopNum/3;
-    if(mItem->si.si_phaseflag == 0){
-        for(int i=0;i<3;i +=4){
-            volValue = Intresult.at(i)*3 /100;// result.at(1);
-            if(i==0){
-                if(volValue <15) { res = false; mPacket->updatePro("第一组单相，A相线序故障", res); }
-            }else if(i==4){
-                if(volValue <8) {res = false; mPacket->updatePro("第二组单相，B相线序故障", res); }
-            }else if(i==8){
-                if(volValue <3) {res = false; mPacket->updatePro("第三组单相，C相线序故障", res); }
+        //单相设备-----------------------------
+        int volValue = 0;  int loop = mItem->si.loopNum/3;
+        if(mItem->si.si_phaseflag == 0){
+            for(int i=0;i<3;i +=4){
+                volValue = Intresult.at(i)*3 /100;// result.at(1);
+                if(i==0){
+                    if(volValue <15) { res = false; mPacket->updatePro("第一组单相，A相线序故障", res); }
+                }else if(i==4){
+                    if(volValue <8) {res = false; mPacket->updatePro("第二组单相，B相线序故障", res); }
+                }else if(i==8){
+                    if(volValue <3) {res = false; mPacket->updatePro("第三组单相，C相线序故障", res); }
+                }
+            }
+        }else {
+            QString error;
+            for(int i=0;i<3*loop;i++){
+                volValue = Intresult.at(i)*3 /100;// result.at(1);
+                if((i==0) || (i==3) ||(i==6)){
+                    if(volValue <15) {
+                        res = false; error = tr("第%1组单相，A相线序故障").arg(transStr(i));
+                        mPacket->updatePro(error, res); }
+                }else if((i==1) || (i==4) ||(i==7)){
+                    if(volValue <8) {
+                        res = false; error = tr("第%1组单相，B相线序故障").arg(transStr(i));
+                        mPacket->updatePro(error, res); }
+                }else if((i==2) || (i==5) ||(i==8)){
+                    if(volValue <3) {
+                        res = false; error = tr("第%1组单相，C相线序故障").arg(transStr(i));
+                        mPacket->updatePro(error, res); }
+                }
             }
         }
     }else {
-        QString error;
-        for(int i=0;i<3*loop;i++){
-            volValue = Intresult.at(i)*3 /100;// result.at(1);
-            if((i==0) || (i==3) ||(i==6)){
-                if(volValue <15) {
-                    res = false; error = tr("第%1组单相，A相线序故障").arg(transStr(i));
-                    mPacket->updatePro(error, res); }
-            }else if((i==1) || (i==4) ||(i==7)){
-                if(volValue <8) {
-                    res = false; error = tr("第%1组单相，B相线序故障").arg(transStr(i));
-                    mPacket->updatePro(error, res); }
-            }else if((i==2) || (i==5) ||(i==8)){
-                if(volValue <3) {
-                    res = false; error = tr("第%1组单相，C相线序故障").arg(transStr(i));
-                    mPacket->updatePro(error, res); }
-            }
-        }
+        res = false; mPacket->updatePro("极性采集数据失败", false);
     }
+
     sendCtrlGnd(0);
 
     return res;

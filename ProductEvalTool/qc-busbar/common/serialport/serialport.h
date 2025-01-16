@@ -5,7 +5,7 @@
 #include <QtCore>
 #include "msgbox.h"
 
-#define SERIAL_LEN  2*1024
+#define SERIAL_LEN  4*1024
 
 class SerialPort : public QThread
 {

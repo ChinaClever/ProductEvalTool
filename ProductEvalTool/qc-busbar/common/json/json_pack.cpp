@@ -56,7 +56,7 @@ void Json_Pack::head(QJsonObject &obj)
         obj.insert("testResult", QString::number(mPro->safe_result.at(i)));
         obj.insert("testRequest",list.at(i));
         obj.insert("testItem", step.at(i));
-        obj.insert("testProcess" ,mPro->itemData.at(i));
+        obj.insert("testProcess" ,mPro->safeData.at(i));
         if(i == 2) {mPro->test_step = "功能测试"; obj.insert("testStep", mPro->test_step);}
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
@@ -126,7 +126,7 @@ void Json_Pack::head_English(QJsonObject &obj)
     {
         obj.insert("testRequest",list.at(i));
         obj.insert("testItem", step.at(i));
-        obj.insert("testProcess" ,ePro->itemData.at(i));
+        obj.insert("testProcess" ,ePro->safeData.at(i));
         obj.insert("testResult" ,QString::number(ePro->safe_result.at(i)));
         if(i == 2) {ePro->test_step = "Functional testing"; obj.insert("testStep", ePro->test_step);}
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);

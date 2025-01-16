@@ -676,6 +676,7 @@ struct sProgress
     QStringList no, itemName;
     QStringList itemContent;
     QStringList itemData;
+    QStringList safeData;
     QString itemRequest;
     QStringList stepRequest;
     QStringList sureItem;

@@ -141,7 +141,7 @@ void Test_TransThread::sendCtrlGnd(int command)
 {
     qDebug()<<"1111111";
     QByteArray arry = sendCmd(command);
-    qDebug()<<"2222222";
+    qDebug()<<"2222222"<<arry;
     QByteArray recv;
     int ret = mSerialCtrl->transmit(arry,recv,20);
     if(!ret) mSerialCtrl->transmit(arry,recv,20);
@@ -175,14 +175,10 @@ bool Test_TransThread::recvPolarity()
     }
     qDebug()<<"5555555"<<recv.toHex();
 
-    int size = recv.size(); QString str = recv.toHex();
-
-//    for (int i = 0; i < size; ++i) {
-//        str.append(QString::number(static_cast<unsigned char>(recv.at(i)), 16).rightJustified(2, '0').toUpper());
-//    }
-    recv.clear();
+    QString str = recv.toHex();
     int start = 6; // 从第七个字符开始（注意：QString的索引从0开始）
     int length = 4; // 长度为4
+    int temp = 0;
 
     QStringList result;
     QList<int> Intresult;
@@ -191,15 +187,15 @@ bool Test_TransThread::recvPolarity()
 
     if(str.size()>42) {
         for (int i = start; i <= (start + length*9); i += length) {
-
             qDebug()<<"aaaaaaa"<<(start + length*9);
             QString subString = str.mid(i, length);
             result.append(subString);
             bool ok;
-            qDebug()<<"cccccc"<<subString<<result.at(i)<<result.at(i).toInt(&ok, 16);
-            int value = result.at(i).toInt(&ok, 16);
+            qDebug()<<"cccccc"<<subString<<result.at(temp)<<result.at(temp).toInt(&ok, 16);
+            int value = result.at(temp).toInt(&ok, 16);
             Intresult.append(value);
             qDebug()<<"bbbbbbbb"<<i<<value<<subString;
+            temp ++;
         }
         qDebug()<<"7777777777";
         //单相设备-----------------------------

@@ -376,7 +376,7 @@ bool Home_WorkWid::initSerial()
     if(mCfgm->modeId == 2){//母线槽
         ret = true;
     }else{
-        ret = coms->ser3->isOpened();
+        ret = coms->ser4->isOpened();
         if(!ret){MsgBox::critical(this, tr("请先打开Dev串口")); return ret;}
     }
 

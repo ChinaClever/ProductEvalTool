@@ -231,7 +231,7 @@ void Json_Pack::SafeData_Lan()
     obj.insert("orderNum", ePro->order_num);
     obj.insert("testNum", "");
     obj.insert("devName", ePro->dev_name);
-    obj.insert("languageSelect", 0);
+    obj.insert("languageSelect", 1);
 
     obj.insert("toolName", "qc-busbar");
 

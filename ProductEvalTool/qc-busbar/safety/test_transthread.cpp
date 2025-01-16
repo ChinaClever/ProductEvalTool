@@ -15,7 +15,6 @@ void Test_TransThread::initFunSLot()
     mSerialPolar  = Cfg::bulid()->item->coms.ser2;//串口4
     mSerialCtrl = Cfg::bulid()->item->coms.ser3;//串口3
 
-
     mItem = Cfg::bulid()->item;
     mPacket = sDataPacket::bulid();
 }
@@ -152,13 +151,15 @@ void Test_TransThread::sendCtrlGnd(int command)
     if(ret>0) {str += tr("成功"); mPacket->updatePro(str, true);}
     else {str += tr("失败"); mPacket->updatePro(str, false);}
 
+    mPacket->updatePro(recv+"recv", false);
+
 }
 
 
 //串口4---极性测试  010300180019
 bool Test_TransThread::recvPolarity()
 {
-    sendCtrlGnd(0); Delay_MSec(500); sendCtrlGnd(128);
+    sendCtrlGnd(0); Delay_MSec(1000); sendCtrlGnd(128);
     uchar initialCmd[] = {0x01, 0x03, 0x00, 0x18, 0x00, 0x19};
     int cmdLength = sizeof(initialCmd) / sizeof(initialCmd[0]);
     QByteArray cmdArray(reinterpret_cast<const char*>(initialCmd), cmdLength);
@@ -172,6 +173,8 @@ bool Test_TransThread::recvPolarity()
         ret = mSerialPolar->transmit(cmdArray,recv,10);
         if(!ret) return 0;
     }
+
+    mPacket->updatePro(recv+"recv", false);
 
     int size = recv.size(); QString str;
 

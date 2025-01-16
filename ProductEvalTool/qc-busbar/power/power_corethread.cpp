@@ -25,7 +25,7 @@ void Power_CoreThread::initFunSlot()
     mCfg = TestConfig::bulid()->item;
     mItem = Cfg::bulid()->item;
 
-    mModbus = Rtu_Modbus::bulid(this)->get(2);
+    mModbus = Rtu_Modbus::bulid(this)->get(3);
     connect(mModbus,&RtuRw::sendNumAndIndexSig, this, &Power_CoreThread::getNumAndIndexSlot);
     connect(mModbus,&RtuRw::sendDelaySig, this, &Power_CoreThread::getDelaySlot);
 }

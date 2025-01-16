@@ -187,6 +187,7 @@ struct sSerial
     SerialPort *ser3; // 标准源
     SerialPort *ser1; // 串口对象
     SerialPort *ser2; // 串口对象
+    SerialPort *ser4; // 串口对象
 };
 
 struct sCfgItem

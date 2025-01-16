@@ -139,20 +139,15 @@ QByteArray Test_TransThread::sendCmd(int command)
 //串口3控制器
 void Test_TransThread::sendCtrlGnd(int command)
 {
-    qDebug()<<"1111111";
     QByteArray arry = sendCmd(command);
-    qDebug()<<"2222222"<<arry;
     QByteArray recv;
     int ret = mSerialCtrl->transmit(arry,recv,20);
     if(!ret) mSerialCtrl->transmit(arry,recv,20);
-    recv.clear();
-    qDebug()<<"33333333";
-    QString str = tr("控制器指令%1，ret = %2").arg(command).arg(ret);
 
+    QString str = tr("控制器指令%1，ret = %2").arg(command).arg(ret);
     if(ret>0) {str += tr("成功"); mPacket->updatePro(str, true);}
     else {str += tr("失败"); mPacket->updatePro(str, false);}
 }
-
 
 //串口4---极性测试  010300180019
 bool Test_TransThread::recvPolarity()
@@ -164,14 +159,13 @@ bool Test_TransThread::recvPolarity()
     ushort crc = rtu_crc(reinterpret_cast<const uchar*>(cmdArray.constData()), cmdArray.size());
     cmdArray.append(crc & 0xFF); // 低字节
     cmdArray.append(crc >> 8);   // 高字节
-    qDebug()<<"44444444";
+
     QByteArray recv;
     int ret = mSerialPolar->transmit(cmdArray,recv,20);
     if(!ret){
         ret = mSerialPolar->transmit(cmdArray,recv,20);
         if(!ret) return 0;
     }
-    qDebug()<<"5555555"<<recv.toHex();
 
     QString str = recv.toHex();
     int start = 6; // 从第七个字符开始（注意：QString的索引从0开始）
@@ -181,26 +175,20 @@ bool Test_TransThread::recvPolarity()
     QStringList result;
     QList<int> Intresult;
     bool res = true;
-    qDebug()<<"6666666666"<<str.size()<<str;
 
     if(str.size()>42) {
         for (int i = start; i <= (start + length*9); i += length) {
-            qDebug()<<"aaaaaaa"<<(start + length*9);
             QString subString = str.mid(i, length);
             result.append(subString);
             bool ok;
-            qDebug()<<"cccccc"<<subString<<result.at(temp)<<result.at(temp).toInt(&ok, 16);
             int value = result.at(temp).toInt(&ok, 16);
             Intresult.append(value);
-            qDebug()<<"bbbbbbbb"<<i<<value<<subString;
             temp ++;
         }
-        qDebug()<<"7777777777";
         //单相设备-----------------------------
         int volValue = 0;  int loop = mItem->si.loopNum/3;
         if(mItem->si.si_phaseflag == 0){
             for(int i=0;i<9;i +=4){
-                qDebug()<<"ffffffff"<<(Intresult.at(i)*3 /100);
                 volValue = Intresult.at(i)*3 /100;// result.at(1);
                 if(i==0){
                     if(volValue <15) { res = false; mPacket->updatePro("第一组单相，A相线序故障", res); }
@@ -232,7 +220,7 @@ bool Test_TransThread::recvPolarity()
     }else {
         res = false; mPacket->updatePro("极性采集数据失败", false);
     }
-    qDebug()<<"888888888";
+
     sendCtrlGnd(0);
 
     return res;

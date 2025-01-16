@@ -22,8 +22,8 @@ Dev_Source *Dev_Source::bulid(QObject *parent)
 
 void Dev_Source::initFunSlot()
 {
-    setModbus(0);
-    mRk->init(mItem->coms.ser3);
+    setModbus(3);
+    mRk->init(mItem->coms.ser4);
 }
 
 void Dev_Source::init()
@@ -61,7 +61,7 @@ bool Dev_Source::readRk9901()
         mPacket->updatePro(str, ret);
     }
 #else
-    mItem->coms.ser3->setBaudRate(9600);
+    mItem->coms.ser4->setBaudRate(9600);
     bool ret = mRk->readPacket1(rkIt);
     if(ret) {
         sObjData *obj = &(mDev->line);

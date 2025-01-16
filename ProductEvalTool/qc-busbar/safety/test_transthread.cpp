@@ -38,12 +38,9 @@ QString Test_TransThread::sentStep(int step , int i , QString & command ,int ext
     for(int count = 0 ; count < 3 ; count ++)
     {
         if(recv.isEmpty()){
-            // if(step == 1)
-            //     mSerialGND->transmit(command.toLatin1(),recv,10);
-            // else{
-            if(mSerial)
-                mSerial->transmit(command.toLatin1(),recv,10);
-            // }
+
+        if(mSerial)
+            mSerial->transmit(command.toLatin1(),recv,10);
         }
         if(!recv.isEmpty())
             break;
@@ -151,8 +148,7 @@ void Test_TransThread::sendCtrlGnd(int command)
     if(ret>0) {str += tr("成功"); mPacket->updatePro(str, true);}
     else {str += tr("失败"); mPacket->updatePro(str, false);}
 
-    mPacket->updatePro(recv+"recv", false);
-
+    mPacket->updatePro(recv.toHex()+"recv", false);
 }
 
 
@@ -174,7 +170,7 @@ bool Test_TransThread::recvPolarity()
         if(!ret) return 0;
     }
 
-    mPacket->updatePro(recv+"recv", false);
+    mPacket->updatePro(recv.toHex()+"recv", false);
 
     int size = recv.size(); QString str;
 

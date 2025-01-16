@@ -235,7 +235,7 @@
        <widget class="QWidget" name="comWid4" native="true">
         <property name="minimumSize">
          <size>
-          <width>130</width>
+          <width>0</width>
           <height>70</height>
          </size>
         </property>
@@ -257,28 +257,8 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QWidget" name="comWid5" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>70</height>
-         </size>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0">
        <widget class="QWidget" name="comWid3" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>70</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QWidget" name="comWid6" native="true">
         <property name="minimumSize">
          <size>
           <width>0</width>

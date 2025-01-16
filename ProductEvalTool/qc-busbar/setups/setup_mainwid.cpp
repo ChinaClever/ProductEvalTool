@@ -76,8 +76,9 @@ void Setup_MainWid::initSerial()
     mComWid3 = new SerialStatusWid(ui->comWid3);
     mItem->coms.ser3 = mComWid3->initSerialPort(tr("Control 串口"));
 
-    mComWid4 = new SerialStatusWid(ui->comWid3);
-    mItem->coms.ser4 = mComWid4->initSerialPort(tr("Control 串口"));
+    mComWid4 = new SerialStatusWid(ui->comWid4);
+    mItem->coms.ser4 = mComWid4->initSerialPort(tr("Load 串口"));
+
 }
 
 void Setup_MainWid::initLogCount()

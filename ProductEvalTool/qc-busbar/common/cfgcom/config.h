@@ -183,11 +183,12 @@ struct sErrRange
 
 struct sSerial
 {
-    sSerial() {ser3=ser1=ser2=nullptr;}
+    sSerial() {ser4=ser3=ser1=ser2=nullptr;}
+    SerialPort *ser4; // 串口对象
     SerialPort *ser3; // 标准源
     SerialPort *ser1; // 串口对象
     SerialPort *ser2; // 串口对象
-    SerialPort *ser4; // 串口对象
+
 };
 
 struct sCfgItem

@@ -113,6 +113,7 @@ void Cfg::initCfgDev()
     item->ip.ip_buzzer = read("ip_buzzer", 0 , q).toInt();
     item->ip.ip_ISD = read("ip_ISD", 0 , q).toInt();
     item->ip.ip_iOF = read("ip_iOF", 0 , q).toInt();
+    item->ip.ip_break = read("ip_break", 0 , q).toInt();
     item->ip.ip_shunt = read("ip_shunt", 0 , q).toInt();
     item->ip.ip_lightning = read("ip_lightning", 0 , q).toInt();
     item->ip.ip_residual = read("ip_residual", 0 , q).toInt();
@@ -153,6 +154,7 @@ void Cfg::writeCfgDev()
     write("ip_buzzer", item->ip.ip_buzzer, g);
     write("ip_ISD", item->ip.ip_ISD, g);
     write("ip_iOF", item->ip.ip_iOF, g);
+    write("ip_break", item->ip.ip_break, g);
     write("ip_shunt", item->ip.ip_shunt, g);
     write("ip_lightning", item->ip.ip_lightning, g);
     write("ip_residual", item->ip.ip_residual, g);

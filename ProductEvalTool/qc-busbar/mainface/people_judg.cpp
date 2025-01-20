@@ -91,10 +91,10 @@ void People_judg::writeData_Eng(const QString &str1,const QString &str2, const Q
 
 void People_judg::on_sureButton_clicked()
 {
-    mPro->stepResult.clear(); ePro->stepResult.clear();
-    mPro->stepRequest.clear(); ePro->stepRequest.clear();
-    mPro->test_function.clear(); ePro->test_function.clear();
-    mPro->itemData.clear(); ePro->itemData.clear();
+    // mPro->stepResult.clear(); ePro->stepResult.clear();
+    // mPro->stepRequest.clear(); ePro->stepRequest.clear();
+    // mPro->test_function.clear(); ePro->test_function.clear();
+    // mPro->itemData.clear(); ePro->itemData.clear();
 
     mPacket->delayMs(10);
     this->close(); mPro->issure = 1;

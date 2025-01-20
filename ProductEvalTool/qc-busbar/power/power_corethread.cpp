@@ -260,7 +260,7 @@ void Power_CoreThread::StartErrRange()
     mLogs->writeData(str1, str, str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
     str1.clear();
 
-    if(1) {
+    if(mItem->ip.ip_break) {
         str = tr("请将始端箱的断路器断开");
         emit TipSig(str);
         while(1)
@@ -1430,9 +1430,9 @@ void Power_CoreThread::workDown()
         if(ret) ret = BreakerTest();                            //断路器测试
         if(ret) ret = stepVolTest();                            //电压测试
 
-      // if(ret) ret = mSource->read();
-      // else mPro->result = Test_Fail;
-      // if(ret) ret = checkLoadErrRange();
+        // if(ret) ret = mSource->read();
+        // else mPro->result = Test_Fail;
+        // if(ret) ret = checkLoadErrRange();
 
         if(ret) ret = stepLoadTest();               //电流测试
         if(ret) ret = factorySet(); sleep(2);                      //清除电能

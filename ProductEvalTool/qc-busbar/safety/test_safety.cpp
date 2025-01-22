@@ -298,7 +298,11 @@ bool Test_safety::testACW(QString & recv)
     int stepTotal = 0;
     item.item = tr("交流耐压测试");
     int value = ACWFile;
-    if((mCfg->si.itemType == 1)&&(mCfg->modeId == 1)) { value = ACWFile;}
+//<<<<<<< HEAD
+//    if((mCfg->si.itemType == 1)&&(mCfg->modeId == 1)) { value = ACWFile;}
+//=======
+//    if(mCfg->si.itemType == 1) { value = ACWFile_MAL;}
+//>>>>>>> main
 
     ret = startTest(item, recv , tr("交流耐压") , value , stepTotal);
     delayItem(item, stepTotal*5000 +1000);//25
@@ -334,7 +338,6 @@ bool Test_safety::testACW(QString & recv)
     mPro->safe_result << item.status; ePro->safe_result << item.status;
     QString str1 = tr("AC withstand voltage test results:%1 mA").arg(mPro->acw);
     ePro->safeData << str1; mItem->sn.acw.clear();
-
     return ret;
 }
 

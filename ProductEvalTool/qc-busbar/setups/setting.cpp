@@ -10,8 +10,6 @@ Setting::Setting(QWidget *parent)
     mPacket = sDataPacket::bulid();
     mPro = mPacket->getPro();
     mItem = Cfg::bulid()->item;
-    ui->label_8->hide();
-    ui->filterspinBox->hide();
 
     QTimer::singleShot(10,this,SLOT(initFunSlot()));
 }
@@ -42,6 +40,7 @@ void Setting::initType()
     // ui->buzzerBox->setCurrentIndex(dt->ip_buzzer);
     ui->ISDBox->setCurrentIndex(dt->ip_ISD);
     ui->iOFBox->setCurrentIndex(dt->ip_iOF);
+    ui->breakBox->setCurrentIndex(dt->ip_break);
     ui->shuntBox->setCurrentIndex(dt->ip_shunt);
     ui->lightningBox->setCurrentIndex(dt->ip_lightning);
     ui->residualBox->setCurrentIndex(dt->ip_residual);
@@ -93,6 +92,7 @@ void Setting::updateType()
     dt->ip_buzzer = 0;
     dt->ip_ISD = ui->ISDBox->currentIndex();
     dt->ip_iOF = ui->iOFBox->currentIndex();
+    dt->ip_break = ui->breakBox->currentIndex();
     dt->ip_shunt = ui->shuntBox->currentIndex();
     dt->ip_lightning = ui->lightningBox->currentIndex();
     dt->ip_residual = ui->residualBox->currentIndex();

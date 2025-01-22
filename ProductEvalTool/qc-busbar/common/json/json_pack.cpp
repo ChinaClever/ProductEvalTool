@@ -58,6 +58,7 @@ void Json_Pack::head(QJsonObject &obj)
         obj.insert("testItem", step.at(i));
         obj.insert("testProcess" ,mPro->safeData.at(i));
         if(i == 2) {mPro->test_step = "功能测试"; obj.insert("testStep", mPro->test_step);}
+
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 

@@ -107,6 +107,7 @@ struct sIpCfg {
     uchar ip_shunt;
     uchar ip_residual;
     uchar ip_lightning;
+    uchar ip_break;
 
     float ip_vol;
     float ip_cur;

@@ -78,8 +78,7 @@ bool Power_DevRead::readDevBus()
                 {
                     str = tr("光栅告警，附近请勿站人！"); mLogs->updatePro(str, false);
                     ret = false;
-                }else if(str == "1")
-                {
+                }else if(str == "1"){
                     // str = tr("防雷状态正常"); mLogs->updatePro(str, true);
                     ret = true;
                 }

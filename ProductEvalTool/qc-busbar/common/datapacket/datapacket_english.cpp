@@ -66,7 +66,7 @@ void datapacket_English::init()
     pro->acw.clear();
     pro->gnd.clear();
     pro->itemData.clear();
-    pro->itemData.clear();
+    pro->safeData.clear();
     pro->itemRequest.clear();
     pro->stepRequest.clear();
     pro->stepResult.clear();

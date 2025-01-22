@@ -140,6 +140,8 @@ void Face_Volinsul::resultSlot()
         }
     }
 
+
+
     bool res = false;
 
     QString str = tr("测试结果 ");

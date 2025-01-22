@@ -50,8 +50,8 @@ void Home_WorkWid::initWid()
     connect(mVolInsul, &Face_Volinsul::finshSig, this, &Home_WorkWid::SafeSlot);
     connect(mVolInsul, &Face_Volinsul::overSig, this, &Home_WorkWid::JudgSlots);
 
-    mSafrtyThread = new Test_safety(this);
-    connect(mSafrtyThread, SIGNAL(overSig()), this, SLOT(overSlot()));
+    mSafetyThread = new Test_safety(this);
+    connect(mSafetyThread, SIGNAL(overSig()), this, SLOT(overSlot()));
 
     mThread = new Test_Thread(this);
     connect(mThread, &Test_Thread::messageSig, this, &Home_WorkWid::SafeStop);
@@ -128,9 +128,9 @@ void Home_WorkWid::startTest()
     int ret = true;
     if(ret == QDialog::Accepted ) {
         mItem->mode = Test_Start;
-        mSafrtyThread->startThread();
-        if(mCfgm->modeId == 2) mThread->startThread();
-        mVolInsul->startSlot();
+        mSafetyThread->startThread();//安规
+        if(mCfgm->modeId == 2) mThread->startThread();//光栅
+        mVolInsul->startSlot();//安规进度条
 
     }
 }
@@ -377,7 +377,7 @@ bool Home_WorkWid::initSerial()
         ret = true;
     }else{
         ret = coms->ser4->isOpened();
-        if(!ret){MsgBox::critical(this, tr("请先打开Dev串口")); return ret;}
+        if(!ret){MsgBox::critical(this, tr("请先打开表头串口")); return ret;}
     }
 
     return ret;
@@ -540,7 +540,7 @@ void Home_WorkWid::SafeSlot()
 
 void Home_WorkWid::SafeStop()
 {
-    mSafrtyThread->stopThread();
+    mSafetyThread->stopThread();
     overSlot();
 }
 

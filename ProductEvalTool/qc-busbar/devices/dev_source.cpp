@@ -7,9 +7,9 @@
 
 Dev_Source::Dev_Source(QObject *parent) : Dev_SiRtu(parent)
 {
-    mRk = new Rk_Serial(this);
-    mDev = sDataPacket::bulid()->getDev(0);
-    init();
+//    mRk = new Rk_Serial(this);
+//    mDev = sDataPacket::bulid()->getDev(0);
+//    init();
 }
 
 Dev_Source *Dev_Source::bulid(QObject *parent)
@@ -22,8 +22,8 @@ Dev_Source *Dev_Source::bulid(QObject *parent)
 
 void Dev_Source::initFunSlot()
 {
-    setModbus(3);
-    mRk->init(mItem->coms.ser4);
+//    setModbus(3);
+//    mRk->init(mItem->coms.ser4);
 }
 
 void Dev_Source::init()

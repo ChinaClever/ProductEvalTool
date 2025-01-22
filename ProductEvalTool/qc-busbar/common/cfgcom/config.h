@@ -183,12 +183,13 @@ struct sErrRange
 
 struct sSerial
 {
-    sSerial() {ser4=ser3=ser1=ser2=nullptr;}
-    SerialPort *ser4; // 串口对象
-    SerialPort *ser3; // 标准源
-    SerialPort *ser1; // 串口对象
-    SerialPort *ser2; // 串口对象
-
+    sSerial() {ser6=ser5=ser4=ser3=ser1=ser2=nullptr;}
+    SerialPort *ser1; // 安规串口
+    SerialPort *ser2; // 极性串口
+    SerialPort *ser3; // 控制串口
+    SerialPort *ser4; // 负载串口
+    SerialPort *ser5; // 表头串口
+    SerialPort *ser6; // 指示灯串口
 };
 
 struct sCfgItem

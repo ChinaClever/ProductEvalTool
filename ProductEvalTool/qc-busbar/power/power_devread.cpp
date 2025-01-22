@@ -76,7 +76,7 @@ bool Power_DevRead::readDevBus()
                 QString str = mIpSnmp->readBreakValue();
                 if(str == "2")
                 {
-                     str = tr("光栅告警，附近请勿站人！"); mLogs->updatePro(str, false);
+                    str = tr("光栅告警，附近请勿站人！"); mLogs->updatePro(str, false);
                     ret = false;
                 }else if(str == "1")
                 {
@@ -2443,7 +2443,7 @@ bool Power_DevRead::Load_ThreeLoop()
             }
 
             QString str1 = tr("总功率与三相功率之和在误差%1范围内");
-            str = tr("总功率为 %1kw，三相功率之和为 %2kw").arg(toTal /COM_RATE_POW).arg(sum /COM_RATE_POW);
+            str = tr("总功率为 %1kW，三相功率之和为 %2kW").arg(toTal /COM_RATE_POW).arg(sum /COM_RATE_POW);
             if(!res) {
                 str += tr("误差较大"); str3 = tr("不符合要求");
             }

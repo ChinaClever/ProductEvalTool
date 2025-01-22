@@ -12,7 +12,7 @@ Dev_SiRtu::Dev_SiRtu(QObject *parent) : Dev_Object(parent)
 {
     mRtuPkt = new Rtu_recv; //传输数据结构
     mBusData = get_share_mem();
-//    mModbus = Rtu_Modbus::bulid(this)->get(2);
+    mModbus = Rtu_Modbus::bulid(this)->get(4);
 }
 
 Dev_SiRtu *Dev_SiRtu::bulid(QObject *parent)

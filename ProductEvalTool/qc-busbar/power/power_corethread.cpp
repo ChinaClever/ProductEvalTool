@@ -21,11 +21,11 @@ void Power_CoreThread::initFunSlot()
     mRead = Power_DevRead::bulid(this);
     mCtrl = Power_DevCtrl::bulid(this);
     Printer_BarTender::bulid(this);
-    mSource = Dev_Source::bulid(this);
+    //mSource = Dev_Source::bulid(this);
     mCfg = TestConfig::bulid()->item;
     mItem = Cfg::bulid()->item;
 
-    mModbus = Rtu_Modbus::bulid(this)->get(3);
+    mModbus = Rtu_Modbus::bulid(this)->get(4);
     connect(mModbus,&RtuRw::sendNumAndIndexSig, this, &Power_CoreThread::getNumAndIndexSlot);
     connect(mModbus,&RtuRw::sendDelaySig, this, &Power_CoreThread::getDelaySlot);
 }
@@ -260,7 +260,7 @@ void Power_CoreThread::StartErrRange()
     mLogs->writeData(str1, str, str2, ret); mLogs->writeDataEng(eng1, eng3, eng2, ret);
     str1.clear();
 
-    if(1) {
+    if(1) {///////////////////////////////////////////////////////send控制1
         str = tr("请将始端箱的断路器断开");
         emit TipSig(str);
         while(1)

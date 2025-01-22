@@ -3,7 +3,7 @@
 
 #include "rtu_write.h"
 #include "common.h"
-#define RTU_RW_SIZE 4
+#define RTU_RW_SIZE 6
 
 class Rtu_Modbus : public QObject
 {

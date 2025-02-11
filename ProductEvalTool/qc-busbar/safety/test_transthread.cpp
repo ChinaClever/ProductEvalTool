@@ -214,6 +214,7 @@ bool Test_TransThread::recvPolarity()
             QString error;
             for(int i=0;i<3*loop;i++){
                 volValue = Intresult.at(i)*3 /100;// result.at(1);
+                qDebug()<<"zzzzzzzzzzzz"<<volValue;
                 if((i==0) || (i==3) ||(i==6)){
                     if(volValue <15) {
                         res = false; error = tr("第%1组单相，A相线序故障").arg(transStr(i));
@@ -232,7 +233,7 @@ bool Test_TransThread::recvPolarity()
     }else {
         res = false; mPacket->updatePro("极性采集数据失败", false);
     }
-    qDebug()<<"888888888";
+
     sendCtrlGnd(0);
 
     return res;

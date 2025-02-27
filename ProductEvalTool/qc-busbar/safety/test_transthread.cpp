@@ -201,18 +201,18 @@ bool Test_TransThread::recvPolarity()
         }else {
             QString error;
             for(int i=0;i<3*loop;i++){
-                volValue = Intresult.at(i)*3 /100;// result.at(1);
+                volValue = Intresult.at(i)*3;// result.at(1);
                 qDebug()<<"zzzzzzzzzzzz"<<volValue;
                 if((i==0) || (i==3) ||(i==6)){
-                    if(volValue <15) {
+                    if(volValue <1500) {
                         res = false; error = tr("第%1组单相，A相线序故障").arg(transStr(i));
                         mPacket->updatePro(error, res); }
                 }else if((i==1) || (i==4) ||(i==7)){
-                    if(volValue <8) {
+                    if(volValue <800) {
                         res = false; error = tr("第%1组单相，B相线序故障").arg(transStr(i));
                         mPacket->updatePro(error, res); }
                 }else if((i==2) || (i==5) ||(i==8)){
-                    if(volValue <3) {
+                    if(volValue <300) {
                         res = false; error = tr("第%1组单相，C相线序故障").arg(transStr(i));
                         mPacket->updatePro(error, res); }
                 }

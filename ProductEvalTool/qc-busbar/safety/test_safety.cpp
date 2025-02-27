@@ -362,6 +362,7 @@ void Test_safety::run()
 
     if(!mItem->work_mode) {
         mTrans->sendCtrlGnd(0);
+        mTrans->sendCtrlGnd(16);
         mItem->progress.allNum = 22;
         QString recv = "";
         testIR(recv); testACW(recv);   //先绝缘再耐压

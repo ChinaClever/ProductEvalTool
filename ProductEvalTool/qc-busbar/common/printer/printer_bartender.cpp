@@ -50,7 +50,7 @@ QString Printer_BarTender::http_post(const QString &method, const QString &ip, s
 
 QString Printer_BarTender::createOrder(sBarTend &it)
 {
-    QString web = "http://192.168.1.13:9090/report?";
+    QString web = "https://clbusbar.legrandchina.cn/report?";
     QString str = "ON,PN,SN,Date,QR\n";
     str += it.on + ","; str += it.pn + ","; str += it.sn + ",";
 

@@ -15,6 +15,7 @@ public:
 
     void startThread();
     void stopThread();
+    Test_TransThread *mTrans;
 signals:
     void overSig();
 
@@ -39,9 +40,7 @@ private:
     int mTestStep;
 
     QTimer *timer;
-
     sTestConfigItem  *mItem;
-    Test_TransThread *mTrans;
     sCfgItem *mCfg;
     sProgress *mPro;
     sProgress *ePro;

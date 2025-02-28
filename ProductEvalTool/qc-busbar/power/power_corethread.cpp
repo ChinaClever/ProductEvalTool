@@ -30,6 +30,11 @@ void Power_CoreThread::initFunSlot()
     connect(mModbus,&RtuRw::sendDelaySig, this, &Power_CoreThread::getDelaySlot);
 }
 
+void Power_CoreThread::initTestTrans(Test_TransThread *test)
+{
+    this->mTrans = test;
+}
+
 bool Power_CoreThread::initDev()
 {
     mLogs->updatePro(tr("即将开始"));
@@ -39,9 +44,9 @@ bool Power_CoreThread::initDev()
         QString str = tr("开始测试插接箱串口通讯");           //自动分配地址
         emit TipSig(str); sleep(2);
         str = tr("请将插接箱IN口与测试治具IN口对接，OUT口与测试治具OUT口对接");
-        emit TipSig(str); emit ImageSig(3);
+        emit TipSig(str); //emit ImageSig(3);
 
-        mModbus->autoSetAddress(); emit ImageSig(4);
+        mModbus->autoSetAddress(); //emit ImageSig(4);
 
     }
 
@@ -428,18 +433,18 @@ void Power_CoreThread::StartErrRange()
         ret = curAlarmErr(i);
     }
 
-    ret = VolErrRange();
+    ret = VolErrRange();/////////////
     if(!ret) {
         ret = mRead->readData();
         str = tr("第二次读取数据"); mLogs->updatePro(str,true);
-        VolErrRange();
+        VolErrRange();/////////////
     }
 
-    ret = CurErrRange();
+    ret = CurErrRange();/////////////
     if(!ret) {
         ret = mRead->readData();
         str = tr("第二次读取数据"); mLogs->updatePro(str,true);
-        CurErrRange();
+        CurErrRange();/////////////
     }
 
     ret = false;
@@ -472,7 +477,7 @@ void Power_CoreThread::InsertErrRange()
 {
     bool ret = false;
 
-    emit ImageSig(4);
+    //emit ImageSig(4);
     ret = mRead->readData();
     sBoxData *b = &(mBusData->box[mItem->addr - 1]);    //比较基本配置信息
 
@@ -541,11 +546,11 @@ void Power_CoreThread::InsertErrRange()
         VolErrRange();
     }
 
-    ret = CurErrRange();
+    ret = CurErrRange();/////////////
     if(!ret) {
         ret = mRead->readData();
         str = tr("第二次读取数据"); mLogs->updatePro(str,true);
-        CurErrRange();
+        CurErrRange();/////////////
     }
 
     ret = false;
@@ -591,7 +596,7 @@ bool Power_CoreThread::CurErrRange()
 {
     bool ret = true , res = true; QString str;
     sBoxData *b = &(mBusData->box[mItem->addr - 1]);
-    for(int i=0; i<mBusData->box[mItem->addr - 1].loopNum; ++i) {
+    for(int i=0; i<b->loopNum; ++i) {
         ret = true ;
         if(mItem->modeId == START_BUSBAR) {
             str = tr("始端箱电流 L%1，实际值：%2A ").arg(i+1).arg(QString::number((b->data.cur.value[i]/COM_RATE_CUR),'f',3));
@@ -766,7 +771,8 @@ QString Power_CoreThread::changeMode(int index)
 bool Power_CoreThread::factorySet()
 {
     QString str = tr("请将负载输入端L1、L2、L3断开");  //b1,b2,b3
-    emit TipSig(str); emit ImageSig(2); sleep(6);
+    emit TipSig(str); //emit ImageSig(2);
+    sleep(6);
 
     bool ret = true , res = true;
     uchar tag = mBusData->box[mItem->addr-1].workMode;
@@ -935,7 +941,8 @@ bool Power_CoreThread::Vol_ctrlOne()
     QString str, str1, str2, str3, str4; QString eng2;
     str4 = tr("回路电压检查");
     str = tr("关闭电源输出端L2");  //b1,b2,b3
-    emit TipSig(str); emit ImageSig(0);
+    this->mTrans->sendCtrlGnd(1+64);
+    emit TipSig(str); //emit ImageSig(0);
     QString eng3; QString eng4 = tr("Circuit voltage check");
     if(loop == 9){
         str2 = tr("断开电源输出端断路器L2，读取B1/B2/B3电压为0V，A1/A2/A3/C1/C2/C3正常");
@@ -1060,7 +1067,8 @@ bool Power_CoreThread::Vol_ctrlTwo()
 
     str4 = tr("回路电压检查"); QString eng2;
     QString str = tr("打开电源输出端L2，关闭电源输出端L3");//c1,c2,c3
-    emit TipSig(str); emit ImageSig(0);
+    this->mTrans->sendCtrlGnd(1+32);
+    emit TipSig(str); //emit ImageSig(0);
     QString eng3; QString eng4 = tr("Circuit voltage check");
 
     if(loop == 9){
@@ -1188,7 +1196,9 @@ bool Power_CoreThread::Vol_ctrlThree()
 
     str4 = tr("回路电压检查");
     QString str = tr("打开电源输出端L3");//c1,c2,c3
-    emit TipSig(str); emit ImageSig(0); QString eng2;
+    this->mTrans->sendCtrlGnd(1+32+64);
+    emit TipSig(str); //emit ImageSig(0);
+    QString eng2;
     QString eng3; QString eng4 = tr("Circuit voltage check");
 
     while(1)
@@ -1316,7 +1326,7 @@ bool Power_CoreThread::stepVolTest()
         if(ret) ret = Vol_ctrlTwo();
         if(ret) ret = Vol_ctrlThree();
     }
-    emit ImageSig(4);
+    //emit ImageSig(4);
 
     return ret;
 }
@@ -1325,11 +1335,11 @@ bool Power_CoreThread::stepLoadTest()       //电流测试
 {
     bool ret = false;
     if(mBusData->box[mItem->addr-1].loopNum == 9) {
-        ret = mRead->Load_NineLoop();
+        ret = mRead->Load_NineLoop(this->mTrans);
     }else if(mBusData->box[mItem->addr-1].loopNum == 6) {
-        ret = mRead->Load_SixLoop();
+        ret = mRead->Load_SixLoop(this->mTrans);
     }else if(mBusData->box[mItem->addr-1].loopNum == 3) {
-        ret = mRead->Load_ThreeLoop();
+        ret = mRead->Load_ThreeLoop(this->mTrans);
     }
 
     return ret;
@@ -1400,6 +1410,7 @@ void Power_CoreThread::getNumAndIndexSlot(int curnum)
 
 void Power_CoreThread::workDown()
 {
+    this->mTrans->sendCtrlGnd(1+32+64);//启动L1,L2,L3
     mPro->step = Test_Start;
     bool ret = true;
     ret = initDev();
@@ -1428,20 +1439,21 @@ void Power_CoreThread::workDown()
         else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
 
         if(ret) ret = BreakerTest();                            //断路器测试
-        if(ret) ret = stepVolTest();                            //电压测试
+        if(ret) ret = stepVolTest();                            //电压测试///
 
         // if(ret) ret = mSource->read();
         // else mPro->result = Test_Fail;
         // if(ret) ret = checkLoadErrRange();
 
-        if(ret) ret = stepLoadTest();               //电流测试
+        if(ret) ret = stepLoadTest();               //电流测试///
+        this->mTrans->sendCtrlGnd(1+32+64);
         if(ret) ret = factorySet(); sleep(2);                      //清除电能
 
         QString str = tr("请将电源输出端L1、L2、L3关闭");
-        emit TipSig(str); emit ImageSig(2);
+        emit TipSig(str); //emit ImageSig(2);
 
         mCfg->work_mode = 3;
-        if(ret) emit JudgSig(); //极性测试弹窗
+        //if(ret) emit JudgSig(); //极性测试弹窗///
 
         if(mItem->modeId == START_BUSBAR)
         {

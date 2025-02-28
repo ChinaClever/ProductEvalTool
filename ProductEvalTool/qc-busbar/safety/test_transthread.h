@@ -28,6 +28,9 @@ public:
     bool readDevBus();
     void sendCtrlGnd(int command);
     bool recvPolarity();
+    bool checkFeeder_boxPolarity(QList<int> Intresult);
+    bool checkTapoff_boxPolarity(QList<int> Intresult);
+    bool recvLoadCur(QList<int> &Intresult);
     QByteArray sendCmd(int command);
     QString transStr(int command);
 
@@ -43,6 +46,7 @@ private:
     SerialPort *mSerial;
     SerialPort *mSerialCtrl;
     SerialPort *mSerialPolar;
+    SerialPort *mSerialLoadCur;
 
     sCfgItem *mItem;
     sDataPacket *mPacket;

@@ -2,6 +2,7 @@
 #include <cstring> // 为了使用 std::memcpy
 
 #define CMD_SIZE 8
+#define POLARITY_DCVOL_ 3
 
 Test_TransThread::Test_TransThread(QObject *parent) : QObject(parent)
 {
@@ -14,6 +15,7 @@ void Test_TransThread::initFunSLot()
     mSerial = Cfg::bulid()->item->coms.ser1;//串口5
     mSerialPolar  = Cfg::bulid()->item->coms.ser2;//串口4
     mSerialCtrl = Cfg::bulid()->item->coms.ser3;//串口3
+    mSerialLoadCur = Cfg::bulid()->item->coms.ser4;//串口6
 
     mItem = Cfg::bulid()->item;
     mPacket = sDataPacket::bulid();
@@ -149,6 +151,72 @@ void Test_TransThread::sendCtrlGnd(int command)
     else {str += tr("失败"); mPacket->updatePro(str, false);}
 }
 
+
+bool Test_TransThread::checkFeeder_boxPolarity(QList<int> Intresult)
+{
+    bool ret = true;int volValue = 0;
+    //单相设备-----------------------------
+   for(int i=0;i<3;i++){
+       volValue = Intresult.at(i);// result.at(1);
+       if(i==0){
+           if(volValue <1500) {ret = false; mPacket->updatePro("第一组单相，A相线序故障", ret); }
+       }else if(i==1){
+           if(volValue <800) {ret = false; mPacket->updatePro("第二组单相，B相线序故障", ret); }
+       }else if(i==2){
+           if(volValue <300) {ret = false; mPacket->updatePro("第三组单相，C相线序故障", ret); }
+       }
+   }
+   return ret;
+}
+
+bool Test_TransThread::checkTapoff_boxPolarity(QList<int> Intresult)
+{
+    int volValue = 0;bool ret = true;
+    if(mItem->si.si_phaseflag == 0){
+         //单相设备-----------------------------
+        for(int i = 0 ;i < 12 ; i += 4){
+            volValue = Intresult.at(i);// result.at(1);
+            if(i == 0){
+                if(volValue < 1500) {ret = false; mPacket->updatePro("第一组，A相线序故障", ret); }
+            }else if(i == 4){
+                if(volValue < 800) {ret = false; mPacket->updatePro("第二组，B相线序故障", ret); }
+            }else if(i == 8){
+                if(volValue < 300) {ret = false; mPacket->updatePro("第三组，C相线序故障", ret); }
+            }else if(i == 9 || i == 10 || i == 11){
+                if(volValue < 1500) {ret = false; mPacket->updatePro(tr("第%1组，地线故障").arg(transStr(i)), ret); }
+            }
+        }
+    }else {
+         //三相设备-----------------------------
+        int loop = mItem->si.loopNum/3;
+        QString error;
+        for(int i = 0 ; i < 3*loop ; i++){
+            volValue = Intresult.at(i);// result.at(1);
+            if((i == 0) || (i == 3) ||(i == 6)){
+                if(volValue < 1500) {
+                    ret = false; error = tr("第%1组，A相线序故障").arg(transStr(i));
+                    mPacket->updatePro(error, ret); }
+            }else if((i == 1) || (i == 4) ||(i == 7)){
+                if(volValue < 800) {
+                    ret = false; error = tr("第%1组，B相线序故障").arg(transStr(i));
+                    mPacket->updatePro(error, ret); }
+            }else if((i == 2) || (i == 5) ||(i == 8)){
+                if(volValue < 300) {
+                    ret = false; error = tr("第%1组，C相线序故障").arg(transStr(i));
+                    mPacket->updatePro(error, ret); }
+            }
+        }
+        for(int i = 9 ; i < 9 + loop ; i++){
+            volValue = Intresult.at(i);// result.at(1);
+            if(volValue < 1500) {
+                ret = false; error = tr("第%1组，地线故障").arg(transStr(i));
+                mPacket->updatePro(error, ret);
+            }
+        }
+    }
+    return ret;
+}
+
 //串口4---极性测试  010300180019
 bool Test_TransThread::recvPolarity()
 {
@@ -176,49 +244,24 @@ bool Test_TransThread::recvPolarity()
     QList<int> Intresult;
     bool res = true;
 
-    if(str.size()>42) {
-        for (int i = start; i <= (start + length*9); i += length) {
+    if(str.size()==55) {
+        for (int i = start; i <= (start + length*12); i += length) {
             QString subString = str.mid(i, length);
             result.append(subString);
             bool ok;
             int value = result.at(temp).toInt(&ok, 16);
-            Intresult.append(value);
+            Intresult.append(value*POLARITY_DCVOL_);
             temp ++;
         }
-        //单相设备-----------------------------
-        int volValue = 0;  int loop = mItem->si.loopNum/3;
-        if(mItem->si.si_phaseflag == 0){
-            for(int i=0;i<9;i +=4){
-                volValue = Intresult.at(i)*3 /100;// result.at(1);
-                if(i==0){
-                    if(volValue <15) { res = false; mPacket->updatePro("第一组单相，A相线序故障", res); }
-                }else if(i==4){
-                    if(volValue <8) {res = false; mPacket->updatePro("第二组单相，B相线序故障", res); }
-                }else if(i==8){
-                    if(volValue <3) {res = false; mPacket->updatePro("第三组单相，C相线序故障", res); }
-                }
-            }
-        }else {
-            QString error;
-            for(int i=0;i<3*loop;i++){
-                volValue = Intresult.at(i)*3 /100;// result.at(1);
-                if((i==0) || (i==3) ||(i==6)){
-                    if(volValue <15) {
-                        res = false; error = tr("第%1组单相，A相线序故障").arg(transStr(i));
-                        mPacket->updatePro(error, res); }
-                }else if((i==1) || (i==4) ||(i==7)){
-                    if(volValue <8) {
-                        res = false; error = tr("第%1组单相，B相线序故障").arg(transStr(i));
-                        mPacket->updatePro(error, res); }
-                }else if((i==2) || (i==5) ||(i==8)){
-                    if(volValue <3) {
-                        res = false; error = tr("第%1组单相，C相线序故障").arg(transStr(i));
-                        mPacket->updatePro(error, res); }
-                }
-            }
+        //L1-24v;L2-12v;L3-5V
+        if(mItem->modeId == START_BUSBAR){
+            res = this->checkFeeder_boxPolarity(Intresult);
+        }else{
+            res = this->checkTapoff_boxPolarity(Intresult);
         }
+
     }else {
-        res = false; mPacket->updatePro("极性采集数据失败", false);
+        res = false; mPacket->updatePro("极性采集数据不完整失败", false);
     }
 
     sendCtrlGnd(0);
@@ -239,8 +282,62 @@ QString Test_TransThread::transStr(int command)
     case 6: str = "三"; break;
     case 7: str = "三"; break;
     case 8: str = "三"; break;
+    case 9: str = "一"; break;
+    case 10: str = "二"; break;
+    case 11: str = "三"; break;
     default: break;
     }
 
     return str;
 }
+
+
+//串口6---电流测试  01 03 00 00 00 19
+//In:index[1,3]
+bool Test_TransThread::recvLoadCur(QList<int> &Intresult)
+{
+    //sendCtrlGnd(0); Delay_MSec(2000); sendCtrlGnd(1+std::pow(2,index));
+
+    uchar initialCmd[] = {0x01, 0x03, 0x00, 0x10, 0x00, 0x19};
+    int cmdLength = sizeof(initialCmd) / sizeof(initialCmd[0]);
+    QByteArray cmdArray(reinterpret_cast<const char*>(initialCmd), cmdLength);
+    ushort crc = rtu_crc(reinterpret_cast<const uchar*>(cmdArray.constData()), cmdArray.size());
+    cmdArray.append(crc & 0xFF); // 低字节
+    cmdArray.append(crc >> 8);   // 高字节
+
+    QByteArray recv;
+    int ret = mSerialLoadCur->transmit(cmdArray,recv,20);
+    if(!ret){
+        ret = mSerialLoadCur->transmit(cmdArray,recv,20);
+        if(!ret) return 0;
+    }
+
+    QString str = recv.toHex();
+    int start = 18; // 从第七个字符开始（注意：QString的索引从0开始）
+    int length = 4; // 长度为4
+    int temp = 0;
+
+    QStringList result;
+//    QList<int> Intresult;
+    bool res = true;
+
+    if(str.size()==55) {
+        for (int i = start; i <= (start + length*3); i += length) {
+            QString subString = str.mid(i, length);
+            result.append(subString);
+            bool ok;
+            int value = result.at(temp).toInt(&ok, 16);
+            Intresult.append(value);
+            temp ++;
+        }
+             //单相设备-----------------------------
+        //expectCur = Intresult.at(index-1)*4;// result.at(1);
+    }else {
+        res = false; mPacket->updatePro("采集电流数据失败", false);
+    }
+
+    //sendCtrlGnd(0);
+
+    return res;
+}
+

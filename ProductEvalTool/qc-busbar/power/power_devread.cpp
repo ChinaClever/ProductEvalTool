@@ -235,7 +235,7 @@ bool Power_DevRead::NineInsertOne_CtrlOne(Test_TransThread *trans_ctrl)
     QString eng2 = tr("Connect output socket 1 to the load, disconnect the load input circuit breaker L1, and read that the current of B/C is 0A, while the current of A is normal;");
     QString eng3;
     QString eng4 = tr("Socket 1 current check");
-    trans_ctrl->sendCtrlGnd(1+2);
+    trans_ctrl->sendCtrlGnd(1+2);//K1 K2 //L1 ON L2 L3 OFF
     emit StepSig(str); //emit CurImageSig(2);
 
     while(1)
@@ -299,7 +299,7 @@ bool Power_DevRead::NineInsertOne_CtrlTwo(Test_TransThread *trans_ctrl)
     QString eng2 = tr("Disconnect the load input circuit breaker L2 and check that the reading of B current is 0A and A/C current is normal;");
     QString eng3;
     QString eng4 = tr("Socket 1 current check");
-    trans_ctrl->sendCtrlGnd(1+2+64);//K1 K2 K7
+    trans_ctrl->sendCtrlGnd(1+2+64);//K1 K2 K7 //L1 L3 ON L2 OFF
 
     while(1)
     {
@@ -361,7 +361,7 @@ bool Power_DevRead::NineInsertOne_CtrlThree(Test_TransThread *trans_ctrl)
     QString eng2 = tr("Disconnect the load input circuit breaker L3 and check that the reading of C current is 0A and A/B current is normal");
     QString eng3;
     QString eng4 = tr("Socket 1 current check");
-    trans_ctrl->sendCtrlGnd(1+2+32);//K1 K2 K6
+    trans_ctrl->sendCtrlGnd(1+2+32);//K1 K2 K6//L1 L2 ON L3 OFF
 
     while(1)
     {
@@ -488,7 +488,7 @@ bool Power_DevRead::NineInsertTwo_CtrlOne(Test_TransThread *trans_ctrl)
     QString str2 = tr("输出插座2接入负载，断开负载输入端断路器L1，读取读取B/C电流为0A，A电流为正常；");
     QString str = tr("请准备输出口2，打开负载输入端L1、L2、L3");  //三相回路电流、功率
     emit StepSig(str); //emit CurImageSig(2);
-    trans_ctrl->sendCtrlGnd(1+4+32+64);
+    trans_ctrl->sendCtrlGnd(1+4+32+64);//K1 K3 K6 K7 //L1 L2 L3 ON
 
     QString str3; QString str4 = tr("插座2电流检查");
     QString eng2 = tr("Connect output socket 2 to the load, disconnect the load input circuit breaker L1, and read that the current of B/C is 0A, while the current of A is normal;");
@@ -522,7 +522,7 @@ bool Power_DevRead::NineInsertTwo_CtrlOne(Test_TransThread *trans_ctrl)
     flag = 0;
     str = tr("关闭负载输入端L1");  //三相回路电流、功率
     emit StepSig(str); //emit CurImageSig(2);
-    trans_ctrl->sendCtrlGnd(1+4);
+    trans_ctrl->sendCtrlGnd(1+4);//K1 K3
 
     while(1)
     {
@@ -580,7 +580,7 @@ bool Power_DevRead::NineInsertTwo_CtrlTwo(Test_TransThread *trans_ctrl)
     QString str2 = tr("断开负载输入端断路器L2，检查读取B电流为0A，A/C电流为正常；");
     QString str = tr("打开负载输入端L1，关闭负载输入端L2");
     emit StepSig(str); //emit CurImageSig(2);
-    trans_ctrl->sendCtrlGnd(1+4+64);
+    trans_ctrl->sendCtrlGnd(1+4+64);//K1 K3 K7//L1 L3 ON L2 OFF
 
     QString str3; QString str4 = tr("插座2电流检查");
     QString eng2 = tr("Disconnect the load input circuit breaker L2 and check that the reading of B current is 0A and A/C current is normal;");
@@ -644,7 +644,7 @@ bool Power_DevRead::NineInsertTwo_CtrlThree(Test_TransThread *trans_ctrl)
     QString str2 = tr("断开负载输入端断路器L3，检查读取C电流为0A，A/B电流为正常；");
     QString str = tr("打开负载输入端L2，关闭负载输入端L3");
     emit StepSig(str); //emit CurImageSig(2);
-    trans_ctrl->sendCtrlGnd(1+4+32);
+    trans_ctrl->sendCtrlGnd(1+4+32);//K1 K3 K6//L1 L2 ON L3 OFF
     QString str3; QString str4 = tr("插座2电流检查");
     QString eng2 = tr("Disconnect the load input circuit breaker L3, check that the reading of C current is 0A, and the A/B current is normal;");
     QString eng3;
@@ -775,7 +775,7 @@ bool Power_DevRead::NineInsertThree_CtrlOne(Test_TransThread *trans_ctrl)
     QString str2 = tr("输出插座3接入负载，断开负载输入端断路器L1，读取读取B/C电流为0A，A电流为正常；");
     QString str = tr("请准备输出口3，打开负载输入端L1、L2、L3");
     emit StepSig(str); //emit CurImageSig(2);
-    trans_ctrl->sendCtrlGnd(1+8+32+64);
+    trans_ctrl->sendCtrlGnd(1+8+32+64);//K1 K4 K6 K7//L1 L2 L3 ON
 
     QString str3; QString str4 = tr("插座3电流检查");
     QString eng2 = tr("Connect output socket 3 to the load, disconnect the load input circuit breaker L1, and read that the current of B/C is 0A, while the current of A is normal;");
@@ -808,7 +808,7 @@ bool Power_DevRead::NineInsertThree_CtrlOne(Test_TransThread *trans_ctrl)
     flag = 0;
     str = tr("关闭负载输入端L1");
     emit StepSig(str); //emit CurImageSig(2);
-    trans_ctrl->sendCtrlGnd(1+8);
+    trans_ctrl->sendCtrlGnd(1+8);//K1 K4//L1 ON L2 L3 OFF
 
     while(1)
     {
@@ -870,7 +870,7 @@ bool Power_DevRead::NineInsertThree_CtrlTwo(Test_TransThread *trans_ctrl)
     QString eng2 = tr("Disconnect the load input circuit breaker L2 and check that the reading of B current is 0A and A/C current is normal;");
     QString eng3;
     QString eng4 = tr("Socket 3 current check");
-    trans_ctrl->sendCtrlGnd(1+8+64);
+    trans_ctrl->sendCtrlGnd(1+8+64);//K1 K8 K7//L1 L3 ON L2 OFF
 
     while(1)
     {
@@ -933,7 +933,7 @@ bool Power_DevRead::NineInsertThree_CtrlThree(Test_TransThread *trans_ctrl)
     QString eng2 = tr("Disconnect the load input circuit breaker L3, check that the reading of C current is 0A, and the A/B current is normal;");
     QString eng3;
     QString eng4 = tr("Socket 3 current check");
-    trans_ctrl->sendCtrlGnd(1+8+32);
+    trans_ctrl->sendCtrlGnd(1+8+32);//K1 K8 K6//L1 L2 ON L3 OFF
 
     while(1)
     {
@@ -1058,7 +1058,7 @@ bool Power_DevRead::Load_NineLoop(Test_TransThread *trans_ctrl)
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     QString str = tr("请准备输出口1，打开负载输入端L1、L2、L3");  //三相回路电流、功率
     emit StepSig(str); //emit CurImageSig(2);
-    trans_ctrl->sendCtrlGnd(1+2+32+64);
+    trans_ctrl->sendCtrlGnd(1+2+32+64);//K1 K2 //L1 L2 L3 ON
 
     while(1){
         int a=0, b=0, c=0;
@@ -1126,7 +1126,7 @@ bool Power_DevRead::SixInsertOne_CtrlOne(Test_TransThread *trans_ctrl)
     QString eng2 = tr("Connect output socket 1 to the load, disconnect the load input circuit breaker L1, and read that the current of B/C is 0A, while the current of A is normal;");
     QString eng3;
     QString eng4 = tr("Socket 1 current check");
-    trans_ctrl->sendCtrlGnd(1+2);
+    trans_ctrl->sendCtrlGnd(1+2);//K1 K2 //L1 ON L2 L3 OFF
 
     while(1)
     {
@@ -1189,7 +1189,7 @@ bool Power_DevRead::SixInsertOne_CtrlTwo(Test_TransThread *trans_ctrl)
     QString eng2 = tr("Disconnect the load input circuit breaker L2 and check that the reading of B current is 0A and A/C current is normal;");
     QString eng3;
     QString eng4 = tr("Socket 1 current check");
-    trans_ctrl->sendCtrlGnd(1+2+64);
+    trans_ctrl->sendCtrlGnd(1+2+64);//K1 K2 K7//L1 L3 ON L2 OFF
 
     while(1)
     {
@@ -1251,7 +1251,7 @@ bool Power_DevRead::SixInsertOne_CtrlThree(Test_TransThread *trans_ctrl)
     QString eng2 = tr("Disconnect the load input circuit breaker L3, check that the reading of C current is 0A, and the A/B current is normal;");
     QString eng3;
     QString eng4 = tr("Socket 1 current check");
-    trans_ctrl->sendCtrlGnd(1+2+32);
+    trans_ctrl->sendCtrlGnd(1+2+32);//K1 K2 K6//L1 L2 ON L3 OFF
 
     while(1)
     {
@@ -1382,7 +1382,7 @@ bool Power_DevRead::SixInsertTwo_CtrlOne(Test_TransThread *trans_ctrl)
     QString eng2 = tr("Connect output socket 2 to the load, disconnect the load input circuit breaker L1, and read that the current of B/C is 0A, while the current of A is normal;");
     QString eng3;
     QString eng4 = tr("Socket 2 current check");
-    trans_ctrl->sendCtrlGnd(1+4+32+64);
+    trans_ctrl->sendCtrlGnd(1+4+32+64);//K1 K2 K6 K7//L1 L2 L3 ON
 
     while(1){
         int a=0, b=0, c=0;
@@ -1410,7 +1410,7 @@ bool Power_DevRead::SixInsertTwo_CtrlOne(Test_TransThread *trans_ctrl)
     flag = 0;
     str = tr("关闭负载输入端L1");  //三相回路电流、功率
     emit StepSig(str); //emit CurImageSig(2);
-    trans_ctrl->sendCtrlGnd(1+4);
+    trans_ctrl->sendCtrlGnd(1+4);//K1 K3//L1 ON L2 L3 OFF
 
     while(1)
     {
@@ -1472,7 +1472,7 @@ bool Power_DevRead::SixInsertTwo_CtrlTwo(Test_TransThread *trans_ctrl)
     QString eng2 = tr("Disconnect the load input circuit breaker L2 and check that the reading of B current is 0A and A/C current is normal;");
     QString eng3;
     QString eng4 = tr("Socket 2 current check");
-    trans_ctrl->sendCtrlGnd(1+4+64);
+    trans_ctrl->sendCtrlGnd(1+4+64);//K1 K3 K7//L1 L3 ON L2 OFF
 
 
     while(1)
@@ -1535,7 +1535,7 @@ bool Power_DevRead::SixInsertTwo_CtrlThree(Test_TransThread *trans_ctrl)
     QString eng2 = tr("Disconnect the load input circuit breaker L3, check that the reading of C current is 0A, and the A/B current is normal;");
     QString eng3;
     QString eng4 = tr("Socket 2 current check");
-    trans_ctrl->sendCtrlGnd(1+4+32);
+    trans_ctrl->sendCtrlGnd(1+4+32);//K1 K3 K6//L1 L2 ON L3 OFF
 
     while(1)
     {
@@ -1659,7 +1659,7 @@ bool Power_DevRead::Load_SixLoop(Test_TransThread *trans_ctrl)
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     QString str = tr("请准备输出口1，打开负载输入端L1、L2、L3");  //三相回路电流、功率
     emit StepSig(str); //emit CurImageSig(2);
-    trans_ctrl->sendCtrlGnd(1+2+32+64);
+    trans_ctrl->sendCtrlGnd(1+2+32+64);//K1 K2 K6 K7//L1 L2 L3 ON
 
     while(1){
         int a=0, b=0, c=0;
@@ -1720,7 +1720,7 @@ bool Power_DevRead::Three_CtrlOne(Test_TransThread *trans_ctrl)
     QString eng2 = tr("Connect output socket 1 to the load, disconnect the load input circuit breaker L1, and read that the current of B/C is 0A, while the current of A is normal;");
     QString eng3;
     QString eng4 = tr("Socket 1 current check");
-    trans_ctrl->sendCtrlGnd(1+2);
+    trans_ctrl->sendCtrlGnd(1+2);//K1 K2//L1 ON L2 L3 OFF
 
     while(1)
     {
@@ -1788,7 +1788,7 @@ bool Power_DevRead::Three_CtrlTwo(Test_TransThread *trans_ctrl)
     QString eng2 = tr("Disconnect the load input circuit breaker L2 and check that the reading of B current is 0A and A/C current is normal;");
     QString eng3;
     QString eng4 = tr("Socket 1 current check");
-    trans_ctrl->sendCtrlGnd(1+2+64);
+    trans_ctrl->sendCtrlGnd(1+2+64);//K1 K2 K7//L1 L3 ON L2 OFF
 
     while(1)
     {
@@ -1853,7 +1853,7 @@ bool Power_DevRead::Three_CtrlThree(Test_TransThread *trans_ctrl)
     QString eng2 = tr("Disconnect the load input circuit breaker L3, check that the reading of C current is 0A, and the A/B current is normal;");
     QString eng3;
     QString eng4 = tr("Socket 1 current check");
-    trans_ctrl->sendCtrlGnd(1+2+32);
+    trans_ctrl->sendCtrlGnd(1+2+32);//K1 K2 K6//L1 L2 ON L3 OFF
 
     while(1)
     {
@@ -1976,7 +1976,7 @@ bool Power_DevRead::Three_One(Test_TransThread *trans_ctrl)
     QString str2 = tr("输出插座1接入负载，断开负载输入端断路器L1，读取读取B/C电流为0A，A电流为正常；");
     QString str = tr("请准备输出口1，打开负载输入端L1、L2、L3");  //三相回路电流、功率
     emit StepSig(str); //emit CurImageSig(2);
-    trans_ctrl->sendCtrlGnd(1+2);
+    trans_ctrl->sendCtrlGnd(1+2+32+64);//K1 K2 K6 K7//L1 L2 L3 ON 1 ON
 
     QString str3; QString str4 = tr("插座1电流检查");
     QString eng2 = tr("Connect output socket 1 to the load, disconnect the load input circuit breaker L1, and read that the current of B/C is 0A, while the current of A is normal;");
@@ -1989,21 +1989,21 @@ bool Power_DevRead::Three_One(Test_TransThread *trans_ctrl)
             ret = readData();
             Obj->cur.status[0] = mErr->checkErrRange(exValue, Obj->cur.value[0], err);
             if(Obj->cur.status[0]){
-                    ret = true;
-                    break;
-                }
+                ret = true;
+                break;
+            }
         }
         flag++;
         if(flag >90) {
             ret = false;
             str = tr("输出口1 无电流");mLogs->updatePro(str, ret);
-                break;
+            break;
         }
     }
     QString str5 = tr("相位转换旋钮转到L1，并检测输出口1位置的极性测试是否合格?");
     // emit PloarSig(str5);
     emit StepSig(str5); //emit CurImageSig(1);
-    trans_ctrl->sendCtrlGnd(1);
+    trans_ctrl->sendCtrlGnd(1+32+64);//K1 K6 K7//L1 L2 L3 ON 1 OFF
     sleep(5);
 
     flag = 0;
@@ -2018,7 +2018,7 @@ bool Power_DevRead::Three_One(Test_TransThread *trans_ctrl)
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
         }
         a = Obj->cur.value[0]; b = Obj->cur.status[1]; c = Obj->cur.status[2];
-        if(a &&(!b) &&(!c)) {
+        if((!a) &&(!b) &&(!c)) {
             ret = true;
             for(int i =0;i<loop;i++)
             {
@@ -2131,7 +2131,7 @@ bool Power_DevRead::Three_Two(Test_TransThread *trans_ctrl)
     QString str2 = tr("输出插座2接入负载，断开负载输入端断路器L1，检查读取B电流为0A，A/C电流为正常；");
     QString str = tr("请准备输出口2，打开负载输入端L1、L2、L3");  //三相回路电流、功率
     emit StepSig(str); //emit CurImageSig(2);
-    trans_ctrl->sendCtrlGnd(1+4+32);
+    trans_ctrl->sendCtrlGnd(1+32+64+4);//K1 K3 K6 K7//L1 L2 L3 ON 2 ON
 
     QString str3; QString str4 = tr("插座2电流检查");
     QString eng2 = tr("Connect output socket 2 to the load, disconnect the load input circuit breaker L1, check and read that the current of B is 0A, and the current of A/C is normal;");
@@ -2156,7 +2156,7 @@ bool Power_DevRead::Three_Two(Test_TransThread *trans_ctrl)
     QString str5 = tr("相位转换旋钮转到L1，检测输出口2位置的极性测试是否合格?");
     // emit PloarSig(str5);
     emit StepSig(str5); //emit CurImageSig(1);
-    trans_ctrl->sendCtrlGnd(1+4);
+    trans_ctrl->sendCtrlGnd(1+32+64);//K1 K6 K7//L1 L2 L3 ON 2 OFF
     sleep(5);
 
     flag = 0;
@@ -2285,7 +2285,7 @@ bool Power_DevRead::Three_Three(Test_TransThread *trans_ctrl)
     QString str2 = tr("输出插座3接入负载，断开负载输入端断路器L1，检查读取C电流为0A，A/B电流为正常；");
     QString str = tr("请准备输出口3，打开负载输入端L1、L2、L3");  //三相回路电流、功率
     emit StepSig(str); //emit CurImageSig(2);
-    trans_ctrl->sendCtrlGnd(1+8+32+64);
+    trans_ctrl->sendCtrlGnd(1+8+32+64);//K1 K4 K6 K7//L1 L2 L3 ON 3 ON
 
     QString str3; QString str4 = tr("插座3电流检查");
     QString eng2 = tr("Connect the output socket 3 to the load, disconnect the load input circuit breaker L1, and check that the reading of C current is 0A, and the A/B current is normal;");
@@ -2310,7 +2310,7 @@ bool Power_DevRead::Three_Three(Test_TransThread *trans_ctrl)
     QString str5 = tr("相位转换旋钮转到L1，检测输出口3位置的极性测试是否合格?");
     // emit PloarSig(str5);
     emit StepSig(str5); //emit CurImageSig(1);
-    trans_ctrl->sendCtrlGnd(1+32+64);
+    trans_ctrl->sendCtrlGnd(1+32+64);//K1 K6 K7//L1 L2 L3 ON 3 OFF
     sleep(5);
 
     flag = 0;
@@ -2438,7 +2438,7 @@ bool Power_DevRead::Load_ThreeLoop(Test_TransThread *trans_ctrl)
     if((mItem->modeId == START_BUSBAR) || (mBusData->box[mItem->addr-1].phaseFlag == 1)) {
         str = tr("请准备输出口，打开负载输入端L1、L2、L3");  //三相回路电流、功率
         emit StepSig(str); //emit CurImageSig(2);
-        trans_ctrl->sendCtrlGnd(1+2+32+64);
+        trans_ctrl->sendCtrlGnd(1+2+32+64);//K1 K2 K6 K7//L1 L2 L3 ON
 
         while(1){
             int a=0, b=0, c=0;

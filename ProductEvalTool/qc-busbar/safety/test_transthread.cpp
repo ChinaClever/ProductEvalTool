@@ -221,47 +221,56 @@ bool Test_TransThread::checkTapoff_boxPolarity(QList<int> Intresult)
 bool Test_TransThread::recvPolarity()
 {
     sendCtrlGnd(0); Delay_MSec(2000); sendCtrlGnd(128);
-    uchar initialCmd[] = {0x01, 0x03, 0x00, 0x18, 0x00, 0x19};
-    int cmdLength = sizeof(initialCmd) / sizeof(initialCmd[0]);
-    QByteArray cmdArray(reinterpret_cast<const char*>(initialCmd), cmdLength);
-    ushort crc = rtu_crc(reinterpret_cast<const uchar*>(cmdArray.constData()), cmdArray.size());
-    cmdArray.append(crc & 0xFF); // 低字节
-    cmdArray.append(crc >> 8);   // 高字节
+    bool res = false;int count = 0 ;
+    while(!res)
+    {
+        uchar initialCmd[] = {0x01, 0x03, 0x00, 0x18, 0x00, 0x19};
+        int cmdLength = sizeof(initialCmd) / sizeof(initialCmd[0]);
+        QByteArray cmdArray(reinterpret_cast<const char*>(initialCmd), cmdLength);
+        ushort crc = rtu_crc(reinterpret_cast<const uchar*>(cmdArray.constData()), cmdArray.size());
+        cmdArray.append(crc & 0xFF); // 低字节
+        cmdArray.append(crc >> 8);   // 高字节
 
-    QByteArray recv;
-    int ret = mSerialPolar->transmit(cmdArray,recv,20);
-    if(!ret){
-        ret = mSerialPolar->transmit(cmdArray,recv,20);
-        if(!ret) return 0;
-    }
-
-    QString str = recv.toHex();
-    int start = 6; // 从第七个字符开始（注意：QString的索引从0开始）
-    int length = 4; // 长度为4
-    int temp = 0;
-
-    QStringList result;
-    QList<int> Intresult;
-    bool res = true;
-
-    if(str.size()==55) {
-        for (int i = start; i <= (start + length*12); i += length) {
-            QString subString = str.mid(i, length);
-            result.append(subString);
-            bool ok;
-            int value = result.at(temp).toInt(&ok, 16);
-            Intresult.append(value*POLARITY_DCVOL_);
-            temp ++;
-        }
-        //L1-24v;L2-12v;L3-5V
-        if(mItem->modeId == START_BUSBAR){
-            res = this->checkFeeder_boxPolarity(Intresult);
-        }else{
-            res = this->checkTapoff_boxPolarity(Intresult);
+        QByteArray recv;
+        int ret = mSerialPolar->transmit(cmdArray,recv,20);
+        if(!ret){
+            ret = mSerialPolar->transmit(cmdArray,recv,20);
+            if(!ret) return 0;
         }
 
-    }else {
-        res = false; mPacket->updatePro("极性采集数据不完整失败", false);
+        QString str = recv.toHex();
+        int start = 6; // 从第七个字符开始（注意：QString的索引从0开始）
+        int length = 4; // 长度为4
+        int temp = 0;
+
+        QStringList result;
+        QList<int> Intresult;
+
+
+        if(str.size()==55) {
+            for (int i = start; i <= (start + length*12); i += length) {
+                QString subString = str.mid(i, length);
+                result.append(subString);
+                bool ok;
+                int value = result.at(temp).toInt(&ok, 16);
+                Intresult.append(value*POLARITY_DCVOL_);
+                temp ++;
+            }
+            //L1-24v;L2-12v;L3-5V
+            if(mItem->modeId == START_BUSBAR){
+                res = this->checkFeeder_boxPolarity(Intresult);
+            }else{
+                res = this->checkTapoff_boxPolarity(Intresult);
+            }
+
+        }else {
+            res = false; mPacket->updatePro("极性采集数据不完整失败", false);
+        }
+        count++;
+        if(count > 10) {
+            res = false;
+            break;
+        }
     }
 
     sendCtrlGnd(0);

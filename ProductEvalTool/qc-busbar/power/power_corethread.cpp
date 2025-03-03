@@ -1410,6 +1410,8 @@ void Power_CoreThread::getNumAndIndexSlot(int curnum)
 
 void Power_CoreThread::workDown()
 {
+    this->mTrans->sendCtrlGnd(0);//Reset
+    sleep(1);
     this->mTrans->sendCtrlGnd(1+32+64);//启动L1,L2,L3
     mPro->step = Test_Start;
     bool ret = true;

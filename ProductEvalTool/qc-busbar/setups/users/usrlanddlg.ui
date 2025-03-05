@@ -179,7 +179,7 @@
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>Busbar质检平台</string>
+    <string>Powerflex Busbar成品质检平台</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

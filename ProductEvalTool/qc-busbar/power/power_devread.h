@@ -31,6 +31,7 @@ public:
     bool NineInsertOne_CtrlOne(Test_TransThread *trans_ctrl);
     bool NineInsertOne_CtrlTwo(Test_TransThread *trans_ctrl);
     bool NineInsertOne_CtrlThree(Test_TransThread *trans_ctrl);
+    bool Insert_NoneOutput(Test_TransThread *trans_ctrl,int index);
     bool NineInsertTwo_CtrlOne(Test_TransThread *trans_ctrl);
     bool NineInsertTwo_CtrlTwo(Test_TransThread *trans_ctrl);
     bool NineInsertTwo_CtrlThree(Test_TransThread *trans_ctrl);

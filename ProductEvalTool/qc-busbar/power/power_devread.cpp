@@ -349,6 +349,68 @@ bool Power_DevRead::NineInsertOne_CtrlTwo(Test_TransThread *trans_ctrl)
     return ret;
 }
 
+bool Power_DevRead::Insert_NoneOutput(Test_TransThread *trans_ctrl, int index)
+{
+    bool ret = true; int flag = 0; QString str1;
+    sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
+    uchar loop = mBusData->box[mItem->addr-1].loopNum;
+    QString str2 = tr("断开负载输出端%1，检查读取A/B/C电流为0A").arg(index);
+    QString str = tr("关闭负载输出端%1 L1/L2/L3").arg(index);
+    emit StepSig(str); //emit CurImageSig(2);
+    QString str3; QString str4 = tr("插座%1电流检查").arg(index);
+    QString eng2 = tr("Disconnect the load output breaker%1 and check that the reading of A/B/C current is 0A").arg(index);
+    QString eng3;
+    QString eng4 = tr("Socket %1 current check").arg(index);
+    trans_ctrl->sendCtrlGnd(1+32+64);//K1 K2 K6//L1 L2 ON L3 OFF
+
+    while(1)
+    {
+        int a=0, b=0, c = 0;
+        ret = readData();
+
+        a = Obj->cur.value[0+3*(index-1)]; b = Obj->cur.value[1+3*(index-1)]; c = Obj->cur.value[2+3*(index-1)];
+        if((!c)&&(!b)&&(!a)) {
+            ret = true;
+            for(int i =0;i<loop;i++)
+            {
+                QString temp = trans(i);
+                str = tr("%1电流%2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
+                str3 = tr("%1 current %2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
+                str1 += str; eng3 += str3;
+            }
+            mLogs->updatePro(str1, ret); str = tr("输出口%1-无底数检测成功 ").arg(index);mLogs->updatePro(str, ret);
+            mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
+
+        }
+        if(flag >70) {
+            str = tr("电流有底数");
+            emit StepSig(str);
+        }
+
+        flag++;
+        if(flag >90) {
+            for(int i =0;i<loop;i++)
+            {
+                QString temp = trans(i);
+                str = tr("%1电流%2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
+                str3 = tr("%1 current %2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
+                str1 += str; eng3 += str3;
+            }
+            mLogs->updatePro(str1, ret); ret = false;
+            str = tr("输出口%1-%2检测失败,有底数").arg(index).arg(str1);
+            mLogs->updatePro(str, ret);
+
+            mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
+        }
+    }
+
+    sleep(3);
+
+    return ret;
+}
+
 bool Power_DevRead::NineInsertOne_CtrlThree(Test_TransThread *trans_ctrl)
 {
     bool ret = true; int flag = 0; QString str1;
@@ -1089,14 +1151,17 @@ bool Power_DevRead::Load_NineLoop(Test_TransThread *trans_ctrl)
     if(ret) ret = NineInsertOne_CtrlOne(trans_ctrl);//
     if(ret) ret = NineInsertOne_CtrlTwo(trans_ctrl);
     if(ret) ret = NineInsertOne_CtrlThree(trans_ctrl);
+    if(ret) ret = Insert_NoneOutput(trans_ctrl,1);
 
     if(ret) ret = NineInsertTwo_CtrlOne(trans_ctrl);//
     if(ret) ret = NineInsertTwo_CtrlTwo(trans_ctrl);
     if(ret) ret = NineInsertTwo_CtrlThree(trans_ctrl);
+    if(ret) ret = Insert_NoneOutput(trans_ctrl,2);
 
     if(ret) ret = NineInsertThree_CtrlOne(trans_ctrl);//
     if(ret) ret = NineInsertThree_CtrlTwo(trans_ctrl);
     if(ret) ret = NineInsertThree_CtrlThree(trans_ctrl);
+    if(ret) ret = Insert_NoneOutput(trans_ctrl,3);
 
     //emit CurImageSig(4);
 
@@ -1688,10 +1753,12 @@ bool Power_DevRead::Load_SixLoop(Test_TransThread *trans_ctrl)
     if(ret) ret = SixInsertOne_CtrlOne(trans_ctrl);
     if(ret) ret = SixInsertOne_CtrlTwo(trans_ctrl);
     if(ret) ret = SixInsertOne_CtrlThree(trans_ctrl);
+    if(ret) ret = Insert_NoneOutput(trans_ctrl , 1);
 
     if(ret) ret = SixInsertTwo_CtrlOne(trans_ctrl);
     if(ret) ret = SixInsertTwo_CtrlTwo(trans_ctrl);
     if(ret) ret = SixInsertTwo_CtrlThree(trans_ctrl);
+    if(ret) ret = Insert_NoneOutput(trans_ctrl , 2);
 
     //emit CurImageSig(4);
 
@@ -2494,6 +2561,7 @@ bool Power_DevRead::Load_ThreeLoop(Test_TransThread *trans_ctrl)
         if(ret) ret = Three_CtrlOne(trans_ctrl);
         if(ret) ret = Three_CtrlTwo(trans_ctrl);
         if(ret) ret = Three_CtrlThree(trans_ctrl);
+        if(ret) ret = Insert_NoneOutput(trans_ctrl , 1);//始端箱底数检查？？？
 
     }else if((mItem->modeId != START_BUSBAR) && (mBusData->box[mItem->addr-1].phaseFlag == 0)) {    //单相三回路三个输出位
 

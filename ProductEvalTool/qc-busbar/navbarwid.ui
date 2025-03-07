@@ -41,7 +41,7 @@
       <string notr="true">color: rgb(255, 255, 255);</string>
      </property>
      <property name="text">
-      <string>Busbar质检工具</string>
+      <string>Busbar质检自动测试工具V1.0</string>
      </property>
     </widget>
    </item>

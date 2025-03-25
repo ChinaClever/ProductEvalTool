@@ -57,7 +57,7 @@ QString Printer_BarTender::createOrder(sBarTend &it)
     QDateTime dateTime;
     QString dateTime_str = dateTime.currentDateTime().toString("yyyy/MM/dd hh:mm");
     str += dateTime_str + ",";
-    web += QString("productSN=%1&orderId=%2&moduleSN=%3").arg(it.on).arg(it.pn).arg(it.sn);
+    web += QString("productSN=%1&orderId=%2&moduleSN=%3").arg(it.pn).arg(it.on).arg(it.sn);
     str += web;
     return str;
 }

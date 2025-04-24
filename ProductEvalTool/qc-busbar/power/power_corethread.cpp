@@ -1455,7 +1455,7 @@ void Power_CoreThread::workDown()
         emit TipSig(str); //emit ImageSig(2);
 
         mCfg->work_mode = 3;
-        //if(ret) emit JudgSig(); //极性测试弹窗///
+        if(ret) emit JudgSig(); //极性测试弹窗///
 
         if(mItem->modeId == START_BUSBAR)
         {
@@ -1484,5 +1484,6 @@ void Power_CoreThread::run()
 
     workDown();
     mPro->step = Test_Over;
+    this->mTrans->sendCtrlGnd(0);
     isRun = false;
 }

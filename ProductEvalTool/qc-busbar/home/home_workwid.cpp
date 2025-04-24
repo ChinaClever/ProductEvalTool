@@ -120,6 +120,7 @@ void Home_WorkWid::overTest()
 {
     bool ret = MsgBox::information(this, tr("是否停止测试?"));
     if(ret){
+        mSafetyThread->mTrans->sendCtrlGnd(0);
         overSlot();
     }
 }

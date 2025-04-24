@@ -13,12 +13,12 @@ Dev_Object::Dev_Object(QObject *parent) : QThread(parent)
     mDev = mPacket->getDev();
     mDt = &(mDev->devType);
     mBusData = get_share_mem();
-//    QTimer::singleShot(1*1000,this,SLOT(initFunSlot()));
+    QTimer::singleShot(1*1000,this,SLOT(initFunSlot()));
 }
 
 void Dev_Object::initFunSlot()
 {
-    setModbus(3);
+    setModbus(4);
 }
 
 void Dev_Object::setModbus(int id)

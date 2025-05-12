@@ -30,10 +30,11 @@ QString Test_TransThread::sentStep(int step , int i , QString & command ,int ext
     for(int count = 0 ; count < 3 ; count ++)
     {
         if(recv.isEmpty()){
-            if(step == 1)
-                mSerialGND->transmit(command.toLatin1(),recv,10);
-            else{
-                if(mSerial)
+            if(step == 1){
+                if(mSerialGND && mSerialGND->isOpened())
+                    mSerialGND->transmit(command.toLatin1(),recv,10);
+            }else{
+                if(mSerial && mSerial->isOpened())
                     mSerial->transmit(command.toLatin1(),recv,10);
             }
         }

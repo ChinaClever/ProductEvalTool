@@ -176,6 +176,7 @@ bool Test_TransThread::checkTapoff_boxPolarity(QList<int> Intresult)
          //单相设备-----------------------------
         for(int i = 0 ;i < 12 ; i += 4){
             volValue = Intresult.at(i);// result.at(1);
+            qDebug()<<i<<" aa  "<<volValue;
             if(i == 0){
                 if(volValue < 1500) {ret = false; mPacket->updatePro("第一组，A相线序故障", ret); }
             }else if(i == 4){
@@ -222,6 +223,7 @@ bool Test_TransThread::recvPolarity()
 {
     sendCtrlGnd(0); Delay_MSec(2000); sendCtrlGnd(128);
     bool res = false;int count = 0 ;
+    int scount = 0;
     while(!res)
     {
         uchar initialCmd[] = {0x01, 0x03, 0x00, 0x18, 0x00, 0x19};
@@ -232,9 +234,10 @@ bool Test_TransThread::recvPolarity()
         cmdArray.append(crc >> 8);   // 高字节
 
         QByteArray recv;
-        int ret = mSerialPolar->transmit(cmdArray,recv,20);
+        int ret = mSerialPolar->transmit(cmdArray,recv,50);
         if(!ret){
-            ret = mSerialPolar->transmit(cmdArray,recv,20);
+            recv.clear();
+            ret = mSerialPolar->transmit(cmdArray,recv,50);
             if(!ret) return 0;
         }
 
@@ -247,7 +250,7 @@ bool Test_TransThread::recvPolarity()
         QList<int> Intresult;
 
 
-        if(str.size()==55) {
+        if(str.size()==110) {
             for (int i = start; i <= (start + length*12); i += length) {
                 QString subString = str.mid(i, length);
                 result.append(subString);
@@ -262,12 +265,20 @@ bool Test_TransThread::recvPolarity()
             }else{
                 res = this->checkTapoff_boxPolarity(Intresult);
             }
+            if(res){
+                scount++;
+                if(scount == 5){
+                    res = true;
+                }else{
+                    res = false;
+                }
+            }
 
         }else {
             res = false; mPacket->updatePro("极性采集数据不完整失败", false);
         }
         count++;
-        if(count > 10) {
+        if(count > 20) {
             res = false;
             break;
         }

@@ -338,6 +338,7 @@ bool Home_WorkWid::initSerialVol()
     Cfg::bulid()->writeQRcode();//成品sn===成品代码+订单号
 
     bool ret = false;
+    if(!coms->ser1){MsgBox::critical(this, tr("请先打Acw/Ir串口")); return ret;}
     ret = coms->ser1->isOpened();
     if(!ret){MsgBox::critical(this, tr("请先打Acw/Ir串口")); return ret;}
 
@@ -359,6 +360,7 @@ bool Home_WorkWid::initSerialGND()
     if(mCfgm->modeId == 2){//母线槽
         ret = true;
     } else{
+        if(!coms->ser2){MsgBox::critical(this, tr("请先打开Gnd串口")); return ret;}
         ret = coms->ser2->isOpened();
         if(!ret){MsgBox::critical(this, tr("请先打开Gnd串口")); return ret;}
     }

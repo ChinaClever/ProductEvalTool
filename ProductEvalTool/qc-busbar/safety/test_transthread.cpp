@@ -267,6 +267,7 @@ bool Test_TransThread::recvPolarity()
             }
             if(res){
                 scount++;
+                mPacket->updatePro(tr("极性采集数据第%1次成功").arg(scount));
                 if(scount == 5){
                     res = true;
                 }else{
@@ -275,6 +276,7 @@ bool Test_TransThread::recvPolarity()
             }
 
         }else {
+            scount = 0;
             res = false; mPacket->updatePro("极性采集数据不完整失败", false);
         }
         count++;

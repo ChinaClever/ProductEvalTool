@@ -148,6 +148,7 @@ struct sSiCfg {
     float si_curMax;
     uint rate;
     uchar itemType;
+    uchar si_testItem;
 };
 
 struct sCfgDev {

@@ -2456,8 +2456,11 @@ bool Power_DevRead::Load_ThreeLoop()
 
     }else if((mItem->modeId != START_BUSBAR) && (mBusData->box[mItem->addr-1].phaseFlag == 0)) {    //单相三回路三个输出位
 
+        if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 1)
         if(ret) ret = Three_One();
+        if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 2)
         if(ret) ret = Three_Two();
+        if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 3)
         if(ret) ret = Three_Three();
 
     }
@@ -2469,8 +2472,11 @@ bool Power_DevRead::Three_Break()
 {
     bool ret = true;
 
+    if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 1)
     ret = Three_OneBreaker();
+    if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 2)
     if(ret) ret = Three_TwoBreaker();
+    if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 3)
     if(ret) ret = Three_ThreeBreaker();
     // emit CurImageSig(4);
 

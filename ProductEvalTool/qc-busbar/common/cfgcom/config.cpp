@@ -107,6 +107,7 @@ void Cfg::initCfgDev()
     item->si.si_curMax = read("si_curMax", 0, g).toFloat();
     item->si.version = read("si_version", 100, g).toInt();
     item->si.itemType = read("si_itemType", 0, g).toInt();
+    item->si.si_testItem = read("si_testitem", 0, g).toInt();
     initSiData(g);
 
     QString q = "BusbarStartCfg";
@@ -182,6 +183,7 @@ void Cfg::writeCfgDev()
     write("si_curMax", QString::number(item->si.si_curMax), q);
     write("si_version", item->si.version, q);
     write("si_itemType", item->si.itemType, q);
+    write("si_testitem", item->si.si_testItem, q);
     writeSiData(q);
 }
 

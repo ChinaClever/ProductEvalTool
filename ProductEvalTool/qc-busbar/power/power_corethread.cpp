@@ -539,6 +539,7 @@ void Power_CoreThread::InsertErrRange()
         ret = curAlarmErr(i);
     }
 
+    mRead->readData();
     ret = VolErrRange();
     if(!ret) {
         ret = mRead->readData();

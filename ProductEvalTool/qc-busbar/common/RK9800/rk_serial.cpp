@@ -58,7 +58,7 @@ bool Rk_Serial::readPacket1(sRkItem &it)
 
     item2.addr = 0x01;
     item2.fn = 0x03;
-    item2.reg = 0x0040;
+    item2.reg = 0x00B4;
     item2.num = 6;
 
     bool ret = true;

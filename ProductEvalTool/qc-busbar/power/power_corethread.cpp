@@ -1340,7 +1340,7 @@ bool Power_CoreThread::stepLoadTest()       //电流测试
     }else if(mBusData->box[mItem->addr-1].loopNum == 6) {
         ret = mRead->Load_SixLoop(this->mTrans);
     }else if(mBusData->box[mItem->addr-1].loopNum == 3) {
-        ret = mRead->Load_ThreeLoop(this->mTrans);
+        ret = mRead->Load_ThreeLoop(this->mTrans);//////need
     }
 
     return ret;
@@ -1356,7 +1356,7 @@ bool Power_CoreThread::BreakerTest()        //断路器测试
         if(mBusData->box[mItem->addr-1].phaseFlag == 1) {
             ret = mRead->Three_Breaker();
         }else if(mBusData->box[mItem->addr-1].phaseFlag == 0) {    //单相三回路三个输出位
-            ret = mRead->Three_Break();
+            ret = mRead->Three_Break();///////need
         }
     }
 

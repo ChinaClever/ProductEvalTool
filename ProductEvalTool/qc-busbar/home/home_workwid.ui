@@ -210,7 +210,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>660</y>
+      <y>610</y>
       <width>191</width>
       <height>21</height>
      </rect>
@@ -235,7 +235,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>510</y>
+      <y>470</y>
       <width>191</width>
       <height>21</height>
      </rect>
@@ -260,7 +260,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>320</y>
+      <y>290</y>
       <width>191</width>
       <height>51</height>
      </rect>
@@ -282,7 +282,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>370</y>
+      <y>340</y>
       <width>191</width>
       <height>16</height>
      </rect>
@@ -307,7 +307,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>460</y>
+      <y>420</y>
       <width>191</width>
       <height>51</height>
      </rect>
@@ -329,7 +329,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>610</y>
+      <y>560</y>
       <width>191</width>
       <height>51</height>
      </rect>
@@ -390,6 +390,11 @@
       <string>母线槽</string>
      </property>
     </item>
+    <item>
+     <property name="text">
+      <string>基本型</string>
+     </property>
+    </item>
    </widget>
    <widget class="QCheckBox" name="stopFag">
     <property name="geometry">
@@ -417,7 +422,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>750</y>
+      <y>690</y>
       <width>191</width>
       <height>51</height>
      </rect>
@@ -447,6 +452,19 @@
       <width>191</width>
       <height>31</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="powerOffBtn">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>790</y>
+      <width>191</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>断电</string>
     </property>
    </widget>
   </widget>

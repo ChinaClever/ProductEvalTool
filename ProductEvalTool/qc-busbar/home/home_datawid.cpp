@@ -34,7 +34,20 @@ void Home_DataWid::appendItem(sBoxData *box)
 void Home_DataWid::timeoutDone()
 {
     clearTable();
-    if((mBusData->box[mItem->addr-1].loopNum)&&(mBusData->box[mItem->addr-1].loopNum < 10)) {
-        appendItem(&(mBusData->box[mItem->addr-1]));
+    if(mItem->modeId == BASIC_TYPE){
+        for(int i = 0; i < 3; ++i) { // 显示0 ~ 2共3路
+            QStringList listStr;
+            listStr << QString::number(mData->source_vol[i] / COM_RATE_CUR, 'f', 1);
+            listStr << QString::number(mData->source_cur[i] / COM_RATE_CUR, 'f', 3);
+            listStr << QString::number(mData->pow[i] / (COM_RATE_POW*10), 'f', 3);
+
+            setTableRow(i, listStr); // 写入表格第i行
+        }
+    }
+    else{
+        if((mBusData->box[mItem->addr-1].loopNum)&&(mBusData->box[mItem->addr-1].loopNum < 10)) {
+            appendItem(&(mBusData->box[mItem->addr-1]));
+        }
     }
 }
+

@@ -59,7 +59,6 @@ void Home_WorkWid::initWid()
     mPower = new Face_Power(ui->stackedWid2);
     ui->stackedWid2->addWidget(mPower);
 
-
     connect(this, &Home_WorkWid::startSig, this, &Home_WorkWid::updateWidSlot);
     connect(Json_Pack::bulid(this), &Json_Pack::httpSig, this, &Home_WorkWid::insertTextslots);
 
@@ -70,6 +69,8 @@ void Home_WorkWid::initWid()
     connect(mPowThread,&Power_CoreThread::JudgSig, this, &Home_WorkWid::JudgSlots);
     // connect(mPowThread, &Power_CoreThread::TipSig , mPower, &Face_Power::TextSlot);
     // connect(mPowThread, &Power_CoreThread::ImageSig , mPower, &Face_Power::ImageSlot);
+    connect(this,&Home_WorkWid::powerOffSig,mPowThread,&Power_CoreThread::powerOffSlot,Qt::QueuedConnection);
+
 
     mPowDev = Power_DevRead::bulid(this);
 
@@ -307,6 +308,10 @@ void Home_WorkWid::updateWid()
     }
     case 2: {
         mPro->dev_name = tr("母线槽"); ePro->dev_name = tr("Busway");
+        break;
+    }
+    case 3: {
+        mPro->dev_name = tr("基本型"); ePro->dev_name = tr("Basic type");
         break;
     }
     default:
@@ -580,6 +585,7 @@ void Home_WorkWid::on_comBox_currentIndexChanged(int index)
         mCfgm->addr = 2;
         break;
     }
+
     default:
         break;
     }
@@ -606,10 +612,25 @@ void Home_WorkWid::on_snprintBtn_clicked()
         }
     }
 }
+void Home_WorkWid::on_powerOffBtn_clicked()
+{
 
+    auto reply = QMessageBox::question(this,"确认","确定要进行断电操作吗？",
+                                       QMessageBox::Yes|QMessageBox::No);
+
+    if(reply == QMessageBox::Yes){
+        mPro->work_mode = 11; //断电模式
+        mPowThread->start();
+        //emit powerOffSig();
+    }
+    else return ;
+}
 
 void Home_WorkWid::on_safeSnEit_textChanged(const QString &arg1)
 {
     ui->safeSnEit->setClearButtonEnabled(1);
 }
+
+
+
 

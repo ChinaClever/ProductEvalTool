@@ -70,6 +70,8 @@ DEPENDPATH += $$PWD/.
 win32:!win32-g++: PRE_TARGETDEPS += $$PWD/./snmpdev.lib
 else:win32-g++: PRE_TARGETDEPS += $$PWD/./libsnmpdev.a
 
+
+
 LIBS += -lws2_32
 
 

@@ -14,6 +14,7 @@ public:
 
     bool readSn();
     bool readDev();
+    bool readDevBasicType();
     bool readDevBus();
     bool readNet();
     bool checkNet();
@@ -70,6 +71,7 @@ public:
     bool Three_TwoBreaker();
     bool Three_ThreeBreaker();
 
+    Dev_Source *mSource;
 protected:
     bool readSnmp();
 protected slots:

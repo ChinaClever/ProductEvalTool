@@ -58,7 +58,6 @@ void Setting::initType()
     sSiCfg *dv = &(mItem->si); //插接箱
     ui->iOFBox_2->setCurrentIndex(dv->si_iOF);
     ui->outputBox->setCurrentIndex(dv->si_phaseflag);
-    ui->testItemBox->setCurrentIndex(dv->si_testItem);
     uchar loop = 0;
     if(dv->loopNum == 3)
         loop = 0;
@@ -128,7 +127,6 @@ void Setting::updateType()
     // qDebug()<<"---temp---"<<dv->si_vol<<dv->si_cur<<dv->si_volErr<<dv->si_curErr;
 
     dv->itemType = ui->itemBox->currentIndex();
-    dv->si_testItem = ui->testItemBox->currentIndex();
 }
 
 bool Setting::dataSave()

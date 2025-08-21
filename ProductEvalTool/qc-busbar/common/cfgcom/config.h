@@ -42,6 +42,7 @@ enum eIpTypes {
     START_BUSBAR=0,
     INSERT_BUSBAR,
     TEMPER_BUSBAR,
+    BASIC_TYPE,
     SNMP=0,
     MODBUS
 };
@@ -148,7 +149,6 @@ struct sSiCfg {
     float si_curMax;
     uint rate;
     uchar itemType;
-    uchar si_testItem;
 };
 
 struct sCfgDev {

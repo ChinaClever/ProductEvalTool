@@ -17,7 +17,7 @@ class Face_Power : public QWidget
 public:
     explicit Face_Power(QWidget *parent = nullptr);
     ~Face_Power();
-
+    //Home_DataWid* getDataWid() { return mDataWid; }
     void ClearText();
 protected:
     void initWid();

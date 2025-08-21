@@ -58,6 +58,7 @@ signals:
     void startSig(int);
     void clearStartEleSig();
     void testBarSig(int);
+    void powerOffSig();
 protected slots:
     void timeoutDone();
     void overSlot();
@@ -105,6 +106,8 @@ private slots:
     void on_snprintBtn_clicked();
 
     void on_safeSnEit_textChanged(const QString &arg1);
+
+    void on_powerOffBtn_clicked();
 
 private:
     Ui::Home_WorkWid *ui;

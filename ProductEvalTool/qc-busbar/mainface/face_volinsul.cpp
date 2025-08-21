@@ -52,6 +52,7 @@ void Face_Volinsul::startSlot()
 bool Face_Volinsul::printer(QString ip ,QString url, int port)
 {
     // QString ip = "192.168.1.13";
+    qDebug()<<"printer";
     bool ret = true;
     QString str = tr("标签打印 "); QString str1;
         // if(mPro->result != Test_Fail){
@@ -66,6 +67,7 @@ bool Face_Volinsul::printer(QString ip ,QString url, int port)
 
         QString mSn = mDev->devType.sn;//模块序列号
         it.sn =  mSn.remove(QRegExp("\\s"));
+        qDebug()<<"mSn: "<<mSn;
         it.fw = "V0.0";
         it.hw = "V1.0";
         // if(it.sn.isEmpty()){
@@ -100,7 +102,7 @@ void Face_Volinsul::resultSlot()
     QString str1 = tr("测试项目数:%1  失败项目数：%2  项目测试通过率：%3%").arg(mItem->progress.allNum).arg(mItem->progress.errNum).arg(ok);
     mPacket->updatePro(str1);
 
-    if(mCfg->modeId == 2 || mPro->type == 0)
+    if(mCfg->modeId == 2) //测试
     {
         if(mDev->devType.sn.isEmpty() || mCfg->modeId == 2) mSn->createSn();//设置序列号
         QString str = mDev->devType.sn;
@@ -153,8 +155,11 @@ void Face_Volinsul::resultSlot()
         res = false; str += tr("失败");
         mPro->uploadPassResult = 0;
     } else {
-        if((mCfg->modeId == 2 && mPro->work_mode == 0)|| (mPro->work_mode == 1 && mPro->type == 0))//母线槽与基本型始端箱和插接箱只需安规测试，接地测试成功打印标签
-        {
+        qDebug()<<"mCfg->modeId: "<<mCfg->modeId;
+        qDebug()<<"mPro->word_mode: "<< mPro->work_mode;
+        qDebug()<<"mPro->type: "<<mPro->type;
+        if((mCfg->modeId == 2 && mPro->work_mode == 0))//母线槽与基本型始端箱和插接箱只需安规测试，接地测试成功打印标签
+        {                                                                           //mPro->type == 0  测试
             QString method; int port = 0; QString ip;
             if(mCfg->modeId == 2) {method = "Integration/Busbar-Busway/Execute"; port = 81; ip = "127.0.0.1"; }
             else { ip = "127.0.0.1"; method = "Integration/Busbar-Product/Execute"; port = 80;}

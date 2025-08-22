@@ -713,7 +713,10 @@ bool Power_CoreThread::VolCurCtrl(sObjData *obj,int id)
             QString str, engStr;
             for (int i = 0; i < loop; i++)
             {
-                QString name = trans(i);
+                QString name;
+                if(i == 0)name = "A";
+                else if(i == 1)name = "B";
+                else name = "C";
                 double vol = obj->source_vol[i] / SOURCE_RATE_VOL;
                 double cur = obj->source_cur[i] / COM_RATE_CUR;
                 str += tr("%1 电压: %2V, 电流: %3A; ")

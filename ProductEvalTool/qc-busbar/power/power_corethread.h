@@ -21,6 +21,8 @@ signals:
     void finshSig(bool ret);
     void JudgSig();
     void ImageSig(int value);
+
+    void changeLoadSig(int);
 private slots:
     void noloadHomeSlot(int ret);
 
@@ -28,6 +30,7 @@ public slots:
 //    void clearStartEleSlot();
     void getNumAndIndexSlot(int curnum);
     void getDelaySlot();
+    void changLoadEmitSlot(bool);
 protected:
     void run();
     void workDown();
@@ -78,6 +81,13 @@ protected:
     void autoSetAddress();
     QString trans(int index);
 
+
+    void clearObjVolCur(sObjData *);
+    bool tryReadVolCur(sObjData *,int id);
+    bool VolCurCtrl(sObjData *,int id);
+    bool tryReadVolCurSig(sObjData *,int id);
+    bool VolCurCtrlSigle(sObjData *,int id);
+    bool handleBasicType();
 private:
     Power_Logs *mLogs;
     Power_DevRead *mRead;
@@ -93,6 +103,8 @@ private:
     Dev_SiRtu *mSiRtu;
     Power_ErrRange *mErr;
     sCfgItem *mItem;
+    bool LoadChangeflag = 0;
+    Sn_SerialNum *mSn;
 };
 
 double calculateAverageWithoutHighestAndLowest(QVector<ushort> &numbers);

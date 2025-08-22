@@ -42,6 +42,7 @@ enum eIpTypes {
     START_BUSBAR=0,
     INSERT_BUSBAR,
     TEMPER_BUSBAR,
+    BASIC_TYPE,
     SNMP=0,
     MODBUS
 };
@@ -185,10 +186,11 @@ struct sErrRange
 
 struct sSerial
 {
-    sSerial() {ser3=ser1=ser2=nullptr;}
+    sSerial() {ser3=ser1=ser2=ser4=nullptr;}
     SerialPort *ser3; // 标准源
     SerialPort *ser1; // 串口对象
     SerialPort *ser2; // 串口对象
+    SerialPort *ser4; // 负载串口对象
 };
 
 struct sCfgItem

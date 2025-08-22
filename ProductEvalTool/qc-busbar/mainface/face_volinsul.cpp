@@ -100,7 +100,7 @@ void Face_Volinsul::resultSlot()
     QString str1 = tr("测试项目数:%1  失败项目数：%2  项目测试通过率：%3%").arg(mItem->progress.allNum).arg(mItem->progress.errNum).arg(ok);
     mPacket->updatePro(str1);
 
-    if(mCfg->modeId == 2 || mPro->type == 0)
+    if(mCfg->modeId == 2)
     {
         if(mDev->devType.sn.isEmpty() || mCfg->modeId == 2) mSn->createSn();//设置序列号
         QString str = mDev->devType.sn;
@@ -153,7 +153,7 @@ void Face_Volinsul::resultSlot()
         res = false; str += tr("失败");
         mPro->uploadPassResult = 0;
     } else {
-        if((mCfg->modeId == 2 && mPro->work_mode == 0)|| (mPro->work_mode == 1 && mPro->type == 0))//母线槽与基本型始端箱和插接箱只需安规测试，接地测试成功打印标签
+        if(mCfg->modeId == 2 && mPro->work_mode == 0)//母线槽与基本型始端箱和插接箱只需安规测试，接地测试成功打印标签
         {
             QString method; int port = 0; QString ip;
             if(mCfg->modeId == 2) {method = "Integration/Busbar-Busway/Execute"; port = 81; ip = "127.0.0.1"; }

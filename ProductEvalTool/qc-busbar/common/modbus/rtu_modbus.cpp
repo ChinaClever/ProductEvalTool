@@ -31,6 +31,7 @@ RtuRw *Rtu_Modbus::get(int id)
     case 0:  ser = com->ser1; break;
     case 1:  ser = com->ser2; break;
     case 2:  ser = com->ser3; break;
+    case 3:  ser = com->ser4; break;
     }
     res->init(ser);
     ser->reflush();

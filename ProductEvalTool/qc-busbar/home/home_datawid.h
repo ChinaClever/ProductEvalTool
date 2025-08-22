@@ -4,7 +4,7 @@
 #include "datapacket.h"
 #include "config.h"
 #include "testconfig.h"
-
+#include "safety/test_transthread.h"
 class Home_DataWid : public ComTableWid
 {
     Q_OBJECT

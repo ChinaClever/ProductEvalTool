@@ -41,6 +41,7 @@ private:
     SerialStatusWid *mComWid;
     SerialStatusWid *mSourceWid;
     SerialStatusWid *mControlWid;
+    SerialStatusWid *mLoadWid;
 };
 
 #endif // SETUP_MAINWID_H

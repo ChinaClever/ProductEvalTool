@@ -58,7 +58,7 @@ class Ad_Modbus : public QThread
     explicit Ad_Modbus(QObject *parent = nullptr);
 public:
     static Ad_Modbus *bulid(QObject *parent = nullptr);
-
+    void init(SerialPort *s){mSerial=s;}
     int readSerial(quint8 *cmd, int secs);
     bool writeSerial(quint8 *cmd, int len);
     int transmit(uchar *sent, int len, uchar *recv, int secs);

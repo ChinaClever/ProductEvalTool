@@ -21,6 +21,8 @@
 #define COM_RATE_TEM	1.0    // 温度
 #define COM_RATE_HUM	1.0    // 湿度
 
+#define BASIC_RATE_VOL 1000.0
+
 #define START_LINE_NUM 3 // 3相
 #define LINE_NUM_MAX 9 // 三相
 #define LOOP_NUM_MAX 9 // 9回路
@@ -280,6 +282,9 @@ struct sObjData
     int size;
     sDataUnit vol; // 电压
     sDataUnit cur; // 电流
+
+    uint source_vol[DEV_NUM];// 负载电压
+    uint source_cur[DEV_NUM];// 负载电流
 
     uint pow[PACK_ARRAY_SIZE]; // 功率
     uint ele[PACK_ARRAY_SIZE]; // 电能

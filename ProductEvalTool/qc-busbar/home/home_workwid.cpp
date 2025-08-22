@@ -64,6 +64,8 @@ void Home_WorkWid::initWid()
     connect(Json_Pack::bulid(this), &Json_Pack::httpSig, this, &Home_WorkWid::insertTextslots);
 
     mPowThread = new Power_CoreThread(this);
+        connect(mPowThread,&Power_CoreThread::changeLoadSig,this,&Home_WorkWid::changeLoadSlot);
+        connect(this,&Home_WorkWid::changLoadEmitSig,mPowThread,&Power_CoreThread::changLoadEmitSlot);
     // connect(this , SIGNAL(clearStartEleSig()), mPowThread, SLOT(clearStartEleSlot()));
     connect(mPowThread,&Power_CoreThread::finshSig, this, &Home_WorkWid::StatusSlot);
     connect(mPowThread,&Power_CoreThread::JudgSig, this, &Home_WorkWid::JudgSlots);
@@ -305,6 +307,10 @@ void Home_WorkWid::updateWid()
     }
     case 2: {
         mPro->dev_name = tr("母线槽"); ePro->dev_name = tr("Busway");
+        break;
+    }
+    case 3: {
+        mPro->dev_name = tr("基本型"); ePro->dev_name = tr("Basic type");
         break;
     }
     default:
@@ -613,3 +619,11 @@ void Home_WorkWid::on_safeSnEit_textChanged(const QString &arg1)
     ui->safeSnEit->setClearButtonEnabled(1);
 }
 
+void Home_WorkWid::changeLoadSlot(int id)
+{
+     bool ret = MsgBox::information(this,tr("请确认切换输出口%1").arg(id+1));
+
+
+     if(ret)emit changLoadEmitSig(1);
+     else emit changLoadEmitSig(0);
+}

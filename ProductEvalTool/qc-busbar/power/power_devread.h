@@ -13,6 +13,7 @@ public:
 
     bool readSn();
     bool readDev();
+    bool readDevBasicType(); //读取基本型数据
     bool readDevBus();
     bool readNet();
     bool checkNet();
@@ -67,6 +68,8 @@ public:
     bool Three_OneBreaker();
     bool Three_TwoBreaker();
     bool Three_ThreeBreaker();
+
+    Dev_Source *mSource;
 protected:
     bool readSnmp();
 protected slots:

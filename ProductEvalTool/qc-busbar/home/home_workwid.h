@@ -90,7 +90,10 @@ protected:
     void initTypeComboBox();
 signals:
     void noloadHomeSig(int ret);
+    void changLoadEmitSig(bool);
 
+public slots:
+    void changeLoadSlot(int);
 private slots:
     void insertTextslots(QString str,bool res);
     void on_vol_insulBtn_clicked();

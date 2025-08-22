@@ -390,6 +390,11 @@
       <string>母线槽</string>
      </property>
     </item>
+    <item>
+     <property name="text">
+      <string>基本型</string>
+     </property>
+    </item>
    </widget>
    <widget class="QCheckBox" name="stopFag">
     <property name="geometry">

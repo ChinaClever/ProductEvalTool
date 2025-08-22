@@ -4,7 +4,7 @@
  *      Author: Lzy
  */
 #include "power_devread.h"
-
+#include "dev_source.h"
 Power_DevRead::Power_DevRead(QObject *parent) : Power_Object(parent)
 {
 
@@ -18,6 +18,7 @@ void Power_DevRead::initFunSlot()
     mLogs = Power_Logs::bulid(this);
     mSn = Sn_SerialNum::bulid(this);
     mIpSnmp = Dev_IpSnmp::bulid(this);
+    mSource = Dev_Source::bulid(this);
     mItem = Cfg::bulid()->item;
     mErr = Power_ErrRange::bulid(this);
 }
@@ -93,6 +94,15 @@ bool Power_DevRead::readDevBus()
     return ret;
 }
 
+
+bool Power_DevRead::readDevBasicType()
+{
+    bool ret = true;
+    if(ret) ret = mSource->read();
+    return ret;
+}
+
+
 bool Power_DevRead::readDev()
 {
     bool ret = mPacket->delay(5);
@@ -125,10 +135,10 @@ bool Power_DevRead::readDev()
                     else{ str += tr("失败"); mPro->result = Test_Fail;}
                                            mLogs->updatePro(str, ret);
                     }
-                }
+    }
 
-                return ret;
-            }
+    return ret;
+}
 
 QString Power_DevRead::getConnectModeOid()
 {

@@ -891,10 +891,6 @@ void Power_CoreThread::workResult(bool)
     if(mPro->result != Test_Fail) {
         if(mItem->modeId != BASIC_TYPE){res = printer();}
         else{ //基本型创建序列号，打印标签
-            mSn->createSn();//设置序列号
-            QString str = mDev->devType.sn;
-            mPro->moduleSN = str.remove(QRegExp("\\s"));
-            mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
             res = printer();
         }
         if(res)

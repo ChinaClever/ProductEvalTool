@@ -627,8 +627,8 @@ bool Power_CoreThread::VolCurCtrlSigle(sObjData *obj,int id)
                           .arg(cur, 0, 'f', 2);
 
             mLogs->updatePro(str, true);
-            mLogs->writeData(title, str, tr("检测成功"), true);
-            mLogs->writeDataEng(engTitle, engStr, tr("Check Success"), true);
+            mLogs->writeData(title, str, tr("检测%1电压电流成功").arg(name), true);
+            mLogs->writeDataEng(engTitle, engStr, tr("Check %1 voltage and current Success").arg(name), true);
 
             emit TipSig(tr("电压电流检测成功，准备切换下一步"));
             return true;
@@ -651,8 +651,8 @@ bool Power_CoreThread::VolCurCtrlSigle(sObjData *obj,int id)
 
             mLogs->updatePro(str, false);
             mLogs->updatePro(tr("电压电流检测失败，超过最大重试次数"), false);
-            mLogs->writeData(title, str, tr("检测失败"), false);
-            mLogs->writeDataEng(engTitle, engStr, tr("Check Failed"), false);
+            mLogs->writeData(title, str, tr("检测%1电压电流失败").arg(name), false);
+            mLogs->writeDataEng(engTitle, engStr, tr("Check %1 voltage and current Failed").arg(name), false);
 
             emit TipSig(tr("电压电流检测失败，请检查设备接线状态"));
             return false;
@@ -727,11 +727,10 @@ bool Power_CoreThread::VolCurCtrl(sObjData *obj,int id)
                               .arg(name+QString::number(id + 1))
                               .arg(vol, 0, 'f', 2)
                               .arg(cur, 0, 'f', 2);
+                mLogs->updatePro(str, true);
+                mLogs->writeData(title, str, tr("检测%1电压电流成功").arg(name), true);
+                mLogs->writeDataEng(engTitle, engStr, tr("Check %1 voltage and current Success").arg(name), true);
             }
-
-            mLogs->updatePro(str, true);
-            mLogs->writeData(title, str, tr("检测成功"), true);
-            mLogs->writeDataEng(engTitle, engStr, tr("Check Success"), true);
 
             emit TipSig(tr("电压电流检测成功，准备切换下一步"));
             qDebug()<<"success";
@@ -755,11 +754,12 @@ bool Power_CoreThread::VolCurCtrl(sObjData *obj,int id)
                               .arg(name+QString::number(id + 1))
                               .arg(vol, 0, 'f', 2)
                               .arg(cur, 0, 'f', 2);
+                mLogs->updatePro(str, false);
+                mLogs->updatePro(tr("电压电流检测失败，超过最大重试次数"), false);
+                mLogs->writeData(title, str, tr("检测%1电压电流失败").arg(name), false);
+                mLogs->writeDataEng(engTitle, engStr, tr("Check %1 voltage and current Failed").arg(name), false);
             }
-            mLogs->updatePro(str, false);
-            mLogs->updatePro(tr("电压电流检测失败，超过最大重试次数"), false);
-            mLogs->writeData(title, str, tr("检测失败"), false);
-            mLogs->writeDataEng(engTitle, engStr, tr("Check Failed"), false);
+
 
             emit TipSig(tr("电压电流检测失败，请检查设备接线状态"));
             return false;
@@ -1105,6 +1105,7 @@ bool Power_CoreThread::printer()
 
 void Power_CoreThread::workResult(bool)
 {
+    emit overSig();
     mLogs->updatePro(tr("测试结束"));
     bool res = false;
     QString str = tr("测试结果 ");

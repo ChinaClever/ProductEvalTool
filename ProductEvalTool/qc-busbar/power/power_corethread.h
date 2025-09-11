@@ -28,6 +28,7 @@ signals:
     void finshSig(bool ret);
     void JudgSig();
     void ImageSig(int value);
+    void overSig();
 
     //void updateTableObjSig(sObjData obj, int loopNum);
 

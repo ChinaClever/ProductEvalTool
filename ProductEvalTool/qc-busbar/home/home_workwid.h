@@ -62,6 +62,7 @@ signals:
 protected slots:
     void timeoutDone();
     void overSlot();
+    void overSnSlot();
     void updateWidSlot(int id);
     void polarSlot(QString str);
     void StatusSlot(bool ret);
@@ -102,13 +103,9 @@ private slots:
     void PingSlot();
     void JudgSlots();
     void on_funcBtn_clicked();
-
     void on_snprintBtn_clicked();
-
     void on_safeSnEit_textChanged(const QString &arg1);
-
     void on_powerOffBtn_clicked();
-
     void on_powerOnBtn_clicked();
 
 private:

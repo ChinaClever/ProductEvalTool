@@ -886,9 +886,9 @@ void Power_CoreThread::EnvErrRange()
     QList<bool> pass; pass.clear();
     for(int i = 0; i<4; i++)
     {
-        str2 += tr("温度%1 %2℃ ").arg(i+1).arg(QString::number(unit->value[i],'f',1));
-        str3 += tr("温度%1 %2℃ ").arg(i+1).arg(QString::number(unit->value[i],'f',1));
-        eng3 += tr("Temperature%1 %2℃ ").arg(i+1).arg(QString::number(unit->value[i],'f',1));
+        str2 += tr("温度T(L%1) %2℃ ").arg(i<3?QString::number(i+1):"N").arg(QString::number(unit->value[i],'f',1));
+        str3 += tr("温度T(L%1) %2℃ ").arg(i<3?QString::number(i+1):"N").arg(QString::number(unit->value[i],'f',1));
+        eng3 += tr("Temperature(L%1) %2℃ ").arg(i<3?QString::number(i+1):"N").arg(QString::number(unit->value[i],'f',1));
         if(ret) ret = mErr->checkErrRange(average, unit->value[i], 5.0);
         pass << ret;
     }
@@ -905,7 +905,7 @@ void Power_CoreThread::EnvErrRange()
     if(ret) {
         str += tr("成功");
     }else {
-        str += tr("失败，温度%1检测异常，请检查该温度传感器是否正常").arg(i+1);
+        str += tr("失败，温度T(L%1) 平均温度(%2℃) 测试温度个数(%3)检测异常，请检查该温度传感器是否正常").arg(i<3?QString::number(i+1):"N").arg(QString::number(average,'f',1)).arg(QString::number(myNumbers.size()));
     }
 
     str2 = tr("温度值检查");

@@ -20,6 +20,7 @@
       <font>
        <family>微软雅黑</family>
        <pointsize>16</pointsize>
+       <weight>75</weight>
        <bold>true</bold>
       </font>
      </property>
@@ -60,6 +61,7 @@
       <font>
        <family>微软雅黑</family>
        <pointsize>-1</pointsize>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -102,6 +104,7 @@
       <font>
        <family>微软雅黑</family>
        <pointsize>-1</pointsize>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -132,6 +135,7 @@
       <font>
        <family>微软雅黑</family>
        <pointsize>-1</pointsize>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -174,6 +178,7 @@
       <font>
        <family>微软雅黑</family>
        <pointsize>-1</pointsize>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -185,7 +190,7 @@
       <string notr="true">QCheckBox{spacing:585px;font: 18px;}</string>
      </property>
      <property name="text">
-      <string notr="true">铜排预留安装位置，预留长度（50~55.5mm）</string>
+      <string notr="true">铜排预留安装位置，预留长度（50~53mm）</string>
      </property>
      <property name="iconSize">
       <size>
@@ -229,6 +234,7 @@
       <font>
        <family>微软雅黑</family>
        <pointsize>-1</pointsize>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -262,6 +268,7 @@
       <font>
        <family>微软雅黑</family>
        <pointsize>-1</pointsize>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -292,6 +299,7 @@
       <font>
        <family>微软雅黑</family>
        <pointsize>-1</pointsize>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -338,6 +346,7 @@
       <font>
        <family>微软雅黑</family>
        <pointsize>-1</pointsize>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -368,6 +377,7 @@
       <font>
        <family>微软雅黑</family>
        <pointsize>-1</pointsize>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -410,6 +420,7 @@
       <font>
        <family>微软雅黑</family>
        <pointsize>-1</pointsize>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -440,6 +451,7 @@
       <font>
        <family>微软雅黑</family>
        <pointsize>-1</pointsize>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -482,6 +494,7 @@
       <font>
        <family>微软雅黑</family>
        <pointsize>-1</pointsize>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -512,6 +525,7 @@
       <font>
        <family>微软雅黑</family>
        <pointsize>-1</pointsize>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>

@@ -95,7 +95,7 @@ void People_Safety::on_sureButton_clicked()
     mPro->sureItem << str4; ePro->sureItem << eng4;
     str = tr("安装位置"); eng = tr("Installation position");
     str1 = ui->appearBox_4->text();
-    eng1 = tr("Reserved installation position and reserved length for copper bars (50-55.5mm)");
+    eng1 = tr("Reserved installation position and reserved length for copper bars (50-53mm)");
     ret = ui->appearBox_4->isChecked();
     if(ret) {
         writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);

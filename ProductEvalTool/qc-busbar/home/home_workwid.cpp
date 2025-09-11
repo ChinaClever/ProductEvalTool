@@ -631,6 +631,8 @@ void Home_WorkWid::on_safeSnEit_textChanged(const QString &arg1)
     ui->safeSnEit->setClearButtonEnabled(1);
 }
 
-
-
-
+void Home_WorkWid::on_powerOnBtn_clicked()
+{
+    mPro->work_mode = 12; //断电模式
+    mPowThread->start();
+}

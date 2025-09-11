@@ -458,13 +458,26 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>790</y>
+      <y>810</y>
       <width>191</width>
       <height>51</height>
      </rect>
     </property>
     <property name="text">
      <string>断电</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="powerOnBtn">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>750</y>
+      <width>191</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>上电</string>
     </property>
    </widget>
   </widget>

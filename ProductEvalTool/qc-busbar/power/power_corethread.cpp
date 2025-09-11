@@ -638,8 +638,8 @@ bool Power_CoreThread::VolCurCtrlSigle(sObjData *obj,int id)
         {
             QString str, engStr;
 
-            double vol = obj->vol.value[id] / SOURCE_RATE_VOL;
-            double cur = obj->cur.value[id] / COM_RATE_CUR;
+            double vol = obj->source_vol[id] / SOURCE_RATE_VOL;
+            double cur = obj->source_cur[id] / COM_RATE_CUR;
             str += tr("%1 电压: %2V, 电流: %3A; ")
                        .arg(name)
                        .arg(vol, 0, 'f', 2)
@@ -745,8 +745,8 @@ bool Power_CoreThread::VolCurCtrl(sObjData *obj,int id)
             for (int i = 0; i < loop; i++)
             {
                 QString name = trans(i);
-                double vol = obj->vol.value[i] / COM_RATE_VOL;
-                double cur = obj->cur.value[i] / COM_RATE_CUR;
+                double vol = obj->source_vol[i] / COM_RATE_VOL;
+                double cur = obj->source_cur[i] / COM_RATE_CUR;
                 str += tr("%1 电压: %2V, 电流: %3A; ")
                            .arg(name+QString::number(id + 1))
                            .arg(vol, 0, 'f', 2)
@@ -1113,10 +1113,6 @@ void Power_CoreThread::workResult(bool)
             res = printer();
         }
         else{
-            mSn->createSn();//设置序列号
-            QString str = mDev->devType.sn;
-            mPro->moduleSN = str.remove(QRegExp("\\s"));
-            mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
             res = printer();
             qDebug()<<"res :::: "<<res;
         }
@@ -1727,6 +1723,10 @@ void Power_CoreThread::workDown()
     ret = initDev();
 
     if (mItem->modeId == BASIC_TYPE) {
+        mSn->createSn();//设置序列号
+        QString str = mDev->devType.sn;
+        mPro->moduleSN = str.remove(QRegExp("\\s"));
+        mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
         ret = handleBasicType();
     }
     else{
@@ -1795,7 +1795,10 @@ void Power_CoreThread::run()
 {
     if(mPro->work_mode == 11){
         this->mTrans->sendCtrlGnd(0);
-       // this->mTrans->sendCtrlGnd(1+32+64);
+        // this->mTrans->sendCtrlGnd(1+32+64);
+        return ;
+    }else if(mPro->work_mode == 12){
+        this->mTrans->sendCtrlGnd(1+32+64);
         return ;
     }
 

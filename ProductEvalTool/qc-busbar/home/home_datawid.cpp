@@ -39,7 +39,7 @@ void Home_DataWid::timeoutDone()
             QStringList listStr;
             listStr << QString::number(mData->source_vol[i] / COM_RATE_CUR, 'f', 1);
             listStr << QString::number(mData->source_cur[i] / COM_RATE_CUR, 'f', 3);
-            listStr << QString::number(mData->pow[i] / (COM_RATE_POW*10), 'f', 3);
+            listStr << QString::number(mData->pow[i] / (COM_RATE_POW), 'f', 3);
 
             setTableRow(i, listStr); // 写入表格第i行
         }

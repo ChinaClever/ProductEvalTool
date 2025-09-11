@@ -109,6 +109,8 @@ private slots:
 
     void on_powerOffBtn_clicked();
 
+    void on_powerOnBtn_clicked();
+
 private:
     Ui::Home_WorkWid *ui;
 

@@ -189,25 +189,25 @@ void Face_Volinsul::updateData()
 {
     if(mPro->work_mode == 0){
          if((mPro->acwParm.size()) && (mPro->irParm.size())){
-             mPro->itemRequest = tr("始端箱或插接箱的绝缘测试（不接电流表），分别对以下测试点输入电压 %1V，%2s：").arg(mPro->irParm.at(2)).arg(mPro->irParm.at(7))
+             mPro->itemRequest = tr("绝缘测试，分别对以下测试点输入电压 %1V，%2s：").arg(mPro->irParm.at(2)).arg(mPro->irParm.at(7))
                              + tr("N-PE/L1/L2/L3，绝缘电阻 >10MΩ。")
-                             + tr("始端箱或插接箱的交流耐压测试（不接电流表），分别对以下测试点输入电压 %1V，%2s：").arg(mPro->acwParm.at(2)).arg(mPro->acwParm.at(6))
+                             + tr("交流耐压测试，分别对以下测试点输入电压 %1V，%2s：").arg(mPro->acwParm.at(2)).arg(mPro->acwParm.at(6))
                              + tr("1、PE-N/L1/L2/L3，2、N-PE/L1/L2/L3，3、L1-PE，4、L2-PE，5、L3-PE，漏电流≤10mA。");
 
-            ePro->itemRequest = tr("Insulation resistance test for the starting box or plug-in box (without an ammeter),input voltage to the following test points respectively %1V，%2s：").arg(mPro->irParm.at(2)).arg(mPro->irParm.at(7))
+            ePro->itemRequest = tr("Insulation resistance test,input voltage to the following test points respectively %1V，%2s：").arg(mPro->irParm.at(2)).arg(mPro->irParm.at(7))
                              + tr("N-PE/L1/L2/L3,insulation resistance >10MΩ。")
-                             + tr("AC withstand voltage test for the starting box or plug-in box (without an ammeter), input voltage to the following test points respectively %1V，%2s：").arg(mPro->acwParm.at(2)).arg(mPro->acwParm.at(6))
+                             + tr("AC withstand voltage test, input voltage to the following test points respectively %1V，%2s：").arg(mPro->acwParm.at(2)).arg(mPro->acwParm.at(6))
                              + tr("1、PE-N/L1/L2/L3,2、N-PE/L1/L2/L3,3、L1-PE,4、L2-PE,5、L3-PE,Leakage current <10mA.");
 
          }else {
-            mPro->itemRequest = tr("插接箱或始端箱的绝缘测试（不接电流表），分别对以下测试点输入电压 500V，5s：")
+            mPro->itemRequest = tr("绝缘测试，分别对以下测试点输入电压 500V，5s：")
                          + tr("N-PE/L1/L2/L3，绝缘电阻 >10MΩ。")
-                         + tr("插接箱或始端箱的交流耐压测试（不接电流表），分别对以下测试点输入电压 3000V，5s：")
+                         + tr("交流耐压测试，分别对以下测试点输入电压 3000V，5s：")
                              + tr("1、PE-N/L1/L2/L3，2、N-PE/L1/L2/L3，3、L1-PE，4、L2-PE，5、L3-PE，漏电流≤10mA。");
 
-            ePro->itemRequest = tr("Insulation resistance test for the starting box or plug-in box (without an ammeter),input voltage to the following test points respectively 500V，5s：")
+            ePro->itemRequest = tr("Insulation resistance test,input voltage to the following test points respectively 500V，5s：")
                              + tr("N-PE/L1/L2/L3,insulation resistance >10MΩ。")
-                             + tr("AC withstand voltage test for the starting box or plug-in box (without an ammeter), input voltage to the following test points respectively 3000V，5s：")
+                             + tr("AC withstand voltage test, input voltage to the following test points respectively 3000V，5s：")
                              + tr("1、PE-N/L1/L2/L3,2、N-PE/L1/L2/L3,3、L1-PE,4、L2-PE,5、L3-PE,Leakage current <10mA.");
          }
     }
@@ -215,16 +215,16 @@ void Face_Volinsul::updateData()
     if(mPro->work_mode == 1){
          if(mPro->gndParm.size())
          {
-                mPro->itemRequest = tr("始端箱或插接箱的接地测试（不接电流表），分别对以下测试点输入电流 %1A，%2s：").arg(mPro->gndParm.at(3)).arg(mPro->gndParm.at(2))
+                mPro->itemRequest = tr("接地测试，分别对以下测试点输入电流 %1A，%2s：").arg(mPro->gndParm.at(3)).arg(mPro->gndParm.at(2))
                              + tr("PE-箱体面壳接地螺钉，接地电阻<100mΩ。");
 
-                ePro->itemRequest =tr("Grounding test of the starting box or plug-in box (without an ammeter), input current to the following test points respectively %1A，%2s：").arg(mPro->gndParm.at(2)).arg(mPro->gndParm.at(8))
+                ePro->itemRequest =tr("Grounding test, input current to the following test points respectively %1A，%2s：").arg(mPro->gndParm.at(2)).arg(mPro->gndParm.at(8))
                              + tr("PE - box surface shell grounding screw,grounding resistance <100mΩ.");
          }else {
-                mPro->itemRequest = tr("始端箱或插接箱的接地测试（不接电流表），分别对以下测试点输入电流 25A，5s：")
+                mPro->itemRequest = tr("接地测试，分别对以下测试点输入电流 25A，5s：")
                              + tr("PE-箱体面壳接地螺钉，接地电阻<100mΩ。");
 
-                ePro->itemRequest =tr("Grounding test of the starting box or plug-in box (without an ammeter), input current to the following test points respectively 25A，5s：")
+                ePro->itemRequest =tr("Grounding test, input current to the following test points respectively 25A，5s：")
                              + tr("PE - box surface shell grounding screw,grounding resistance <100mΩ.");
          }
     }

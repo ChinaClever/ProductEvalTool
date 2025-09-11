@@ -642,7 +642,7 @@ void Power_CoreThread::EnvErrRange()
     QString eng2 = tr("Temperature value check"); QString eng3;
     str = tr("温度检测");
     str2 = tr("温度模块检测：");
-    QVector<ushort> myNumbers = {0};
+    QVector<ushort> myNumbers;
     for(int i = 0; i<4; i++)
     {
         if(mItem->si.si_testItem == 1 && (i==1||i==2)) continue;
@@ -658,8 +658,8 @@ void Power_CoreThread::EnvErrRange()
         if(mItem->si.si_testItem == 1 && (i==1||i==2)) continue;
         if(mItem->si.si_testItem == 2 && (i==0||i==2)) continue;
         if(mItem->si.si_testItem == 3 && (i==0||i==1)) continue;
-        str2 += tr("温度T%1 %2℃ ").arg(i<3?QString::number(i+1):"N").arg(QString::number(unit->value[i],'f',1));
-        str3 += tr("温度T%1 %2℃ ").arg(i<3?QString::number(i+1):"N").arg(QString::number(unit->value[i],'f',1));
+        str2 += tr("温度T(L%1) %2℃ ").arg(i<3?QString::number(i+1):"N").arg(QString::number(unit->value[i],'f',1));
+        str3 += tr("温度T(L%1) %2℃ ").arg(i<3?QString::number(i+1):"N").arg(QString::number(unit->value[i],'f',1));
         eng3 += tr("Temperature%1 %2℃ ").arg(i<3?QString::number(i+1):"N").arg(QString::number(unit->value[i],'f',1));
         if(ret) ret = mErr->checkErrRange(average, unit->value[i], 5.0);
         pass << ret;
@@ -686,7 +686,7 @@ void Power_CoreThread::EnvErrRange()
             if(i==0) i=2;
             else if(i==1) i=3;
         }
-        str += tr("失败，温度T%1检测异常，请检查该温度传感器是否正常").arg(i<3?QString::number(i+1):"N");
+        str += tr("失败，温度T(L%1) 平均温度(%2℃) 测试温度个数(%3)检测异常，请检查该温度传感器是否正常").arg(i<3?QString::number(i+1):"N").arg(QString::number(average,'f',1)).arg(QString::number(myNumbers.size()));
     }
 
     str2 = tr("温度值检查");
@@ -1370,7 +1370,8 @@ bool Power_CoreThread::BreakerTest()        //断路器测试
         if(mBusData->box[mItem->addr-1].phaseFlag == 1) {
             ret = mRead->Three_Breaker();
         }else if(mBusData->box[mItem->addr-1].phaseFlag == 0) {    //单相三回路三个输出位
-            ret = mRead->Three_Break();
+            if(mItem->si.si_testItem == 0)ret = mRead->Three_Break();
+            else ret = mRead->Three_Breaker();
         }
     }
 

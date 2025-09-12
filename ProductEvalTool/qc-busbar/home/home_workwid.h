@@ -62,7 +62,6 @@ signals:
 protected slots:
     void timeoutDone();
     void overSlot();
-    void overSnSlot();
     void updateWidSlot(int id);
     void polarSlot(QString str);
     void StatusSlot(bool ret);

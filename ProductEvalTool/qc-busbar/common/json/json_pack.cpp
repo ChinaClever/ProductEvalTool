@@ -47,7 +47,7 @@ void Json_Pack::head(QJsonObject &obj)
 
     QStringList step;
     if(mPro->work_mode == 0) {step.clear(); step << "绝缘测试";  step << "交流耐压测试"; step << "极性测试";}
-            else {step.clear(); step << "接地测试";}
+    else {step.clear(); step << "接地测试";}
 
     int num = mPro->safe_result.size();
 

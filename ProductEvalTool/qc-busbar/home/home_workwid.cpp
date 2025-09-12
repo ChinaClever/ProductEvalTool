@@ -70,7 +70,6 @@ void Home_WorkWid::initWid()
     // connect(mPowThread, &Power_CoreThread::TipSig , mPower, &Face_Power::TextSlot);
     // connect(mPowThread, &Power_CoreThread::ImageSig , mPower, &Face_Power::ImageSlot);
     connect(this,&Home_WorkWid::powerOffSig,mPowThread,&Power_CoreThread::powerOffSlot,Qt::QueuedConnection);
-    connect(mPowThread, SIGNAL(overSig()), this, SLOT(overSnSlot()));
 
     mPowDev = Power_DevRead::bulid(this);
 
@@ -110,11 +109,6 @@ void Home_WorkWid::overSlot()
     mItem->mode = Test_Over;
     mVolInsul->resultSlot();
 
-}
-
-void Home_WorkWid::overSnSlot()
-{
-    mVolInsul->resultSlot();
 }
 
 void Home_WorkWid::polarSlot(QString str)

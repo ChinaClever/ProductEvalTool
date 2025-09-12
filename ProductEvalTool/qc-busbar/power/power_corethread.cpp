@@ -645,9 +645,9 @@ void Power_CoreThread::EnvErrRange()
     QVector<ushort> myNumbers;
     for(int i = 0; i<4; i++)
     {
-        if(mItem->si.si_testItem == 1 && (i==1||i==2)) continue;
-        if(mItem->si.si_testItem == 2 && (i==0||i==2)) continue;
-        if(mItem->si.si_testItem == 3 && (i==0||i==1)) continue;
+        if(mItem->modeId == 1 && mItem->si.si_testItem == 1 && (i==1||i==2)) continue;
+        if(mItem->modeId == 1 && mItem->si.si_testItem == 2 && (i==0||i==2)) continue;
+        if(mItem->modeId == 1 && mItem->si.si_testItem == 3 && (i==0||i==1)) continue;
         myNumbers.append(unit->value[i]);
     }
     double average = calculateAverageWithoutHighestAndLowest(myNumbers);
@@ -655,9 +655,9 @@ void Power_CoreThread::EnvErrRange()
     QList<bool> pass; pass.clear();
     for(int i = 0; i<4; i++)
     {
-        if(mItem->si.si_testItem == 1 && (i==1||i==2)) continue;
-        if(mItem->si.si_testItem == 2 && (i==0||i==2)) continue;
-        if(mItem->si.si_testItem == 3 && (i==0||i==1)) continue;
+        if(mItem->modeId == 1 &&mItem->si.si_testItem == 1 && (i==1||i==2)) continue;
+        if(mItem->modeId == 1 &&mItem->si.si_testItem == 2 && (i==0||i==2)) continue;
+        if(mItem->modeId == 1 &&mItem->si.si_testItem == 3 && (i==0||i==1)) continue;
         str2 += tr("温度T(L%1) %2℃ ").arg(i<3?QString::number(i+1):"N").arg(QString::number(unit->value[i],'f',1));
         str3 += tr("温度T(L%1) %2℃ ").arg(i<3?QString::number(i+1):"N").arg(QString::number(unit->value[i],'f',1));
         eng3 += tr("Temperature%1 %2℃ ").arg(i<3?QString::number(i+1):"N").arg(QString::number(unit->value[i],'f',1));
@@ -677,12 +677,12 @@ void Power_CoreThread::EnvErrRange()
     if(ret) {
         str += tr("成功");
     }else {
-        if(mItem->si.si_testItem == 1)if(i==1)i=3;
-        if(mItem->si.si_testItem == 2){
+        if(mItem->modeId == 1 && mItem->si.si_testItem == 1)if(i==1)i=3;
+        if(mItem->modeId == 1 && mItem->si.si_testItem == 2){
             if(i==0) i=1;
             else if(i==1) i=3;
         }
-        if(mItem->si.si_testItem == 3){
+        if(mItem->modeId == 1 && mItem->si.si_testItem == 3){
             if(i==0) i=2;
             else if(i==1) i=3;
         }
@@ -1425,9 +1425,6 @@ bool Power_CoreThread::VolCurCtrl(sObjData *obj,int id)
     int flag = 0;
     uchar loop = 3;
 
-    QString title = tr("回路电压电流检测");
-    QString engTitle = tr("Loop Voltage Current Check");
-
     QString str = tr("请插入输出插座%1，打开负载输入端L1、L2、L3").arg(id + 1);  //三相回路电流、功率
     emit TipSig(str);
     //msleep(15000);
@@ -1468,19 +1465,25 @@ bool Power_CoreThread::VolCurCtrl(sObjData *obj,int id)
                 else name = "C";
                 double vol = obj->source_vol[i] / BASIC_RATE_VOL;
                 double cur = obj->source_cur[i] / COM_RATE_CUR;
+                str += tr("检测%1电压电流成功;").arg(name+QString::number(id + 1));
                 str += tr("%1 电压: %2V, 电流: %3A; ")
                            .arg(name+QString::number(id + 1))
                            .arg(vol, 0, 'f', 2)
                            .arg(cur, 0, 'f', 2);
+                engStr += tr("Check %1 voltage and current Success;").arg(name+QString::number(id + 1));
                 engStr += tr("%1 voltage: %2V, current: %3A; ")
                               .arg(name+QString::number(id + 1))
                               .arg(vol, 0, 'f', 2)
                               .arg(cur, 0, 'f', 2);
-            }
 
-            mLogs->updatePro(str, true);
-            mLogs->writeData(title, str, tr("检测成功"), true);
-            mLogs->writeDataEng(engTitle, engStr, tr("Check Success"), true);
+                QString title = tr("回路%1电压电流检测").arg(name+QString::number(id + 1));
+                QString engTitle = tr("Loop %1 Voltage Current Check").arg(name+QString::number(id + 1));
+                QString request = tr("回路%1电压电流大于零").arg(name+QString::number(id + 1));
+                               QString engRequest = tr("Loop %1 Voltage and Current are greater than zero").arg(name+QString::number(id + 1));
+                mLogs->updatePro(str, true);
+                mLogs->writeData(request, str, title , true);
+                mLogs->writeDataEng(engRequest, engStr, engTitle , true);
+            }
 
             emit TipSig(tr("电压电流检测成功，准备下一步测试"));
             return true;
@@ -1495,19 +1498,27 @@ bool Power_CoreThread::VolCurCtrl(sObjData *obj,int id)
                 QString name = trans(i);
                 double vol = obj->source_vol[i] / BASIC_RATE_VOL;
                 double cur = obj->source_cur[i] / COM_RATE_CUR;
+                str += tr("检测%1电压电流失败").arg(name+QString::number(id + 1));
                 str += tr("%1 电压: %2V, 电流: %3A; ")
                            .arg(name+QString::number(id + 1))
                            .arg(vol, 0, 'f', 2)
                            .arg(cur, 0, 'f', 2);
+                engStr += tr("Check %1 voltage and current Failed").arg(name+QString::number(id + 1));
                 engStr += tr("%1 voltage: %2V, current: %3A; ")
                               .arg(name+QString::number(id + 1))
                               .arg(vol, 0, 'f', 2)
                               .arg(cur, 0, 'f', 2);
+                mLogs->updatePro(str, false);
+                QString title = tr("回路%1电压电流检测").arg(name+QString::number(id + 1));
+                QString engTitle = tr("Loop %1 Voltage Current Check").arg(name+QString::number(id + 1));
+                QString request = tr("回路%1电压电流大于零").arg(name+QString::number(id + 1));
+                QString engRequest = tr("Loop %1 Voltage and Current are greater than zero").arg(name+QString::number(id + 1));
+
+                mLogs->updatePro(tr("电压电流检测失败，超过最大重试次数"), false);
+                mLogs->writeData(request, str, title , false);
+                mLogs->writeDataEng(engRequest, engStr, engTitle , false);
             }
-            mLogs->updatePro(str, false);
-            mLogs->updatePro(tr("电压电流检测失败，超过最大重试次数"), false);
-            mLogs->writeData(title, str, tr("检测失败"), false);
-            mLogs->writeDataEng(engTitle, engStr, tr("Check Failed"), false);
+
 
             emit TipSig(tr("电压电流检测失败，请检查设备接线状态或误差大小是否需要更改！"));
             return false;
@@ -1529,6 +1540,10 @@ bool Power_CoreThread::VolCurCtrlSigle(sObjData *obj,int id)
     QString title = tr("回路电压电流检测");
     QString engTitle = tr("Loop Voltage Current Check");
 
+    QString request = tr("回路%1电压电流大于零").arg(name);
+    QString engRequest = tr("Loop %1 Voltage and Current are greater than zero").arg(name);
+
+
     emit TipSig(str);
     //if(id != 0)
 //    msleep(15000);
@@ -1546,7 +1561,7 @@ bool Power_CoreThread::VolCurCtrlSigle(sObjData *obj,int id)
 
         int volValue = obj->source_vol[2] / 100.0;
         int curValue = obj->source_cur[2];
-qDebug()<<2<<' '<<volValue<<' '<<curValue;
+//qDebug()<<2<<' '<<volValue<<' '<<curValue;
 
         bool volOk = mErr->checkErrRange(exVol, volValue, errVol);
         bool curOk = mErr->checkErrRange(exCur, curValue, errCur);
@@ -1556,18 +1571,21 @@ qDebug()<<2<<' '<<volValue<<' '<<curValue;
 
             double vol = obj->source_vol[2] / BASIC_RATE_VOL;
             double cur = obj->source_cur[2] / COM_RATE_CUR;
+            str += tr("检测%1电压电流成功;").arg(name);
             str += tr("%1 电压: %2V, 电流: %3A; ")
                        .arg(name)
                        .arg(vol, 0, 'f', 2)
                        .arg(cur, 0, 'f', 2);
+            engStr += tr("Check %1 voltage and current Success").arg(name);
             engStr += tr("%1 voltage: %2V, current: %3A; ")
                           .arg(name)
                           .arg(vol, 0, 'f', 2)
                           .arg(cur, 0, 'f', 2);
 
             mLogs->updatePro(str, true);
-            mLogs->writeData(title, str, tr("检测成功"), true);
-            mLogs->writeDataEng(engTitle, engStr, tr("Check Success"), true);
+            mLogs->writeData(request, str, title, true);
+            mLogs->writeDataEng(engRequest, engStr, engTitle, true);
+
 
             emit TipSig(tr("电压电流检测成功，准备切换下一步"));
             return true;
@@ -1579,10 +1597,12 @@ qDebug()<<2<<' '<<volValue<<' '<<curValue;
 
             double vol = obj->source_vol[id] / BASIC_RATE_VOL;
             double cur = obj->source_cur[id] / COM_RATE_CUR;
+            str += tr("检测%1电压电流失败;").arg(name);
             str += tr("%1 电压: %2V, 电流: %3A; ")
                        .arg(name)
                        .arg(vol, 0, 'f', 2)
                        .arg(cur, 0, 'f', 2);
+            engStr += tr("Check %1 voltage and current Failed;").arg(name);
             engStr += tr("%1 voltage: %2V, current: %3A; ")
                           .arg(name)
                           .arg(vol, 0, 'f', 2)
@@ -1590,8 +1610,8 @@ qDebug()<<2<<' '<<volValue<<' '<<curValue;
 
             mLogs->updatePro(str, false);
             mLogs->updatePro(tr("电压电流检测失败，超过最大重试次数"), false);
-            mLogs->writeData(title, str, tr("检测失败"), false);
-            mLogs->writeDataEng(engTitle, engStr, tr("Check Failed"), false);
+            mLogs->writeData(request, str, title , false);
+            mLogs->writeDataEng(engRequest, engStr, engTitle , false);
 
             emit TipSig(tr("电压电流检测失败，请检查设备接线状态"));
             return false;

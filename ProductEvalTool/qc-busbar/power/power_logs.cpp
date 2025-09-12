@@ -108,6 +108,7 @@ bool Power_Logs::updatePro(const QString &str, bool pass, int sec)
     return pass;
 }
 
+//str1 测试要求 str2 结果判定 str3 测试项目
 void Power_Logs::writeData(const QString &str1,const QString &str2, const QString &str3, bool pass)
 {
     if(mPro->step < Test_End) {
@@ -127,6 +128,7 @@ void Power_Logs::writeData(const QString &str1,const QString &str2, const QStrin
     }
 }
 
+//str1 测试要求 str2 结果判定 str3 测试项目
 void Power_Logs::writeDataEng(const QString &str1,const QString &str2, const QString &str3, bool pass)
 {
     if(mPro->step < Test_End) {        

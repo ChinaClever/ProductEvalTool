@@ -6,7 +6,6 @@
  */
 #include "json_pack.h"
 
-
 Json_Pack::Json_Pack(QObject *parent)
 {
     mPro = sDataPacket::bulid()->getPro();
@@ -30,6 +29,7 @@ void Json_Pack::head(QJsonObject &obj)
     mPro->testEndTime = t.toString("yyyy-MM-dd HH:mm:ss");
     mPro->order_num = mItem->cnt.all;
 
+
     obj.insert("productSn", mPro->product_sn);
     obj.insert("softVersion", mPro->softwareVersion);
     obj.insert("startTime", mPro->testStartTime);
@@ -43,19 +43,20 @@ void Json_Pack::head(QJsonObject &obj)
     obj.insert("languageSelect", 0);
     obj.insert("orderNum", mPro->order_num);
 
+    int num = mPro->safe_result.size();
     QStringList list = mPro->itemRequest.split("。");
 
     QStringList step;
     if(mPro->work_mode == 0) {step.clear(); step << "绝缘测试";  step << "交流耐压测试";}
             else {step.clear(); step << "接地测试";}
 
-    int num = mPro->safe_result.size();
     for(int i=0; i<num; ++i)
     {
         obj.insert("testResult", QString::number(mPro->safe_result.at(i)));
         obj.insert("testRequest",list.at(i));
         obj.insert("testItem", step.at(i));
         obj.insert("testProcess" ,mPro->safeData.at(i));
+        gSmartObj.push_back(obj);
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 
@@ -126,6 +127,9 @@ void Json_Pack::head_English(QJsonObject &obj)
         obj.insert("testItem", step.at(i));
         obj.insert("testProcess" ,ePro->safeData.at(i));
         obj.insert("testResult" ,QString::number(ePro->safe_result.at(i)));
+
+        gSmartObjEng.push_back(obj);
+
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 
@@ -138,17 +142,18 @@ void Json_Pack::head_English(QJsonObject &obj)
 
 void Json_Pack::SendJson_Safe()
 {
-    QJsonObject json;
+   QJsonObject json;
+
     head(json);
     // http_post("admin-api/bus/testData",mPro->Service,json);
-    json.empty();
+//    json.empty();
     sDataPacket::bulid()->delayMs(5);
     head_English(json);
     // http_post("admin-api/bus/testData",mPro->Service,json);//安规测试的英文版本
 
     if(mItem->modeId == 2)
     {
-        json.empty();
+//        json.empty();
         sDataPacket::bulid()->delayMs(3);
         SafeData(); sDataPacket::bulid()->delayMs(3);
         SafeData_Lan();
@@ -193,6 +198,7 @@ void Json_Pack::SafeData()
     obj.insert("languageSelect", 0);
 
     obj.insert("toolName", "qc-busbar");
+
 
     if(mPro->work_mode >=2) {
         QString str1 = mPro->itemContent.join("；");

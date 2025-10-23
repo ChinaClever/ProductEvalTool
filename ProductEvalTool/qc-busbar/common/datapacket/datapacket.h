@@ -259,6 +259,10 @@ enum  sSetPlugType{
 /**
  * 数据单元：包括当前值，阈值，临界值，告警状态等
  */
+
+
+extern QVector<QJsonObject> gSmartObj;
+extern QVector<QJsonObject> gSmartObjEng;
 struct sDataUnit
 {
     sDataUnit() {size=0;}

@@ -4,6 +4,7 @@
  *      Author: Lzy
  */
 #include "sn_serialnum.h"
+#include "json_pack.h"
 
 Sn_SerialNum::Sn_SerialNum(QObject *parent) : Dev_Object(parent)
 {
@@ -206,6 +207,18 @@ bool Sn_SerialNum::snEnter()
         ret = readSn(mSnItem);
         if(ret) {
             mDev->devType.sn = mSnItem.sn;
+            Json_Pack *jp = Json_Pack::bulid();
+            for(auto &u:gSmartObj){
+                u.insert("moduleSn", mSnItem.sn);
+                if(mPro->online)
+                jp->stephttp_post("admin-api/bus/testData",mPro->Service,u);
+            }
+            for(auto &u:gSmartObjEng){
+                u.insert("moduleSn", mSnItem.sn);
+                if(mPro->online)
+                jp->stephttp_post("admin-api/bus/testData",mPro->Service,u);
+
+            }
         }
     }
 

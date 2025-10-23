@@ -102,9 +102,9 @@ void Face_Volinsul::resultSlot()
     QString str1 = tr("测试项目数:%1  失败项目数：%2  项目测试通过率：%3%").arg(mItem->progress.allNum).arg(mItem->progress.errNum).arg(ok);
     mPacket->updatePro(str1);
 
-    if(mCfg->modeId == 2) //测试
+    if(mCfg->modeId == 2 || mCfg->modeId == BASIC_TYPE) //测试
     {
-        if(mDev->devType.sn.isEmpty() || mCfg->modeId == 2) mSn->createSn();//设置序列号
+        if(mDev->devType.sn.isEmpty() || mCfg->modeId == 2 || mCfg->modeId == BASIC_TYPE) mSn->createSn();//设置序列号
         QString str = mDev->devType.sn;
         mPro->moduleSN = str.remove(QRegExp("\\s"));
         mCfg->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();

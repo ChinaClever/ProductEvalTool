@@ -4,6 +4,8 @@
  *      Author: Lzy
  */
 #include "datapacket.h"
+QVector<QJsonObject> gSmartObj;
+QVector<QJsonObject> gSmartObjEng;
 
 sDataPacket::sDataPacket()
 {

@@ -4,6 +4,8 @@
 #include <QColor>
 #include "serialportdlg.h"
 // #include "json_pack.h"
+extern QVector<QJsonObject> gSmartObj;
+extern QVector<QJsonObject> gSmartObjEng;
 
 #define LINE_NUM  9
 #define SENOR_NUM 1

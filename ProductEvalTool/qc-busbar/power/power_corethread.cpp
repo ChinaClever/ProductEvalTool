@@ -1747,10 +1747,10 @@ void Power_CoreThread::workDown()
 
     if (mItem->modeId == BASIC_TYPE) {
         mSn->createSn();//设置序列号
-        QString str = mDev->devType.sn;
-        mPro->moduleSN = str.remove(QRegExp("\\s"));
-        mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
-        ret = handleBasicType();
+        // QString str = mDev->devType.sn;
+        // mPro->moduleSN = str.remove(QRegExp("\\s"));
+        // mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
+        // ret = handleBasicType();
     }
     else{
         if(mItem->modeId == INSERT_BUSBAR)

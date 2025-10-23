@@ -5,7 +5,7 @@
  *      Author: Lzy
  */
 #include "json_pack.h"
-
+#include "datapacket.h"
 
 Json_Pack::Json_Pack(QObject *parent)
 {
@@ -58,7 +58,7 @@ void Json_Pack::head(QJsonObject &obj)
         obj.insert("testItem", step.at(i));
         obj.insert("testProcess" ,mPro->safeData.at(i));
         if(i == 2) {mPro->test_step = "功能测试"; obj.insert("testStep", mPro->test_step);}
-
+        gSmartObj.push_back(obj);
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 
@@ -130,6 +130,7 @@ void Json_Pack::head_English(QJsonObject &obj)
         obj.insert("testProcess" ,ePro->safeData.at(i));
         obj.insert("testResult" ,QString::number(ePro->safe_result.at(i)));
         if(i == 2) {ePro->test_step = "Functional testing"; obj.insert("testStep", ePro->test_step);}
+        gSmartObjEng.push_back(obj);
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 
@@ -211,6 +212,7 @@ void Json_Pack::SafeData()
         obj.insert("testProcess" ,mPro->itemData.at(i));
         obj.insert("testResult" ,mPro->stepResult.at(i));
         obj.insert("testRequest" ,mPro->stepRequest.at(i));
+
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 }

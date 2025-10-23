@@ -217,8 +217,9 @@ bool Sn_SerialNum::snEnter()
                 u.insert("moduleSn", mSnItem.sn);
                 if(mPro->online)
                 jp->stephttp_post("admin-api/bus/testData",mPro->Service,u);
-
             }
+            gSmartObj.clear();
+            gSmartObjEng.clear();
         }
     }
 

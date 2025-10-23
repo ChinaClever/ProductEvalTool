@@ -645,6 +645,7 @@ void Power_CoreThread::EnvErrRange()
     QVector<ushort> myNumbers;
     for(int i = 0; i<4; i++)
     {
+        if(mItem->modeId == 1 && mBusData->box[mItem->addr-1].loopNum == 2 && (i==1||i==2)) continue;
         if(mItem->modeId == 1 && mItem->si.si_testItem == 1 && (i==1||i==2)) continue;
         if(mItem->modeId == 1 && mItem->si.si_testItem == 2 && (i==0||i==2)) continue;
         if(mItem->modeId == 1 && mItem->si.si_testItem == 3 && (i==0||i==1)) continue;
@@ -655,6 +656,7 @@ void Power_CoreThread::EnvErrRange()
     QList<bool> pass; pass.clear();
     for(int i = 0; i<4; i++)
     {
+        if(mItem->modeId == 1 && mBusData->box[mItem->addr-1].loopNum == 2 && (i==1||i==2)) continue;
         if(mItem->modeId == 1 &&mItem->si.si_testItem == 1 && (i==1||i==2)) continue;
         if(mItem->modeId == 1 &&mItem->si.si_testItem == 2 && (i==0||i==2)) continue;
         if(mItem->modeId == 1 &&mItem->si.si_testItem == 3 && (i==0||i==1)) continue;
@@ -677,6 +679,7 @@ void Power_CoreThread::EnvErrRange()
     if(ret) {
         str += tr("成功");
     }else {
+        if(mItem->modeId == 1 && mBusData->box[mItem->addr-1].loopNum == 2)if(i==1)i=3;
         if(mItem->modeId == 1 && mItem->si.si_testItem == 1)if(i==1)i=3;
         if(mItem->modeId == 1 && mItem->si.si_testItem == 2){
             if(i==0) i=1;
@@ -1349,7 +1352,7 @@ bool Power_CoreThread::stepLoadTest()       //电流测试
         ret = mRead->Load_NineLoop();
     }else if(mBusData->box[mItem->addr-1].loopNum == 6) {
         ret = mRead->Load_SixLoop();
-    }else if(mBusData->box[mItem->addr-1].loopNum == 3) {
+    }else if(mBusData->box[mItem->addr-1].loopNum == 3 || mBusData->box[mItem->addr-1].loopNum == 2) {
         ret = mRead->Load_ThreeLoop();
     }
 
@@ -1362,7 +1365,7 @@ bool Power_CoreThread::BreakerTest()        //断路器测试
         ret = mRead->Break_NineLoop();
     }else if(mBusData->box[mItem->addr-1].loopNum == 6) {
         ret = mRead->Break_SixLoop();
-    }else if((mItem->modeId != START_BUSBAR)&&(mBusData->box[mItem->addr-1].loopNum == 3)) {
+    }else if((mItem->modeId != START_BUSBAR)&&(mBusData->box[mItem->addr-1].loopNum == 3 || mBusData->box[mItem->addr-1].loopNum == 2)) {
         if(mBusData->box[mItem->addr-1].phaseFlag == 1) {
             ret = mRead->Three_Breaker();
         }else if(mBusData->box[mItem->addr-1].phaseFlag == 0) {    //单相三回路三个输出位

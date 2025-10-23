@@ -66,6 +66,8 @@ void Setting::initType()
         loop = 1;
     else if (dv->loopNum == 9)
         loop = 2;
+    else if (dv->loopNum == 2)
+        loop = 3;
 
     ui->loopNumBox->setCurrentIndex(loop);
     ui->si_volSpin->setValue(dv->si_vol);
@@ -118,6 +120,8 @@ void Setting::updateType()
         dv->loopNum = 6;
     else if (loop == 2)
         dv->loopNum = 9;
+    else if(loop == 3)
+        dv->loopNum = 2;
     dv->si_vol = ui->si_volSpin->value();
     dv->si_cur = ui->si_curSpin->value();
     dv->si_volErr = ui->si_volErrSpin->value();

@@ -2472,7 +2472,7 @@ bool Power_DevRead::Load_ThreeLoop()
         if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 2){
             if(ret) ret = Three_Two();
         }
-        if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 3){
+        if( (mItem->si.si_testItem == 0 || mItem->si.si_testItem == 3 ) && mBusData->box[mItem->addr-1].loopNum == 3){
             if(ret) ret = Three_Three();
         }
 
@@ -2487,7 +2487,7 @@ bool Power_DevRead::Three_Break()
 
     ret = Three_OneBreaker();
     if(ret) ret = Three_TwoBreaker();
-    if(ret) ret = Three_ThreeBreaker();
+    if(ret && mBusData->box[mItem->addr-1].loopNum > 2) ret = Three_ThreeBreaker();
     // emit CurImageSig(4);
 
     return ret;

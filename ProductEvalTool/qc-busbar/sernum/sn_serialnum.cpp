@@ -206,9 +206,12 @@ bool Sn_SerialNum::snEnter()
         initDevType(mSnItem);
         ret = readSn(mSnItem);
         if(ret) {
+            mSnItem.sn = mSnItem.sn.simplified().replace(" ", "");
+
             mDev->devType.sn = mSnItem.sn;
             Json_Pack *jp = Json_Pack::bulid();
             for(auto &u:gSmartObj){
+
                 u.insert("moduleSn", mSnItem.sn);
                 if(mPro->online)
                 jp->stephttp_post("admin-api/bus/testData",mPro->Service,u);

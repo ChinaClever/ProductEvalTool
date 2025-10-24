@@ -2059,8 +2059,7 @@ bool Power_DevRead::Three_OneBreaker()
             mErr->volErr(i);
         }
         a = Obj->vol.value[0]; b = Obj->vol.status[1]; c = Obj->vol.status[2];
-
-        if((!a) &&(b == 1)&&(c == 1)) {
+        if(((!a) &&(b == 1)&&(c == 1) && loop == 3) || ((!a) &&(b == 1)&& loop == 2)) {
             ret = true;
             for(int i =0;i<loop;i++)
             {
@@ -2210,8 +2209,7 @@ bool Power_DevRead::Three_TwoBreaker()
             mErr->volErr(i);
         }
         a = Obj->vol.status[0]; b = Obj->vol.value[1]; c = Obj->vol.status[2];
-
-        if((a == 1)&&(!b) &&(c == 1)) {
+        if(((a == 1)&&(!b) &&(c == 1)&& loop == 3) || ((a==1) &&(!b)&& loop == 2)) {
             ret = true;
             for(int i =0;i<loop;i++)
             {

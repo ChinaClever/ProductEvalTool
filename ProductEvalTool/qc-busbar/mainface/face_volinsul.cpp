@@ -107,7 +107,7 @@ void Face_Volinsul::resultSlot()
 
     if(mCfg->modeId == 2 || mCfg->modeId == BASIC_TYPE)
     {
-        if(mDev->devType.sn.isEmpty() || mCfg->modeId == 2 || mCfg->modeId == BASIC_TYPE) mSn->createSn();//设置序列号
+        if(mDev->devType.sn.isEmpty()) mSn->createSn();//设置序列号
         QString str = mDev->devType.sn;
         mPro->moduleSN = str.remove(QRegExp("\\s"));
         mCfg->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();

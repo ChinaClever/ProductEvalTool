@@ -102,23 +102,29 @@ void People_judg::on_sureButton_clicked()
     QString str3 = tr("不符合要求"); QString eng3 = tr("Not Satisfiable");
     mPro->test_step = "功能测试"; ePro->test_step = "Functional testing";
 
+
     QString str = tr("指示灯检查"); QString eng = tr("Indicator light inspection");
     QString str1 = ui->lcdBox->text();
     QString eng1 = tr("Generate an alarm, the indicator light turns red and flashes");
-    bool ret = ui->lcdBox->isChecked();
-    if(ret) {
-        writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
-    }else  {
-        writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+    bool ret = false;
+    if(mItem->modeId == START_BUSBAR || mItem->modeId == INSERT_BUSBAR){
+        bool ret = ui->lcdBox->isChecked();
+        if(ret) {
+            writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
+        }else  {
+            writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+        }
     }
 
     ret = ui->keyBox->isChecked();
     str1 = ui->keyBox->text();
     eng1 = tr("Release the alarm, the indicator light will turn green and flash");
-    if(ret) {
-        writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
-    }else {
-        writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+    if(mItem->modeId == START_BUSBAR || mItem->modeId == INSERT_BUSBAR){
+        if(ret) {
+            writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
+        }else {
+            writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+        }
     }
 
     str = tr("蜂鸣器开关检查"); eng = tr("Buzzer switch inspection");
@@ -126,10 +132,12 @@ void People_judg::on_sureButton_clicked()
     ret = ui->alarmBox->isChecked();
     str1 = ui->alarmBox->text();
     eng1 = tr("Generate an alarm, the buzzer sounds loud and clear");
-    if(ret) {
-        writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
-    }else {
-        writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+    if(mItem->modeId == START_BUSBAR || mItem->modeId == INSERT_BUSBAR){
+        if(ret) {
+            writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
+        }else {
+            writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+        }
     }
 
     str = tr("蜂鸣器开关检查");
@@ -137,11 +145,14 @@ void People_judg::on_sureButton_clicked()
     ret = ui->beepBox->isChecked();
     str1 = ui->beepBox->text();
     eng1 = tr("Release the alarm and stop the buzzer sound");
-    if(ret) {
-        writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
-    }else {
-        writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+    if(mItem->modeId == START_BUSBAR || mItem->modeId == INSERT_BUSBAR){
+        if(ret) {
+            writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
+        }else {
+            writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+        }
     }
+
 
     if(mPro->type == 1 && (mPro->work_mode == 0 || mPro->work_mode == 1))
     {
@@ -336,15 +347,19 @@ void People_judg::on_sureButton_clicked()
     }
 
     // mPro->sureItem << str4; ePro->sureItem << eng4;
-    str = tr("表头插拔"); eng = tr("Meter head insertion and removal");
-    str1 = ui->assemBox_9->text();
-    eng1 = tr("After inserting the meter head, no abnormal phenomena such as shaking, loosening, or inability to insert are allowed. The pulling force is (50 ± 5N)");
-    ret = ui->assemBox_9->isChecked();
-    if(ret) {
-        writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
-    }else  {
-        writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+    if(mItem->modeId == START_BUSBAR || mItem->modeId == INSERT_BUSBAR)
+    {
+        str = tr("表头插拔"); eng = tr("Meter head insertion and removal");
+        str1 = ui->assemBox_9->text();
+        eng1 = tr("After inserting the meter head, no abnormal phenomena such as shaking, loosening, or inability to insert are allowed. The pulling force is (50 ± 5N)");
+        ret = ui->assemBox_9->isChecked();
+        if(ret) {
+            writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
+        }else  {
+            writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+        }
     }
+
     if(mItem->modeId == START_BUSBAR)
     {
         ui->assemBox_10->show();
@@ -365,14 +380,16 @@ void People_judg::on_sureButton_clicked()
     mPro->test_step = "基本使用功能"; ePro->test_step = "Basic usage functions";
 
     // mPro->sureItem << str4; ePro->sureItem << eng4;
-    str = tr("表头按键"); eng = tr("Meter head button");
-    str1 = ui->funcBox->text();
-    eng1 = tr("The buttons can be used normally and have a consistent feel");
-    ret = ui->funcBox->isChecked();
-    if(ret) {
-        writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
-    }else  {
-        writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+    if(mItem->modeId == START_BUSBAR || mItem->modeId == INSERT_BUSBAR){
+        str = tr("表头按键"); eng = tr("Meter head button");
+        str1 = ui->funcBox->text();
+        eng1 = tr("The buttons can be used normally and have a consistent feel");
+        ret = ui->funcBox->isChecked();
+        if(ret) {
+            writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
+        }else  {
+            writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+        }
     }
 
     if(mItem->modeId == START_BUSBAR)

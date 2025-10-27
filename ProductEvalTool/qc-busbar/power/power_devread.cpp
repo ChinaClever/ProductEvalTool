@@ -240,7 +240,7 @@ bool Power_DevRead::NineInsertOne_CtrlOne()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("输出插座1接入负载，断开负载输入端断路器L1，读取读取A电流为0A，B/C电流为正常；");
+    QString str2 = tr("输出插座1接入负载，断开负载输入端断路器L1，检查读取A电流为0A，B/C电流为正常；");
     QString str = tr("关闭负载输入端L1");  //三相九路电流、功率
     QString str3; QString str4 = tr("插座1电流检查");
     QString eng2 = tr("Connect output socket 1 to the load, disconnect the load input circuit breaker L1, and read that the current of A is 0A, while the current of B/C is normal;");
@@ -1113,7 +1113,7 @@ bool Power_DevRead::SixInsertOne_CtrlOne()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("输出插座1接入负载，断开负载输入端断路器L1，读取读取A电流为0A，B/C电流为正常；");
+    QString str2 = tr("输出插座1接入负载，断开负载输入端断路器L1，检查读取A电流为0A，B/C电流为正常；");
     QString str = tr("关闭负载输入端L1");  //三相回路电流、功率
     emit StepSig(str); emit CurImageSig(2);
     QString str3; QString str4 = tr("插座1电流检查");
@@ -1696,7 +1696,7 @@ bool Power_DevRead::Three_CtrlOne()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("输出插座1接入负载，断开负载输入端断路器L1，读取读取A电流为0A，B/C电流为正常；");
+    QString str2 = tr("输出插座1接入负载，断开负载输入端断路器L1，检查读取A电流为0A，B/C电流为正常；");
     QString str = tr("关闭负载输入端L1");  //三相回路电流、功率
     emit StepSig(str); emit CurImageSig(2);
     QString str3; QString str4 = tr("插座1电流检查");
@@ -1953,7 +1953,7 @@ bool Power_DevRead::Three_One()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("输出插座1接入负载，断开负载输入端断路器L1，读取读取A电流为0A，B/C电流为正常；");
+    QString str2 = tr("输出插座1接入负载，断开负载输入端断路器L1，检查读取A电流为0A，B/C电流为正常；");
     QString str = tr("请准备输出口1，打开负载输入端L1、L2、L3");  //三相回路电流、功率
     emit StepSig(str); emit CurImageSig(2);
 

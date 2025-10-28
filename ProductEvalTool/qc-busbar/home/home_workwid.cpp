@@ -337,9 +337,9 @@ bool Home_WorkWid::initSerialVol()
     QString str;  mId = 1; mFirst = 1;
     sSerial *coms = &(mCfgm->coms);
     ui->textEdit->clear();
-    if(mPro->type == 0 && mCfgm->modeId != 2){
+    //if(mPro->type == 0 && mCfgm->modeId != 2){
         mDev->devType.sn.clear(); mCfgm->moduleSn.clear();
-    }
+    //}
 
     Cfg::bulid()->writeQRcode();//成品sn===成品代码+订单号
 

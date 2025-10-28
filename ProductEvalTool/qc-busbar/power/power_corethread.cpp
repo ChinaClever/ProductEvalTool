@@ -1749,6 +1749,7 @@ void Power_CoreThread::workDown()
         ret = handleBasicType();
     }
     else{
+        ret = initDev();
         if(ret) ret = mRead->readDev();
         if(mItem->modeId == INSERT_BUSBAR)
         {
@@ -1761,8 +1762,6 @@ void Power_CoreThread::workDown()
                 emit TipSig(str); sleep(2); ret = false; mLogs->updatePro(str, ret);
             }
         }
-
-        ret = initDev();
         if(ret){
             int ver = get_share_mem()->box[mItem->addr-1].version;
             mPro->softwareVersion = "V" +QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);

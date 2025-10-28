@@ -397,6 +397,7 @@ void Json_Pack::FuncData(int num, int send)
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
         mObjFlag++;
         if(mObjFlag == 2){
+            sDataPacket::bulid()->delay(20);
             mObj.insert("moduleSn", mPro->moduleSN);
             stephttp_post("admin-api/bus/testData",mPro->Service,mObj);
             QStringList list = mObj.keys();
@@ -478,6 +479,7 @@ void Json_Pack::FuncData_Lan(int num, int send)
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
         mObj_enFlag++;
         if(mObj_enFlag == 2){
+            sDataPacket::bulid()->delay(20);
             mObj_en.insert("moduleSn", ePro->moduleSN);
             stephttp_post("admin-api/bus/testData",mPro->Service,mObj_en);
             QStringList list = mObj_en.keys();

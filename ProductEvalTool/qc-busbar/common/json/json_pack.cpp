@@ -12,6 +12,8 @@ Json_Pack::Json_Pack(QObject *parent)
     ePro = datapacket_English::bulid()->getPro();
     mBusData = get_share_mem();
     mItem = Cfg::bulid()->item;
+    mObjFlag = 0;
+    mObj_enFlag = 0;
 }
 
 Json_Pack *Json_Pack::bulid(QObject *parent)
@@ -56,7 +58,10 @@ void Json_Pack::head(QJsonObject &obj)
         obj.insert("testRequest",list.at(i));
         obj.insert("testItem", step.at(i));
         obj.insert("testProcess" ,mPro->safeData.at(i));
-        gSmartObj.push_back(obj);
+        if(gSmartObj.size() && gSmartObj[0].contains("绝缘测试") && i == 0 && mPro->work_mode == 0) gSmartObj[0] = obj;
+        else if(gSmartObj.size()>=2 && gSmartObj[1].contains("交流耐压测试")&& i == 1 && mPro->work_mode == 0) gSmartObj[1] = obj;
+        else if(gSmartObj.size()>=3 && gSmartObj[2].contains("接地测试")&& i == 0 && mPro->work_mode != 0) gSmartObj[2] = obj;
+        else gSmartObj.push_back(obj);
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 
@@ -127,8 +132,11 @@ void Json_Pack::head_English(QJsonObject &obj)
         obj.insert("testItem", step.at(i));
         obj.insert("testProcess" ,ePro->safeData.at(i));
         obj.insert("testResult" ,QString::number(ePro->safe_result.at(i)));
-
-        gSmartObjEng.push_back(obj);
+        if(gSmartObjEng.size() && gSmartObjEng[0].contains("Insulation test") && i == 0 && mPro->work_mode == 0) gSmartObjEng[0] = obj;
+        else if(gSmartObjEng.size()>=2 && gSmartObjEng[1].contains("Communication voltage withstand test") && i == 1 && mPro->work_mode == 0) gSmartObjEng[1] = obj;
+        else if(gSmartObjEng.size()>=3 && gSmartObjEng[2].contains("Grounding test")&& i == 0 && mPro->work_mode != 0) gSmartObjEng[2] = obj;
+        else gSmartObjEng.push_back(obj);
+//        gSmartObjEng.push_back(obj);
 
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
@@ -354,7 +362,7 @@ void Json_Pack::stephttp_post(const QString &method, const QString &ip,QJsonObje
         .exec();
 }
 
-void Json_Pack::FuncData(int num)
+void Json_Pack::FuncData(int num, int send)
 {
     QJsonObject obj; QJsonObject obj_en;
     QDateTime t = QDateTime::currentDateTime();
@@ -385,7 +393,19 @@ void Json_Pack::FuncData(int num)
     obj.insert("testProcess" ,mPro->itemData.at(num));
     obj.insert("testResult" ,mPro->stepResult.at(num));
     obj.insert("testRequest" ,mPro->stepRequest.at(num));
-    stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+    if(send == 1){
+        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+        mObjFlag++;
+        if(mObjFlag == 2){
+            mObj.insert("moduleSn", mPro->moduleSN);
+            stephttp_post("admin-api/bus/testData",mPro->Service,mObj);
+            QStringList list = mObj.keys();
+            for(const QString & str: list){
+                mObj.remove(str);
+            }
+        }
+    }
+    else {mObj = obj;mObjFlag = 0;}
 
     // int num = mPro->stepResult.size();
     // int fag = 0;
@@ -423,7 +443,7 @@ void Json_Pack::FuncData(int num)
 
 }
 
-void Json_Pack::FuncData_Lan(int num)
+void Json_Pack::FuncData_Lan(int num, int send)
 {
     QJsonObject obj;
     QDateTime t = QDateTime::currentDateTime();
@@ -454,7 +474,19 @@ void Json_Pack::FuncData_Lan(int num)
     obj.insert("testProcess" ,ePro->itemData.at(num));
     obj.insert("testResult" ,ePro->stepResult.at(num));
     obj.insert("testRequest" ,ePro->stepRequest.at(num));
-    stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+    if(send == 1) {
+        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+        mObj_enFlag++;
+        if(mObj_enFlag == 2){
+            mObj_en.insert("moduleSn", ePro->moduleSN);
+            stephttp_post("admin-api/bus/testData",mPro->Service,mObj_en);
+            QStringList list = mObj_en.keys();
+            for(const QString & str: list){
+                mObj_en.remove(str);
+            }
+        }
+    }
+    else {mObj_en = obj;mObj_enFlag = 0;}
 
     // int num = mPro->stepResult.size();
     // int fag = 0;

@@ -1400,7 +1400,7 @@ void Power_CoreThread::getDelaySlot()
     QString eng1 = tr("The IN port of the cascaded fixture is directly connected to the IN port of the tested plug-in box, and the OUT port is directly connected to the OUT port. The cascaded communication test is normal");
     QString eng2 = tr("IN/OUT interface check");
 
-    mLogs->writeData(str1,str,str2,ret); mLogs->writeDataEng(eng1,eng,eng2,ret);
+    mLogs->writeData(str1,str,str2,ret , 0); mLogs->writeDataEng(eng1,eng,eng2,ret , 0);
     mCurBoxNum = 0;
 }
 
@@ -1419,7 +1419,7 @@ void Power_CoreThread::getNumAndIndexSlot(int curnum)
         str = tr("分配地址正常"); QString eng = tr("Address allocation is normal");
         QString str1 = tr("级联治具IN口与被测插接箱IN口直连，OUT口与OUT口直连，级联通讯测试正常");
         QString str2 = tr("IN/OUT接口检查");
-        mLogs->writeData(str1,str,str2,ret); mLogs->writeDataEng(eng1,eng,eng2,ret);
+        mLogs->writeData(str1,str,str2,ret , 0); mLogs->writeDataEng(eng1,eng,eng2,ret , 0);
     }
 }
 bool Power_CoreThread::VolCurCtrl(sObjData *obj,int id)

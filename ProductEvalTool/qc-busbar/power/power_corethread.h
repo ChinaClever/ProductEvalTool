@@ -88,6 +88,10 @@ protected:
     bool tryReadVolCurSig(sObjData *,int id);
     bool VolCurCtrlSigle(sObjData *,int id);
     bool handleBasicType();
+    bool BasicTypeBreakerTest();
+    bool BasicTypeBreakerA();
+    bool BasicTypeBreakerB();
+    bool BasicTypeBreakerC();
 private:
     Power_Logs *mLogs;
     Power_DevRead *mRead;

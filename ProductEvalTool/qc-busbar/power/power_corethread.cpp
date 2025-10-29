@@ -1358,6 +1358,273 @@ bool Power_CoreThread::stepLoadTest()       //电流测试
 
     return ret;
 }
+
+bool Power_CoreThread::BasicTypeBreakerTest()
+{
+    bool ret = true;
+
+    // 基本型有3个断路器，分别测试A相、B相、C相
+    ret = BasicTypeBreakerA();
+    if(ret) ret = BasicTypeBreakerB();
+    if(ret) ret = BasicTypeBreakerC();
+
+    return ret;
+}
+
+// 测试基本型A相断路器
+bool Power_CoreThread::BasicTypeBreakerA()
+{
+    bool ret = true;
+    int flag = 0;
+    QString str1, str;
+    auto obj = &(mDev->line);
+
+    QString str2 = tr("断开基本型断路器A，A电压为0V，B/C电压正常；");
+    str = tr("请关闭断路器A");
+    emit TipSig(str);
+    QString str3;
+    QString str4 = tr("基本型断路器检查");
+    QString eng2 = tr("Disconnect basic type circuit breaker A, A voltage is 0V, B/C voltage normal;");
+    QString eng3;
+    QString eng4 = tr("Basic type circuit breaker inspection");
+
+    while(1)
+    {
+        ret = mRead->readDevBasicType();
+        if(!ret) {
+            str = tr("基本型设备数据读取失败");
+            mLogs->updatePro(str, ret);
+            break;
+        }
+
+        // 检查A相电压为0，B/C相电压正常
+        int a = obj->source_vol[0];
+        int b = obj->source_vol[1];
+        int c = obj->source_vol[2];
+
+
+        if((!a) && b && c) {
+            ret = true;
+            for(int i = 0; i < 3; ++i) {
+                QString name = (i == 0) ? "A" : (i == 1) ? "B" : "C";
+                double vol = obj->source_vol[i] / BASIC_RATE_VOL;
+                str = tr("%1电压 %2V，").arg(name).arg(vol, 0, 'f', 2);
+                str3 = tr("%1 voltage %2V，").arg(name).arg(vol, 0, 'f', 2);
+                str1 += str;
+                eng3 += str3;
+            }
+            mLogs->updatePro(str1, ret);
+            str = tr("基本型断路器A检测成功");
+            mLogs->updatePro(str, ret);
+            mLogs->writeData(str2, str1, str4, ret);
+            mLogs->writeDataEng(eng2, eng3, eng4, ret);
+            str1.clear();
+            break;
+        }
+
+        if(flag > 30) {
+            str = tr("请确认已关闭基本型断路器A，等待A相电压检测为0V");
+            emit TipSig(str);
+        }
+
+        flag++;
+        if(flag > 50) {
+            for(int i = 0; i < 3; ++i) {
+                QString name = (i == 0) ? "A" : (i == 1) ? "B" : "C";
+                double vol = obj->source_vol[i] / BASIC_RATE_VOL;
+                str = tr("%1电压 %2V，").arg(name).arg(vol, 0, 'f', 2);
+                str3 = tr("%1 voltage %2V，").arg(name).arg(vol, 0, 'f', 2);
+                str1 += str;
+                eng3 += str3;
+            }
+            mLogs->updatePro(str1, ret);
+            ret = false;
+            str = tr("基本型断路器A检测失败");
+            mLogs->updatePro(str, ret);
+            mLogs->writeData(str2, str1, str4, ret);
+            mLogs->writeDataEng(eng2, eng3, eng4, ret);
+            str1.clear();
+            break;
+        }
+
+        msleep(1000);
+    }
+
+    str = tr("请打开断路器A");
+    emit TipSig(str);
+    sleep(3);
+
+    return ret;
+}
+
+// 测试基本型B相断路器
+bool Power_CoreThread::BasicTypeBreakerB()
+{
+    bool ret = true;
+    int flag = 0;
+    QString str1, str;
+    auto obj = &(mDev->line);
+
+    QString str2 = tr("断开断路器B，B电压为0V，A/C电压正常；");
+    str = tr("请打开断路器A，关闭断路器B");
+    emit TipSig(str);
+    QString str3;
+    QString str4 = tr("断路器检查");
+    QString eng2 = tr("Disconnect basic type circuit breaker B, B voltage is 0V, A/C voltage normal;");
+    QString eng3;
+    QString eng4 = tr("Basic type circuit breaker inspection");
+
+    while(1)
+    {
+        ret = mRead->readDevBasicType();
+        if(!ret) {
+            str = tr("设备数据读取失败");
+            mLogs->updatePro(str, ret);
+            break;
+        }
+
+        int a = obj->source_vol[0];
+        int b = obj->source_vol[1];
+        int c = obj->source_vol[2];
+
+        if(a && (!b) && c) {
+            ret = true;
+            for(int i = 0; i < 3; ++i) {
+                QString name = (i == 0) ? "A" : (i == 1) ? "B" : "C";
+                double vol = obj->source_vol[i] / BASIC_RATE_VOL;
+                str = tr("%1电压 %2V，").arg(name).arg(vol, 0, 'f', 2);
+                str3 = tr("%1 voltage %2V，").arg(name).arg(vol, 0, 'f', 2);
+                str1 += str;
+                eng3 += str3;
+            }
+            mLogs->updatePro(str1, ret);
+            str = tr("断路器B检测成功");
+            mLogs->updatePro(str, ret);
+            mLogs->writeData(str2, str1, str4, ret);
+            mLogs->writeDataEng(eng2, eng3, eng4, ret);
+            str1.clear();
+            break;
+        }
+
+        if(flag > 30) {
+            str = tr("请确认已关闭断路器B，等待B相电压检测为0V");
+            emit TipSig(str);
+        }
+
+        flag++;
+        if(flag > 50) {
+            for(int i = 0; i < 3; ++i) {
+                QString name = (i == 0) ? "A" : (i == 1) ? "B" : "C";
+                double vol = obj->source_vol[i] / BASIC_RATE_VOL;
+                str = tr("%1电压 %2V，").arg(name).arg(vol, 0, 'f', 2);
+                str3 = tr("%1 voltage %2V，").arg(name).arg(vol, 0, 'f', 2);
+                str1 += str;
+                eng3 += str3;
+            }
+            mLogs->updatePro(str1, ret);
+            ret = false;
+            str = tr("断路器B检测失败");
+            mLogs->updatePro(str, ret);
+            mLogs->writeData(str2, str1, str4, ret);
+            mLogs->writeDataEng(eng2, eng3, eng4, ret);
+            str1.clear();
+            break;
+        }
+
+        msleep(1000);
+    }
+
+    str = tr("请打开断路器B");
+    emit TipSig(str);
+    sleep(3);
+
+    return ret;
+}
+
+// 测试基本型C相断路器
+bool Power_CoreThread::BasicTypeBreakerC()
+{
+    bool ret = true;
+    int flag = 0;
+    QString str1, str;
+    auto obj = &(mDev->line);
+
+    QString str2 = tr("断开断路器C，C电压为0V，A/B电压正常；");
+    str = tr("请打开断路器B，关闭断路器C");
+    emit TipSig(str);
+    QString str3;
+    QString str4 = tr("断路器检查");
+    QString eng2 = tr("Disconnect basic type circuit breaker C, C voltage is 0V, A/B voltage normal;");
+    QString eng3;
+    QString eng4 = tr("Basic type circuit breaker inspection");
+
+    while(1)
+    {
+        ret = mRead->readDevBasicType();
+        if(!ret) {
+            str = tr("设备数据读取失败");
+            mLogs->updatePro(str, ret);
+            break;
+        }
+
+        int a = obj->source_vol[0];
+        int b = obj->source_vol[1];
+        int c = obj->source_vol[2];
+
+        if(a && b && (!c)) {
+            ret = true;
+            for(int i = 0; i < 3; ++i) {
+                QString name = (i == 0) ? "A" : (i == 1) ? "B" : "C";
+                double vol = obj->source_vol[i] / BASIC_RATE_VOL;
+                str = tr("%1电压 %2V，").arg(name).arg(vol, 0, 'f', 2);
+                str3 = tr("%1 voltage %2V，").arg(name).arg(vol, 0, 'f', 2);
+                str1 += str;
+                eng3 += str3;
+            }
+            mLogs->updatePro(str1, ret);
+            str = tr("断路器C检测成功");
+            mLogs->updatePro(str, ret);
+            mLogs->writeData(str2, str1, str4, ret);
+            mLogs->writeDataEng(eng2, eng3, eng4, ret);
+            str1.clear();
+            break;
+        }
+
+        if(flag > 30) {
+            str = tr("请确认已关闭断路器C，等待C相电压检测为0V");
+            emit TipSig(str);
+        }
+
+        flag++;
+        if(flag > 50) {
+            for(int i = 0; i < 3; ++i) {
+                QString name = (i == 0) ? "A" : (i == 1) ? "B" : "C";
+                double vol = obj->source_vol[i] / BASIC_RATE_VOL;
+                str = tr("%1电压 %2V，").arg(name).arg(vol, 0, 'f', 2);
+                str3 = tr("%1 voltage %2V，").arg(name).arg(vol, 0, 'f', 2);
+                str1 += str;
+                eng3 += str3;
+            }
+            mLogs->updatePro(str1, ret);
+            ret = false;
+            str = tr("断路器C检测失败");
+            mLogs->updatePro(str, ret);
+            mLogs->writeData(str2, str1, str4, ret);
+            mLogs->writeDataEng(eng2, eng3, eng4, ret);
+            str1.clear();
+            break;
+        }
+
+        msleep(1000);
+    }
+
+    str = tr("请打开断路器C");
+    emit TipSig(str);
+    sleep(3);
+
+    return ret;
+}
+
 bool Power_CoreThread::BreakerTest()        //断路器测试
 {
     bool ret = true;
@@ -1654,6 +1921,9 @@ bool Power_CoreThread::handleBasicType()
     sSiCfg *dv = &(mItem->si);
     auto obj = &(mDev->line);
     const bool isSinglePhase = (dv->si_phaseflag == 0);
+
+    if(ret) ret = BasicTypeBreakerTest();
+    if(!ret) return ret;
 
     auto checkThree = [&](int idx) ->bool {
 

@@ -393,20 +393,24 @@ void Json_Pack::FuncData(int num, int send)
     obj.insert("testProcess" ,mPro->itemData.at(num));
     obj.insert("testResult" ,mPro->stepResult.at(num));
     obj.insert("testRequest" ,mPro->stepRequest.at(num));
-    if(send == 1){
-        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
-        mObjFlag++;
-        if(mObjFlag == 2){
-            sDataPacket::bulid()->delay(20);
-            mObj.insert("moduleSn", mPro->moduleSN);
-            stephttp_post("admin-api/bus/testData",mPro->Service,mObj);
-            QStringList list = mObj.keys();
-            for(const QString & str: list){
-                mObj.remove(str);
+    if(mItem->modeId == INSERT_BUSBAR){
+        if(send == 1){
+            stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+            mObjFlag++;
+            if(mObjFlag == 2){
+                sDataPacket::bulid()->delay(20);
+                mObj.insert("moduleSn", mPro->moduleSN);
+                stephttp_post("admin-api/bus/testData",mPro->Service,mObj);
+                QStringList list = mObj.keys();
+                for(const QString & str: list){
+                    mObj.remove(str);
+                }
             }
         }
+        else {mObj = obj;mObjFlag = 0;}
+    }else{
+        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
-    else {mObj = obj;mObjFlag = 0;}
 
     // int num = mPro->stepResult.size();
     // int fag = 0;
@@ -475,20 +479,24 @@ void Json_Pack::FuncData_Lan(int num, int send)
     obj.insert("testProcess" ,ePro->itemData.at(num));
     obj.insert("testResult" ,ePro->stepResult.at(num));
     obj.insert("testRequest" ,ePro->stepRequest.at(num));
-    if(send == 1) {
-        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
-        mObj_enFlag++;
-        if(mObj_enFlag == 2){
-            sDataPacket::bulid()->delay(20);
-            mObj_en.insert("moduleSn", ePro->moduleSN);
-            stephttp_post("admin-api/bus/testData",mPro->Service,mObj_en);
-            QStringList list = mObj_en.keys();
-            for(const QString & str: list){
-                mObj_en.remove(str);
+    if(mItem->modeId == INSERT_BUSBAR){
+        if(send == 1) {
+            stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+            mObj_enFlag++;
+            if(mObj_enFlag == 2){
+                sDataPacket::bulid()->delay(20);
+                mObj_en.insert("moduleSn", ePro->moduleSN);
+                stephttp_post("admin-api/bus/testData",mPro->Service,mObj_en);
+                QStringList list = mObj_en.keys();
+                for(const QString & str: list){
+                    mObj_en.remove(str);
+                }
             }
         }
+        else {mObj_en = obj;mObj_enFlag = 0;}
+    }else{
+        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
-    else {mObj_en = obj;mObj_enFlag = 0;}
 
     // int num = mPro->stepResult.size();
     // int fag = 0;

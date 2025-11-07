@@ -399,11 +399,13 @@ void Json_Pack::FuncData(int num, int send)
             mObjFlag++;
             if(mObjFlag == 2){
                 sDataPacket::bulid()->delay(20);
-                mObj.insert("moduleSn", mPro->moduleSN);
-                stephttp_post("admin-api/bus/testData",mPro->Service,mObj);
-                QStringList list = mObj.keys();
-                for(const QString & str: list){
-                    mObj.remove(str);
+                if(!mObj.isEmpty()){
+                    mObj.insert("moduleSn", mPro->moduleSN);
+                    stephttp_post("admin-api/bus/testData",mPro->Service,mObj);
+                    QStringList list = mObj.keys();
+                    for(const QString & str: list){
+                        mObj.remove(str);
+                    }
                 }
             }
         }
@@ -485,11 +487,13 @@ void Json_Pack::FuncData_Lan(int num, int send)
             mObj_enFlag++;
             if(mObj_enFlag == 2){
                 sDataPacket::bulid()->delay(20);
-                mObj_en.insert("moduleSn", ePro->moduleSN);
-                stephttp_post("admin-api/bus/testData",mPro->Service,mObj_en);
-                QStringList list = mObj_en.keys();
-                for(const QString & str: list){
-                    mObj_en.remove(str);
+                if(!mObj_en.isEmpty()){
+                    mObj_en.insert("moduleSn", ePro->moduleSN);
+                    stephttp_post("admin-api/bus/testData",mPro->Service,mObj_en);
+                    QStringList list = mObj_en.keys();
+                    for(const QString & str: list){
+                        mObj_en.remove(str);
+                    }
                 }
             }
         }

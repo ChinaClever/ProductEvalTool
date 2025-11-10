@@ -83,11 +83,15 @@ protected:
 
 
     void clearObjVolCur(sObjData *);
+    bool BreakVolCurCtrl(sObjData *,int id,int type,const int face);
+    bool BreakThreeVolCurCtrl(sObjData *,int id);
     bool tryReadVolCur(sObjData *,int id);
     bool VolCurCtrl(sObjData *,int id);
     bool tryReadVolCurSig(sObjData *,int id);
     bool VolCurCtrlSigle(sObjData *,int id);
     bool handleBasicType();
+    bool breakTest(int );
+    bool ThreeBreakTest(int);
 private:
     Power_Logs *mLogs;
     Power_DevRead *mRead;

@@ -753,13 +753,13 @@ bool Power_CoreThread::VolCurCtrl(sObjData *obj,int id)
         }
         flag++;
         qDebug()<<flag;
-        if (flag > 5)
+        if (flag > 50)
         {
             QString str, engStr;
             for (int i = 0; i < loop; i++)
             {
                 QString name = trans(i);
-                double vol = obj->source_vol[i] / COM_RATE_VOL;
+                double vol = obj->source_vol[i] / SOURCE_RATE_VOL;
                 double cur = obj->source_cur[i] / COM_RATE_CUR;
                 str += tr("检测%1电压电流失败").arg(name+QString::number(id + 1));
                 str += tr("%1 电压: %2V, 电流: %3A; ")
@@ -1750,7 +1750,7 @@ void Power_CoreThread::workDown()
         // QString str = mDev->devType.sn;
         // mPro->moduleSN = str.remove(QRegExp("\\s"));
         // mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
-        // ret = handleBasicType();
+        ret = handleBasicType();
     }
     else{
         if(mItem->modeId == INSERT_BUSBAR)

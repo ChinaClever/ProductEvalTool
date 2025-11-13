@@ -174,7 +174,7 @@ bool Test_TransThread::checkTapoff_boxPolarity(QList<int> Intresult)
     int volValue = 0;bool ret = true;
     if(mItem->si.si_phaseflag == 0){
          //单相设备-----------------------------
-        for(int i = 0 ;i < 12 ; i += 4){
+        for(int i = 0 ;i < 12 ; ){
             volValue = Intresult.at(i);// result.at(1);
             qDebug()<<i<<" aa  "<<volValue;
             if(i == 0){
@@ -186,6 +186,8 @@ bool Test_TransThread::checkTapoff_boxPolarity(QList<int> Intresult)
             }else if(i == 9 || i == 10 || i == 11){
                 if(volValue < 1500) {ret = false; mPacket->updatePro(tr("第%1组，地线故障").arg(transStr(i)), ret); }
             }
+            if(i >= 8) i += 1;
+            else i += 4;
         }
     }else {
          //三相设备-----------------------------

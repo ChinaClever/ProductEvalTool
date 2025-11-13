@@ -71,6 +71,7 @@ bool Dev_Source::readRk9901()
             obj->source_vol[i] = rkIt.vola[i];
             obj->source_cur[i] = rkIt.cura[i];
             obj->pow[i] = rkIt.powa[i];//有功功率
+            qDebug()<<" i "<< i <<"vol "<<obj->source_vol[i] <<"cur "<<obj->source_cur[i]<<"pow "<<obj->pow[i];
 
 //            obj->source_cur[i] = 16000;
 //            obj->source_vol[i] = 220000;

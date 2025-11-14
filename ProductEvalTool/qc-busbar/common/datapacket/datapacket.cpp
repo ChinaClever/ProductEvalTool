@@ -45,7 +45,7 @@ void sDataPacket::clear(int id)
     pro->softwareVersion.clear();
     pro->sureItem.clear();
 
-    pro->moduleSN.clear();
+    //pro->moduleSN.clear();
 }
 
 

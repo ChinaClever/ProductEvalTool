@@ -19,8 +19,8 @@ public:
     void SendJson_Safe();
     void SafeData();
     void SafeData_Lan();
-    void FuncData(int num);
-    void FuncData_Lan(int num);
+    void FuncData(int num, int send=1);
+    void FuncData_Lan(int num, int send=1);
 signals:
     void httpSig(const QString &msg, bool pass);
 protected:
@@ -33,6 +33,8 @@ private:
     sProgress *ePro;
     sBusData *mBusData;
     sCfgItem *mItem;
+    QJsonObject mObj; QJsonObject mObj_en;
+    int mObjFlag;int mObj_enFlag;
 };
 
 #endif // JSONPACK_H

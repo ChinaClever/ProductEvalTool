@@ -109,7 +109,7 @@ bool Power_Logs::updatePro(const QString &str, bool pass, int sec)
 }
 
 //str1 测试要求 str2 结果判定 str3 测试项目
-void Power_Logs::writeData(const QString &str1,const QString &str2, const QString &str3, bool pass)
+void Power_Logs::writeData(const QString &str1,const QString &str2, const QString &str3, bool pass,int send)
 {
     if(mPro->step < Test_End) {
         if(pass) {
@@ -122,14 +122,14 @@ void Power_Logs::writeData(const QString &str1,const QString &str2, const QStrin
         if(mPro->online)
         {
             msleep(20);
-            Json_Pack::bulid()->FuncData(mPro->stepNum);
+            Json_Pack::bulid()->FuncData(mPro->stepNum , send);
             mPro->stepNum++;
         }
     }
 }
 
 //str1 测试要求 str2 结果判定 str3 测试项目
-void Power_Logs::writeDataEng(const QString &str1,const QString &str2, const QString &str3, bool pass)
+void Power_Logs::writeDataEng(const QString &str1,const QString &str2, const QString &str3, bool pass,int send)
 {
     if(mPro->step < Test_End) {        
         if(pass) {
@@ -142,7 +142,7 @@ void Power_Logs::writeDataEng(const QString &str1,const QString &str2, const QSt
         if(mPro->online)
         {
             msleep(20);
-            Json_Pack::bulid()->FuncData_Lan(mPro->stepNumEng);
+            Json_Pack::bulid()->FuncData_Lan(mPro->stepNumEng , send);
             mPro->stepNumEng++;
         }
     }

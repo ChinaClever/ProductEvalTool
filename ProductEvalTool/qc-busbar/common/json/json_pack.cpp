@@ -13,6 +13,8 @@ Json_Pack::Json_Pack(QObject *parent)
     ePro = datapacket_English::bulid()->getPro();
     mBusData = get_share_mem();
     mItem = Cfg::bulid()->item;
+    mObjFlag = 0;
+    mObj_enFlag = 0;
 }
 
 Json_Pack *Json_Pack::bulid(QObject *parent)
@@ -58,7 +60,10 @@ void Json_Pack::head(QJsonObject &obj)
         obj.insert("testItem", step.at(i));
         obj.insert("testProcess" ,mPro->safeData.at(i));
         if(i == 2) {mPro->test_step = "功能测试"; obj.insert("testStep", mPro->test_step);}
-        gSmartObj.push_back(obj);
+        if(gSmartObj.size() && gSmartObj[0].contains("绝缘测试") && i == 0 && mPro->work_mode == 0) gSmartObj[0] = obj;
+        else if(gSmartObj.size()>=2 && gSmartObj[1].contains("交流耐压测试")&& i == 1 && mPro->work_mode == 0) gSmartObj[1] = obj;
+        else if(gSmartObj.size()>=3 && gSmartObj[2].contains("接地测试")&& i == 0 && mPro->work_mode != 0) gSmartObj[2] = obj;
+        else gSmartObj.push_back(obj);
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 
@@ -130,7 +135,10 @@ void Json_Pack::head_English(QJsonObject &obj)
         obj.insert("testProcess" ,ePro->safeData.at(i));
         obj.insert("testResult" ,QString::number(ePro->safe_result.at(i)));
         if(i == 2) {ePro->test_step = "Functional testing"; obj.insert("testStep", ePro->test_step);}
-        gSmartObjEng.push_back(obj);
+        if(gSmartObjEng.size() && gSmartObjEng[0].contains("Insulation test") && i == 0 && mPro->work_mode == 0) gSmartObjEng[0] = obj;
+        else if(gSmartObjEng.size()>=2 && gSmartObjEng[1].contains("Communication voltage withstand test") && i == 1 && mPro->work_mode == 0) gSmartObjEng[1] = obj;
+        else if(gSmartObjEng.size()>=3 && gSmartObjEng[2].contains("Grounding test")&& i == 0 && mPro->work_mode != 0) gSmartObjEng[2] = obj;
+        else gSmartObjEng.push_back(obj);
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 
@@ -145,13 +153,13 @@ void Json_Pack::SendJson_Safe()
     QJsonObject json;
     head(json);
 
-    json.empty();
+    //json.empty();
     sDataPacket::bulid()->delayMs(5);
     head_English(json);
 
     if(mItem->modeId == 2)
     {
-        json.empty();
+        //json.empty();
         sDataPacket::bulid()->delayMs(3);
         SafeData();
         sDataPacket::bulid()->delayMs(3);
@@ -167,14 +175,14 @@ void Json_Pack::http_post(const QString &method, const QString &ip, QJsonObject 
     http.clearConnectionCache();
     QString url = "http://%1:%2/%3";
     http.post(url.arg(ip).arg(port).arg(method))
-        .header("content-type", "application/json")
-        .onSuccess([&](QString result) {qDebug()<<"result"<<result; mPro->flag = 1;})
-        .onFailed([&](QString error) {qDebug()<<"error"<<error; mPro->flag = 0;})
-        .onTimeout([&](QNetworkReply *) {qDebug()<<"http_post timeout"; mPro->flag = 0;}) // 超时处理
-        .timeoutMs(200) // 1s超时
-        .block()
-        .body(json)
-        .exec();
+            .header("content-type", "application/json")
+            .onSuccess([&](QString result) {qDebug()<<"result"<<result; mPro->flag = 1;})
+    .onFailed([&](QString error) {qDebug()<<"error"<<error; mPro->flag = 0;})
+    .onTimeout([&](QNetworkReply *) {qDebug()<<"http_post timeout"; mPro->flag = 0;}) // 超时处理
+    .timeoutMs(200) // 1s超时
+            .block()
+            .body(json)
+            .exec();
 }
 
 void Json_Pack::SafeData()
@@ -343,17 +351,17 @@ void Json_Pack::stephttp_post(const QString &method, const QString &ip,QJsonObje
     http.clearConnectionCache();
     QString url = "http://%1:%2/%3";
     http.post(url.arg(ip).arg(port).arg(method))
-        .header("content-type", "application/json")
-        .onSuccess([&](QString result) {qDebug()<<"result"<<result; mPro->flag = 1; })
-        .onFailed([&](QString error) {qDebug()<<"error"<<error; mPro->flag = 0; })
-        .onTimeout([&](QNetworkReply *) {qDebug()<<"http_post timeout"; mPro->flag = 0;}) // 超时处理
-        .timeoutMs(200) // 1s超时
-        .block()
-        .body(json)
-        .exec();
+            .header("content-type", "application/json")
+            .onSuccess([&](QString result) {qDebug()<<"result"<<result; mPro->flag = 1; })
+    .onFailed([&](QString error) {qDebug()<<"error"<<error; mPro->flag = 0; })
+    .onTimeout([&](QNetworkReply *) {qDebug()<<"http_post timeout"; mPro->flag = 0;}) // 超时处理
+    .timeoutMs(200) // 1s超时
+            .block()
+            .body(json)
+            .exec();
 }
 
-void Json_Pack::FuncData(int num)
+void Json_Pack::FuncData(int num,int send)
 {
     QJsonObject obj; QJsonObject obj_en;
     QDateTime t = QDateTime::currentDateTime();
@@ -384,7 +392,26 @@ void Json_Pack::FuncData(int num)
     obj.insert("testProcess" ,mPro->itemData.at(num));
     obj.insert("testResult" ,mPro->stepResult.at(num));
     obj.insert("testRequest" ,mPro->stepRequest.at(num));
-    stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+    if(mItem->modeId == INSERT_BUSBAR){
+        if(send == 1){
+            stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+            mObjFlag++;
+            if(mObjFlag == 2){
+                sDataPacket::bulid()->delay(20);
+                if(!mObj.isEmpty()){
+                    mObj.insert("moduleSn", mPro->moduleSN);
+                    stephttp_post("admin-api/bus/testData",mPro->Service,mObj);
+                    QStringList list = mObj.keys();
+                    for(const QString & str: list){
+                        mObj.remove(str);
+                    }
+                }
+            }
+        }
+        else {mObj = obj;mObjFlag = 0;}
+    }else{
+        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+    }
 
     // int num = mPro->stepResult.size();
     // int fag = 0;
@@ -422,7 +449,7 @@ void Json_Pack::FuncData(int num)
 
 }
 
-void Json_Pack::FuncData_Lan(int num)
+void Json_Pack::FuncData_Lan(int num,int send)
 {
     QJsonObject obj;
     QDateTime t = QDateTime::currentDateTime();
@@ -453,7 +480,26 @@ void Json_Pack::FuncData_Lan(int num)
     obj.insert("testProcess" ,ePro->itemData.at(num));
     obj.insert("testResult" ,ePro->stepResult.at(num));
     obj.insert("testRequest" ,ePro->stepRequest.at(num));
-    stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+    if(mItem->modeId == INSERT_BUSBAR){
+        if(send == 1) {
+            stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+            mObj_enFlag++;
+            if(mObj_enFlag == 2){
+                sDataPacket::bulid()->delay(20);
+                if(!mObj_en.isEmpty()){
+                    mObj_en.insert("moduleSn", ePro->moduleSN);
+                    stephttp_post("admin-api/bus/testData",mPro->Service,mObj_en);
+                    QStringList list = mObj_en.keys();
+                    for(const QString & str: list){
+                        mObj_en.remove(str);
+                    }
+                }
+            }
+        }
+        else {mObj_en = obj;mObj_enFlag = 0;}
+    }else{
+        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+    }
 
     // int num = mPro->stepResult.size();
     // int fag = 0;

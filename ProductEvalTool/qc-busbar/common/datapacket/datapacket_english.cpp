@@ -37,7 +37,7 @@ void datapacket_English::clear(int id)
     pro->softwareVersion.clear();
     pro->safe_result.clear();
 
-    pro->moduleSN.clear();
+    //pro->moduleSN.clear();
 }
 
 

@@ -492,7 +492,7 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("输出插座2接入负载，断开负载输入端断路器L1，读取读取A电流为0A，B/C电流为正常；");
+    QString str2 = tr("输出插座2接入负载，断开负载输入端断路器L1，检查读取A电流为0A，B/C电流为正常；");
     QString str = tr("请准备输出口2，打开负载输入端L1、L2、L3");  //三相回路电流、功率
     emit StepSig(str); emit CurImageSig(2);
 
@@ -773,7 +773,7 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("输出插座3接入负载，断开负载输入端断路器L1，读取读取A电流为0A，B/C电流为正常；");
+    QString str2 = tr("输出插座3接入负载，断开负载输入端断路器L1，检查读取A电流为0A，B/C电流为正常；");
     QString str = tr("请准备输出口3，打开负载输入端L1、L2、L3");
     emit StepSig(str); emit CurImageSig(2);
 
@@ -1365,7 +1365,7 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
     bool ret = true; int flag = 0; QString str1;
     sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
     uchar loop = mBusData->box[mItem->addr-1].loopNum;
-    QString str2 = tr("输出插座2接入负载，断开负载输入端断路器L1，读取读取A电流为0A，B/C电流为正常；");
+    QString str2 = tr("输出插座2接入负载，断开负载输入端断路器L1，检查读取A电流为0A，B/C电流为正常；");
     QString str = tr("请准备输出口2，打开负载输入端L1、L2、L3");  //三相回路电流、功率
     emit StepSig(str); emit CurImageSig(2);
 

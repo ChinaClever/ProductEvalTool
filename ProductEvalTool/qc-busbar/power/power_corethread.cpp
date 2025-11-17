@@ -1750,6 +1750,8 @@ void Power_CoreThread::workDown()
         // mPro->moduleSN = str.remove(QRegExp("\\s"));
         // mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
         ret = handleBasicType();
+        mCfg->work_mode = 3;
+        if(ret) emit JudgSig(); //极性测试弹窗///
     }
     else{
         ret = initDev();

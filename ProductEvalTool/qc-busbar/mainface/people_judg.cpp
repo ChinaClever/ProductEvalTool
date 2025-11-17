@@ -40,6 +40,11 @@ void People_judg::initData()
         ui->funcBox_3->hide();
         ui->funcBox_4->hide();
         ui->funcBox_5->hide();
+        ui->funcBox->show();
+
+        ui->lcdBox->show(); ui->keyBox->show();
+        ui->alarmBox->show(); ui->beepBox->show();
+        ui->assemBox_9->show();
         // ui->testBox->show();
         // ui->label_5->show();
     }else if(mItem->modeId == INSERT_BUSBAR && mPro->type == 1) {
@@ -48,11 +53,23 @@ void People_judg::initData()
         ui->funcBox_3->show();
         ui->funcBox_4->show();
         ui->funcBox_5->show();
+        ui->funcBox->show();
+
+        ui->lcdBox->show(); ui->keyBox->show();
+        ui->alarmBox->show(); ui->beepBox->show();
+        ui->assemBox_9->show();
         // ui->testBox->show();
         // ui->label_5->show();
-    } else if(mItem->modeId == INSERT_BUSBAR && mPro->type == 0) {//基本型没有极性检查
+    } else if(mItem->modeId == BASIC_TYPE) {//基本型没有极性检查
         // ui->testBox->hide();
         // ui->label_5->hide();
+        ui->assemBox_10->hide();
+        ui->funcBox_2->hide();
+        ui->funcBox->hide();
+
+        ui->lcdBox->hide(); ui->keyBox->hide();
+        ui->alarmBox->hide(); ui->beepBox->hide();
+        ui->assemBox_9->hide();
     }
 }
 void People_judg::writeData(const QString &str1,const QString &str2, const QString &str3,bool pass)
@@ -131,10 +148,12 @@ void People_judg::on_sureButton_clicked()
     ret = ui->alarmBox->isChecked();
     str1 = ui->alarmBox->text();
     eng1 = tr("Generate an alarm, the buzzer sounds loud and clear");
-    if(ret) {
-        writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
-    }else {
-        writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+    if(mItem->modeId == START_BUSBAR || mItem->modeId == INSERT_BUSBAR){
+        if(ret) {
+            writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
+        }else {
+            writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+        }
     }
 
     str = tr("蜂鸣器开关检查");
@@ -150,7 +169,7 @@ void People_judg::on_sureButton_clicked()
         }
     }
 
-    if(mPro->type == 1 && (mPro->work_mode == 0 || mPro->work_mode == 1))
+    //if(mPro->type == 1 && (mPro->work_mode == 0 || mPro->work_mode == 1))
     {
         str = tr("极性检查"); eng = tr("Polarity check");
         ret = ui->testBox->isChecked();
@@ -378,10 +397,12 @@ void People_judg::on_sureButton_clicked()
     str1 = ui->funcBox->text();
     eng1 = tr("The buttons can be used normally and have a consistent feel");
     ret = ui->funcBox->isChecked();
-    if(ret) {
-        writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
-    }else  {
-        writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+    if(mItem->modeId == START_BUSBAR || mItem->modeId == INSERT_BUSBAR){
+        if(ret) {
+            writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
+        }else  {
+            writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+        }
     }
 
     if(mItem->modeId == START_BUSBAR)
@@ -396,7 +417,7 @@ void People_judg::on_sureButton_clicked()
         }else  {
             writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
         }
-    }else if(mItem->modeId == INSERT_BUSBAR) {
+    }else if(mItem->modeId == START_BUSBAR||mItem->modeId == INSERT_BUSBAR || mItem->modeId == BASIC_TYPE) {
 
         // mPro->sureItem << str4; ePro->sureItem << eng4;
         str = tr("卡爪"); eng = tr("Claw");
@@ -425,10 +446,12 @@ void People_judg::on_sureButton_clicked()
         str1 = ui->funcBox_5->text();
         eng1 = tr("Copper sleeve tin, standard plug can be used normally without any inability to insert, protective cover can automatically rebound");
         ret = ui->funcBox_5->isChecked();
-        if(ret) {
-            writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
-        }else  {
-            writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+        if(mItem->modeId == START_BUSBAR||mItem->modeId == INSERT_BUSBAR){
+            if(ret) {
+                writeData(str1,str2,str,ret); writeData_Eng(eng1,eng2,eng,ret);
+            }else  {
+                writeData(str1,str3,str,ret); writeData_Eng(eng1,eng3,eng,ret);
+            }
         }
     }
 

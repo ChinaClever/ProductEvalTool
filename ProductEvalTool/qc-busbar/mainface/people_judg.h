@@ -21,8 +21,8 @@ private slots:
     void on_sureButton_clicked();
     void timeoutDone();
 protected:
-    void writeData(const QString &str1,const QString &str2,const QString &str3,bool pass);
-    void writeData_Eng(const QString &str1,const QString &str2,const QString &str3,bool pass);
+    void writeData(const QString &str1, const QString &str2, const QString &str3, bool pass);
+    void writeData_Eng(const QString &str1, const QString &str2, const QString &str3, bool pass);
     void initData();
 private:
     Ui::People_judg *ui;

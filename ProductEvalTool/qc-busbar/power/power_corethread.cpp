@@ -1671,7 +1671,10 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
             for(int i = 0; i < 3; i++){
                 int volValue = obj->source_vol[i];
                 int curValue = obj->source_cur[i];
-                if(face != i){
+
+                qDebug()<<i<<" "<<volValue<<' '<<curValue;
+
+                if(id != i){
                     if(volValue == 0){
                         volOk = 0;
                         volStatus[i] = 0;
@@ -1753,9 +1756,15 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
             if(id == 0)name = "A";
             else if(id == 1)name = "B";
             else name = "C";
-            str += tr("断路器检测%1电压电流成功，电流电压为0;").arg(name+QString::number(id + 1));
-            engStr += tr("Check %1 voltage and current Success;voltage and current are zreo").arg(name+QString::number(id + 1));
 
+            if(type == 0){
+                str += tr("线路检测L%1电压电流成功，电流电压为0;").arg(QString::number(id + 1));
+                engStr += tr("Check L%1 voltage and current Success;voltage and current are zreo").arg(QString::number(id + 1));
+            }
+            else if(type == 1){
+                str += tr("断路器检测%1电压电流成功，电流电压为0;").arg(name+QString::number(id + 1));
+                engStr += tr("Check %1 voltage and current Success;voltage and current are zreo").arg(name+QString::number(id + 1));
+            }
 
             if(type == 2){ // 三相线路
                 // L1/L2/L3 对应三相，映射 0->L1, 1->L2, 2->L3
@@ -1787,6 +1796,7 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
             return true;
         }
         flag++;
+        qDebug()<<flag<<' '<<id << ' '<<volOk<< ' '<< curOk;
         if (flag > 50)
         {
             QString str, engStr;
@@ -1889,8 +1899,10 @@ bool Power_CoreThread::breakTest(int idx)
     QString name = idx == 0 ? "A" : (idx == 1 ? "B" : "C");
     str = tr("请手动关闭插接箱断路器%1").arg(name);  //三相回路电流、功率
     emit TipSig(str);
+    msleep(10000);
     ret = BreakVolCurCtrl(obj,id,1,idx);
-    str = tr("请手动打开插接箱断路器%1").arg(name);  //三相回路电流、功率
+    str = tr("请手动恢复插接箱断路器%1").arg(name);  //三相回路电流、功率
+    emit TipSig(str);
     msleep(10000);
     return ret;
 }
@@ -1951,7 +1963,7 @@ bool Power_CoreThread::BreakThreeVolCurCtrl(sObjData *obj,int id)
             mLogs->writeDataEng(engRequest, engStr, engTitle, true);
 
             emit TipSig(tr("电压电流检测成功，请恢复断路器状态，准备下一步测试"));
-            QThread::msleep(2000);
+            QThread::msleep(10000);
             return true;
         }
 
@@ -2000,14 +2012,14 @@ bool Power_CoreThread::ThreeBreakTest(int idx)
     QString str;
     for(int i = 0 ;i < 3; i ++ ){
         int id = idx;// == 1 ? 1 :(idx == 0 ? 2 : 0);
-        str = tr("断开负载输入端L%1，测试中").arg(idx + 1);  //三相回路电流、功率
+        str = tr("断开负载输入端L%1，测试中").arg(i + 1);  //三相回路电流、功率
         emit TipSig(str);
 
         int f = 2 << idx; // 2 4 8
         int arr[3] = {32+64,1+64,1+32};
 
         this->mTrans->sendCtrlGnd(arr[i]+f);
-        ret = BreakVolCurCtrl(obj,id,2,idx);
+        ret = BreakVolCurCtrl(obj,i,2,idx);
 
         if(!ret){
             this->mTrans->sendCtrlGnd(0);
@@ -2094,10 +2106,13 @@ void Power_CoreThread::workDown()
 
     if (mItem->modeId == BASIC_TYPE) {
         mLogs->updatePro(tr("即将开始"));
-        //mSn->createSn();//设置序列号
-        // QString str = mDev->devType.sn;
-        // mPro->moduleSN = str.remove(QRegExp("\\s"));
-        // mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
+        if(mPro->moduleSN.isEmpty()){
+            mSn->createSn();//设置序列号
+             QString str = mDev->devType.sn;
+             mPro->moduleSN = str.remove(QRegExp("\\s"));
+             mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
+        }
+
         ret = handleBasicType();
         mCfg->work_mode = 3;
         if(ret) emit JudgSig(); //极性测试弹窗///

@@ -48,6 +48,7 @@ protected:
     bool VolErrRange();
     bool CurErrRange();
     void InsertErrRange();
+    void TemErrRange();
     void BaseErrRange();
     bool eleErrRange(int i);
     bool eleErrRange0(int i);

@@ -61,7 +61,7 @@ int Sn_DevType::getDevType(const QString &str)
     }
     if(str.contains("IDC-BUSBAR")) {
         if(str.contains("插接箱")) ret = INSERT_BUSBAR;
-        else if(str.contains("温度传感器"))ret = TEMPER_BUSBAR;
+        else if(str.contains("温度传感器"))ret = TEMPERATURE_BUSBAR;
         else if(str.contains("始端箱"))ret = START_BUSBAR;
     }
 

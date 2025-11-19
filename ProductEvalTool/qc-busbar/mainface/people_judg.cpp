@@ -47,7 +47,7 @@ void People_judg::initData()
         ui->assemBox_9->show();
         // ui->testBox->show();
         // ui->label_5->show();
-    }else if(mItem->modeId == INSERT_BUSBAR && mPro->type == 1) {
+    }else if( (mItem->modeId == INSERT_BUSBAR || mItem->modeId == TEMPERATURE_BUSBAR) && mPro->type == 1 ) {
         ui->assemBox_10->hide();
         ui->funcBox_2->hide();
         ui->funcBox_3->show();

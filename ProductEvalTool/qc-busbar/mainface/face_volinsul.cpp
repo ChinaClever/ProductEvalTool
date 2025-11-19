@@ -102,9 +102,9 @@ void Face_Volinsul::resultSlot()
     QString str1 = tr("测试项目数:%1  失败项目数：%2  项目测试通过率：%3%").arg(mItem->progress.allNum).arg(mItem->progress.errNum).arg(ok);
     mPacket->updatePro(str1);
 
-    if(mCfg->modeId == 2 || mCfg->modeId == BASIC_TYPE) //测试
+    if(mCfg->modeId == TEMPER_BUSBAR || mCfg->modeId == BASIC_TYPE) //测试
     {
-        if(mDev->devType.sn.isEmpty() || mCfg->modeId == 2 || mCfg->modeId == BASIC_TYPE) mSn->createSn();//设置序列号
+        if(mDev->devType.sn.isEmpty()) mSn->createSn();//设置序列号
         QString str = mDev->devType.sn;
         mPro->moduleSN = str.remove(QRegExp("\\s"));
         mCfg->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
@@ -112,8 +112,8 @@ void Face_Volinsul::resultSlot()
 
 
 
-    if(mCfg->modeId == 2 && mPro->result != Test_Fail && mItem->work_mode == 0) emit finshSig();
-    if(mCfg->modeId == 2 && mPro->result != Test_Fail && mItem->work_mode == 0){
+    if(mCfg->modeId == TEMPER_BUSBAR && mPro->result != Test_Fail && mItem->work_mode == 0) emit finshSig();
+    if(mCfg->modeId == TEMPER_BUSBAR && mPro->result != Test_Fail && mItem->work_mode == 0){
         while(1)
         {
             mPacket->delay(1);
@@ -155,13 +155,10 @@ void Face_Volinsul::resultSlot()
         res = false; str += tr("失败");
         mPro->uploadPassResult = 0;
     } else {
-        qDebug()<<"mCfg->modeId: "<<mCfg->modeId;
-        qDebug()<<"mPro->word_mode: "<< mPro->work_mode;
-        qDebug()<<"mPro->type: "<<mPro->type;
-        if((mCfg->modeId == 2 && mPro->work_mode == 0))//母线槽与基本型始端箱和插接箱只需安规测试，接地测试成功打印标签
+        if((mCfg->modeId == TEMPER_BUSBAR && mPro->work_mode == 0))//母线槽与基本型始端箱和插接箱只需安规测试，接地测试成功打印标签
         {                                                                           //mPro->type == 0  测试
             QString method; int port = 0; QString ip;
-            if(mCfg->modeId == 2) {method = "Integration/Busbar-Busway/Execute"; port = 81; ip = "127.0.0.1"; }
+            if(mCfg->modeId == TEMPER_BUSBAR) {method = "Integration/Busbar-Busway/Execute"; port = 81; ip = "127.0.0.1"; }
             else { ip = "127.0.0.1"; method = "Integration/Busbar-Product/Execute"; port = 80;}
 
             res = printer(ip, method, port);
@@ -199,14 +196,14 @@ void Face_Volinsul::updateData()
                              + tr("交流耐压测试，分别对以下测试点输入电压 %1V，%2s：").arg(mPro->acwParm.at(2)).arg(mPro->acwParm.at(6))
                                  + tr("1、PE-N/L1/L2/L3，2、N-PE/L1/L2/L3，3、L1-PE，4、L2-PE，5、L3-PE，漏电流≤10mA。");
 
-            if(mCfg->modeId != 2) mPro->itemRequest += tr("检查极性测试模块指示灯显示应正常，火、零、地接线应正确。");
+            if(mCfg->modeId != TEMPER_BUSBAR) mPro->itemRequest += tr("检查极性测试模块指示灯显示应正常，火、零、地接线应正确。");
 
             ePro->itemRequest = tr("Insulation resistance test,input voltage to the following test points respectively %1V，%2s：").arg(mPro->irParm.at(2)).arg(mPro->irParm.at(7))
                              + tr("N-PE/L1/L2/L3,insulation resistance >10MΩ。")
                              + tr("AC withstand voltage test, input voltage to the following test points respectively %1V，%2s：").arg(mPro->acwParm.at(2)).arg(mPro->acwParm.at(6))
                              + tr("1、PE-N/L1/L2/L3,2、N-PE/L1/L2/L3,3、L1-PE,4、L2-PE,5、L3-PE,Leakage current <10mA。");
 
-            if(mCfg->modeId != 2) ePro->itemRequest += tr("Check that the indicator light on the polarity test module should be normal and the live, neutral and ground connections should be correct。");
+            if(mCfg->modeId != TEMPER_BUSBAR) ePro->itemRequest += tr("Check that the indicator light on the polarity test module should be normal and the live, neutral and ground connections should be correct。");
 
          }else {
             mPro->itemRequest = tr("绝缘测试，分别对以下测试点输入电压 500V，5s：")
@@ -214,14 +211,14 @@ void Face_Volinsul::updateData()
                              + tr("交流耐压测试，分别对以下测试点输入电压 3000V，5s：")
                              + tr("1、PE-N/L1/L2/L3，2、N-PE/L1/L2/L3，3、L1-PE，4、L2-PE，5、L3-PE，漏电流≤10mA。");
 
-                            if(mCfg->modeId != 2) mPro->itemRequest += tr("检查极性测试模块指示灯显示应正常，火、零、地接线应正确。");
+                            if(mCfg->modeId != TEMPER_BUSBAR) mPro->itemRequest += tr("检查极性测试模块指示灯显示应正常，火、零、地接线应正确。");
 
             ePro->itemRequest = tr("Insulation resistance test,input voltage to the following test points respectively 500V，5s：")
                              + tr("N-PE/L1/L2/L3,insulation resistance >10MΩ。")
                              + tr("AC withstand voltage test, input voltage to the following test points respectively 3000V，5s：")
                              + tr("1、PE-N/L1/L2/L3,2、N-PE/L1/L2/L3,3、L1-PE,4、L2-PE,5、L3-PE,Leakage current <10mA.");
 
-                            if(mCfg->modeId != 2) ePro->itemRequest += tr("Check that the indicator light on the polarity test module should be normal and the live, neutral and ground connections should be correct。");
+                            if(mCfg->modeId != TEMPER_BUSBAR) ePro->itemRequest += tr("Check that the indicator light on the polarity test module should be normal and the live, neutral and ground connections should be correct。");
          }
     }
 

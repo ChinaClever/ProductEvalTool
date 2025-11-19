@@ -60,10 +60,13 @@ void Json_Pack::head(QJsonObject &obj)
         obj.insert("testItem", step.at(i));
         obj.insert("testProcess" ,mPro->safeData.at(i));
         if(i == 2) {mPro->test_step = "功能测试"; obj.insert("testStep", mPro->test_step);}
-        if(gSmartObj.size() && gSmartObj[0].contains("绝缘测试") && i == 0 && mPro->work_mode == 0) gSmartObj[0] = obj;
-        else if(gSmartObj.size()>=2 && gSmartObj[1].contains("交流耐压测试")&& i == 1 && mPro->work_mode == 0) gSmartObj[1] = obj;
-        else if(gSmartObj.size()>=3 && gSmartObj[2].contains("接地测试")&& i == 0 && mPro->work_mode != 0) gSmartObj[2] = obj;
-        else gSmartObj.push_back(obj);
+        if(mItem->modeId == INSERT_BUSBAR || mItem->modeId == START_BUSBAR ||mItem->modeId == TEMPERATURE_BUSBAR){
+            if(gSmartObj.size() && gSmartObj[0].contains("绝缘测试") && i == 0 && mPro->work_mode == 0) gSmartObj[0] = obj;
+            else if(gSmartObj.size()>=2 && gSmartObj[1].contains("交流耐压测试")&& i == 1 && mPro->work_mode == 0) gSmartObj[1] = obj;
+            else if(gSmartObj.size()>=3 && gSmartObj[2].contains("接地测试")&& i == 0 && mPro->work_mode != 0) gSmartObj[2] = obj;
+            else gSmartObj.push_back(obj);
+
+        }
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 
@@ -135,10 +138,13 @@ void Json_Pack::head_English(QJsonObject &obj)
         obj.insert("testProcess" ,ePro->safeData.at(i));
         obj.insert("testResult" ,QString::number(ePro->safe_result.at(i)));
         if(i == 2) {ePro->test_step = "Functional testing"; obj.insert("testStep", ePro->test_step);}
-        if(gSmartObjEng.size() && gSmartObjEng[0].contains("Insulation test") && i == 0 && mPro->work_mode == 0) gSmartObjEng[0] = obj;
-        else if(gSmartObjEng.size()>=2 && gSmartObjEng[1].contains("Communication voltage withstand test") && i == 1 && mPro->work_mode == 0) gSmartObjEng[1] = obj;
-        else if(gSmartObjEng.size()>=3 && gSmartObjEng[2].contains("Grounding test")&& i == 0 && mPro->work_mode != 0) gSmartObjEng[2] = obj;
-        else gSmartObjEng.push_back(obj);
+
+        if(mItem->modeId == INSERT_BUSBAR || mItem->modeId == START_BUSBAR ||mItem->modeId == TEMPERATURE_BUSBAR){
+            if(gSmartObjEng.size() && gSmartObjEng[0].contains("Insulation test") && i == 0 && mPro->work_mode == 0) gSmartObjEng[0] = obj;
+            else if(gSmartObjEng.size()>=2 && gSmartObjEng[1].contains("Communication voltage withstand test") && i == 1 && mPro->work_mode == 0) gSmartObjEng[1] = obj;
+            else if(gSmartObjEng.size()>=3 && gSmartObjEng[2].contains("Grounding test")&& i == 0 && mPro->work_mode != 0) gSmartObjEng[2] = obj;
+            else gSmartObjEng.push_back(obj);
+        }
         stephttp_post("admin-api/bus/testData",mPro->Service,obj);
     }
 
@@ -157,7 +163,7 @@ void Json_Pack::SendJson_Safe()
     sDataPacket::bulid()->delayMs(5);
     head_English(json);
 
-    if(mItem->modeId == 2)
+    if(mItem->modeId == TEMPER_BUSBAR)
     {
         //json.empty();
         sDataPacket::bulid()->delayMs(3);
@@ -392,11 +398,11 @@ void Json_Pack::FuncData(int num,int send)
     obj.insert("testProcess" ,mPro->itemData.at(num));
     obj.insert("testResult" ,mPro->stepResult.at(num));
     obj.insert("testRequest" ,mPro->stepRequest.at(num));
-    if(mItem->modeId == INSERT_BUSBAR){
+    if(mItem->modeId == INSERT_BUSBAR || mItem->modeId == TEMPERATURE_BUSBAR){
         if(send == 1){
             stephttp_post("admin-api/bus/testData",mPro->Service,obj);
             mObjFlag++;
-            if(mObjFlag == 2){
+            if(mObjFlag == 1){
                 sDataPacket::bulid()->delay(20);
                 if(!mObj.isEmpty()){
                     mObj.insert("moduleSn", mPro->moduleSN);
@@ -480,11 +486,11 @@ void Json_Pack::FuncData_Lan(int num,int send)
     obj.insert("testProcess" ,ePro->itemData.at(num));
     obj.insert("testResult" ,ePro->stepResult.at(num));
     obj.insert("testRequest" ,ePro->stepRequest.at(num));
-    if(mItem->modeId == INSERT_BUSBAR){
+    if(mItem->modeId == INSERT_BUSBAR || mItem->modeId == TEMPERATURE_BUSBAR){
         if(send == 1) {
             stephttp_post("admin-api/bus/testData",mPro->Service,obj);
             mObj_enFlag++;
-            if(mObj_enFlag == 2){
+            if(mObj_enFlag == 1){
                 sDataPacket::bulid()->delay(20);
                 if(!mObj_en.isEmpty()){
                     mObj_en.insert("moduleSn", ePro->moduleSN);

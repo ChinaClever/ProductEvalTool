@@ -208,7 +208,7 @@ bool Power_DevRead::readDevData()
     switch (mItem->modeId) {
     case START_BUSBAR:  mRtu = mIpSnmp; break;
     case INSERT_BUSBAR:  mRtu = mSiRtu; break;
-    case TEMPER_BUSBAR:  mRtu = mSiRtu; break;
+    case TEMPERATURE_BUSBAR:  mRtu = mSiRtu; break;
     default: ret = false; break;
     }
     ret = mRtu->readPduData();

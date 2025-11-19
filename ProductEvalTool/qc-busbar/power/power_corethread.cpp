@@ -1702,6 +1702,55 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
             }
         }
 
+        QString title;// = tr("回路%1电压电流检测").arg(name+QString::number(id + 1));
+        QString engTitle = tr("Loop %1 Voltage Current Check").arg(QString::number(id + 1));
+
+        QString request = tr("回路%1电压电流为零").arg(QString::number(id + 1));
+        QString engRequest = tr("Loop %1 Voltage and Current are zero").arg(QString::number(id + 1));
+        if(type == 0){
+
+            title = tr("线路L%1检查").arg(id + 1);
+            engTitle = tr("Line L%1 Check").arg(id + 1);
+
+            request = tr("接口%1 回路%2电压电流为零，L%3电压电流为零正常")
+                          .arg(face + 1)
+                          .arg(id + 1)
+                          .arg(id + 1);
+            engRequest = tr("Interface%1 Loop L%2 Voltage and Current should be Zero, L%3 Voltage and Current should be Zero")
+                             .arg(face + 1)
+                             .arg(id + 1)
+                             .arg(id + 1);
+        }
+        else if(type == 1){
+
+            title = tr("断路器L%1检查").arg(id + 1);
+            engTitle = tr("Breaker L%1 Check").arg(id + 1);
+            request = tr("接口%1 回路%2电压电流为零")
+                          .arg(face + 1)
+                          .arg(id + 1);
+            engRequest = tr("Interface%1 Loop L%2 Voltage and Current should be Zero")
+                             .arg(face + 1)
+                             .arg(id + 1);
+        }
+        else if(type == 2){
+            int phases[3][2] = {{2,3}, {3,1}, {1,2}};
+            QString request = tr("三相线路要求：L%1电压电流为零，L%2、L%3电压电流不为零（接口%4）")
+                                  .arg(id+1)
+                                  .arg(phases[id][0])
+                                  .arg(phases[id][1])
+                                  .arg(face+1);
+
+            QString engRequest = tr("Three-phase line requirement: L%1 voltage and current should be zero, L%2 and L%3 voltage and current should be non-zero (Interface%4)")
+                                     .arg(id+1)
+                                     .arg(phases[id][0])
+                                     .arg(phases[id][1])
+                                     .arg(face+1);
+
+
+            title = tr("线路三相检查");
+            engTitle = tr("Three-phase Line Check");
+        }
+
         if (volOk && curOk)
         {
             QString str, engStr;
@@ -1710,41 +1759,15 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
                 if(id == 0)name = "A";
                 else if(id == 1)name = "B";
                 else name = "C";
-                str += tr("断路器检测%1电压电流成功，电流电压为0;").arg(name+QString::number(id + 1));
-                engStr += tr("Check %1 voltage and current Success;voltage and current are zreo").arg(name+QString::number(id + 1));
-
-
-                QString title;// = tr("回路%1电压电流检测").arg(name+QString::number(id + 1));
-                QString engTitle = tr("Loop %1 Voltage Current Check").arg(QString::number(id + 1));
-
-                QString request = tr("回路%1电压电流为零").arg(QString::number(id + 1));
-                QString engRequest = tr("Loop %1 Voltage and Current are zero").arg(QString::number(id + 1));
-
-                if (type == 0) {
-                    title = tr("线路L%1检查").arg(id + 1);
-                    engTitle = tr("Line L%1 Check").arg(id + 1);
-
-                    request = tr("接口%1 回路%2电压电流为零，L%3电压电流为零正常")
-                                  .arg(face + 1)
-                                  .arg(id + 1)
-                                  .arg(id + 1);
-                    engRequest = tr("Interface%1 Loop L%2 Voltage and Current should be Zero, L%3 Voltage and Current should be Zero")
-                                     .arg(face + 1)
-                                     .arg(id + 1)
-                                     .arg(id + 1);
+                if(type == 0){
+                    str += tr("线路检测L%1电压电流成功，电流电压为0;").arg(QString::number(id + 1));
+                    engStr += tr("Check L%1 voltage and current Success;voltage and current are zreo").arg(QString::number(id + 1));
                 }
-                else if (type == 1) {
-                    title = tr("断路器L%1检查").arg(id + 1);
-                    engTitle = tr("Breaker L%1 Check").arg(id + 1);
-
-                    request = tr("接口%1 回路%2电压电流为零")
-                                  .arg(face + 1)
-                                  .arg(id + 1);
-                    engRequest = tr("Interface%1 Loop L%2 Voltage and Current should be Zero")
-                                     .arg(face + 1)
-                                     .arg(id + 1);
+                else if(type == 1){
+                    str += tr("断路器检测%1电压电流成功，电流电压为0;").arg(name+QString::number(id + 1));
+                    engStr += tr("Check %1 voltage and current Success;voltage and current are zreo").arg(name+QString::number(id + 1));
                 }
-                else if(type == 2){ // 三相线路
+                if(type == 2){ // 三相线路
                     // L1/L2/L3 对应三相，映射 0->L3, 1->L2, 2->L1
                     QString phaseNames[3] = {"L3", "L2", "L1"};
                     QString okPhases, okPhasesEng;
@@ -1762,10 +1785,6 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
                     str += tr("线路三相检测成功，%1 电压电流正常。").arg(okPhases);
                     engStr += tr("Three-phase line check Success; Voltage and Current normal in %1.").arg(okPhasesEng);
 
-                    title = tr("线路三相检查");
-                    engTitle = tr("Three-phase Line Check");
-                    request = tr("三相电压电流正常：%1").arg(okPhases);
-                    engRequest = tr("Three-phase Voltage and Current are normal: %1").arg(okPhasesEng);
                 }
 
 
@@ -1797,14 +1816,6 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
                               .arg(cur, 0, 'f', 2);
                 mLogs->updatePro(str, false);
 
-
-
-                QString title = tr("回路%1电压电流检测").arg(name+QString::number(id + 1));
-                QString engTitle = tr("Loop %1 Voltage Current Check").arg(name+QString::number(id + 1));
-                QString request = tr("回路%1电压电流为零").arg(name+QString::number(id + 1));
-                QString engRequest = tr("Loop %1 Voltage and Current are zero").arg(name+QString::number(id + 1));
-
-
                 if(type == 0){
                     title = tr("线路L%1检查").arg(id + 1);
                     engTitle = tr("Line L%1 Check").arg(id + 1);
@@ -1828,21 +1839,8 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
 
                 }
                 else if(type == 1){
-                    title = tr("断路器L%1检查").arg(id + 1);
-                    engTitle = tr("Breaker L%1 Check").arg(id + 1);
-
-                    request = tr("回路%1电压电流为零").arg(QString::number(id + 1));
-
                     str += tr("，检测 断路器%1电压电流失败").arg(name+QString::number(id + 1));
-                    // str += tr("%1 电压: %2V, 电流: %3A; ")
-                    //            .arg(name+QString::number(id + 1))
-                    //            .arg(vol, 0, 'f', 2)
-                    //            .arg(cur, 0, 'f', 2);
                     engStr += tr("，Check Breaker %1 Failed").arg(name+QString::number(id + 1));
-                    // engStr += tr("%1 voltage: %2V, current: %3A; ")
-                    //               .arg(name+QString::number(id + 1))
-                    //               .arg(vol, 0, 'f', 2)
-                    //               .arg(cur, 0, 'f', 2);
                     mLogs->updatePro(str, false);
                 }
                 else if(type == 2){ // 三相线路失败
@@ -1876,18 +1874,8 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
 
                     str += tr("，线路三相检测标准：%1").arg(standardPhases);
                     engStr += tr(", Three-phase line standard: %1").arg(standardPhasesEng);
-
-                    title = tr("线路三相检查标准");
-                    engTitle = tr("Three-phase Line Check Standard");
-
-                    request = tr("请确保各相达到标准值：%1").arg(standardPhases);
-                    engRequest = tr("Please ensure each phase meets the standard: %1").arg(standardPhasesEng);
-
                     mLogs->updatePro(str, false);
                 }
-
-
-
                 //mLogs->updatePro(tr("电压电流检测失败，超过最大重试次数"), false);
                 mLogs->writeData(request, str, title , false);
                 mLogs->writeDataEng(engRequest, engStr, engTitle , false);
@@ -1921,6 +1909,24 @@ bool Power_CoreThread::BreakThreeVolCurCtrl(sObjData *obj,int id)
 {
     bool ret = true;
     int flag = 0;
+
+    QString name = "";
+    if (id == 0) name = "A";
+    else if (id == 1) name = "B";
+    else name = "C";
+    QString title = tr("接口%1 回路%2电压电流检测")
+                        .arg(id + 1)
+                        .arg(name + QString::number(id + 1));
+    QString engTitle = tr("Interface%1 Loop %2 Voltage Current Check")
+                           .arg(id + 1)
+                           .arg(name + QString::number(id + 1));
+
+    QString request = tr("接口%1 回路%2电压电流为零")
+                          .arg(id + 1)
+                          .arg(name + QString::number(id + 1));
+    QString engRequest = tr("Interface%1 Loop %2 Voltage and Current are zero")
+                             .arg(id + 1)
+                             .arg(name + QString::number(id + 1));
     while (1)
     {
         ret = mRead->readDevBasicType(); // 读取电压电流填充 obj
@@ -1951,21 +1957,6 @@ bool Power_CoreThread::BreakThreeVolCurCtrl(sObjData *obj,int id)
             engStr += tr("Interface%1 Check %2 voltage and current Success; voltage and current are zero")
                           .arg(id + 1)
                           .arg(name + QString::number(id + 1));
-
-            QString title = tr("接口%1 回路%2电压电流检测")
-                                .arg(id + 1)
-                                .arg(name + QString::number(id + 1));
-            QString engTitle = tr("Interface%1 Loop %2 Voltage Current Check")
-                                   .arg(id + 1)
-                                   .arg(name + QString::number(id + 1));
-
-            QString request = tr("接口%1 回路%2电压电流为零")
-                                  .arg(id + 1)
-                                  .arg(name + QString::number(id + 1));
-            QString engRequest = tr("Interface%1 Loop %2 Voltage and Current are zero")
-                                     .arg(id + 1)
-                                     .arg(name + QString::number(id + 1));
-
             mLogs->updatePro(str, true);
             mLogs->writeData(request, str, title, true);
             mLogs->writeDataEng(engRequest, engStr, engTitle, true);
@@ -2001,20 +1992,6 @@ bool Power_CoreThread::BreakThreeVolCurCtrl(sObjData *obj,int id)
                           .arg(cur, 0, 'f', 2);
 
             mLogs->updatePro(str, false);
-
-            QString title = tr("接口%1 回路%2电压电流检测")
-                                .arg(id + 1)
-                                .arg(name + QString::number(id + 1));
-            QString engTitle = tr("Interface%1 Loop %2 Voltage Current Check")
-                                   .arg(id + 1)
-                                   .arg(name + QString::number(id + 1));
-
-            QString request = tr("接口%1 回路%2电压电流为零")
-                                  .arg(id + 1)
-                                  .arg(name + QString::number(id + 1));
-            QString engRequest = tr("Interface%1 Loop %2 Voltage and Current are zero")
-                                     .arg(id + 1)
-                                     .arg(name + QString::number(id + 1));
 
             mLogs->updatePro(tr("电压电流检测失败，超过最大重试次数"), false);
             mLogs->writeData(request, str, title, false);
@@ -2140,10 +2117,12 @@ void Power_CoreThread::workDown()
 
     if(mItem->modeId == BASIC_TYPE){
         mLogs->updatePro(tr("即将开始"));
-        // mSn->createSn();//设置序列号
-        // QString str = mDev->devType.sn;
-        // mPro->moduleSN = str.remove(QRegExp("\\s"));
-        // mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
+        if(mPro->moduleSN.isEmpty()){
+            mSn->createSn();//设置序列号
+            QString str = mDev->devType.sn;
+            mPro->moduleSN = str.remove(QRegExp("\\s"));
+            mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
+        }
         ret = handleBasicType();
     }
     else{

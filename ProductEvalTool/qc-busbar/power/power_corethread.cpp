@@ -1159,10 +1159,6 @@ void Power_CoreThread::workResult(bool)
         else{
             res = true;
             //res = printer();
-            ePro->moduleSN.clear();
-            mPro->moduleSN.clear();
-            mDev->devType.sn.clear();
-            mItem->moduleSn.clear();
         }
 
         if(res)
@@ -1202,6 +1198,14 @@ void Power_CoreThread::workResult(bool)
 
     mCfg->work_mode = 2; emit finshSig(res);
     mPro->step = Test_Over;
+    if(mPro->result != Test_Fail) {
+        if(mItem->modeId == BASIC_TYPE){
+            ePro->moduleSN.clear();
+            mPro->moduleSN.clear();
+            mDev->devType.sn.clear();
+            mItem->moduleSn.clear();
+        }
+    }
 }
 
 QString Power_CoreThread::trans(int index)

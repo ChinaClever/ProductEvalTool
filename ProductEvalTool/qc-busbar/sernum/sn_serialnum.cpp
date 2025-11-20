@@ -127,7 +127,7 @@ void Sn_SerialNum::createSn(sSnItem &it)
     it.date[k++] = date.year() % 100;
     it.date[k++] = date.month();
     it.date[k++] = date.day();
-
+    Cfg::bulid()->initCurrentNum();
     it.num = ++(mItem->currentNum);
     it.pc = mItem->pcNum;
 }
@@ -174,7 +174,7 @@ void Sn_SerialNum::writeStatus(bool ret)
     }
     str += mSnItem.sn;
 
-    // mPacket->updatePro(str, ret);
+    mPacket->updatePro(str, ret);
 }
 
 void Sn_SerialNum::createSn()

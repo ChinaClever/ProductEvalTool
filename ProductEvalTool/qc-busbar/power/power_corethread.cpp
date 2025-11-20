@@ -1157,8 +1157,12 @@ void Power_CoreThread::workResult(bool)
             res = printer();
         }
         else{
-            res = printer();
-            qDebug()<<"res :::: "<<res;
+            res = true;
+            //res = printer();
+            ePro->moduleSN.clear();
+            mPro->moduleSN.clear();
+            mDev->devType.sn.clear();
+            mItem->moduleSn.clear();
         }
 
         if(res)
@@ -2148,7 +2152,7 @@ void Power_CoreThread::workDown()
     if (mItem->modeId == BASIC_TYPE) {
         mLogs->updatePro(tr("即将开始"));
         if(mPro->moduleSN.isEmpty()){
-            mSn->createSn();//设置序列号
+             mSn->createSn();//设置序列号
              QString str = mDev->devType.sn;
              mPro->moduleSN = str.remove(QRegExp("\\s"));
              mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();

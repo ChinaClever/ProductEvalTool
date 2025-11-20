@@ -258,6 +258,7 @@ public:
     void setAddr(int addr);
     void writeQRcode();
     void readQRcode();
+    void initCurrentNum();
 
     void setCurrentNum();
     void write(const QString &key, const QVariant& v, const QString &g="Cfg");
@@ -269,7 +270,7 @@ protected:
     void initCfgDev();
     bool getDate();
     void setDate();
-    void initCurrentNum();
+
 
     void initSiData(const QString &g);
     void initIpData(const QString &g);

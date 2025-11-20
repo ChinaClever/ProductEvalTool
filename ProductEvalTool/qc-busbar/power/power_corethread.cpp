@@ -628,8 +628,8 @@ bool Power_CoreThread::VolCurCtrlSigle(sObjData *obj,int id)
     else if(id == 1)name = "B1";
     else name = "C1";
 
-    QString title = tr("回路电压电流检测");
-    QString engTitle = tr("Loop Voltage Current Check");
+    QString title = tr("回路%1电压电流检测").arg(name);
+    QString engTitle = tr("Loop %1 Voltage Current Check").arg(name);
 
     QString request = tr("回路%1电压电流大于零").arg(name);
     QString engRequest = tr("Loop %1 Voltage and Current are greater than zero").arg(name);

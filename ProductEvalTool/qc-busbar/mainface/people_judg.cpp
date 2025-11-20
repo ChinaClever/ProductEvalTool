@@ -114,7 +114,7 @@ void People_judg::on_sureButton_clicked()
     // mPro->itemData.clear(); ePro->itemData.clear();
 
     mPacket->delayMs(10);
-    this->close(); mPro->issure = 1;
+    this->close();
     QString str2 = tr("符合要求"); QString eng2 = tr("Meet a requirement");
     QString str3 = tr("不符合要求"); QString eng3 = tr("Not Satisfiable");
     mPro->test_step = "功能测试"; ePro->test_step = "Functional testing";
@@ -454,7 +454,7 @@ void People_judg::on_sureButton_clicked()
             }
         }
     }
-
+    mPro->issure = 1;
 
 
 }

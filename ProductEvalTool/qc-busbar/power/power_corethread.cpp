@@ -1204,12 +1204,12 @@ void Power_CoreThread::workResult(bool)
             mPro->moduleSN.clear();
             mDev->devType.sn.clear();
             mItem->moduleSn.clear();
-            mPro->stepResult.clear();
-            mPro->stepRequest.clear();
-            mPro->itemData.clear();
-            mPro->test_function.clear();
         }
     }
+    mPro->stepResult.clear();
+    mPro->stepRequest.clear();
+    mPro->itemData.clear();
+    mPro->test_function.clear();
 }
 
 QString Power_CoreThread::trans(int index)

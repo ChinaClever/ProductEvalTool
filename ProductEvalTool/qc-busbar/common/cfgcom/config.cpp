@@ -108,6 +108,7 @@ void Cfg::initCfgDev()
     item->si.version = read("si_version", 100, g).toInt();
     item->si.itemType = read("si_itemType", 0, g).toInt();
     item->si.si_testItem = read("si_testitem", 0, g).toInt();
+    item->si.si_cur_spec = read("si_curspec",0,g).toInt();
     initSiData(g);
 
     QString q = "BusbarStartCfg";
@@ -184,6 +185,7 @@ void Cfg::writeCfgDev()
     write("si_version", item->si.version, q);
     write("si_itemType", item->si.itemType, q);
     write("si_testitem", item->si.si_testItem, q);
+    write("si_curspec", item->si.si_cur_spec, q);
     writeSiData(q);
 }
 

@@ -150,6 +150,7 @@ struct sSiCfg {
     uint rate;
     uchar itemType;
     uchar si_testItem;
+    uchar si_cur_spec;
 };
 
 struct sCfgDev {

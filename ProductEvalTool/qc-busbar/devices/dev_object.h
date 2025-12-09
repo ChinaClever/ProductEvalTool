@@ -51,7 +51,7 @@ struct RtuUintUnit {
 
 struct RtuRecvLine {
     RtuUshortUnit vol; // 电压
-    RtuCurUintUnit cur; // 电流
+    RtuUintUnit cur; // 电流
     RtuUshortUnit lineVol; // 线电压
     RtuUintUnit pow; //有功功率
     uint apPow; // 视在功率
@@ -96,6 +96,9 @@ struct Rtu_recv {
     uchar reState;// 剩余电流检测模块选配情况
     uchar boxType;//插接箱 ： 0  温控 ：1
     uchar phaseFlag;//  0 ：单相  1 ：三相
+    uchar plug_cur_spec;// 插接箱电流规格
+    uchar backup_breaker;// 插接箱备用断路器
+
     RtuRecvLine data[RTU_LOOP_NUM];
     RtuRecvEnv  env[RTU_TH_NUM];
     RtuUintUnit totalPow; //总有功功率

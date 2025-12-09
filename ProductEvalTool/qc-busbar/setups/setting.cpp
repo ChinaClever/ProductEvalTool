@@ -59,6 +59,7 @@ void Setting::initType()
     ui->iOFBox_2->setCurrentIndex(dv->si_iOF);
     ui->outputBox->setCurrentIndex(dv->si_phaseflag);
     ui->testItemBox->setCurrentIndex(dv->si_testItem);
+    ui->curSpecBox->setCurrentIndex(dv->si_cur_spec);
     uchar loop = 0;
     if(dv->loopNum == 3)
         loop = 0;
@@ -133,6 +134,7 @@ void Setting::updateType()
 
     dv->itemType = ui->itemBox->currentIndex();
     dv->si_testItem = ui->testItemBox->currentIndex();
+    dv->si_cur_spec = ui->curSpecBox->currentIndex();
 }
 
 bool Setting::dataSave()

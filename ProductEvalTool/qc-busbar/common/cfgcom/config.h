@@ -135,6 +135,7 @@ struct sSiCfg {
     ushort si_version;
     ushort si_phaseflag;
     uchar loopNum;
+    uchar si_cur_spec;
     //四个温度
     double temMax[4];
     double temMin[4];

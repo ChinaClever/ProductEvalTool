@@ -35,7 +35,7 @@ bool Power_CoreThread::initDev()
 {
     mLogs->updatePro(tr("即将开始"));
     bool ret  = true;
-    if(mItem->modeId == INSERT_BUSBAR){
+     if(mItem->modeId == INSERT_BUSBAR || mItem->modeId == TEMPERATURE_BUSBAR){
 
         QString str = tr("开始测试插接箱串口通讯");           //自动分配地址
         emit TipSig(str); sleep(2);
@@ -469,6 +469,47 @@ bool Power_CoreThread::curAlarmErr(int i)
     return mLogs->updatePro(str, ret);
 }
 
+void Power_CoreThread::TemErrRange()
+{
+    bool ret = false;
+
+    //emit ImageSig(4);
+    ret = mRead->readData();
+    sBoxData *b = &(mBusData->box[mItem->addr - 1]);    //比较基本配置信息
+
+    ret = false;
+    int curValue = b->buzzerStatus;
+    int expect = mItem->si.si_buzzer;
+    if(curValue == expect) ret = true;
+    QString str = tr("插接箱蜂鸣器实际值：%1 , 期待值：%2").arg(curValue?tr("关闭"):tr("开启")).arg(expect?tr("关闭"):tr("开启"));
+    mLogs->updatePro(str,ret);ret = false;
+
+    curValue = b->alarmTime;
+    mItem->si.si_filter = curValue;
+    if(curValue >= 5) ret = true;
+    str = tr("插接箱过滤次数实际值：%1").arg(curValue);
+    if(ret) str += tr("成功");
+    else str += tr("失败，实际值小于5");
+    mLogs->updatePro(str,ret);
+    ret = false;
+
+    QString str1 = tr("依据产品规格书核对产品的软件烧录版本");  QString str3 = tr("软件版本");
+    QString eng1 = tr("Verify the software burning version of the product according to the product specification sheet");
+    QString eng3 = tr("Software version");
+    curValue = b->version;
+    expect = mItem->si.version;
+    if(curValue == expect) ret = true;
+    QString curVer = QString::number(curValue/100)+"."+QString::number(curValue/10%10)+"."+QString::number(curValue%10);
+    QString expectVer = QString::number(expect/100)+"."+QString::number(expect/10%10)+"."+QString::number(expect%10);
+    str = tr("版本信息实际值：%1 , 期待值：%2").arg(curVer).arg(expectVer);
+    QString eng2 = tr("Version information actual value:%1, expected value:%2").arg(curVer).arg(expectVer);
+
+    mLogs->updatePro(str,ret);
+    mLogs->writeData(str1, str ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
+
+
+}
+
 void Power_CoreThread::InsertErrRange()
 {
     bool ret = false;
@@ -713,7 +754,11 @@ void Power_CoreThread::BaseErrRange()   //比较基本配置信息
 {
     if(mItem->modeId == START_BUSBAR) {
         StartErrRange();
-    }else {
+    }
+    else if(mItem->modeId == TEMPERATURE_BUSBAR){
+        TemErrRange();
+    }
+    else {
         InsertErrRange();
     }
 }
@@ -2179,15 +2224,18 @@ void Power_CoreThread::workDown()
             if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(),"0");
             else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
 
-            if(ret) ret = BreakerTest();                            //断路器测试
-            if(ret) ret = stepVolTest();                            //电压测试
+            if(mItem->modeId != TEMPERATURE_BUSBAR){
+                if(ret) ret = BreakerTest();                            //断路器测试
+                if(ret) ret = stepVolTest();                            //电压测试
 
-            // if(ret) ret = mSource->read();
-            // else mPro->result = Test_Fail;
-            // if(ret) ret = checkLoadErrRange();
+                // if(ret) ret = mSource->read();
+                // else mPro->result = Test_Fail;
+                // if(ret) ret = checkLoadErrRange();
 
-            if(ret) ret = stepLoadTest();               //电流测试
-            if(ret) ret = factorySet(); sleep(2);                      //清除电能
+                if(ret) ret = stepLoadTest();               //电流测试
+                if(ret) ret = factorySet(); sleep(2);                      //清除电能
+
+            }
 
             QString str = tr("请将电源输出端L1、L2、L3关闭");
             emit TipSig(str); emit ImageSig(2);
@@ -2203,6 +2251,7 @@ void Power_CoreThread::workDown()
                 int temp = mItem->si.si_filter;
                 Ctrl_SiRtu::bulid()->setBusbarInsertFilter(temp); //设置滤波
             }
+
         }
 
     }

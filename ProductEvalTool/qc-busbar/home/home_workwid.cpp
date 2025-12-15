@@ -268,7 +268,7 @@ void Home_WorkWid::updateWid()
     mCfgm->user = mPro->order_id;
 
     mCfgm->pn = ui->codeEit->text();//订单号+成品代码
-    if(mCfgm->modeId != 2){
+    if(mCfgm->modeId != TEMPER_BUSBAR){
         if(mPro->product_sn.mid(3,1) != 'B' && mCfgm->moduleType == 0) mPro->type = 1;//判断是智能型还是基本型
         else mPro->type = 0;
     }else {mPro->type = 2;}
@@ -297,20 +297,24 @@ void Home_WorkWid::updateWid()
     mPro->online = mCfgm->online;
 
     switch (ui->comBox->currentIndex()) {
-    case 0: {
+    case START_BUSBAR: {
         mPro->dev_name = tr("始端箱"); ePro->dev_name = tr("Busbar feeder box");
         break;
     }
-    case 1: {
+    case INSERT_BUSBAR: {
         mPro->dev_name = tr("插接箱"); ePro->dev_name = tr("Busbar tap-off box");
         break;
     }
-    case 2: {
+    case TEMPER_BUSBAR: {
         mPro->dev_name = tr("母线槽"); ePro->dev_name = tr("Busway");
         break;
     }
-    case 3: {
+    case BASIC_TYPE: {
         mPro->dev_name = tr("基本型"); ePro->dev_name = tr("Basic type");
+        break;
+    }
+    case TEMPERATURE_BUSBAR:{
+        mPro->dev_name = tr("温度模块"); ePro->dev_name = tr("Temperature module");
         break;
     }
     default:

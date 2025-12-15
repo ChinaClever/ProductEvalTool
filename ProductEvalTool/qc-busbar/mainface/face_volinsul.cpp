@@ -105,7 +105,7 @@ void Face_Volinsul::resultSlot()
     // mPro->moduleSN = str.remove(QRegExp("\\s"));
     // mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
 
-    if(mCfg->modeId == 2 || mCfg->modeId == BASIC_TYPE)
+    if(mCfg->modeId == TEMPER_BUSBAR  || mCfg->modeId == BASIC_TYPE)
     {
         if(mDev->devType.sn.isEmpty()) mSn->createSn();//设置序列号
         QString str = mDev->devType.sn;
@@ -115,8 +115,8 @@ void Face_Volinsul::resultSlot()
 
 
 
-    if(mCfg->modeId == 2 && mPro->result != Test_Fail && mItem->work_mode == 0) emit finshSig();
-    if(mCfg->modeId == 2 && mPro->result != Test_Fail && mItem->work_mode == 0){
+    if(mCfg->modeId == TEMPER_BUSBAR  && mPro->result != Test_Fail && mItem->work_mode == 0) emit finshSig();
+    if(mCfg->modeId == TEMPER_BUSBAR  && mPro->result != Test_Fail && mItem->work_mode == 0){
         while(1)
         {
             mPacket->delay(1);
@@ -158,10 +158,10 @@ void Face_Volinsul::resultSlot()
         res = false; str += tr("失败");
         mPro->uploadPassResult = 0;
     } else {
-        if(mCfg->modeId == 2 && mPro->work_mode == 0)//母线槽与基本型始端箱和插接箱只需安规测试，接地测试成功打印标签
+        if((mCfg->modeId == TEMPER_BUSBAR && mPro->work_mode == 0))//母线槽与基本型始端箱和插接箱只需安规测试，接地测试成功打印标签
         {
             QString method; int port = 0; QString ip;
-            if(mCfg->modeId == 2) {method = "Integration/Busbar-Busway/Execute"; port = 81; ip = "127.0.0.1"; }
+            if(mCfg->modeId == TEMPER_BUSBAR) {method = "Integration/Busbar-Busway/Execute"; port = 81; ip = "127.0.0.1"; }
             else { ip = "127.0.0.1"; method = "Integration/Busbar-Product/Execute"; port = 80;}
 
             res = printer(ip, method, port);

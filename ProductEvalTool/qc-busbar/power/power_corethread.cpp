@@ -949,10 +949,7 @@ void Power_CoreThread::workResult(bool)
     bool res = false;
     QString str = tr("测试结果 ");
     if(mPro->result != Test_Fail) {
-        if(mItem->modeId != BASIC_TYPE){res = printer();}
-        else{ //基本型创建序列号，打印标签
-            res = printer();
-        }
+        res = printer();
         if(res)
             str += tr("通过");
         else

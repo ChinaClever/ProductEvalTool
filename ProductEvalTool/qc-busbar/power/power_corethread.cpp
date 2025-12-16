@@ -1208,6 +1208,7 @@ void Power_CoreThread::workResult(bool)
     mPro->work_mode = 3;
     mLogs->saveLogs();
 
+    sleep(5);
     mCfg->work_mode = 2; emit finshSig(res);
     mPro->step = Test_Over;
     if(mPro->result != Test_Fail) {

@@ -2218,10 +2218,10 @@ void Power_CoreThread::workDown()
             BaseErrRange();                                 //检查IN OUT口 网口对比始端箱/插接箱基本信息
             EnvErrRange();                                  //温度模块检测
 
-            if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(),"0");
-            else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
-
             if(mItem->modeId != TEMPERATURE_BUSBAR){
+                if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(),"0");
+                else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
+
                 if(ret) ret = BreakerTest();                            //断路器测试
                 if(ret) ret = stepVolTest();                            //电压测试
 
@@ -2240,17 +2240,17 @@ void Power_CoreThread::workDown()
             mCfg->work_mode = 3;
             if(ret) emit JudgSig(); //极性测试弹窗
 
-            if(mItem->modeId == START_BUSBAR)
-            {
-                int temp = mItem->ip.ip_filter;
-                mRead->SetInfo(mRead->getFilterOid(),QString::number(temp));
-            }else {
-                int temp = mItem->si.si_filter;
-                Ctrl_SiRtu::bulid()->setBusbarInsertFilter(temp); //设置滤波
+            if(mItem->modeId != TEMPERATURE_BUSBAR){
+                if(mItem->modeId == START_BUSBAR)
+                {
+                    int temp = mItem->ip.ip_filter;
+                    mRead->SetInfo(mRead->getFilterOid(),QString::number(temp));
+                }else {
+                    int temp = mItem->si.si_filter;
+                    Ctrl_SiRtu::bulid()->setBusbarInsertFilter(temp); //设置滤波
+                }
             }
-
         }
-
     }
 
     if(!ret) mPro->result = Test_Fail;

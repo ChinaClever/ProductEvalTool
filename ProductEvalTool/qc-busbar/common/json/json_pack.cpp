@@ -407,7 +407,7 @@ void Json_Pack::FuncData(int num, int send)
         if(send == 1){
             stephttp_post("admin-api/bus/testData",mPro->Service,obj);
             mObjFlag++;
-            if(mObjFlag == 1){
+            if(mObjFlag == 2){
                 sDataPacket::bulid()->delay(20);
                 if(!mObj.isEmpty()){
                     mObj.insert("moduleSn", mPro->moduleSN);
@@ -496,7 +496,7 @@ void Json_Pack::FuncData_Lan(int num, int send)
         if(send == 1) {
             stephttp_post("admin-api/bus/testData",mPro->Service,obj);
             mObj_enFlag++;
-            if(mObj_enFlag == 1){
+            if(mObj_enFlag == 2){
                 sDataPacket::bulid()->delay(20);
                 if(!mObj_en.isEmpty()){
                     mObj_en.insert("moduleSn", ePro->moduleSN);

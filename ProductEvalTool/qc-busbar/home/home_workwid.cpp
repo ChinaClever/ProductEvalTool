@@ -589,6 +589,10 @@ void Home_WorkWid::on_comBox_currentIndexChanged(int index)
         mCfgm->addr = 2;
         break;
     }
+    case TEMPERATURE_BUSBAR:{
+        mCfgm->addr = 2;
+        break;
+    }
 
     default:
         break;

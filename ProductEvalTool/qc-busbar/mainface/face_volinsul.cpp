@@ -130,8 +130,8 @@ void Face_Volinsul::resultSlot()
         Json_Pack::bulid()->SendJson_Safe();
     }
 
-    if(mPro->result != Test_Fail && mItem->work_mode == 1 && mPro->type == 0) emit overSig();
-    if(mPro->result != Test_Fail && mItem->work_mode == 1 && mPro->type == 0){
+    if(mPro->result != Test_Fail && mItem->work_mode == 1 && mPro->type == 0 && mCfg->modeId == TEMPER_BUSBAR) emit overSig();
+    if(mPro->result != Test_Fail && mItem->work_mode == 1 && mPro->type == 0 && mCfg->modeId == TEMPER_BUSBAR){
         while(1)
         {
             mPacket->delay(1);

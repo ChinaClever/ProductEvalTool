@@ -1153,13 +1153,13 @@ void Power_CoreThread::workResult(bool)
     bool res = false;
     QString str = tr("测试结果 ");
     if(mPro->result != Test_Fail) {
-        if(mItem->modeId != BASIC_TYPE){
+//        if(mItem->modeId != BASIC_TYPE){
+//            res = printer();
+//        }
+//        else{
+           // res = true;
             res = printer();
-        }
-        else{
-            res = true;
-            //res = printer();
-        }
+//        }
 
         if(res)
             str += tr("通过");
@@ -1735,7 +1735,8 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
                 qDebug()<<i<<" "<<volValue<<' '<<curValue;
 
                 if(id != i){
-                    if(volValue == 0){
+                    //if(volValue == 0){
+                    if(volValue <= 220){
                         volOk = 0;
                         volStatus[i] = 0;
                     }

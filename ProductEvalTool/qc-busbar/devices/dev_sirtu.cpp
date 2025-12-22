@@ -144,10 +144,10 @@ void Dev_SiRtu::loopObjData(sObjectData *loop, int id, RtuRecvLine *data)
     loop->vol.crMax[id] = loop->vol.max[id] = data->vol.smax;
     loop->vol.upalarm[id] = data->vol.supalarm;
 
-    loop->cur.value[id] = data->cur.svalue;
-    loop->cur.crMin[id] = loop->cur.min[id] = data->cur.smin;
-    loop->cur.crMax[id] = loop->cur.max[id] = data->cur.smax;
-    loop->cur.upalarm[id] = data->cur.supalarm;
+    loop->cur.value[id] = data->cur.ivalue;
+    loop->cur.crMin[id] = loop->cur.min[id] = data->cur.imin;
+    loop->cur.crMax[id] = loop->cur.max[id] = data->cur.imax;
+    loop->cur.upalarm[id] = data->cur.iupalarm;
 
     loop->pow.value[id] = data->pow.ivalue;
     loop->pow.crMin[id] = loop->pow.min[id] = data->pow.imin;
@@ -358,8 +358,8 @@ int Dev_SiRtu::rtu_start_recv_line_data(uchar *ptr, Rtu_recv *msg , int index)
     p->lineVol.supalarm = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
     p->vol.svalue = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
     p->vol.supalarm = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
-    p->cur.svalue = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
-    p->cur.supalarm = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    p->cur.ivalue = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    p->cur.iupalarm = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
     p->pow.ivalue = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
     p->pow.ivalue  <<= 16; // 左移16位
     p->pow.ivalue += (*ptr) * 256 + *(ptr+1);  ptr+=2; len+=2;// 读取低16位有功功率
@@ -451,8 +451,8 @@ int Dev_SiRtu::rtu_start_recv_last_alarm_data(uchar *ptr, Rtu_recv *msg, int ind
     p->lineVol.smax = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
     p->vol.smin = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
     p->vol.smax = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
-    p->cur.smin = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
-    p->cur.smax = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    p->cur.imin = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    p->cur.imax = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
     p->pow.imin = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
     p->pow.imin <<= 16; // 左移16位
     p->pow.imin += (*ptr) * 256 + *(ptr+1);  ptr += 2; len+=2;// 读取低16位有功功率最小值
@@ -477,6 +477,8 @@ int Dev_SiRtu::rtu_plug_recv_init(uchar *ptr, Rtu_recv *msg)
     msg->boxType = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
 //    ptr+=2;len+=2;//盒子类型
     msg->phaseFlag = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    msg->plug_cur_spec = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    msg->backup_breaker = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
 
     return len; //3.0.0版本
 }
@@ -487,8 +489,8 @@ int Dev_SiRtu::rtu_plug_recv_loop_data(uchar *ptr, Rtu_recv *msg , int index)
     uint len = 0;
     p->vol.svalue = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
     p->vol.supalarm = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
-    p->cur.svalue = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
-    p->cur.supalarm = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    p->cur.ivalue = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    p->cur.iupalarm = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
 
     p->pow.ivalue = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
     p->pow.ivalue  <<= 16; // 左移16位
@@ -547,8 +549,8 @@ int Dev_SiRtu::rtu_plug_recv_loop_alarm_data(uchar *ptr, Rtu_recv *msg , int ind
     uint len = 0;
     p->vol.smin = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
     p->vol.smax = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
-    p->cur.smin = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
-    p->cur.smax = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    p->cur.imin = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    p->cur.imax = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
 
     p->pow.imin = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
     p->pow.imin  <<= 16;
@@ -558,6 +560,29 @@ int Dev_SiRtu::rtu_plug_recv_loop_alarm_data(uchar *ptr, Rtu_recv *msg , int ind
     p->pow.imax  <<= 16;
     p->pow.imax += (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
     return len; //3.0.0版本
+}
+
+int Dev_SiRtu::rtu_plug_recv_loop_high_cur_alram_data(uchar *ptr, Rtu_recv *msg , int index)
+{
+    RtuRecvLine *p = &(msg->data[index]);
+    uint len = 0;
+    p->cur.imin = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    p->cur.imin  <<= 16;
+    p->cur.imin += (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    p->cur.imax = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    p->cur.imax  <<= 16;
+    p->cur.imax += (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    return len;
+}
+
+int Dev_SiRtu::rtu_plug_recv_loop_high_cur_data(uchar *ptr, Rtu_recv *msg , int index)
+{
+    RtuRecvLine *p = &(msg->data[index]);
+    uint len = 0;
+    p->cur.ivalue = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    p->cur.ivalue  <<= 16;
+    p->cur.ivalue += (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
+    return len;
 }
 
 int Dev_SiRtu::rtu_plug_recv_zero_data(uchar *ptr, Rtu_recv *msg)
@@ -598,7 +623,7 @@ bool Dev_SiRtu::rtu_recv_packetV3(uchar *buf, int len, Rtu_recv *pkt)
         }
         else{//插接箱
             ptr += rtu_plug_recv_init(ptr , pkt);
-            ptr += 6*2;//保留
+            ptr += (16-12)*2;//保留
             for(int i = 0 ; i < RTU_LOOP_NUM ; ++i) // 读取loop 数据
                 ptr += rtu_plug_recv_loop_data(ptr , pkt , i);
             ptr += rtu_plug_recv_thd_pl_data(ptr , pkt);
@@ -608,6 +633,15 @@ bool Dev_SiRtu::rtu_recv_packetV3(uchar *buf, int len, Rtu_recv *pkt)
                 ptr += rtu_plug_recv_env_alarm_data(ptr , pkt , i);
             for(int i = 0 ; i < RTU_LOOP_NUM ; ++i) // 读取loop alarm数据
                 ptr += rtu_plug_recv_loop_alarm_data(ptr , pkt , i);
+            ptr+=2;
+            if(pkt->plug_cur_spec == 1){
+                for(int i = 0 ; i < RTU_LOOP_NUM ; ++i) // 读取loop load数据
+                    ptr += 2;
+                for(int i = 0 ; i < RTU_LOOP_NUM ; ++i) // 读取loop high current数据
+                    ptr += rtu_plug_recv_loop_high_cur_data(ptr , pkt , i);
+                for(int i = 0 ; i < RTU_LOOP_NUM ; ++i) // 读取loop high alram数据
+                    ptr += rtu_plug_recv_loop_high_cur_alram_data(ptr , pkt , i);
+            }
 #if ZHIJIANGINSERTBOXZERO==1
             ptr += rtu_plug_recv_zero_data(ptr , pkt);
 #endif

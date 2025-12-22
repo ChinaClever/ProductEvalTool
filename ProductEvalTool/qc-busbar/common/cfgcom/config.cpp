@@ -98,6 +98,7 @@ void Cfg::initCfgDev()
     item->si.si_iOF = read("si_iOF", 0, g).toInt();
     item->si.si_buzzer = read("si_buzzer", 0, g).toInt();
     item->si.si_phaseflag = read("si_phaseflag", 0, g).toInt();
+    item->si.si_cur_spec = read("si_curspec", 0, g).toInt();
     item->si.loopNum = read("si_loopNum", 0, g).toInt();
     item->si.si_curErr = read("si_curErr", 5, g).toFloat();
     item->si.si_volErr = read("si_volErr", 5, g).toFloat();
@@ -182,6 +183,7 @@ void Cfg::writeCfgDev()
     write("si_curMax", QString::number(item->si.si_curMax), q);
     write("si_version", item->si.version, q);
     write("si_itemType", item->si.itemType, q);
+    write("si_curspec",item->si.si_cur_spec, q);
     writeSiData(q);
 }
 

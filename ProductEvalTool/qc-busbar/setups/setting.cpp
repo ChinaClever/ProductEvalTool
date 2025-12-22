@@ -58,6 +58,7 @@ void Setting::initType()
     sSiCfg *dv = &(mItem->si); //插接箱
     ui->iOFBox_2->setCurrentIndex(dv->si_iOF);
     ui->outputBox->setCurrentIndex(dv->si_phaseflag);
+    ui->curSpecBox->setCurrentIndex(dv->si_cur_spec);
     uchar loop = 0;
     if(dv->loopNum == 3)
         loop = 0;
@@ -110,6 +111,7 @@ void Setting::updateType()
     dv->si_buzzer = 0;
     dv->si_iOF = ui->iOFBox_2->currentIndex();
     dv->si_phaseflag = ui->outputBox->currentIndex();
+    dv->si_cur_spec = ui->curSpecBox->currentIndex();
     uchar loop = ui->loopNumBox->currentIndex();
     if(loop == 0)
         dv->loopNum = 3;

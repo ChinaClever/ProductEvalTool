@@ -517,6 +517,8 @@ typedef struct _sBoxData {
     uchar lightning; // 防雷是否开启
     uchar lpsAlarm;//防雷开关告警值 0表示未告警 1表示已告警 2表示已记录
     uchar HzAlarm;//频率告警值 0表示未告警 1表示已告警 2表示已记录
+    uchar plug_cur_spec;// 插接箱电流规格
+    uchar backup_breaker;// 插接箱备用断路器
 
     uint zeroCur;//零线电流
     uint volUnbalance;//电压三相不平衡

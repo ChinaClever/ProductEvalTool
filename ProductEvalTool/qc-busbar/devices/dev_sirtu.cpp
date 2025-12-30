@@ -268,6 +268,8 @@ bool Dev_SiRtu::readPduData()
 
         box->volUnbalance = mRtuPkt->volUnbalance;
         box->curUnbalance = mRtuPkt->curUnbalance;
+        box->plug_cur_spec = mRtuPkt->plug_cur_spec;
+        box->backup_breaker = mRtuPkt->backup_breaker;
 
         box->data.totalPow.value[0] = mRtuPkt->totalPow.ivalue;
         box->data.totalPow.min[0] = mRtuPkt->totalPow.imin;

@@ -311,7 +311,7 @@ void Home_WorkWid::updateWid()
         break;
     }
     case BASIC_TYPE: {
-        mPro->dev_name = tr("基本型"); ePro->dev_name = tr("Basic type");
+        mPro->dev_name = tr("基本型插接箱"); ePro->dev_name = tr("Basic type Tap-off box");
         break;
     }
     case TEMPERATURE_BUSBAR:{

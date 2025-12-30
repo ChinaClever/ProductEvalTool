@@ -487,18 +487,6 @@ void Power_CoreThread::TemErrRange()
     QString str = tr("插接箱蜂鸣器实际值：%1 , 期待值：%2").arg(curValue?tr("关闭"):tr("开启")).arg(expect?tr("关闭"):tr("开启"));
     mLogs->updatePro(str,ret);ret = false;
 
-    curValue = b->plug_cur_spec;
-    expect = mItem->si.si_cur_spec;
-    if(curValue == expect) ret = true;
-    str = tr("插接箱电流规格实际值：%1 , 期待值：%2").arg(curValue?tr("125A(65A以上)"):tr("63A以下")).arg(expect?tr("125A(65A以上)"):tr("63A以下"));
-    mLogs->updatePro(str,ret);ret = false;
-
-    curValue = b->backup_breaker;
-    expect = 0;
-    if(curValue == expect) ret = true;
-    str = tr("插接箱备用断路器状态实际值：%1 , 期待值：%2").arg(curValue?tr("开启"):tr("不开启")).arg(expect?tr("开启"):tr("不开启"));
-    mLogs->updatePro(str,ret);ret = false;
-
     curValue = b->alarmTime;
     mItem->si.si_filter = curValue;
     if(curValue >= 5) ret = true;
@@ -562,6 +550,18 @@ void Power_CoreThread::InsertErrRange()
     mLogs->updatePro(str,ret);
     mLogs->writeData(str1, str ,str3, ret); mLogs->writeDataEng(eng1, eng2, eng3, ret);
     ret = false;
+
+    curValue = b->plug_cur_spec;
+    expect = mItem->si.si_cur_spec;
+    if(curValue == expect) ret = true;
+    str = tr("插接箱电流规格实际值：%1 , 期待值：%2").arg(curValue?tr("125A(65A以上)"):tr("63A以下")).arg(expect?tr("125A(65A以上)"):tr("63A以下"));
+    mLogs->updatePro(str,ret);ret = false;
+
+    curValue = b->backup_breaker;
+    expect = 0;
+    if(curValue == expect) ret = true;
+    str = tr("插接箱备用断路器状态实际值：%1 , 期待值：%2").arg(curValue?tr("开启"):tr("不开启")).arg(expect?tr("开启"):tr("不开启"));
+    mLogs->updatePro(str,ret);ret = false;
 
     str1 = tr("单相或三相与规格书要求一致"); str3 = tr("输出插座类型");
     eng1 = tr("Single or three-phase in accordance with the specifications"); eng3 = tr("Output socket type");

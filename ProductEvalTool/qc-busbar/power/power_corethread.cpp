@@ -388,7 +388,7 @@ void Power_CoreThread::StartErrRange()
             {
                 ret = mRead->readData();
                 if(ret) {
-                    if(b->data.sw[0] == 3) break;
+                    if((b->isd == 1 && b->data.sw[0] == 3) || (b->isd == 0 && b->data.sw[0] == 2)) break;
                 }
                 flag++;
                 if(flag >40){
@@ -984,7 +984,7 @@ void Power_CoreThread::workResult(bool)
 
     mPro->work_mode = 3;
     mLogs->saveLogs();
-    sleep(10);//增加延时，防止手动确认之后，把要发的数据清掉后闪退
+//    sleep(5);
     mCfg->work_mode = 2; emit finshSig(res);   
     mPro->step = Test_Over;
     if(mPro->result != Test_Fail) {
@@ -995,7 +995,7 @@ void Power_CoreThread::workResult(bool)
             mItem->moduleSn.clear();
         }
     }
-//    mPro->stepResult.clear();//数据清掉后，防止报告的数据交叉
+//    mPro->stepResult.clear();
 //    mPro->stepRequest.clear();
 //    mPro->itemData.clear();
 //    mPro->test_function.clear();

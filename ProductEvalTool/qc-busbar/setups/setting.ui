@@ -626,6 +626,11 @@
           <string>9</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>2</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item row="2" column="0">
@@ -809,11 +814,42 @@
       <item row="5" column="0">
        <widget class="QLabel" name="label_20">
         <property name="text">
-         <string>电流规格</string>
+         <string>单相三回路</string>
         </property>
        </widget>
       </item>
       <item row="5" column="1">
+       <widget class="QComboBox" name="testItemBox">
+        <item>
+         <property name="text">
+          <string>L1,L2,L3全部测试</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>只测试L1</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>只测试L2</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>只测试L3</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="5" column="2">
+       <widget class="QLabel" name="label_24">
+        <property name="text">
+         <string>电流规格</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="3">
        <widget class="QComboBox" name="curSpecBox">
         <item>
          <property name="text">

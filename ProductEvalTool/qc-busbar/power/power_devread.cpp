@@ -2573,9 +2573,18 @@ bool Power_DevRead::Load_ThreeLoop(Test_TransThread *trans_ctrl)
 
     }else if((mItem->modeId != START_BUSBAR) && (mBusData->box[mItem->addr-1].phaseFlag == 0)) {    //单相三回路三个输出位
 
-        if(ret) ret = Three_One(trans_ctrl);
-        if(ret) ret = Three_Two(trans_ctrl);
-        if(ret) ret = Three_Three(trans_ctrl);
+//        if(ret) ret = Three_One(trans_ctrl);
+//        if(ret) ret = Three_Two(trans_ctrl);
+//        if(ret) ret = Three_Three(trans_ctrl);
+        if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 1){
+            if(ret) ret = Three_One(trans_ctrl);
+        }
+        if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 2){
+            if(ret) ret = Three_Two(trans_ctrl);
+        }
+        if( (mItem->si.si_testItem == 0 || mItem->si.si_testItem == 3 ) && mBusData->box[mItem->addr-1].loopNum == 3){
+            if(ret) ret = Three_Three(trans_ctrl);
+        }
 
     }
     //emit CurImageSig(4);

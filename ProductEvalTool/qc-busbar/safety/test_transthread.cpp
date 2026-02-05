@@ -176,15 +176,15 @@ bool Test_TransThread::checkTapoff_boxPolarity(QList<int> Intresult)
          //单相设备-----------------------------
         for(int i = 0 ;i < 12 ; ){
             volValue = Intresult.at(i);// result.at(1);
-            qDebug()<<i<<" aa  "<<volValue;
+            qDebug()<<mItem->si.si_testItem<<"  bb "<<i<<" aa  "<<volValue;
             if(i == 0){
                 if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 1){
                     if(volValue < 1500) {ret = false; mPacket->updatePro("第一组，A相线序故障", ret); }
-                }else continue;
+                }
             }else if(i == 4){
                 if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 2){
                     if(volValue < 800) {ret = false; mPacket->updatePro("第二组，B相线序故障", ret); }
-                }else continue;
+                }
             }else if(i == 8){
                 if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 3){
                     if(volValue < 300) {ret = false; mPacket->updatePro("第三组，C相线序故障", ret); }

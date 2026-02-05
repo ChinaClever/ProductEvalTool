@@ -195,6 +195,7 @@ bool Test_TransThread::checkTapoff_boxPolarity(QList<int> Intresult)
         QString error;
         for(int i = 0 ; i < 3*loop ; i++){
             volValue = Intresult.at(i);// result.at(1);
+//            qDebug()<<i<<" bb  "<<volValue;
             if((i == 0) || (i == 3) ||(i == 6)){
                 if(volValue < 1500) {
                     ret = false; error = tr("第%1组，A相线序故障").arg(transStr(i));
@@ -211,6 +212,7 @@ bool Test_TransThread::checkTapoff_boxPolarity(QList<int> Intresult)
         }
         for(int i = 9 ; i < 9 + loop ; i++){
             volValue = Intresult.at(i);// result.at(1);
+//            qDebug()<<volValue <<"    "<< i<<endl;
             if(volValue < 1500) {
                 ret = false; error = tr("第%1组，地线故障").arg(transStr(i));
                 mPacket->updatePro(error, ret);

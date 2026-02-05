@@ -1280,7 +1280,8 @@ bool Power_CoreThread::Vol_ctrlOne()
                 b += Obj->vol.value[1+i];
                 c += Obj->vol.status[2+i];
             }
-            if((!b)&&(a == 3)&&(c == 3)) {
+//            if((!b)&&(a == 3)&&(c == 3)) {
+            if((b<750)&&(a == 3)&&(c == 3)) {
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
@@ -1305,7 +1306,8 @@ bool Power_CoreThread::Vol_ctrlOne()
                 c += Obj->vol.status[2+i];
                 b += Obj->vol.value[1+i];
             }
-            if((!b)&&(a == 2)&&(c == 2)) {
+//            if((!b)&&(a == 2)&&(c == 2)) {
+            if((b<750)&&(a == 2)&&(c == 2)) {
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
@@ -1328,7 +1330,8 @@ bool Power_CoreThread::Vol_ctrlOne()
             a = Obj->vol.status[0];
             b = Obj->vol.value[1];
             c = Obj->vol.status[2];
-            if((!b)&&(a == 1)&&(c == 1)) {
+            if((b<750)&&(a == 1)&&(c == 1)) {
+//            if((b==0)&&(a == 1)&&(c == 1)) {
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
@@ -1340,7 +1343,8 @@ bool Power_CoreThread::Vol_ctrlOne()
                 mLogs->updatePro(str1, ret);
                 str = tr("B路电压检测成功 "); mLogs->updatePro(str, ret);
                 mLogs->writeData(str2,str1,str4,ret);
-                mLogs->writeDataEng(eng2,eng3,eng4,ret); str1.clear();break;}
+                mLogs->writeDataEng(eng2,eng3,eng4,ret); str1.clear();break;
+            }
         }
         flag++;
         if(flag >50) {
@@ -1407,7 +1411,8 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     b += Obj->vol.status[1+i];
                     c += Obj->vol.value[2+i];
                 }
-                if((!c)&&(a == 3)&&(b == 3)) {
+//                if((!c)&&(a == 3)&&(b == 3)) {
+                  if((c<750)&&(a == 3)&&(b== 3)) {
                     ret = true;
                     for(int i =0;i<loop;i++)
                     {
@@ -1432,7 +1437,8 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     b += Obj->vol.status[1+i];
                     c += Obj->vol.value[2+i];
                 }
-                if((!c)&&(a == 2)&&(b == 2)) {
+//                if((!c)&&(a == 2)&&(b == 2)) {
+                if((c<750)&&(a == 2)&&(b== 2)) {
                     ret = true;
                     for(int i =0;i<loop;i++)
                     {
@@ -1454,7 +1460,8 @@ bool Power_CoreThread::Vol_ctrlTwo()
                 a = Obj->vol.status[0];
                 b = Obj->vol.status[1];
                 c = Obj->vol.value[2];
-                if((!c)&&(a == 1)&&(b== 1)) {
+                if((c<750)&&(a == 1)&&(b== 1)) {
+//                if((c==0)&&(a == 1)&&(b== 1)) {
                     ret = true;
                     for(int i =0;i<loop;i++)
                     {
@@ -1596,7 +1603,7 @@ bool Power_CoreThread::Vol_ctrlThree()
             }
         }
         flag++;
-        if(flag >55) {
+        if(flag >50) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -2308,6 +2315,7 @@ void Power_CoreThread::run()
         // this->mTrans->sendCtrlGnd(1+32+64);
         return ;
     }else if(mPro->work_mode == 12){
+        // this->mTrans->sendCtrlGnd(1+32+64);
         this->mTrans->sendCtrlGnd(1+32+64);
         return ;
     }

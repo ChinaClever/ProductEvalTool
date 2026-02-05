@@ -178,13 +178,24 @@ bool Test_TransThread::checkTapoff_boxPolarity(QList<int> Intresult)
             volValue = Intresult.at(i);// result.at(1);
             qDebug()<<i<<" aa  "<<volValue;
             if(i == 0){
-                if(volValue < 1500) {ret = false; mPacket->updatePro("第一组，A相线序故障", ret); }
+                if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 1){
+                    if(volValue < 1500) {ret = false; mPacket->updatePro("第一组，A相线序故障", ret); }
+                }else continue;
             }else if(i == 4){
-                if(volValue < 800) {ret = false; mPacket->updatePro("第二组，B相线序故障", ret); }
+                if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 2){
+                    if(volValue < 800) {ret = false; mPacket->updatePro("第二组，B相线序故障", ret); }
+                }else continue;
             }else if(i == 8){
-                if(volValue < 300) {ret = false; mPacket->updatePro("第三组，C相线序故障", ret); }
+                if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 3){
+                    if(volValue < 300) {ret = false; mPacket->updatePro("第三组，C相线序故障", ret); }
+                }
             }else if(i == 9 || i == 10 || i == 11){
-                if(volValue < 1500) {ret = false; mPacket->updatePro(tr("第%1组，地线故障").arg(transStr(i)), ret); }
+                if(mItem->si.si_testItem == 0
+                        || (mItem->si.si_testItem == 1&&i == 9)
+                        || (mItem->si.si_testItem == 2&&i == 10)
+                        || (mItem->si.si_testItem == 3&&i == 11)){
+                    if(volValue < 1500) {ret = false; mPacket->updatePro(tr("第%1组，地线故障").arg(transStr(i)), ret); }
+                }
             }
             if(i >= 8) i += 1;
             else i += 4;

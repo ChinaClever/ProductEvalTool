@@ -135,7 +135,6 @@ struct sSiCfg {
     ushort si_version;
     ushort si_phaseflag;
     uchar loopNum;
-    uchar si_cur_spec;
     //四个温度
     double temMax[4];
     double temMin[4];
@@ -151,6 +150,8 @@ struct sSiCfg {
     float si_curMax;
     uint rate;
     uchar itemType;
+    uchar si_testItem;
+    uchar si_cur_spec;
 };
 
 struct sCfgDev {

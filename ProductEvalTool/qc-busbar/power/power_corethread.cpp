@@ -1670,7 +1670,8 @@ bool Power_CoreThread::BreakerTest()        //断路器测试
         if(mBusData->box[mItem->addr-1].phaseFlag == 1) {
             ret = mRead->Three_Breaker();
         }else if(mBusData->box[mItem->addr-1].phaseFlag == 0) {    //单相三回路三个输出位
-            ret = mRead->Three_Break();
+            if(mItem->si.si_testItem == 0)ret = mRead->Three_Break();
+            else ret = mRead->Three_Breaker();
         }
     }
 

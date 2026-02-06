@@ -367,7 +367,7 @@ void Json_Pack::stephttp_post(const QString &method, const QString &ip,QJsonObje
             .exec();
 }
 
-void Json_Pack::FuncData(int num,int send)
+void Json_Pack::FuncData(int num, const QString &strRequest, const QString &str2, const QString &str3, bool pass, int send)
 {
     QJsonObject obj; QJsonObject obj_en;
     QDateTime t = QDateTime::currentDateTime();
@@ -393,11 +393,11 @@ void Json_Pack::FuncData(int num,int send)
         obj.insert("testCfg" ,str1);
     }
 
-    obj.insert("testItem", mPro->test_function.at(num));
+    obj.insert("testItem", str3);
     obj.insert("testStep", mPro->test_step);
-    obj.insert("testProcess" ,mPro->itemData.at(num));
-    obj.insert("testResult" ,mPro->stepResult.at(num));
-    obj.insert("testRequest" ,mPro->stepRequest.at(num));
+    obj.insert("testProcess" ,str2);
+    obj.insert("testResult" ,pass?"1":"0");
+    obj.insert("testRequest" ,strRequest);
     if(mItem->modeId == INSERT_BUSBAR || mItem->modeId == TEMPERATURE_BUSBAR){
         if(send == 1){
             stephttp_post("admin-api/bus/testData",mPro->Service,obj);
@@ -455,7 +455,7 @@ void Json_Pack::FuncData(int num,int send)
 
 }
 
-void Json_Pack::FuncData_Lan(int num,int send)
+void Json_Pack::FuncData_Lan(int num,const QString &strRequest,const QString &str2, const QString &str3,bool pass,int send)
 {
     QJsonObject obj;
     QDateTime t = QDateTime::currentDateTime();
@@ -481,11 +481,11 @@ void Json_Pack::FuncData_Lan(int num,int send)
         obj.insert("testCfg" ,str1);
     }
 
-    obj.insert("testItem", ePro->test_function.at(num));
+    obj.insert("testItem", str3);
     obj.insert("testStep", ePro->test_step);
-    obj.insert("testProcess" ,ePro->itemData.at(num));
-    obj.insert("testResult" ,ePro->stepResult.at(num));
-    obj.insert("testRequest" ,ePro->stepRequest.at(num));
+    obj.insert("testProcess" ,str2);
+    obj.insert("testResult" ,pass?"1":"0");
+    obj.insert("testRequest" ,strRequest);
     if(mItem->modeId == INSERT_BUSBAR || mItem->modeId == TEMPERATURE_BUSBAR){
         if(send == 1) {
             stephttp_post("admin-api/bus/testData",mPro->Service,obj);

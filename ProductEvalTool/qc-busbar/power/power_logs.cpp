@@ -122,7 +122,7 @@ void Power_Logs::writeData(const QString &str1,const QString &str2, const QStrin
         if(mPro->online)
         {
             msleep(20);
-            Json_Pack::bulid()->FuncData(mPro->stepNum , send);
+            Json_Pack::bulid()->FuncData(mPro->stepNum ,str1,str2,str3,pass, send);
             mPro->stepNum++;
         }
     }
@@ -142,7 +142,7 @@ void Power_Logs::writeDataEng(const QString &str1,const QString &str2, const QSt
         if(mPro->online)
         {
             msleep(20);
-            Json_Pack::bulid()->FuncData_Lan(mPro->stepNumEng , send);
+            Json_Pack::bulid()->FuncData_Lan(mPro->stepNumEng ,str1,str2,str3,pass, send);
             mPro->stepNumEng++;
         }
     }

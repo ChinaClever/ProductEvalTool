@@ -84,7 +84,7 @@ void People_judg::writeData(const QString &str1,const QString &str2, const QStri
     if(mPro->online)
     {
         mPacket->delayMs(5);
-        Json_Pack::bulid()->FuncData(mPro->stepNum);
+        Json_Pack::bulid()->FuncData(mPro->stepNum,str1,str2,str3,pass);
         mPro->stepNum++;
     }
 }
@@ -101,7 +101,7 @@ void People_judg::writeData_Eng(const QString &str1,const QString &str2, const Q
     if(mPro->online)
     {
         mPacket->delayMs(5);
-        Json_Pack::bulid()->FuncData_Lan(mPro->stepNumEng);
+        Json_Pack::bulid()->FuncData_Lan(mPro->stepNumEng , str1,str2,str3,pass);
         mPro->stepNumEng++;
     }
 }

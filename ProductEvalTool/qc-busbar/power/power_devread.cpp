@@ -1704,6 +1704,13 @@ bool Power_DevRead::Three_CtrlOne()
     QString eng3;
     QString eng4 = tr("Socket 1 current check");
 
+    int timer1 = 60 , timer2 = 70;
+
+    if(mItem->modeId == START_BUSBAR){
+        timer1 = 18;
+        timer2 = 19;
+    }
+
     while(1)
     {
         ret = readData();
@@ -1726,13 +1733,13 @@ bool Power_DevRead::Three_CtrlOne()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >60) {
+        if(flag >timer1) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >70) {
+        if(flag >timer2) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -1744,9 +1751,9 @@ bool Power_DevRead::Three_CtrlOne()
 
             if(mItem->modeId == START_BUSBAR)
             {
-                str = tr("输出口-A检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->ip.ip_cur).arg(mItem->ip.ip_curErr);
+                str = tr("输出口-A检测失败，超出误差范围，设置的电流 %1A，超出误差 %2A").arg(mItem->ip.ip_cur).arg(mItem->ip.ip_curErr);
             }else {
-                str = tr("输出口-A检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+                str = tr("输出口-A检测失败，超出误差范围，设置的电流 %1A，超出误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
             }
             mLogs->updatePro(str, ret);
 
@@ -1771,6 +1778,12 @@ bool Power_DevRead::Three_CtrlTwo()
     QString eng3;
     QString eng4 = tr("Socket 1 current check");
 
+    int timer1 = 60 , timer2 = 70;
+
+    if(mItem->modeId == START_BUSBAR){
+        timer1 = 18;
+        timer2 = 19;
+    }
     while(1)
     {
         ret = readData();
@@ -1793,13 +1806,13 @@ bool Power_DevRead::Three_CtrlTwo()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >60) {
+        if(flag >timer1) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >70) {
+        if(flag >timer2) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -1810,8 +1823,8 @@ bool Power_DevRead::Three_CtrlTwo()
             mLogs->updatePro(str1, ret); ret = false;
 
             if(mItem->modeId == START_BUSBAR)
-                str = tr("输出口-B检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->ip.ip_cur).arg(mItem->ip.ip_curErr);
-            else str = tr("输出口-B检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+                str = tr("输出口-B检测失败，超出误差范围，设置的电流 %1A，超出误差 %2A").arg(mItem->ip.ip_cur).arg(mItem->ip.ip_curErr);
+            else str = tr("输出口-B检测失败，超出误差范围，设置的电流 %1A，超出误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -1834,6 +1847,12 @@ bool Power_DevRead::Three_CtrlThree()
     QString eng2 = tr("Disconnect the load input circuit breaker L3, check that the reading of C current is 0A, and the A/B current is normal;");
     QString eng3;
     QString eng4 = tr("Socket 1 current check");
+    int timer1 = 60 , timer2 = 70;
+
+    if(mItem->modeId == START_BUSBAR){
+        timer1 = 18;
+        timer2 = 19;
+    }
 
     while(1)
     {
@@ -1857,13 +1876,13 @@ bool Power_DevRead::Three_CtrlThree()
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-        if(flag >60) {
+        if(flag >timer1) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
         }
 
         flag++;
-        if(flag >70) {
+        if(flag >timer2) {
             for(int i =0;i<loop;i++)
             {
                 QString temp = trans(i);
@@ -1873,8 +1892,8 @@ bool Power_DevRead::Three_CtrlThree()
             }
             mLogs->updatePro(str1, ret); ret = false;
             if(mItem->modeId == START_BUSBAR)
-                str = tr("输出口-C检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->ip.ip_cur).arg(mItem->ip.ip_curErr);
-            else str = tr("输出口-C检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+                str = tr("输出口-C检测失败，超出误差范围，设置的电流 %1A，超出误差 %2A").arg(mItem->ip.ip_cur).arg(mItem->ip.ip_curErr);
+            else str = tr("输出口-C检测失败，超出误差范围，设置的电流 %1A，超出误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -2408,6 +2427,12 @@ bool Power_DevRead::Load_ThreeLoop()
         str = tr("请准备输出口，打开负载输入端L1、L2、L3");  //三相回路电流、功率
         emit StepSig(str); emit CurImageSig(2);
 
+        int timer1 = 60 , timer2 = 70;
+
+        if(mItem->modeId == START_BUSBAR){
+            timer1 = 18;
+            timer2 = 18;
+        }
         while(1){
             int a=0, b=0, c=0;
             ret = readData();
@@ -2419,7 +2444,7 @@ bool Power_DevRead::Load_ThreeLoop()
                 ret = true; break;
             }
             flag++;
-            if(flag >80) {
+            if(flag >timer2) {
                 ret = false;
                 str = tr("该输出口 无电流");mLogs->updatePro(str, ret);
                  break;
@@ -2444,7 +2469,7 @@ bool Power_DevRead::Load_ThreeLoop()
                 if(res) break;
 
                 flag++;
-                if(flag >10) {
+                if(flag >6) {
                     res = false;
                     break;
                 }

@@ -152,6 +152,8 @@ struct sSiCfg {
     uchar itemType;
     uchar si_testItem;
     uchar si_cur_spec;
+    uchar si_trip;
+    uchar si_stdOr36Single;//测试标准还是三相六回路单输出
 };
 
 struct sCfgDev {

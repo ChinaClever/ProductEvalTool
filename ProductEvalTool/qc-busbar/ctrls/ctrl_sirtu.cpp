@@ -220,6 +220,14 @@ bool Ctrl_SiRtu::setBusbarInsertRestore(int val)
     return ret;
 }
 
+bool Ctrl_SiRtu::setBusbarInsertShuntRelease(int val)
+{
+    bool ret = true;
+    ret = sentRtuCmd(PlugShuntRelease, val);
+
+    return ret;
+}
+
 bool Ctrl_SiRtu::setBusbarStartShuntRelease(int val)
 {
     bool ret = true;

@@ -16,6 +16,7 @@ public:
     bool setCurTh(int i);
     bool setVolTh(int i);
     bool sentRtuCmd(ushort reg, ushort value, uchar fn=0x10);
+    bool sentRtuCmd06(ushort reg, ushort value, uchar fn=0x06);
     bool setHorizontaOrVertical();
 
     bool setBusbarStartEle(int index);//index [1,3]

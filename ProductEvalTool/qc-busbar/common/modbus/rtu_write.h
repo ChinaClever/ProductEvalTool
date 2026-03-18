@@ -74,6 +74,7 @@ public:
     bool write(sRtuSetItem &pkt);
     bool writes(sRtuSetItems &pkt);
     bool write(Rtu_Sent_Single_Ushort_V3 &pkt);
+    bool write06(Rtu_Sent_Single_Ushort_V3 &pkt);
     bool write(Rtu_Sent_Ushort_V3 &pkt);
     bool write(Rtu_Sent_Uint_V3 &pkt);
     void autoSetAddress();
@@ -82,6 +83,7 @@ signals:
     void sendDelaySig();
 protected:
     int rtu_write_packet(Rtu_Sent_Single_Ushort_V3 *pkt, uchar *ptr);
+    int rtu_write_packet_06(Rtu_Sent_Single_Ushort_V3 *pkt, uchar *ptr);
     int rtu_write_packets(sRtuSetItems *pkt, uchar *ptr);
 
     int rtu_sent_packet_uint_V3(Rtu_Sent_Uint_V3 *pkt, uchar *ptr);

@@ -52,6 +52,24 @@ bool Rtu_Write::write(Rtu_Sent_Single_Ushort_V3 &pkt)
     return ret;
 }
 
+bool Rtu_Write::write06(Rtu_Sent_Single_Ushort_V3 &pkt)
+{
+    bool ret = false;
+    uchar sendBuf[256]={0}, recvBuf[128]={0};
+    int rtn = rtu_write_packet_06(&pkt, sendBuf);
+    rtn = transmit(sendBuf, rtn, recvBuf, 2);
+    if(rtn > 0) {
+        ret = rtuRecvCrc(recvBuf, rtn);
+        if(ret) {
+            uchar fn = recvBuf[1];
+            if(fn < 0x80) { // 设置正常
+                ret = true;
+            }
+        }
+    }
+    return ret;
+}
+
 bool Rtu_Write::write(Rtu_Sent_Ushort_V3 &pkt)
 {
     bool ret = false;
@@ -115,6 +133,29 @@ int Rtu_Write::rtu_write_packet(Rtu_Sent_Single_Ushort_V3 *pkt, uchar *ptr)
     *(ptr++) = ((pkt->crc) >> 8); /*高8位*/
 
     return 11;
+}
+
+int Rtu_Write::rtu_write_packet_06(Rtu_Sent_Single_Ushort_V3 *pkt, uchar *ptr)
+{
+    uchar *buf = ptr;
+    *(ptr++) = pkt->addr;  /*地址码*/
+    *(ptr++) = pkt->fn; /*功能码*/
+
+    /*填入寄存器首地址*/
+    *(ptr++) = ((pkt->reg) >> 8); /*高8位*/
+    *(ptr++) = (0xff)&(pkt->reg); /*低8位*/
+
+
+    /*填入数据2*/
+    *(ptr++) = ((pkt->val) >> 8); /*高8位*/
+    *(ptr++) = (0xff)&(pkt->val); /*低8位*/
+
+    /*填入CRC*/
+    pkt->crc = rtu_crc(buf, 6);
+    *(ptr++) = (0xff)&(pkt->crc); /*低8位*/
+    *(ptr++) = ((pkt->crc) >> 8); /*高8位*/
+
+    return 8;
 }
 
 int Rtu_Write::rtu_write_packets(sRtuSetItems *pkt, uchar *ptr)

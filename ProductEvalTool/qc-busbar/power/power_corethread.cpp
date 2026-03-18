@@ -531,6 +531,55 @@ void Power_CoreThread::InsertErrRange()
     str = tr("插接箱电流规格实际值：%1 , 期待值：%2").arg(curValue?tr("125A(65A以上)"):tr("63A以下")).arg(expect?tr("125A(65A以上)"):tr("63A以下"));
     mLogs->updatePro(str,ret);ret = false;
 
+    ///////
+    curValue = b->shuntRelease;
+    expect = mItem->si.si_trip;
+    if(curValue == expect) ret = true;
+    str = tr("插接箱分励脱扣器实际值：%1 , 期待值：%2").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
+    mLogs->updatePro(str,ret);int flag = 0;
+    if(ret) {
+        if(curValue == 1) {
+            str = tr("插接箱分励脱扣测试开始");
+            emit TipSig(str);
+            for(int i=0;i<2;i++)
+            {
+                Ctrl_SiRtu::bulid()->setBusbarInsertShuntRelease(12);
+            }
+            while(1)
+            {
+                ret = mRead->readData();
+                if(ret) {
+                    if(b->data.sw[0] == 2) break;
+                }
+                flag++;
+                if(flag >40){
+                    ret = false; break;
+                }
+            }
+            str = tr("插接箱分励脱扣检查");
+            QString str1 = tr("与参数设置一致；若有分励脱扣，则发送命令断开断路器，状态显示为分闸");
+            if(ret) str += tr("成功");
+            else str += tr("失败");
+            // mLogs->writeData(str1, str, ret);
+            mLogs->updatePro(str,ret);
+            str = tr("请将插接箱的断路器闭合");
+            emit TipSig(str);
+            while(1)
+            {
+                ret = mRead->readData();
+                if(ret) {
+                    if(b->data.sw[0] == 1) break; //1：合闸   2：分闸   3：跳闸（选配ISD报警触点）
+                }
+                flag++;
+                if(flag >40){
+                    ret = false; break;
+                }
+            }
+        }
+    }
+    ret = false;
+    ///////
+
     curValue = b->backup_breaker;
     expect = 0;
     if(curValue == expect) ret = true;
@@ -1417,7 +1466,13 @@ bool Power_CoreThread::stepLoadTest()       //电流测试
     if(mBusData->box[mItem->addr-1].loopNum == 9) {
         ret = mRead->Load_NineLoop();
     }else if(mBusData->box[mItem->addr-1].loopNum == 6) {
-        ret = mRead->Load_SixLoop();
+//        ret = mRead->Load_SixLoop();
+        if(mItem->si.si_stdOr36Single==0){
+            ret = mRead->Load_SixLoop();
+        }
+        else if(mItem->si.si_stdOr36Single==1){
+            ret = mRead->Load_SingleSixLoop();
+        }
     }else if(mBusData->box[mItem->addr-1].loopNum == 3 || mBusData->box[mItem->addr-1].loopNum == 2) {
         ret = mRead->Load_ThreeLoop();
     }
@@ -2231,7 +2286,7 @@ void Power_CoreThread::workDown()
                 else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
 
                 if(ret) ret = BreakerTest();                            //断路器测试
-                if(ret) ret = stepVolTest();                            //电压测试
+                if(ret && mItem->si.si_stdOr36Single==0) ret = stepVolTest();                            //电压测试/////3相6回路单输出时可以不用测试此项
 
                 // if(ret) ret = mSource->read();
                 // else mPro->result = Test_Fail;

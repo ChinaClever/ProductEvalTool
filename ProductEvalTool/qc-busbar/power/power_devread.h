@@ -52,6 +52,9 @@ public:
     bool SixInsertTwo_CtrlThree();
     bool SixInsertOne_BreakerOne();
     bool SixInsertOne_BreakerTwo();
+    bool Load_SingleSixLoop();
+    bool SixInsertOne_CtrlOne_Single();
+    bool SixInsertTwo_CtrlOne_Single();
 
     //始端箱-三相三回路三个输出位
     bool Load_ThreeLoop();

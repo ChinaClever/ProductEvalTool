@@ -16,6 +16,7 @@ public:
     bool setCurTh(int i);
     bool setVolTh(int i);
     bool sentRtuCmd(ushort reg, ushort value, uchar fn=0x10);
+    bool sentRtuCmd06(ushort reg, ushort value, uchar fn=0x06);
     bool setHorizontaOrVertical();
 
     bool setBusbarStartEle(int index);//index [1,3]
@@ -35,6 +36,7 @@ public:
     bool setBusbarInsertBuzzer(int val);
     bool setBusbarInsertFilter(int val);
     bool setBusbarInsertRestore(int val);
+    bool setBusbarInsertShuntRelease(int val);
 
     bool rtu_sent_ushortV3_buff(uchar addr, ushort reg, uint num,  uint val1, uint val2);
     bool rtu_sent_uintV3_buff(uchar addr, ushort reg, uint num,  uint val1, uint val2);

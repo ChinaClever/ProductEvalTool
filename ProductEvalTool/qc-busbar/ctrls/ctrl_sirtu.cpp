@@ -123,6 +123,24 @@ bool Ctrl_SiRtu::sentRtuCmd(ushort reg, ushort value, uchar fn)
     return ret;
 }
 
+bool Ctrl_SiRtu::sentRtuCmd06(ushort reg, ushort value, uchar fn)
+{
+    bool ret = true;
+    Rtu_Sent_Single_Ushort_V3 it;
+    it.addr = mItem->addr;
+    it.fn = fn;
+    it.reg = reg;
+    it.val = value;
+    it.num = 1;
+
+    for(int i=0; i<3; ++i) {
+        ret = mModbus->write06(it);
+        if(ret) break; else sDataPacket::bulid()->delay(3+i);
+    }
+
+    return ret;
+}
+
 bool Ctrl_SiRtu::rtu_sent_ushortV3_buff(uchar addr, ushort reg, uint num,  uint val1, uint val2 )
 {
     bool ret = true;
@@ -256,6 +274,14 @@ bool Ctrl_SiRtu::setBusbarInsertEle(int index)
 {
     bool ret = true;
     ret = rtu_sent_ushortV3_buff(mItem->addr ,SetPlugEle_1 -1 +(index-1)*15, 2, 1, 1);
+
+    return ret;
+}
+
+bool Ctrl_SiRtu::setBusbarInsertShuntRelease(int val)
+{
+    bool ret = true;
+    ret = sentRtuCmd06(PlugShuntRelease, val);
 
     return ret;
 }

@@ -1170,6 +1170,65 @@ bool Power_DevRead::SixInsertOne_CtrlOne()
     return ret;
 }
 
+bool Power_DevRead::SixInsertOne_CtrlOne_Single()
+{
+    bool ret = true; int flag = 0; QString str1;
+    sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
+    uchar loop = mBusData->box[mItem->addr-1].loopNum;
+    QString str2 = tr("输出插座1接入负载，断开负载输入端断路器L1，检查读取A电流为0A；");
+    QString str = tr("关闭负载输入端L1");  //三相回路电流、功率
+    emit StepSig(str); emit CurImageSig(2);
+    QString str3; QString str4 = tr("插座1电流检查");
+    QString eng2 = tr("Connect output socket 1 to the load, disconnect the load input circuit breaker L1, and read that the current of A is 0A;");
+    QString eng3;
+    QString eng4 = tr("Socket 1 current check");
+
+    while(1)
+    {
+        ret = readData();
+        int a=0, b=0, c = 0;
+        a = Obj->cur.value[0]; b = Obj->cur.value[1]; c = Obj->cur.value[2];
+        if((!a) &&(!b) &&(!c)) {
+            ret = true;
+            for(int i =0;i<loop;i++)
+            {
+                QString temp = trans(i);
+                str = tr("%1电流%2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
+                str3 = tr("%1 current %2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
+                str1 += str; eng3 += str3;
+            }
+            mLogs->updatePro(str1, ret);
+            str = tr("输出口1-A1检测成功 ");mLogs->updatePro(str, ret);
+            mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
+        }
+        if(flag >70) {
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str);
+        }
+
+        flag++;
+        if(flag >90) {
+            for(int i =0;i<loop;i++)
+            {
+                QString temp = trans(i);
+                str = tr("%1电流%2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
+                str3 = tr("%1 current %2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
+                str1 += str; eng3 += str3;
+            }
+            mLogs->updatePro(str1, ret); ret = false;
+
+            str = tr("输出口1-A1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+
+            mLogs->writeData(str2, str1, str4, ret);mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
+        }
+    }
+
+    return ret;
+}
+
 bool Power_DevRead::SixInsertOne_CtrlTwo()
 {
     bool ret = true; int flag = 0; QString str1;
@@ -1448,6 +1507,94 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
     return ret;
 }
 
+bool Power_DevRead::SixInsertTwo_CtrlOne_Single()
+{
+    bool ret = true; int flag = 0; QString str1;
+    sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
+    uchar loop = mBusData->box[mItem->addr-1].loopNum;
+    QString str2 = tr("输出插座2接入负载，断开负载输入端断路器L1，检查读取A电流为0A；");
+    QString str = tr("请准备输出口2，打开负载输入端L1、L2、L3");  //三相回路电流、功率
+    emit StepSig(str); emit CurImageSig(2);
+
+    QString str3; QString str4 = tr("插座2电流检查");
+    QString eng2 = tr("Connect output socket 2 to the load, disconnect the load input circuit breaker L1, and read that the current of A is 0A;");
+    QString eng3;
+    QString eng4 = tr("Socket 2 current check");
+
+    while(1){
+        int a=0;
+        if(ret) {
+            ret = readData();
+            for(int i =3;i<6;i++) {
+                Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
+            }
+            a = Obj->cur.status[3];;
+            if(a) {
+                ret = true; break;
+            }
+        }
+        flag++;
+        if(flag >90) {
+            ret = false;
+            str = tr("输出口2 无电流");mLogs->updatePro(str, ret);
+            break;
+        }
+    }
+    QString str5 = tr("请检测输出口2位置的极性测试是否合格?");
+    // emit PloarSig(str5);
+    emit StepSig(str5);  emit CurImageSig(1);sleep(5);
+    flag = 0;
+    str = tr("关闭负载输入端L1");  //三相回路电流、功率
+    emit StepSig(str); emit CurImageSig(2);
+
+    while(1)
+    {
+        ret = readData();
+        int a=0;
+        for(int i =3;i<6;i++) {
+            Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
+        }
+        a = Obj->cur.value[3];
+        if((!a)) {
+            ret = true;
+            for(int i =0;i<loop;i++)
+            {
+                QString temp = trans(i);
+                str = tr("%1电流%2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
+                str3 = tr("%1 current %2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
+                str1 += str; eng3 += str3;
+            }
+            mLogs->updatePro(str1, ret);
+            str = tr("输出口2-A2检测成功 ");mLogs->updatePro(str, ret);
+            mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
+        }
+        if(flag >70) {
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str);
+        }
+
+        flag++;
+        if(flag >90) {
+            for(int i =0;i<loop;i++)
+            {
+                QString temp = trans(i);
+                str = tr("%1电流%2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
+                str3 = tr("%1 current %2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
+                str1 += str; eng3 += str3;
+            }
+            mLogs->updatePro(str1, ret); ret = false;
+            str = tr("输出口2-A2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            mLogs->updatePro(str, ret);
+
+            mLogs->writeData(str2, str1, str4, ret);  mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
+        }
+    }
+
+    return ret;
+}
+
 bool Power_DevRead::SixInsertTwo_CtrlTwo()
 {
     bool ret = true; int flag = 0; QString str1;
@@ -1680,6 +1827,47 @@ bool Power_DevRead::Load_SixLoop()
 
     return ret;
 }
+
+
+bool Power_DevRead::Load_SingleSixLoop()
+{
+    bool ret = true; QString str1; int flag = 0;
+    sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
+    QString str = tr("请准备输出口1，打开负载输入端L1");  //三相回路电流、功率
+    emit StepSig(str); emit CurImageSig(2);
+
+    while(1){
+        int a=0;
+        if(ret) {
+            ret = readData();
+            for(int i =0;i<1;i++) {
+                Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
+            }
+            a = Obj->cur.status[0];
+            if(a) {
+                ret = true; break;
+            }
+        }
+        flag++;
+        if(flag >80) {
+            ret = false;
+            str = tr("输出口1 无电流");mLogs->updatePro(str, ret);
+            break;
+        }
+    }
+    QString str3 = tr("请检测输出口1位置的极性测试是否合格?");
+    // emit PloarSig(str3);
+    emit StepSig(str3); emit CurImageSig(1); sleep(5);
+    if(ret) ret = SixInsertOne_CtrlOne_Single();
+
+    if(ret) ret = SixInsertTwo_CtrlOne();
+
+
+    //emit CurImageSig(4);
+
+    return ret;
+}
+
 
 bool Power_DevRead::Break_SixLoop()
 {

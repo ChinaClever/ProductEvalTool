@@ -1301,7 +1301,7 @@ bool Power_CoreThread::Vol_ctrlOne()
                 c += Obj->vol.status[2+i];
             }
 //            if((!b)&&(a == 3)&&(c == 3)) {
-            if((b<750)&&(a == 3)&&(c == 3)) {
+            if((b<2250)&&(a == 3)&&(c == 3)) {
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
@@ -1327,7 +1327,7 @@ bool Power_CoreThread::Vol_ctrlOne()
                 b += Obj->vol.value[1+i];
             }
 //            if((!b)&&(a == 2)&&(c == 2)) {
-            if((b<750)&&(a == 2)&&(c == 2)) {
+            if((b<1500)&&(a == 2)&&(c == 2)) {
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
@@ -1432,7 +1432,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     c += Obj->vol.value[2+i];
                 }
 //                if((!c)&&(a == 3)&&(b == 3)) {
-                  if((c<750)&&(a == 3)&&(b== 3)) {
+                  if((c<2250)&&(a == 3)&&(b== 3)) {
                     ret = true;
                     for(int i =0;i<loop;i++)
                     {
@@ -1458,7 +1458,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     c += Obj->vol.value[2+i];
                 }
 //                if((!c)&&(a == 2)&&(b == 2)) {
-                if((c<750)&&(a == 2)&&(b== 2)) {
+                if((c<1500)&&(a == 2)&&(b== 2)) {
                     ret = true;
                     for(int i =0;i<loop;i++)
                     {

@@ -238,7 +238,7 @@ bool Test_TransThread::checkTapoff_36SingleboxPolarity(QList<int> Intresult)
 {
     int volValue = 0;bool ret = true;
 
-    int loop = mItem->si.loopNum/3;
+    int loop = 1;
     QString error;
     for(int i = 0 ; i < 3*loop ; ){
         volValue = Intresult.at(i);// result.at(1);

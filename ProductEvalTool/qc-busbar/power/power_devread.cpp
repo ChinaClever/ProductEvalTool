@@ -1438,6 +1438,10 @@ bool Power_DevRead::SixInsertOne_BreakerOne()
             str1.clear(); break;
         }
     }
+    if(mItem->si.si_stdOr36Single==1){
+        str = tr("打开插接箱的断路器1");
+        emit StepSig(str); sleep(5);
+    }
 
     return ret;
 }
@@ -1721,7 +1725,7 @@ bool Power_DevRead::SixInsertOne_BreakerTwo()
         }
     }
     str = tr("打开插接箱的断路器2");
-    emit StepSig(str); sleep(3);
+    emit StepSig(str); sleep(5);
 
     return ret;
 }
@@ -1778,7 +1782,7 @@ bool Power_DevRead::Load_SingleSixLoop(Test_TransThread *trans_ctrl)
     bool ret = true; QString str1;
     if(ret) ret = SixInsertOne_CtrlOne(trans_ctrl);
 
-    if(ret) ret = SixInsertTwo_CtrlOne(trans_ctrl);
+//    if(ret) ret = SixInsertTwo_CtrlOne(trans_ctrl);
 
 
     //emit CurImageSig(4);
@@ -1790,7 +1794,7 @@ bool Power_DevRead::Break_SixLoop()
 {
     bool ret = true;
     ret = SixInsertOne_BreakerOne();
-    if(ret) ret = SixInsertOne_BreakerTwo();
+    if(ret && mItem->si.si_stdOr36Single==0) ret = SixInsertOne_BreakerTwo();
     //emit CurImageSig(4);
 
     return ret;

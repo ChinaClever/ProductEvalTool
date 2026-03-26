@@ -45,6 +45,7 @@ public:
 
     //六回路二个输出位
     bool Load_SixLoop(Test_TransThread *trans_ctrl);
+    bool Load_SingleSixLoop(Test_TransThread *trans_ctrl);
     bool Break_SixLoop();
     bool SixInsertOne_CtrlOne(Test_TransThread *trans_ctrl);
     bool SixInsertOne_CtrlTwo(Test_TransThread *trans_ctrl);

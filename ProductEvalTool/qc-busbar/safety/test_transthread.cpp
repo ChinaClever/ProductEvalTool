@@ -172,7 +172,7 @@ bool Test_TransThread::checkFeeder_boxPolarity(QList<int> Intresult)
 bool Test_TransThread::checkTapoff_boxPolarity(QList<int> Intresult)
 {
     int volValue = 0;bool ret = true;
-    if(mItem->si.si_phaseflag == 0){
+    if(mItem->si.si_phaseflag == 0){//单相
          //单相设备-----------------------------
         for(int i = 0 ;i < 12 ; ){
             volValue = Intresult.at(i);// result.at(1);
@@ -200,7 +200,7 @@ bool Test_TransThread::checkTapoff_boxPolarity(QList<int> Intresult)
             if(i >= 8) i += 1;
             else i += 4;
         }
-    }else {
+    }else {//三相设备
          //三相设备-----------------------------
         int loop = mItem->si.loopNum/3;
         QString error;
@@ -228,6 +228,34 @@ bool Test_TransThread::checkTapoff_boxPolarity(QList<int> Intresult)
                 ret = false; error = tr("第%1组，地线故障").arg(transStr(i));
                 mPacket->updatePro(error, ret);
             }
+        }
+    }
+    return ret;
+}
+
+
+bool Test_TransThread::checkTapoff_36SingleboxPolarity(QList<int> Intresult)
+{
+    int volValue = 0;bool ret = true;
+
+    int loop = mItem->si.loopNum/3;
+    QString error;
+    for(int i = 0 ; i < 3*loop ; ){
+        volValue = Intresult.at(i);// result.at(1);
+//            qDebug()<<i<<" bb  "<<volValue;
+        if((i == 0) || (i == 3) ||(i == 6)){
+            if(volValue < 1500) {
+                ret = false; error = tr("第%1组，A相线序故障").arg(transStr(i));
+                mPacket->updatePro(error, ret); }
+        }
+        i+=3;
+    }
+    for(int i = 9 ; i < 9 + loop ; i++){
+        volValue = Intresult.at(i);// result.at(1);
+//            qDebug()<<volValue <<"    "<< i<<endl;
+        if(volValue < 1500) {
+            ret = false; error = tr("第%1组，地线故障").arg(transStr(i));
+            mPacket->updatePro(error, ret);
         }
     }
     return ret;
@@ -276,9 +304,15 @@ bool Test_TransThread::recvPolarity()
             }
             //L1-24v;L2-12v;L3-5V
             if(mItem->modeId == START_BUSBAR){
-                res = this->checkFeeder_boxPolarity(Intresult);
-            }else{
-                res = this->checkTapoff_boxPolarity(Intresult);
+                res = this->checkFeeder_boxPolarity(Intresult);//始端箱
+            }else {
+                if(mItem->si.si_stdOr36Single==0){
+                    res = this->checkTapoff_boxPolarity(Intresult);//插接箱
+                }
+                else if(mItem->si.si_stdOr36Single==1){
+                    res = this->checkTapoff_36SingleboxPolarity(Intresult);//插接箱;
+                }
+
             }
             if(res){
                 scount++;

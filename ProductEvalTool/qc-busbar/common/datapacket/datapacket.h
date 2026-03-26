@@ -258,6 +258,7 @@ enum  sSetPlugType{
     ,PlugPowerMAX_L9_2       = 244           //功率上限
 
     ,PlugRestoreFactory       = 604           //恢复出厂设置
+    ,PlugShuntRelease         = 605           //12：断路器分闸 （连续发两条命令方可控制断路器分闸）
 };
 
 /**

@@ -369,7 +369,7 @@ bool Power_DevRead::Insert_NoneOutput(Test_TransThread *trans_ctrl, int index)
     QString eng2 = tr("Disconnect the load output breaker%1 and check that the reading of A/B/C current is 0A").arg(index);
     QString eng3;
     QString eng4 = tr("Socket %1 current check").arg(index);
-    trans_ctrl->sendCtrlGnd(1+32+64);//K1 K2 K6//L1 L2 ON L3 OFF
+    trans_ctrl->sendCtrlGnd(1+32+64);//K1 K6 K7//L1 L2 L3 ON  K2 K3 K4 OFF
 
     while(1)
     {
@@ -1767,6 +1767,19 @@ bool Power_DevRead::Load_SixLoop(Test_TransThread *trans_ctrl)
     if(ret) ret = SixInsertTwo_CtrlTwo(trans_ctrl);
     if(ret) ret = SixInsertTwo_CtrlThree(trans_ctrl);
     if(ret) ret = Insert_NoneOutput(trans_ctrl , 2);
+
+    //emit CurImageSig(4);
+
+    return ret;
+}
+
+bool Power_DevRead::Load_SingleSixLoop(Test_TransThread *trans_ctrl)
+{
+    bool ret = true; QString str1;
+    if(ret) ret = SixInsertOne_CtrlOne(trans_ctrl);
+
+    if(ret) ret = SixInsertTwo_CtrlOne(trans_ctrl);
+
 
     //emit CurImageSig(4);
 

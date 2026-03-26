@@ -552,7 +552,7 @@
         </item>
        </widget>
       </item>
-      <item row="0" column="2">
+      <item row="0" column="3">
        <widget class="QLabel" name="label_29">
         <property name="text">
          <string>软件版本</string>
@@ -562,7 +562,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
+      <item row="0" column="4">
        <widget class="QLineEdit" name="si_versionEdit">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -599,7 +599,7 @@
         </item>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="1" column="3">
        <widget class="QLabel" name="label_5">
         <property name="text">
          <string>回路数量</string>
@@ -609,7 +609,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
+      <item row="1" column="4">
        <widget class="QComboBox" name="loopNumBox">
         <item>
          <property name="text">
@@ -649,7 +649,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="2" column="1" colspan="2">
        <widget class="QComboBox" name="iOFBox_2">
         <property name="minimumSize">
          <size>
@@ -675,7 +675,7 @@
         </item>
        </widget>
       </item>
-      <item row="2" column="2">
+      <item row="2" column="3">
        <widget class="QLabel" name="label_27">
         <property name="text">
          <string>电流最大值</string>
@@ -685,7 +685,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
+      <item row="2" column="4">
        <widget class="QDoubleSpinBox" name="si_curMaxSpin">
         <property name="suffix">
          <string>A</string>
@@ -727,7 +727,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="2">
+      <item row="3" column="3">
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>测试电压误差</string>
@@ -737,7 +737,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="3">
+      <item row="3" column="4">
        <widget class="QDoubleSpinBox" name="si_volErrSpin">
         <property name="suffix">
          <string>V</string>
@@ -782,7 +782,7 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="2">
+      <item row="4" column="3">
        <widget class="QLabel" name="label_6">
         <property name="text">
          <string>测试电流误差</string>
@@ -792,7 +792,7 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="3">
+      <item row="4" column="4">
        <widget class="QDoubleSpinBox" name="si_curErrSpin">
         <property name="suffix">
          <string>A</string>
@@ -842,14 +842,14 @@
         </item>
        </widget>
       </item>
-      <item row="5" column="2">
+      <item row="5" column="3">
        <widget class="QLabel" name="label_24">
         <property name="text">
          <string>电流规格</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="3">
+      <item row="5" column="4">
        <widget class="QComboBox" name="curSpecBox">
         <item>
          <property name="text">
@@ -859,6 +859,51 @@
         <item>
          <property name="text">
           <string>125A(65A以上)</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_26">
+        <property name="text">
+         <string>分励脱扣器</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QComboBox" name="tripBox">
+        <item>
+         <property name="text">
+          <string>无</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>配有</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="6" column="2" colspan="2">
+       <widget class="QLabel" name="label_30">
+        <property name="text">
+         <string>浪潮3相6回路单输出</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="4">
+       <widget class="QComboBox" name="std36SingleBox">
+        <item>
+         <property name="text">
+          <string>标准正常测试3相6回路</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>定制测试3相6回路单输出</string>
          </property>
         </item>
        </widget>

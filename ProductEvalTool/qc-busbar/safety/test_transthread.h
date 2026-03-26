@@ -30,6 +30,7 @@ public:
     bool recvPolarity();
     bool checkFeeder_boxPolarity(QList<int> Intresult);
     bool checkTapoff_boxPolarity(QList<int> Intresult);
+    bool checkTapoff_36SingleboxPolarity(QList<int> Intresult);
     bool recvLoadCur(QList<int> &Intresult);
     QByteArray sendCmd(int command);
     QString transStr(int command);

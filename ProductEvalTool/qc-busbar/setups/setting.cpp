@@ -60,6 +60,8 @@ void Setting::initType()
     ui->outputBox->setCurrentIndex(dv->si_phaseflag);
     ui->testItemBox->setCurrentIndex(dv->si_testItem);
     ui->curSpecBox->setCurrentIndex(dv->si_cur_spec);
+    ui->tripBox->setCurrentIndex(dv->si_trip);
+    ui->std36SingleBox->setCurrentIndex(dv->si_stdOr36Single);
     uchar loop = 0;
     if(dv->loopNum == 3)
         loop = 0;
@@ -131,6 +133,8 @@ void Setting::updateType()
     dv->itemType = ui->itemBox->currentIndex();
     dv->si_testItem = ui->testItemBox->currentIndex();
     dv->si_cur_spec = ui->curSpecBox->currentIndex();
+    dv->si_trip = ui->tripBox->currentIndex();
+    dv->si_stdOr36Single = ui->std36SingleBox->currentIndex();
 }
 
 bool Setting::dataSave()

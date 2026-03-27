@@ -549,7 +549,7 @@ void Power_CoreThread::InsertErrRange()
             {
                 ret = mRead->readData();
                 if(ret) {
-                    if(b->data.sw[0] == 2) break;
+                    if(b->data.sw[0] == 1) break;//1：断开   2：闭合
                 }
                 flag++;
                 if(flag >40){
@@ -568,7 +568,7 @@ void Power_CoreThread::InsertErrRange()
             {
                 ret = mRead->readData();
                 if(ret) {
-                    if(b->data.sw[0] == 1) break; //1：合闸   2：分闸   3：跳闸（选配ISD报警触点）
+                    if(b->data.sw[0] == 2) break; //1：断开   2：闭合
                 }
                 flag++;
                 if(flag >40){

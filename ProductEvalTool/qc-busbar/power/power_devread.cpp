@@ -1415,7 +1415,10 @@ bool Power_DevRead::SixInsertOne_BreakerOne()
             str1.clear(); break;
         }
     }
-
+    if(mItem->si.si_stdOr36Single==1){
+        str = tr("打开插接箱的断路器1");
+        emit StepSig(str); sleep(5);
+    }
     return ret;
 }
 
@@ -1780,7 +1783,7 @@ bool Power_DevRead::SixInsertOne_BreakerTwo()
         }
     }
     str = tr("打开插接箱的断路器2");
-    emit StepSig(str); sleep(3);
+    emit StepSig(str); sleep(5);
 
     return ret;
 }
@@ -1840,10 +1843,11 @@ bool Power_DevRead::Load_SingleSixLoop()
         int a=0;
         if(ret) {
             ret = readData();
-            for(int i =0;i<1;i++) {
-                Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
-            }
-            a = Obj->cur.status[0];
+//            for(int i =0;i<1;i++) {
+//                Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
+//            }
+//            a = Obj->cur.status[0];
+            a = Obj->cur.value[0];
             if(a) {
                 ret = true; break;
             }
@@ -1860,9 +1864,6 @@ bool Power_DevRead::Load_SingleSixLoop()
     emit StepSig(str3); emit CurImageSig(1); sleep(5);
     if(ret) ret = SixInsertOne_CtrlOne_Single();
 
-    if(ret) ret = SixInsertTwo_CtrlOne();
-
-
     //emit CurImageSig(4);
 
     return ret;
@@ -1873,7 +1874,7 @@ bool Power_DevRead::Break_SixLoop()
 {
     bool ret = true;
     ret = SixInsertOne_BreakerOne();
-    if(ret) ret = SixInsertOne_BreakerTwo();
+    if(ret && mItem->si.si_stdOr36Single==0) ret = SixInsertOne_BreakerTwo();
     emit CurImageSig(4);
 
     return ret;

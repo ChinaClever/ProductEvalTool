@@ -548,7 +548,6 @@ void Power_CoreThread::InsertErrRange()
             while(1)
             {
                 ret = mRead->readData();
-                qDebug()<<flag << "    "<<ret << "  "<<b->data.vol.value[0];
                 if(ret) {
                     if(b->data.vol.value[0] == 0) break;//1：断开   2：闭合
                 }

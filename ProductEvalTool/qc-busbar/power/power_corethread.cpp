@@ -548,11 +548,12 @@ void Power_CoreThread::InsertErrRange()
             while(1)
             {
                 ret = mRead->readData();
+                qDebug()<<flag << "    "<<ret << "  "<<b->data.vol.value[0];
                 if(ret) {
-                    if(b->data.sw[0] == 1) break;//1：断开   2：闭合
+                    if(b->data.vol.value[0] == 0) break;//1：断开   2：闭合
                 }
                 flag++;
-                if(flag >40){
+                if(flag >50){
                     ret = false; break;
                 }
             }
@@ -568,7 +569,10 @@ void Power_CoreThread::InsertErrRange()
             {
                 ret = mRead->readData();
                 if(ret) {
-                    if(b->data.sw[0] == 2) break; //1：断开   2：闭合
+                    for(int i = 0 ; i < b->loopNum ; i++){
+                        if(b->data.vol.value[i] > 2000) ret = ret & true;
+                        else ret = ret & false;
+                    }if(ret)break; //1：断开   2：闭合
                 }
                 flag++;
                 if(flag >40){

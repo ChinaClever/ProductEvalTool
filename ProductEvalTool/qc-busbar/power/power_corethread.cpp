@@ -39,15 +39,17 @@ bool Power_CoreThread::initDev()
 {
     mLogs->updatePro(tr("即将开始"));
     bool ret  = true;
-    if(mItem->modeId == INSERT_BUSBAR || mItem->modeId == TEMPERATURE_BUSBAR){
+    if(mItem->si.si_stdOr36Single==0){
+        if(mItem->modeId == INSERT_BUSBAR || mItem->modeId == TEMPERATURE_BUSBAR){
 
-        QString str = tr("开始测试插接箱串口通讯");           //自动分配地址
-        emit TipSig(str); sleep(2);
-        str = tr("请将插接箱IN口与测试治具IN口对接，OUT口与测试治具OUT口对接");
-        emit TipSig(str); //emit ImageSig(3);
+            QString str = tr("开始测试插接箱串口通讯");           //自动分配地址
+            emit TipSig(str); sleep(2);
+            str = tr("请将插接箱IN口与测试治具IN口对接，OUT口与测试治具OUT口对接");
+            emit TipSig(str); //emit ImageSig(3);
 
-        mModbus->autoSetAddress(); //emit ImageSig(4);
+            mModbus->autoSetAddress(); //emit ImageSig(4);
 
+        }
     }
     ret = mRead->readSn();
     if(ret) mItem->modeId = mDt->devType;
@@ -574,7 +576,11 @@ void Power_CoreThread::InsertErrRange()
             {
                 ret = mRead->readData();
                 if(ret) {
-                    if(b->data.sw[0] == 1) break;//1：断开   2：闭合
+                    for(int i = 0 ; i <b->data.lineNum;i++){
+                        if(b->data.vol.value[i]==0) ret &= true;
+                        else ret &= false;
+                    }
+                    if(ret) break;//1：断开   2：闭合
                 }
                 flag++;
                 if(flag >40){
@@ -593,7 +599,11 @@ void Power_CoreThread::InsertErrRange()
             {
                 ret = mRead->readData();
                 if(ret) {
-                    if(b->data.sw[0] == 2) break; //1：断开   2：闭合
+                    for(int i = 0 ; i <b->data.lineNum;i++){
+                        if(b->data.vol.value[i]>2000) ret &= true;
+                        else ret &= false;
+                    }
+                    if(ret)break; //1：断开   2：闭合
                 }
                 flag++;
                 if(flag >40){
@@ -2338,13 +2348,15 @@ void Power_CoreThread::workDown()
             mPro->softwareVersion = "V" +QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
             ePro->softwareVersion = mPro->softwareVersion;
 
-            BaseErrRange();                                 //检查IN OUT口 网口对比始端箱/插接箱基本信息
-            EnvErrRange();                                  //温度模块检测
+            if(mItem->si.si_stdOr36Single==0){
+                BaseErrRange();                                 //检查IN OUT口 网口对比始端箱/插接箱基本信息
+                EnvErrRange();                                  //温度模块检测
+            }
 
             if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(),"0");
             else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
 
-            if(ret) ret = BreakerTest();                            //断路器测试
+            if(ret && mItem->si.si_stdOr36Single==0) ret = BreakerTest();                            //断路器测试
             if(ret && mItem->si.si_stdOr36Single==0) ret = stepVolTest();                            //电压测试/////3相6回路单输出时可以不用测试此项
 
             // if(ret) ret = mSource->read();

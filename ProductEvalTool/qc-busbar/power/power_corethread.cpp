@@ -576,7 +576,7 @@ void Power_CoreThread::InsertErrRange()
             {
                 ret = mRead->readData();
                 if(ret) {
-                    for(int i = 0 ; i <b->data.lineNum;i++){
+                    for(int i = 0 ; i <b->loopNum;i++){
                         if(b->data.vol.value[i]==0) ret &= true;
                         else ret &= false;
                     }
@@ -599,7 +599,7 @@ void Power_CoreThread::InsertErrRange()
             {
                 ret = mRead->readData();
                 if(ret) {
-                    for(int i = 0 ; i <b->data.lineNum;i++){
+                    for(int i = 0 ; i <b->loopNum;i++){
                         if(b->data.vol.value[i]>2000) ret &= true;
                         else ret &= false;
                     }

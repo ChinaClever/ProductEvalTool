@@ -600,7 +600,10 @@ void Power_CoreThread::InsertErrRange()
                 ret = mRead->readData();
                 if(ret) {
                     for(int i = 0 ; i <b->loopNum;i++){
-                        if(b->data.vol.value[i]>2000) ret &= true;
+                        sSiCfg *cth = &(mItem->si);
+                        int exValue = cth->si_vol *10.0;
+                        int err = cth->si_volErr *10.0;
+                        if(b->data.vol.value[i] >= exValue-err) ret &= true;
                         else ret &= false;
                     }
                     if(ret)break; //1：断开   2：闭合

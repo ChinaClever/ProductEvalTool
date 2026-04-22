@@ -2295,6 +2295,126 @@ bool Power_CoreThread::handleBasicType()
     return  ret;
 }
 
+bool Power_CoreThread::handleBasicTypeStart(bool flag)
+{
+    bool ret = true;
+    ret = mRead->readDevBasicType();
+    auto obj = &(mDev->line);
+    int count = 0;
+    uchar loop = 3;
+    QString strtips = tr("断路器闭合时，电压不为0...");//false 闭合
+    if(flag) strtips = tr("断路器断开时，电压为0...");//true 断开
+
+    emit TipSig(strtips);//////////
+
+    while (1)
+    {
+        ret = mRead->readDevBasicType(); // 读取电压电流填充 obj
+        int okCount = 0;
+        int exVol = mItem->si.si_vol * 10.0;
+        int errVol = mItem->si.si_volErr * 10.0;
+
+        for(int i = 0; i < 3; ++i)
+        {
+            int idx = i;
+            int volValue = obj->source_vol[idx] / 100.0;
+            bool volOk = false;
+            if(!flag) volOk = mErr->checkErrRange(exVol, volValue, errVol);//false
+            else volOk = mErr->checkVol0Range(0, obj->source_vol[idx]);//true 断开
+
+            if(volOk) {
+                okCount++;
+            }
+        }
+
+        if (okCount == loop)
+        {
+            QString str, engStr;
+            for (int i = 0; i < loop; i++)
+            {
+                QString name;
+                if(i == 0)name = "A";
+                else if(i == 1)name = "B";
+                else name = "C";
+
+                double vol = obj->source_vol[i] / SOURCE_RATE_VOL;
+                str = tr("检测L%1电压成功;").arg(name+QString::number(i + 1));
+                str = tr("%1 电压: %2V")
+                           .arg(name+QString::number(i + 1))
+                           .arg(vol, 0, 'f', 2);
+                engStr = tr("Check L%1 voltage Success;").arg(name+QString::number(i + 1));
+                engStr = tr("%1 voltage: %2V; ")
+                              .arg(name+QString::number(i + 1))
+                              .arg(vol, 0, 'f', 2);
+
+                QString title = tr("L%1电压检测").arg(name+QString::number(i + 1));
+                QString engTitle = tr("L%1 Voltage Check").arg(name+QString::number(i + 1));
+                QString request = "",engRequest = "";
+                if(!flag){//true 断开
+                    request = tr("L%1电压大于零").arg(name+QString::number(i + 1));
+                    engRequest = tr("L %1 Voltage greater than zero").arg(name+QString::number(i + 1));
+                }else{
+                    request = tr("L%1电压等于零").arg(name+QString::number(i + 1));
+                    engRequest = tr("L %1 Voltage equals zero").arg(name+QString::number(i + 1));
+                }
+                mLogs->updatePro(str, true);
+
+                mLogs->writeData(request, str, title , true);
+                mLogs->writeDataEng(engRequest, engStr, engTitle , true);
+            }
+
+            emit TipSig(tr("电压检测成功，准备切换下一步"));
+            qDebug()<<"success";
+            return true;
+        }
+        count++;
+        qDebug()<<count;
+        if (count > 50)
+        {
+            QString str, engStr;
+            for (int i = 0; i < loop; i++)
+            {
+                QString name = trans(i);
+                double vol = obj->source_vol[i] / SOURCE_RATE_VOL;
+                str = tr("检测L%1电压失败").arg(name+QString::number(i + 1));
+                str = tr("%1 电压: %2V; ")
+                           .arg(name+QString::number(i + 1))
+                           .arg(vol, 0, 'f', 2);
+                engStr = tr("Check L%1 voltage Failed").arg(name+QString::number(i + 1));
+                engStr = tr("%1 voltage: %2V;")
+                              .arg(name+QString::number(i + 1))
+                              .arg(vol, 0, 'f', 2);
+
+                QString title = tr("L%1电压检测").arg(name+QString::number(i+1));
+                QString engTitle = tr("L%1 Voltage Check").arg(name+QString::number(i + 1));
+
+                QString request = "",engRequest = "";
+                if(!flag){//true 断开
+                    request = tr("L%1电压大于零").arg(name+QString::number(i + 1));
+                    engRequest = tr("L %1 Voltage greater than zero").arg(name+QString::number(i + 1));
+                }else{
+                    request = tr("L%1电压等于零").arg(name+QString::number(i + 1));
+                    engRequest = tr("L %1 Voltage equals zero").arg(name+QString::number(i + 1));
+                }
+                mLogs->updatePro(str, false);
+                mLogs->updatePro(tr("电压检测失败，超过最大重试次数"), false);
+                mLogs->writeData(request, str, title , false);
+                mLogs->writeDataEng(engRequest, engStr, engTitle , false);
+            }
+
+
+            emit TipSig(tr("电压检测失败，请检查断路器状态,恢复断路器状态"));
+            return false;
+        }
+        QThread::msleep(1000);
+    }
+    strtips = tr("断开断路器");//false 闭合
+    if(flag) strtips = tr("恢复断路器");//true 断开
+    emit TipSig(strtips);
+
+    return  ret;
+}
+
 void Power_CoreThread::workDown()
 {
     this->mTrans->sendCtrlGnd(0);//Reset
@@ -2315,8 +2435,20 @@ void Power_CoreThread::workDown()
         ret = handleBasicType();
         mCfg->work_mode = 3;
         if(ret) emit JudgSig(); //极性测试弹窗///
-    }
-    else if(mItem->modeId == TEMPERATURE_BUSBAR){
+    }else if (mItem->modeId == BASIC_TYPE_START) {
+        mLogs->updatePro(tr("即将开始"));
+        if(mPro->moduleSN.isEmpty()){
+             mSn->createSn();//设置序列号
+             QString str = mDev->devType.sn;
+             mPro->moduleSN = str.remove(QRegExp("\\s"));
+             mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
+        }
+
+        ret = handleBasicTypeStart(false);
+        if(ret) ret = handleBasicTypeStart(true);
+        mCfg->work_mode = 3;
+        if(ret) emit JudgSig(); //极性测试弹窗///
+    }else if(mItem->modeId == TEMPERATURE_BUSBAR){
         ret = initDev();
         if(ret) ret = mRead->readDev();
         if(ret) TemErrRange();

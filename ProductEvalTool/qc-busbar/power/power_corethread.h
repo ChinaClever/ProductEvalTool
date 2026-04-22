@@ -100,6 +100,7 @@ protected:
     bool tryReadVolCurSig(sObjData *,int id);
 
     bool handleBasicType();
+    bool handleBasicTypeStart(bool flag);
 
 
     bool BreakVolCurCtrl(sObjData *,int id,int type,const int face);

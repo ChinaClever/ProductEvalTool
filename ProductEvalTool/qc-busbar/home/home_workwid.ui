@@ -392,12 +392,17 @@
     </item>
     <item>
      <property name="text">
-      <string>基本型</string>
+      <string>基本型插接箱</string>
      </property>
     </item>
     <item>
      <property name="text">
       <string>温度检测</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>基本型始端箱</string>
      </property>
     </item>
    </widget>

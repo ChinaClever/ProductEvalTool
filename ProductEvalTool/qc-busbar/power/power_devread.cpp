@@ -70,7 +70,7 @@ bool Power_DevRead::readDevBus()
 {
     bool ret = mPacket->delay(3);
     if(ret) {
-        if( mItem->modeId == 2 ){
+        if( mItem->modeId == TEMPER_BUSBAR  ){
 
             ret = checkNet();
             if(ret) {

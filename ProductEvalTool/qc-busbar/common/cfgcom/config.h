@@ -44,6 +44,7 @@ enum eIpTypes {
     TEMPER_BUSBAR,
     BASIC_TYPE,
     TEMPERATURE_BUSBAR,
+    BASIC_TYPE_START,
     SNMP=0,
     MODBUS
 };

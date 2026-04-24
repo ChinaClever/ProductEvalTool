@@ -310,11 +310,15 @@ void Home_WorkWid::updateWid()
         break;
     }
     case BASIC_TYPE: {
-        mPro->dev_name = tr("基本型"); ePro->dev_name = tr("Basic type");
+        mPro->dev_name = tr("插接箱"); ePro->dev_name = tr("Tap-off box");
         break;
     }
     case TEMPERATURE_BUSBAR:{
         mPro->dev_name = tr("温度模块"); ePro->dev_name = tr("Temperature module");
+        break;
+    }
+    case BASIC_TYPE_START:{
+        mPro->dev_name = tr("始端箱"); ePro->dev_name = tr("feeder box");
         break;
     }
     default:
@@ -609,12 +613,12 @@ void Home_WorkWid::initTypeComboBox()
 void Home_WorkWid::on_snprintBtn_clicked()
 {
     if(mPro->step == Test_End){
-        if(mCfgm->modeId == 2 || mPro->type == 0)//母线槽/基本型
+        if(mCfgm->modeId == TEMPER_BUSBAR || (mCfgm->modeId == BASIC_TYPE_START && mPro->type == 0))//母线槽/基本型
         {
             QString method; int port = 0; QString ip;
-            if(mCfgm->modeId == 2) {method = "Integration/Busbar-Busway/Execute"; port = 81; ip = "127.0.0.1";}
+            if(mCfgm->modeId == TEMPER_BUSBAR) {method = "Integration/Busbar-Busway/Execute"; port = 81; ip = "127.0.0.1";}
             else {method = "Integration/Busbar-Product/Execute"; port = 80; ip = "127.0.0.1";}
-            if((mItem->work_mode == 1 && mPro->type == 0) || mCfgm->modeId == 2) mVolInsul->printer(ip, method, port);
+            if((mCfgm->modeId == BASIC_TYPE_START && mPro->type == 0) || mCfgm->modeId == TEMPER_BUSBAR) mVolInsul->printer(ip, method, port);
         }else if(mPro->type == 1){
             if(mItem->work_mode == 2) mPowThread->printer();
         }

@@ -91,6 +91,7 @@ protected:
     bool tryReadVolCurSig(sObjData *,int id);
     bool VolCurCtrlSigle(sObjData *,int id);
     bool handleBasicType();
+    bool handleBasicTypeStart(bool flag);
     bool breakTest(int );
     bool ThreeBreakTest(int);
 private:

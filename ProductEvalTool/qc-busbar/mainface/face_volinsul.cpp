@@ -105,7 +105,7 @@ void Face_Volinsul::resultSlot()
     // mPro->moduleSN = str.remove(QRegExp("\\s"));
     // mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
 
-    if(mCfg->modeId == TEMPER_BUSBAR  || mCfg->modeId == BASIC_TYPE)
+    if(mCfg->modeId == TEMPER_BUSBAR  ||  mCfg->modeId == BASIC_TYPE || mCfg->modeId == BASIC_TYPE_START)
     {
         if(mDev->devType.sn.isEmpty()) mSn->createSn();//设置序列号
         QString str = mDev->devType.sn;

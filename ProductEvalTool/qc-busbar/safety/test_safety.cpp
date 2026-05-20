@@ -298,10 +298,11 @@ bool Test_safety::testACW(QString & recv)
     int stepTotal = 0;
     item.item = tr("交流耐压测试");
     int value = ACWFile;
-    if((mCfg->si.itemType == 1)&&(mCfg->modeId == 1)) { value = ACWFile;}
+    if((mCfg->si.itemType == 1)&&(mCfg->modeId == BASIC_TYPE)) { value = ACWFile_MAL;}
 
     ret = startTest(item, recv , tr("交流耐压") , value , stepTotal);
     delayItem(item, stepTotal*5000 +1000);//25
+//    if((mCfg->si.itemType == 1)&&(mCfg->modeId == BASIC_TYPE)) { delayItem(item, stepTotal*5000 +1000);}
 
     for(int i = 0; i < stepTotal ; i++)
     {

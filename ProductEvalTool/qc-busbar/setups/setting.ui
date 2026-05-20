@@ -649,32 +649,6 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="2">
-       <widget class="QComboBox" name="iOFBox_2">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <item>
-         <property name="text">
-          <string>无</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>有</string>
-         </property>
-        </item>
-       </widget>
-      </item>
       <item row="2" column="3">
        <widget class="QLabel" name="label_27">
         <property name="text">
@@ -904,6 +878,32 @@
         <item>
          <property name="text">
           <string>定制测试3相6回路单输出</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="iOFBox_2">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <item>
+         <property name="text">
+          <string>无</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>有</string>
          </property>
         </item>
        </widget>

@@ -15,6 +15,7 @@ public:
     bool curAlarm(int id);
     QString changeMode(int index);
     bool checkErrRange(int exValue, int value, int err);
+    bool checkVol0Range(int exValue, int value);
 protected:
     QString changeBaudType(int index);
     QString changeCurType(int index);

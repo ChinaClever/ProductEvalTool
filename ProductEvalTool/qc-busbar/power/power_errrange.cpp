@@ -82,6 +82,18 @@ bool Power_ErrRange::checkErrRange(int exValue, int value, int err)
     return ret;
 }
 
+bool Power_ErrRange::checkVol0Range(int exValue, int value)
+{
+    bool ret = false;
+    if(value == exValue) {
+        ret =  true;
+    } else {
+        qDebug() << "value Err Range" << value << exValue;
+    }
+
+    return ret;
+}
+
 
 bool Power_ErrRange::curAlarm(int id)
 {

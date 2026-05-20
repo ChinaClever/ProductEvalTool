@@ -166,6 +166,11 @@ bool Test_TransThread::checkFeeder_boxPolarity(QList<int> Intresult)
            if(volValue <300) {ret = false; mPacket->updatePro("第三组单相，C相线序故障", ret); }
        }
    }
+   volValue = Intresult.at(9);//
+   if(volValue < 1500) {
+       ret = false;
+       mPacket->updatePro(tr("地线故障"), ret);
+   }
    return ret;
 }
 

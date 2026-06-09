@@ -67,7 +67,8 @@ void Json_Pack::head(QJsonObject &obj)
 
         }
 
-        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+//        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+        step_out_https_post("api/bus/testData",mPro->Service,obj);
     }
 
 
@@ -147,7 +148,8 @@ void Json_Pack::head_English(QJsonObject &obj)
 
 //        gSmartObjEng.push_back(obj);
 
-        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+//        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+        step_out_https_post("api/bus/testData",mPro->Service,obj);
     }
 
     if(mPro->work_mode >=2) {
@@ -231,7 +233,8 @@ void Json_Pack::SafeData()
         obj.insert("testProcess" ,mPro->itemData.at(i));
         obj.insert("testResult" ,mPro->stepResult.at(i));
         obj.insert("testRequest" ,mPro->stepRequest.at(i));
-        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+//        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+        step_out_https_post("api/bus/testData",mPro->Service,obj);
     }
 }
 
@@ -270,7 +273,8 @@ void Json_Pack::SafeData_Lan()
         obj.insert("testProcess" ,ePro->itemData.at(i));
         obj.insert("testResult" ,ePro->stepResult.at(i));
         obj.insert("testRequest" ,ePro->stepRequest.at(i));
-        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+//        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+        step_out_https_post("api/bus/testData",mPro->Service,obj);
     }
 }
 
@@ -309,7 +313,8 @@ void Json_Pack::stepData()
         obj.insert("testProcess" ,mPro->itemData.at(i));
         obj.insert("testResult" ,mPro->stepResult.at(i));
         obj.insert("testRequest" ,mPro->stepRequest.at(i));
-        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+//        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+        step_out_https_post("api/bus/testData",mPro->Service,obj);
     }
 }
 
@@ -349,7 +354,8 @@ void Json_Pack::stepData_Eng()//功能测试的英文版本
         obj.insert("testProcess" ,ePro->itemData.at(i));
         obj.insert("testResult" ,ePro->stepResult.at(i));
         obj.insert("testRequest" ,ePro->stepRequest.at(i));
-        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+//        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+        step_out_https_post("api/bus/testData",mPro->Service,obj);
     }
 }
 
@@ -366,6 +372,37 @@ void Json_Pack::stephttp_post(const QString &method, const QString &ip,QJsonObje
         .onFailed([&](QString error) {qDebug()<<"error"<<error; mPro->flag = 0; })
         .onTimeout([&](QNetworkReply *) {qDebug()<<"http_post timeout"; mPro->flag = 0;}) // 超时处理
         .timeoutMs(200) // 1s超时
+        .block()
+        .body(json)
+        .exec();
+}
+
+auto Json_Pack::sslConfig()
+{
+    QSslConfiguration SSLConfig;
+    SSLConfig = QSslConfiguration::defaultConfiguration();
+//    SSLConfig.setPeerVerifyMode(QSslSocket::AutoVerifyPeer);
+//    SSLConfig.setProtocol(QSsl::SecureProtocols);
+    SSLConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
+    SSLConfig.setProtocol(QSsl::TlsV1_3OrLater);
+    return SSLConfig;
+}
+
+void Json_Pack::step_out_https_post(const QString &method, const QString &ip,QJsonObject &json, int port)
+{
+    qDebug()<<"json"<<json;
+    AeaQt::HttpClient http;
+    http.clearAccessCache();
+    http.clearConnectionCache();
+    QString url = "https://%1/%2";
+    http.post(url.arg(ip).arg(method))
+        .header("content-type", "application/json")
+        .header("Connection", "keep-alive")   // 增加这一行
+        .onSuccess([&](QString result) {qDebug()<<"result"<<result; mPro->flag = 1; /*mPro->status << result;mPro->pass << 1;*/})
+        .onFailed([&](QString error) {qDebug()<<"error"<<error; mPro->flag = 0;  mPro->status << error;mPro->pass << 0;})
+        .onTimeout([&](QNetworkReply *) {qDebug()<<"http_posts timeout"; mPro->flag = 0;mPro->status << "http_posts timeout";mPro->pass << 0;}) // 超时处理
+        .sslConfiguration(sslConfig())
+        .timeoutMs(2000) // 1s超时
         .block()
         .body(json)
         .exec();
@@ -405,13 +442,15 @@ void Json_Pack::FuncData(int num, const QString &strRequest, const QString &str2
 
     if(mItem->modeId == INSERT_BUSBAR || mItem->modeId == TEMPERATURE_BUSBAR){
         if(send == 1){
-            stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+//            stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+            step_out_https_post("api/bus/testData",mPro->Service,obj);
             mObjFlag++;
             if(mObjFlag == 2){
                 sDataPacket::bulid()->delay(20);
                 if(!mObj.isEmpty()){
                     mObj.insert("moduleSn", mPro->moduleSN);
-                    stephttp_post("admin-api/bus/testData",mPro->Service,mObj);
+//                    stephttp_post("admin-api/bus/testData",mPro->Service,mObj);
+                    step_out_https_post("api/bus/testData",mPro->Service,obj);
                     QStringList list = mObj.keys();
                     for(const QString & str: list){
                         mObj.remove(str);
@@ -421,7 +460,8 @@ void Json_Pack::FuncData(int num, const QString &strRequest, const QString &str2
         }
         else {mObj = obj;mObjFlag = 0;}
     }else{
-        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+        //stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+        step_out_https_post("api/bus/testData",mPro->Service,obj);
     }
 
     // int num = mPro->stepResult.size();
@@ -494,13 +534,15 @@ void Json_Pack::FuncData_Lan(int num,const QString &strRequest,const QString &st
 
     if(mItem->modeId == INSERT_BUSBAR || mItem->modeId == TEMPERATURE_BUSBAR){
         if(send == 1) {
-            stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+//            stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+            step_out_https_post("api/bus/testData",mPro->Service,obj);
             mObj_enFlag++;
             if(mObj_enFlag == 2){
                 sDataPacket::bulid()->delay(20);
                 if(!mObj_en.isEmpty()){
                     mObj_en.insert("moduleSn", ePro->moduleSN);
-                    stephttp_post("admin-api/bus/testData",mPro->Service,mObj_en);
+//                    stephttp_post("admin-api/bus/testData",mPro->Service,mObj_en);
+                    step_out_https_post("api/bus/testData",mPro->Service,mObj_en);
                     QStringList list = mObj_en.keys();
                     for(const QString & str: list){
                         mObj_en.remove(str);
@@ -510,7 +552,8 @@ void Json_Pack::FuncData_Lan(int num,const QString &strRequest,const QString &st
         }
         else {mObj_en = obj;mObj_enFlag = 0;}
     }else{
-        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+//        stephttp_post("admin-api/bus/testData",mPro->Service,obj);
+        step_out_https_post("api/bus/testData",mPro->Service,obj);
     }
 
     // int num = mPro->stepResult.size();

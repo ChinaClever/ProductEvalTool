@@ -212,12 +212,14 @@ bool Sn_SerialNum::snEnter()
             for(auto &u:gSmartObj){
                 u.insert("moduleSn", mSnItem.sn);
                 if(mPro->online)
-                jp->stephttp_post("admin-api/bus/testData",mPro->Service,u);
+//                jp->stephttp_post("admin-api/bus/testData",mPro->Service,u);
+                  jp->step_out_https_post("api/bus/testData",mPro->Service,u);
             }
             for(auto &u:gSmartObjEng){
                 u.insert("moduleSn", mSnItem.sn);
                 if(mPro->online)
-                jp->stephttp_post("admin-api/bus/testData",mPro->Service,u);
+//                jp->stephttp_post("admin-api/bus/testData",mPro->Service,u);
+                  jp->step_out_https_post("api/bus/testData",mPro->Service,u);
             }
             gSmartObj.clear();
             gSmartObjEng.clear();

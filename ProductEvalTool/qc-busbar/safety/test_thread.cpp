@@ -34,8 +34,8 @@ void Test_Thread::timeoutDone()
 {
     if(mPro->oning)
     {
-        bool ret = mRead->readDevBus();
-        //bool ret = true;
+        //bool ret = mRead->readDevBus();
+        bool ret = true;
         QString sendStr = "";
 
         if(!ret) {

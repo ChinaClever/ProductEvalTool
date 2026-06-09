@@ -19,6 +19,36 @@ Home_WorkWid::Home_WorkWid(QWidget *parent) :
     Cfg::bulid()->readQRcode();
     ui->codeEit->setText(mCfgm->pn);
     ui->stopFag->hide();
+
+//    for(int i = 0 ; i < 3 ; i++){
+//        // 构造 JSON 数据
+//        QJsonObject json;
+//        json.insert("id", QJsonValue::Null);
+//        json.insert("productSn", "PFZA250SS2400");
+//        json.insert("moduleSn", "3102002605270042022C");
+//        json.insert("softVersion", "");
+//        json.insert("languageSelect", 0);
+//        json.insert("orderId", "PO20260203008");
+//        json.insert("orderNum", 68);
+//        json.insert("devName", "母线槽");
+//        json.insert("toolName", "qc-busbar");
+//        json.insert("testResult", 1);
+//        json.insert("startTime", QString("2026-05-27 16:27:5%1").arg(i));
+//        json.insert("testStep", "安规测试");
+//        json.insert("testItem", "绝缘测试");
+//        json.insert("testCfg", QJsonValue::Null);
+//        json.insert("testRequest", "绝缘测试，分别对以下测试点输入电压 500V，5.0s：N-PE/L1/L2/L3，绝缘电阻 >10MΩ");
+//        json.insert("testProcess", "绝缘测试结果：1274 MΩ");
+//        json.insert("endTime", "2026-05-27 16:28:53");
+//        json.insert("allData", QJsonValue::Null);
+
+//        // 调用接口
+//        //QTimer::singleShot(200, this, [&](){
+//            Json_Pack::bulid()->step_out_https_post("api/bus/testData","clbusbar.legrandchina.cn",json);
+//        //});
+
+//    }
+
     QTimer::singleShot(7*1000,this,SLOT(PingSlot())); //延时初始化
 }
 
@@ -40,6 +70,13 @@ void Home_WorkWid::initWid()
     mLogs = Power_Logs::bulid(this);
     mPro->step = Test_End;
     mCfgm->online = false;
+
+//    mPro->status<< QString("Supports SSL:%1").arg( QSslSocket::supportsSsl() );
+//    mPro->pass<< QSslSocket::supportsSsl();
+//    mPro->status<< QString("SSL library version:%1").arg( QSslSocket::sslLibraryVersionString() );
+//    mPro->pass<< !QSslSocket::sslLibraryVersionString().isEmpty();
+//    mPro->status<< QString("Build version:%1").arg( QSslSocket::sslLibraryBuildVersionString() );
+//    mPro->pass<< !QSslSocket::sslLibraryBuildVersionString().isEmpty();
 
     mJudg = new People_judg(this);
     mSafePeo = new People_Safety(this);

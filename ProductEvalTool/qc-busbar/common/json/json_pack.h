@@ -13,7 +13,9 @@ public:
     static Json_Pack *bulid(QObject *parent = nullptr);
     void http_post(const QString &method, const QString &ip, QJsonObject json, int port=48088);
     void stephttp_post(const QString &method, const QString &ip,QJsonObject &json, int port=48088);
+    void step_out_https_post(const QString &method, const QString &ip,QJsonObject &json, int port=48088);
     void getJson(QJsonObject &json, QByteArray &ba);
+    auto sslConfig();
     void stepData();
     void stepData_Eng();
     void SendJson_Safe();

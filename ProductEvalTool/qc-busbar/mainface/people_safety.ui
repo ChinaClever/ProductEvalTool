@@ -88,7 +88,7 @@
       <bool>false</bool>
      </property>
      <property name="autoExclusive">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="autoRepeatInterval">
       <number>100</number>
@@ -162,7 +162,7 @@
       <bool>false</bool>
      </property>
      <property name="autoExclusive">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="autoRepeatInterval">
       <number>100</number>
@@ -205,7 +205,7 @@
       <bool>false</bool>
      </property>
      <property name="autoExclusive">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="autoRepeatInterval">
       <number>100</number>
@@ -404,7 +404,7 @@
       <bool>false</bool>
      </property>
      <property name="autoExclusive">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="autoRepeatInterval">
       <number>100</number>
@@ -478,7 +478,7 @@
       <bool>false</bool>
      </property>
      <property name="autoExclusive">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="autoRepeatInterval">
       <number>100</number>

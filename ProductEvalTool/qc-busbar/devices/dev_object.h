@@ -120,6 +120,7 @@ struct Rtu_recv {
     ushort thd[40]; //   谐波含量
     unsigned long long totalApPow;//   总视在功率
     ushort crc; // 检验码
+    ushort plugBreaker; // 表示插接箱新加的断路器个数和状态
 };
 
 class Dev_Object : public QThread

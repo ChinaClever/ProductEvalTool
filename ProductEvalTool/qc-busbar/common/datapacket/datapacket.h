@@ -532,6 +532,7 @@ typedef struct _sBoxData {
     uint totalCur;//总电流
     uint online1;
     uint online2;
+    ushort plugbreaker;
 
     ushort rtuLen;
 //    uchar rtuArray[SRC_DATA_LEN_MAX];

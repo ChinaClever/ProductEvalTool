@@ -160,7 +160,7 @@ void Setup_MainWid::on_pcBtn_clicked()
         QString str1 = tr("该服务端IP异常");
         QString ip = ui->addrEdit->text();
         for(int k=0; k<2; ++k) {
-            res = cm_pingNet(ip);
+            res = cm_pingNet_(ip);
             if(res) break;
         }
         if(res) mItem->online = true;

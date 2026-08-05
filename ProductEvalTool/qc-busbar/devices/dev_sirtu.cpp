@@ -273,6 +273,7 @@ bool Dev_SiRtu::readPduData()
         box->data.totalPow.value[0] = mRtuPkt->totalPow.ivalue;
         box->data.totalPow.min[0] = mRtuPkt->totalPow.imin;
         box->data.totalPow.max[0] = mRtuPkt->totalPow.imax;
+        box->plugbreaker = mRtuPkt->plugBreaker;
         box->plug_cur_spec = mRtuPkt->plug_cur_spec;
         box->backup_breaker = mRtuPkt->backup_breaker;
         thdDataV3(mRtuPkt);
@@ -637,10 +638,10 @@ bool Dev_SiRtu::rtu_recv_packetV3(uchar *buf, int len, Rtu_recv *pkt)
                 ptr += rtu_plug_recv_env_alarm_data(ptr , pkt , i);
             for(int i = 0 ; i < RTU_LOOP_NUM ; ++i) // 读取loop alarm数据
                 ptr += rtu_plug_recv_loop_alarm_data(ptr , pkt , i);
-            ptr+=2;
+            pkt->plugBreaker = (*ptr) * 256 + *(ptr+1); ptr+=2;
+            for(int i = 0 ; i < RTU_LOOP_NUM ; ++i) // 读取loop load数据
+                ptr += 2;
             if(pkt->plug_cur_spec == 1){
-                for(int i = 0 ; i < RTU_LOOP_NUM ; ++i) // 读取loop load数据
-                    ptr += 2;
                 for(int i = 0 ; i < RTU_LOOP_NUM ; ++i) // 读取loop high current数据
                     ptr += rtu_plug_recv_loop_high_cur_data(ptr , pkt , i);
                 for(int i = 0 ; i < RTU_LOOP_NUM ; ++i) // 读取loop high alram数据

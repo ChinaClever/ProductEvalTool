@@ -151,7 +151,7 @@ struct sSiCfg {
     float si_curMax;
     uint rate;
     uchar itemType;
-    uchar si_testItem;
+    uchar si_testItem;//0:测试L1,L2,L3 1:只测试L1 2:只测试L2 3:只测试L3
     uchar si_cur_spec;
     uchar si_trip;
     uchar si_stdOr36Single;//测试标准还是三相六回路单输出

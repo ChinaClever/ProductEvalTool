@@ -36,6 +36,30 @@ bool cm_pingNet(const QString& ip)
     return bPingSuccess;
 }
 
+bool cm_pingNet_(const QString& ip)
+{
+    QProcess pingProcess;
+    QString strArg = "ping " + ip + " -n 1 -i 2";  //strPingIP 为设备IP地址
+//    QString strArg = "ping " + ip;  //strPingIP 为设备IP地址
+    pingProcess.start(strArg,QIODevice::ReadOnly);
+    if(!pingProcess.waitForFinished(3000)){
+        pingProcess.kill();
+        return false;
+    }
+
+    QString p_stdout = QString::fromLocal8Bit(pingProcess.readAllStandardOutput());
+    bool bPingSuccess = false;
+
+    if(p_stdout.contains("TTL=")) { //我采用这个字符来判断 对不对？
+        bPingSuccess = true;
+    }else {
+        bPingSuccess = false;
+    }
+    pingProcess.close();
+
+    return bPingSuccess;
+}
+
 /***
   * 获取程序数据目录
   */

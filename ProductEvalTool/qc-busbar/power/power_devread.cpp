@@ -56,7 +56,7 @@ bool Power_DevRead::readData()
     if( mItem->modeId == START_BUSBAR ){
         ret = mSiRtu->readPduData();
         if(ret) {
-            ret = checkNet();
+            //ret = checkNet();
             if(ret) ret = mIpSnmp->readPduData();
             }
     }else{
@@ -175,7 +175,7 @@ bool Power_DevRead::checkNet()
         if(!ret) {
             msleep(50);
             ip = "192.168.1.163";
-            ret = cm_pingNet(ip);
+            ret = cm_pingNet_(ip);
         }
         if(ret) break;
     }
@@ -2277,6 +2277,10 @@ bool Power_DevRead::Three_OneBreaker()
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret);
+            if(mBusData->box[mItem->addr - 1].iOF){
+                if(Obj->sw[0] == 1){str = tr("插接箱的断路器1 iOF触点检测成功 ");mLogs->updatePro(str, true);}
+                else {str = tr("插接箱的断路器1 iOF触点检测失败 ");mLogs->updatePro(str, false);}
+            }
             str = tr("插接箱的断路器1检测成功 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -2427,6 +2431,12 @@ bool Power_DevRead::Three_TwoBreaker()
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret);
+
+            if(mBusData->box[mItem->addr - 1].iOF){
+                if(Obj->sw[1] == 1){str = tr("插接箱的断路器2 iOF触点检测成功 ");mLogs->updatePro(str, true);}
+                else {str = tr("插接箱的断路器2 iOF触点检测失败 ");mLogs->updatePro(str, false);}
+            }
+
             str = tr("插接箱的断路器2检测成功 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -2576,6 +2586,12 @@ bool Power_DevRead::Three_ThreeBreaker()
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret);
+
+            if(mBusData->box[mItem->addr - 1].iOF){
+                if(Obj->sw[2] == 1){str = tr("插接箱的断路器3 iOF触点检测成功 ");mLogs->updatePro(str, true);}
+                else {str = tr("插接箱的断路器3 iOF触点检测失败 ");mLogs->updatePro(str, false);}
+            }
+
             str = tr("插接箱断路器3检测成功 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;

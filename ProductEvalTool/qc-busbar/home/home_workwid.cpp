@@ -97,7 +97,7 @@ void Home_WorkWid::PingSlot()
         if(!ret) {
             mPacket->delay(2);
             ip = mCfgm->Service;
-            ret = cm_pingNet(ip);
+            ret = cm_pingNet_(ip);
         }
         if(ret) break;
     }

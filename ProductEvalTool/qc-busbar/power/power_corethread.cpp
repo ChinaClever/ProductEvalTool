@@ -1564,6 +1564,8 @@ bool Power_CoreThread::VolCurCtrl(sObjData *obj,int id)
     QString str = tr("请插入输出插座%1，打开负载输入端L1、L2、L3").arg(id + 1);  //三相回路电流、功率
     emit TipSig(str);
     //msleep(15000);
+    sleep(3);
+
     while (1)
     {
         ret = mRead->readDevBasicType(); // 读取电压电流填充 obj
@@ -1623,6 +1625,8 @@ bool Power_CoreThread::VolCurCtrl(sObjData *obj,int id)
                 mLogs->writeDataEng(engRequest, engStr, engTitle , true);
             }
 
+            QString str5 = tr("请检测输出口%1 L1位置的极性测试是否合格?").arg(id + 1);
+            emit TipSig(str5); emit ImageSig(1); sleep(5);
             emit TipSig(tr("电压电流检测成功，准备切换下一步"));
             qDebug()<<"success";
             return true;
@@ -1694,8 +1698,8 @@ bool Power_CoreThread::VolCurCtrlSigle(sObjData *obj,int id)
         int exCur = mItem->si.si_cur * 1000.0;
         int errCur = mItem->si.si_curErr * 1000.0;
 
-        int volValue = obj->source_vol[2] / 100.0;
-        int curValue = obj->source_cur[2];
+        int volValue = obj->source_vol[0] / 100.0;
+        int curValue = obj->source_cur[0];
         //qDebug()<<2<<' '<<volValue<<' '<<curValue;
 
         bool volOk = mErr->checkErrRange(exVol, volValue, errVol);
@@ -1719,7 +1723,6 @@ bool Power_CoreThread::VolCurCtrlSigle(sObjData *obj,int id)
             mLogs->updatePro(str, true);
             mLogs->writeData(request, str, title, true);
             mLogs->writeDataEng(engRequest, engStr, engTitle, true);
-
             emit TipSig(tr("电压电流检测成功，准备切换下一步"));
             return true;
         }
@@ -2151,15 +2154,19 @@ bool Power_CoreThread::ThreeBreakTest(int idx)
     for(int i = 0 ;i < 3; i ++ ){
         // int id = idx == 1 ? 1 :(idx == 0 ? 2 : 0);
         QString name = "L";
-        QString str = tr("请断开负载输入端%1%2").arg(name).arg(idx + 1);
-        emit TipSig(str);
-
+        QString str = tr("请断开负载输入端%1%2").arg(name).arg(i + 1);
+        if( i >= 1) str = tr("请断开负载输入端%1%2,闭合负载输入端%3%4").arg(name).arg(i + 1).arg(name).arg(i);
+        emit TipSig(str); sleep(5);
         bool ret = BreakVolCurCtrl(obj,i,2,idx);
         if(!ret)return false;
+        if( i < 2 ){
+            QString str5 = tr("请检测输出口%1 L%2位置的极性测试是否合格?").arg(idx + 1).arg(i + 2);
+            emit TipSig(str5); emit ImageSig(1); sleep(5);
+        }
     }
 
-    QString name = idx == 0 ? "A" : (idx == 1 ? "B" : "C");
-    str = tr("请断开插接箱断路器%1").arg(name);  //三相回路电流、功率
+//    QString name = idx == 0 ? "A" : (idx == 1 ? "B" : "C");
+    str = tr("请断开插接箱断路器 %1").arg(idx + 1);  //三相回路电流、功率
     emit TipSig(str);
     ret = BreakThreeVolCurCtrl(obj,idx);
     return ret;
@@ -2192,7 +2199,7 @@ bool Power_CoreThread::handleBasicType()
         return ret;
     };
 
-    if (isSinglePhase) {
+    if (isSinglePhase) {//单相
         for (int i = 0; i < 3; ++i) {
             emit changeLoadSig(i);
 
@@ -2214,7 +2221,7 @@ bool Power_CoreThread::handleBasicType()
             if(!ret)break;
             ret = true;
         }
-    } else {
+    } else {//三相
         int groupCount = (dv->loopNum == 3) ? 1 : (dv->loopNum == 6) ? 2 : 3;
         for (int g = 0; g < groupCount; ++g) {
             qDebug()<<"Three "<<groupCount;
@@ -2389,6 +2396,9 @@ void Power_CoreThread::workDown()
             mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
         }
         ret = handleBasicType();
+        QString str = tr("请将电源输出端L1、L2、L3关闭");
+        emit TipSig(str); emit ImageSig(2);
+        sleep(3);
         mCfg->work_mode = 3;
         if(ret) emit JudgSig(); //极性测试弹窗///
     }else if (mItem->modeId == BASIC_TYPE_START) {
@@ -2402,6 +2412,9 @@ void Power_CoreThread::workDown()
 
         ret = handleBasicTypeStart(false);
         if(ret) ret = handleBasicTypeStart(true);
+        QString str = tr("请将电源输出端L1、L2、L3关闭");
+        emit TipSig(str); emit ImageSig(2);
+        sleep(3);
         mCfg->work_mode = 3;
         if(ret) emit JudgSig(); //极性测试弹窗///
     }else{

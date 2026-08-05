@@ -64,7 +64,7 @@ bool Dev_IpSnmp::devDataV3()
     QString v3AuthPass = "authkey123";
     QString name = "Busbar";
     int num = 1;
-    int readVersion = version3;
+    int readVersion = 1;
 
     Snmp::socket_startup();
     char ipaddr[255];
@@ -200,7 +200,13 @@ bool Dev_IpSnmp::devDataV3()
                     QString id = vb.get_printable_oid();
                     QString id_value = vb.get_printable_value();
                     //1.3.6.1.4.1.30966.12.1
-                    if(id == "1.3.6.1.4.1.30966.12.1.1.2.18.0" || id == "1.3.6.1.4.1.30966.12.1.1.2.19.0") continue;
+                    QStringList strlist = id.split(".");
+                    if(strlist.at(7) == "12"
+                                           && strlist.at(8) == "1"
+                                           && strlist.at(9) == "1"
+                                           && strlist.at(10) == "2"
+                                           &&((strlist.at(11).toInt()>=18&&strlist.at(11).toInt()>=20)||strlist.at(11).toInt()>=32)) continue;
+                    //if(id == "1.3.6.1.4.1.30966.12.1.1.2.18.0" || id == "1.3.6.1.4.1.30966.12.1.1.2.19.0") continue;
                     praseMasterVal(id , id_value);
                     ret = true;
                     // qDebug()<<id  <<"       id_value   " <<id_value;

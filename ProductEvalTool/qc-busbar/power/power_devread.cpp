@@ -2294,7 +2294,7 @@ bool Power_DevRead::Three_OneBreaker()
             str1.clear();
             if(mBusData->box[mItem->addr - 1].iOF){
                 if(Obj->sw[0] == 1&&Obj->sw[1] == 2&&Obj->sw[2] == 2&&loop==3){str = tr("插接箱的断路器1 iOF触点检测成功 ");mLogs->updatePro(str, true);}
-                if(Obj->sw[0] == 1&&Obj->sw[1] == 2&&loop==2){str = tr("插接箱的断路器1 iOF触点检测成功 ");mLogs->updatePro(str, true);}
+                else if(Obj->sw[0] == 1&&Obj->sw[1] == 2&&loop==2){str = tr("插接箱的断路器1 iOF触点检测成功 ");mLogs->updatePro(str, true);}
                 else {str = tr("插接箱的断路器1 iOF触点检测失败 ");mLogs->updatePro(str, false);ret = false;}
             }break;
         }
@@ -2461,7 +2461,7 @@ bool Power_DevRead::Three_TwoBreaker()
             str1.clear();
             if(mBusData->box[mItem->addr - 1].iOF){
                 if(Obj->sw[0] == 2&&Obj->sw[1] == 1&&Obj->sw[2] == 2&&loop==3){str = tr("插接箱的断路器2 iOF触点检测成功 ");mLogs->updatePro(str, true);}
-                if(Obj->sw[0] == 2&&Obj->sw[1] == 1&&loop==2){str = tr("插接箱的断路器2 iOF触点检测成功 ");mLogs->updatePro(str, true);}
+                else if(Obj->sw[0] == 2&&Obj->sw[1] == 1&&loop==2){str = tr("插接箱的断路器2 iOF触点检测成功 ");mLogs->updatePro(str, true);}
                 else {str = tr("插接箱的断路器2 iOF触点检测失败 ");mLogs->updatePro(str, false);ret = false;}
             }break;
         }

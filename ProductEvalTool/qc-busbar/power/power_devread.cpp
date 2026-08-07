@@ -2267,7 +2267,19 @@ bool Power_DevRead::Three_OneBreaker()
             mErr->volErr(i);
         }
         a = Obj->vol.value[0]; b = Obj->vol.status[1]; c = Obj->vol.status[2];
-        if(((!a) &&(b == 1)&&(c == 1) && loop == 3) || ((!a) &&(b == 1)&& loop == 2)) {
+        bool flag1 = false;
+        if(mBusData->box[mItem->addr - 1].iOF){
+            if(loop == 3)
+                if(Obj->sw[0] == 1&&Obj->sw[1] == 2&&Obj->sw[2] == 2)
+                    flag1 = true;
+            if(loop == 2)
+                if(Obj->sw[0] == 1&&Obj->sw[1] == 2)
+                    flag1 = true;
+            //str = tr("插接箱的断路器1 iOF1触点%1 iOF2触点%2 iOF3触点%3").arg(Obj->sw[0]).arg(Obj->sw[1]).arg(Obj->sw[2]);
+            //mLogs->updatePro(str, false);
+        }
+        else flag1 = true;
+        if(((!a) &&(b == 1)&&(c == 1) && loop == 3 && flag1) || ((!a) &&(b == 1)&& loop == 2&& flag1)) {
             ret = true;
             for(int i =0;i<loop;i++)
             {
@@ -2277,13 +2289,14 @@ bool Power_DevRead::Three_OneBreaker()
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret);
-            if(mBusData->box[mItem->addr - 1].iOF){
-                if(Obj->sw[0] == 1){str = tr("插接箱的断路器1 iOF触点检测成功 ");mLogs->updatePro(str, true);}
-                else {str = tr("插接箱的断路器1 iOF触点检测失败 ");mLogs->updatePro(str, false);}
-            }
             str = tr("插接箱的断路器1检测成功 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
-            str1.clear(); break;
+            str1.clear();
+            if(mBusData->box[mItem->addr - 1].iOF){
+                if(Obj->sw[0] == 1&&Obj->sw[1] == 2&&Obj->sw[2] == 2&&loop==3){str = tr("插接箱的断路器1 iOF触点检测成功 ");mLogs->updatePro(str, true);}
+                if(Obj->sw[0] == 1&&Obj->sw[1] == 2&&loop==2){str = tr("插接箱的断路器1 iOF触点检测成功 ");mLogs->updatePro(str, true);}
+                else {str = tr("插接箱的断路器1 iOF触点检测失败 ");mLogs->updatePro(str, false);ret = false;}
+            }break;
         }
         if(flag >30) {
             str = tr("电压超出误差范围，请到参数设置页面检查产线测试电压和误差是否设置合适");
@@ -2421,7 +2434,19 @@ bool Power_DevRead::Three_TwoBreaker()
             mErr->volErr(i);
         }
         a = Obj->vol.status[0]; b = Obj->vol.value[1]; c = Obj->vol.status[2];
-        if(((a == 1)&&(!b) &&(c == 1)&& loop == 3) || ((a==1) &&(!b)&& loop == 2)) {
+        bool flag1 = false;
+        if(mBusData->box[mItem->addr - 1].iOF){
+            if(loop == 3)
+                if(Obj->sw[0] == 2&&Obj->sw[1] == 1&&Obj->sw[2] == 2)
+                    flag1 = true;
+            if(loop == 2)
+                if(Obj->sw[0] == 2&&Obj->sw[1] == 1)
+                    flag1 = true;
+            //str = tr("插接箱的断路器1 iOF1触点%1 iOF2触点%2 iOF3触点%3").arg(Obj->sw[0]).arg(Obj->sw[1]).arg(Obj->sw[2]);
+            //mLogs->updatePro(str, false);
+        }
+        else flag1 = true;
+        if(((a == 1)&&(!b) &&(c == 1)&& loop == 3 && flag1) || ((a==1) &&(!b)&& loop == 2 && flag1)) {
             ret = true;
             for(int i =0;i<loop;i++)
             {
@@ -2431,15 +2456,14 @@ bool Power_DevRead::Three_TwoBreaker()
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret);
-
-            if(mBusData->box[mItem->addr - 1].iOF){
-                if(Obj->sw[1] == 1){str = tr("插接箱的断路器2 iOF触点检测成功 ");mLogs->updatePro(str, true);}
-                else {str = tr("插接箱的断路器2 iOF触点检测失败 ");mLogs->updatePro(str, false);}
-            }
-
             str = tr("插接箱的断路器2检测成功 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
-            str1.clear(); break;
+            str1.clear();
+            if(mBusData->box[mItem->addr - 1].iOF){
+                if(Obj->sw[0] == 2&&Obj->sw[1] == 1&&Obj->sw[2] == 2&&loop==3){str = tr("插接箱的断路器2 iOF触点检测成功 ");mLogs->updatePro(str, true);}
+                if(Obj->sw[0] == 2&&Obj->sw[1] == 1&&loop==2){str = tr("插接箱的断路器2 iOF触点检测成功 ");mLogs->updatePro(str, true);}
+                else {str = tr("插接箱的断路器2 iOF触点检测失败 ");mLogs->updatePro(str, false);ret = false;}
+            }break;
         }
         if(flag >30) {
             str = tr("电压超出误差范围，请到参数设置页面检查产线测试电压和误差是否设置合适");
@@ -2575,8 +2599,15 @@ bool Power_DevRead::Three_ThreeBreaker()
             mErr->volErr(i);
         }
         a = Obj->vol.status[0]; b = Obj->vol.status[1]; c = Obj->vol.value[2];
-
-        if((a == 1) &&(b == 1)&&(!c)) {
+        bool flag1 = false;
+        if(mBusData->box[mItem->addr - 1].iOF){
+            if(Obj->sw[0] == 2&&Obj->sw[1] == 2&&Obj->sw[2] == 1)
+                flag1 = true;
+            //str = tr("插接箱的断路器1 iOF1触点%1 iOF2触点%2 iOF3触点%3").arg(Obj->sw[0]).arg(Obj->sw[1]).arg(Obj->sw[2]);
+            //mLogs->updatePro(str, false);
+        }
+        else flag1 = true;
+        if((a == 1) &&(b == 1)&&(!c)&&flag1) {
             ret = true;
             for(int i =0;i<loop;i++)
             {
@@ -2586,15 +2617,13 @@ bool Power_DevRead::Three_ThreeBreaker()
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret);
-
-            if(mBusData->box[mItem->addr - 1].iOF){
-                if(Obj->sw[2] == 1){str = tr("插接箱的断路器3 iOF触点检测成功 ");mLogs->updatePro(str, true);}
-                else {str = tr("插接箱的断路器3 iOF触点检测失败 ");mLogs->updatePro(str, false);}
-            }
-
             str = tr("插接箱断路器3检测成功 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
-            str1.clear(); break;
+            str1.clear();
+            if(mBusData->box[mItem->addr - 1].iOF){
+                if(Obj->sw[0] == 2&&Obj->sw[1] == 2&&Obj->sw[2] == 1){str = tr("插接箱的断路器3 iOF触点检测成功 ");mLogs->updatePro(str, true);}
+                else {str = tr("插接箱的断路器3 iOF触点检测失败 ");mLogs->updatePro(str, false);ret = false;}
+            }break;
         }
         if(flag >30) {
             str = tr("电压超出误差范围，请到参数设置页面检查产线测试电压和误差是否设置合适");

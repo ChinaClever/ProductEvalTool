@@ -512,7 +512,7 @@ int Dev_SiRtu::rtu_plug_recv_loop_data(uchar *ptr, Rtu_recv *msg , int index)
     p->apPow += (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;// 读取低16位视在功率
 
     p->pf = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
-    p->sw = (*ptr) * 256 + *(ptr+1) - 1; ptr+=2;len+=2;
+    p->sw = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
 
     p->ele = (*ptr) * 256 + *(ptr+1); ptr+=2;len+=2;
     p->ele  <<= 16; // 左移16位

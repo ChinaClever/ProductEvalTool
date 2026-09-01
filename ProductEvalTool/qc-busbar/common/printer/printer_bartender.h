@@ -26,6 +26,10 @@ public:
     bool printMAC(QString cmd);
     bool printerInfo(sBarTend &it);
     QString http_post(const QString &method, const QString &ip, sBarTend &it, int port=80);
+    void http_post(sBarTend &it);
+    bool restartProgram(const QString &exeName,        // 进程名，如 "notepad.exe"
+                        const QString &programPath,    // 完整路径，如 "C:/Windows/notepad.exe"
+                        const QStringList &arguments);  // 启动参数
 protected:
     void delay(int msec);
     bool recvResponse(int sec);

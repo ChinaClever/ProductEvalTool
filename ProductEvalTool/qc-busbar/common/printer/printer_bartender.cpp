@@ -24,6 +24,69 @@ Printer_BarTender *Printer_BarTender::bulid(QObject *parent)
     return sington;
 }
 
+bool Printer_BarTender::restartProgram(const QString &exeName,        // 进程名，如 "notepad.exe"
+                    const QString &programPath,    // 完整路径，如 "C:/Windows/notepad.exe"
+                    const QStringList &arguments)  // 启动参数
+{
+    // 1. 检测是否正在运行（通过 tasklist 过滤进程名）
+    QProcess tasklist;
+    tasklist.start("tasklist", QStringList() << "/FI" << ("IMAGENAME eq " + exeName) << "/NH");
+    if (!tasklist.waitForFinished(3000)) {
+        qWarning() << "tasklist 超时";
+        return false;
+    }
+
+    QString output = tasklist.readAllStandardOutput();
+    // 如果输出包含进程名，则认为正在运行
+    if (output.contains(exeName, Qt::CaseInsensitive)) {
+        // 2. 强制终止该进程
+        QProcess taskkill;
+        taskkill.start("taskkill", QStringList() << "/F" << "/IM" << exeName);
+        if (!taskkill.waitForFinished(3000)) {
+            qWarning() << "taskkill 超时";
+            return false;
+        }
+        // 可选：检查 taskkill 输出确认成功
+        QString err = taskkill.readAllStandardError();
+        if (!err.isEmpty()) {
+            qWarning() << "taskkill 错误：" << err;
+            return false;
+        }
+        qDebug() << "已终止进程：" << exeName;
+        // 等待进程完全退出（可选）
+        QThread::sleep(1);
+    } else {
+        qDebug() << "进程未运行：" << exeName;
+    }
+
+    // 3. 启动程序（传递参数）
+    bool started = QProcess::startDetached(programPath, arguments);
+    if (started) {
+        qDebug() << "启动成功：" << programPath << arguments;
+    } else {
+        qCritical() << "启动失败：" << programPath;
+    }
+    return started;
+}
+
+void Printer_BarTender::http_post(sBarTend &it)
+{
+    QStringList str;
+    QString web = "https://clbusbar.legrandchina.cn/report?";
+    web += QString("productSN=%1&orderId=%2&moduleSN=%3").arg(it.pn).arg(it.on).arg(it.sn);
+
+    QDateTime dateTime;
+    QString dateTime_str = dateTime.currentDateTime().toString("yyyy/MM/dd hh:mm");
+    str << dateTime_str;
+    str << QString("SN=SN:%1").arg(it.sn);
+    str << QString("PN=PN:%1").arg(it.pn);
+    str << QString("ON=ON:%1").arg(it.on);
+    str << QString("QR=%1").arg(web);
+    str << QString("AutoPrint=true");
+    restartProgram("标签条码打印系统.exe","D:\\Release\\标签条码打印系统.exe",str);
+
+}
+
 QString Printer_BarTender::http_post(const QString &method, const QString &ip, sBarTend &it, int port)
 {
     QByteArray json; QString str;

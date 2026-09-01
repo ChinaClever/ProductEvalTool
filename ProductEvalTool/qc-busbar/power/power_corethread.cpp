@@ -973,6 +973,8 @@ bool Power_CoreThread::printer()
 
     QString mSn = mDev->devType.sn;//模块序列号
     it.sn =  mSn.remove(QRegExp("\\s"));
+    it.on = it.on.remove(QRegExp("\\s"));
+    it.pn = it.pn.remove(QRegExp("\\s"));
 
     int ver = get_share_mem()->box[mItem->addr-1].version;//软件版本号
     it.fw = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
@@ -985,15 +987,16 @@ bool Power_CoreThread::printer()
     }
 
     if(ret){
-        str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it);
-        if(str1 == "Success") {
-            ret = true;
-        }else {
-            str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it);
-            if(str1 == "Success") {
-                ret = true;
-            }else ret = false;
-        }
+//        str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it);
+//        if(str1 == "Success") {
+//            ret = true;
+//        }else {
+//            str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it);
+//            if(str1 == "Success") {
+//                ret = true;
+//            }else ret = false;
+//        }
+        Printer_BarTender::bulid(this)->http_post(it);
     }
     if(ret) str += tr("正常"); else str += tr("错误");
     // } else str = tr("因测试未通过，标签未打印");

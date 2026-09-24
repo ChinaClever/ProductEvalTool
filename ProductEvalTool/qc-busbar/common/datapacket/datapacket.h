@@ -532,6 +532,7 @@ typedef struct _sBoxData {
 //    uchar rtuArray[SRC_DATA_LEN_MAX];
     QString mac;
     uchar phaseFlag;// 单相或者三相
+    ushort plugbreaker;
 }sBoxData;
 
 

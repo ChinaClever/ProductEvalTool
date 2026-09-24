@@ -1052,6 +1052,8 @@ void Power_CoreThread::BaseErrRange()   //比较基本配置信息
 {
     if(mItem->modeId == START_BUSBAR) {
         StartErrRange();
+    }else if(mItem->modeId == TEMPERATURE_BUSBAR){
+        TemErrRange();
     }else {
         InsertErrRange();
     }
@@ -2448,23 +2450,7 @@ void Power_CoreThread::workDown()
         if(ret) ret = handleBasicTypeStart(true);
         mCfg->work_mode = 3;
         if(ret) emit JudgSig(); //极性测试弹窗///
-    }else if(mItem->modeId == TEMPERATURE_BUSBAR){
-        ret = initDev();
-        if(ret) ret = mRead->readDev();
-        if(ret) TemErrRange();
-        if(ret) EnvErrRange();
-        mCfg->work_mode = 3;
-        if(ret) emit JudgSig(); //极性测试弹窗///
-        if(mItem->modeId == START_BUSBAR)
-        {
-            int temp = mItem->ip.ip_filter;
-            mRead->SetInfo(mRead->getFilterOid(),QString::number(temp));
-        }else {
-            int temp = mItem->si.si_filter;
-            Ctrl_SiRtu::bulid()->setBusbarInsertFilter(temp); //设置滤波
-        }
-    }
-    else{
+    }else{
         ret = initDev();
         if(ret) ret = mRead->readDev();
         if(mItem->modeId == INSERT_BUSBAR)
@@ -2488,19 +2474,21 @@ void Power_CoreThread::workDown()
                 EnvErrRange();                                  //温度模块检测
             }
 
-            if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(),"0");
-            else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
+            if(mItem->modeId != TEMPERATURE_BUSBAR){
+                if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(),"0");
+                else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
 
-            if(ret && mItem->si.si_stdOr36Single==0) ret = BreakerTest();                            //断路器测试
-            if(ret && mItem->si.si_stdOr36Single==0) ret = stepVolTest();                            //电压测试/////3相6回路单输出时可以不用测试此项
+                if(ret && mItem->si.si_stdOr36Single==0) ret = BreakerTest();                            //断路器测试
+                if(ret && mItem->si.si_stdOr36Single==0) ret = stepVolTest();                            //电压测试/////3相6回路单输出时可以不用测试此项
 
-            // if(ret) ret = mSource->read();
-            // else mPro->result = Test_Fail;
-            // if(ret) ret = checkLoadErrRange();
+                // if(ret) ret = mSource->read();
+                // else mPro->result = Test_Fail;
+                // if(ret) ret = checkLoadErrRange();
 
-            if(ret) ret = stepLoadTest();               //电流测试///3相6回路单输出时更改需要增加特别项
-            this->mTrans->sendCtrlGnd(1+32+64);
-            if(ret) ret = factorySet(); sleep(2);                      //清除电能
+                if(ret) ret = stepLoadTest();               //电流测试///3相6回路单输出时更改需要增加特别项
+                this->mTrans->sendCtrlGnd(1+32+64);
+                if(ret) ret = factorySet(); sleep(2);                      //清除电能
+            }
 
             QString str = tr("请将电源输出端L1、L2、L3关闭");
             emit TipSig(str); //emit ImageSig(2);

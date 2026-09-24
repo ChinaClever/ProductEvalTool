@@ -35,7 +35,7 @@ bool Power_DevRead::readSn()
 {
     bool ret = true;
     ret = mSn->snEnter();
-//     if(ret) ret = readDevData();
+    //     if(ret) ret = readDevData();
 
     return ret;
 }
@@ -58,7 +58,7 @@ bool Power_DevRead::readData()
         if(ret) {
             ret = checkNet();
             if(ret) ret = mIpSnmp->readPduData();
-            }
+        }
     }else{
         ret = mSiRtu->readPduData();
     }
@@ -97,7 +97,7 @@ bool Power_DevRead::readDevBasicType()
 {
     bool ret = true;
     if(ret) ret = mSource->read();
-        return ret;
+    return ret;
 }
 
 bool Power_DevRead::readDev()
@@ -112,27 +112,27 @@ bool Power_DevRead::readDev()
             }
             if(ret) str += tr("成功");
             else{ str += tr("失败"); mPro->result = Test_Fail;}
-                                   mLogs->updatePro(str, ret);
+            mLogs->updatePro(str, ret);
 
-                if(ret) {
-                    ret = checkNet();
-                    if(ret) ret = mIpSnmp->readPduData();
-                    str = tr("始端箱SNMP通讯");
-                    if(ret) str += tr("成功");
-                    else{ str += tr("失败"); mPro->result = Test_Fail;}
-                                           mLogs->updatePro(str, ret);
-                    }
-                }else{
-                    for(int i=0; i<5; ++i) {
-                        ret = mSiRtu->readPduData();
-                        if(ret) break; else if(!mPacket->delay(3)) break;
-                    }
-                    QString str = tr("插接箱串口RTU通讯");
-                    if(ret) str += tr("成功");
-                    else{ str += tr("失败"); mPro->result = Test_Fail;}
-                                           mLogs->updatePro(str, ret);
-                    }
+            if(ret) {
+                ret = checkNet();
+                if(ret) ret = mIpSnmp->readPduData();
+                str = tr("始端箱SNMP通讯");
+                if(ret) str += tr("成功");
+                else{ str += tr("失败"); mPro->result = Test_Fail;}
+                mLogs->updatePro(str, ret);
+            }
+        }else{
+            for(int i=0; i<5; ++i) {
+                ret = mSiRtu->readPduData();
+                if(ret) break; else if(!mPacket->delay(3)) break;
+            }
+            QString str = tr("插接箱串口RTU通讯");
+            if(ret) str += tr("成功");
+            else{ str += tr("失败"); mPro->result = Test_Fail;}
+            mLogs->updatePro(str, ret);
         }
+    }
 
     return ret;
 }
@@ -326,7 +326,7 @@ bool Power_DevRead::NineInsertOne_CtrlTwo(Test_TransThread *trans_ctrl)
                 str = tr("%1电流%2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
                 str3 = tr("%1 current %2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
                 str1 += str; eng3 += str3;
-            }            
+            }
             mLogs->updatePro(str1, ret); str = tr("输出口1-B1检测成功 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -349,7 +349,7 @@ bool Power_DevRead::NineInsertOne_CtrlTwo(Test_TransThread *trans_ctrl)
             str = tr("输出口1-B1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
             mLogs->updatePro(str, ret);
 
-           mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
     }
@@ -509,7 +509,7 @@ bool Power_DevRead::NineInsertOne_BreakerOne()
         {
             a += Obj->vol.value[i];
             b += Obj->vol.status[3+i];
-            c += Obj->vol.status[6+i];  
+            c += Obj->vol.status[6+i];
         }
 
         if((a ==0)&&(b == 3)&&(c == 3)) {
@@ -520,7 +520,7 @@ bool Power_DevRead::NineInsertOne_BreakerOne()
                 str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str3 = tr("%1 voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str; eng3 += str3;
-            }            
+            }
             mLogs->updatePro(str1, ret); str = tr("插接箱断路器1检测成功 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -674,7 +674,7 @@ bool Power_DevRead::NineInsertTwo_CtrlTwo(Test_TransThread *trans_ctrl)
                 str = tr("%1电流%2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
                 str3 = tr("%1 current %2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
                 str1 += str; eng3 += str3;
-            }           
+            }
             mLogs->updatePro(str1, ret);
             str = tr("输出口2-B2检测成功 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -762,7 +762,7 @@ bool Power_DevRead::NineInsertTwo_CtrlThree(Test_TransThread *trans_ctrl)
             str = tr("输出口2-C2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
             mLogs->updatePro(str, ret);
 
-             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
     }
@@ -807,7 +807,7 @@ bool Power_DevRead::NineInsertOne_BreakerTwo()
                 str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str3 = tr("%1 voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str; eng3 += str3;
-            }            
+            }
             mLogs->updatePro(str1, ret);
             str = tr("插接箱断路器2检测成功 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -861,7 +861,7 @@ bool Power_DevRead::NineInsertThree_CtrlOne(Test_TransThread *trans_ctrl)
             }
             a = Obj->cur.status[6]; b = Obj->cur.status[7]; c = Obj->cur.status[8];
             if(a &&b &&c) {
-               ret = true; break;
+                ret = true; break;
             }
         }
         flag++;
@@ -915,7 +915,7 @@ bool Power_DevRead::NineInsertThree_CtrlOne(Test_TransThread *trans_ctrl)
                 str = tr("%1电流%2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
                 str3 = tr("%1 current %2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
                 str1 += str; eng3 += str3;
-            }           
+            }
             mLogs->updatePro(str, ret); ret = false;
             str = tr("输出口3-A3检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
             mLogs->updatePro(str, ret);
@@ -951,7 +951,7 @@ bool Power_DevRead::NineInsertThree_CtrlTwo(Test_TransThread *trans_ctrl)
         }
         a = Obj->cur.status[6]; b = Obj->cur.status[7]; c = Obj->cur.status[8];
 
-        if((!b) &&(c) &&(a)) {           
+        if((!b) &&(c) &&(a)) {
             ret = true;
             for(int i =0;i<loop;i++)
             {
@@ -1013,7 +1013,7 @@ bool Power_DevRead::NineInsertThree_CtrlThree(Test_TransThread *trans_ctrl)
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
         }
         a = Obj->cur.status[6]; b = Obj->cur.status[7]; c = Obj->cur.status[8];
-       if((!c)&&(b)&&(a)) {
+        if((!c)&&(b)&&(a)) {
             ret = true;
             for(int i =0;i<loop;i++)
             {
@@ -1027,10 +1027,10 @@ bool Power_DevRead::NineInsertThree_CtrlThree(Test_TransThread *trans_ctrl)
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-       if(flag >70) {
-           str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
-           emit StepSig(str);
-       }
+        if(flag >70) {
+            str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
+            emit StepSig(str);
+        }
 
         flag++;
         if(flag >90) {
@@ -1091,7 +1091,7 @@ bool Power_DevRead::NineInsertOne_BreakerThree()
                 str3 = tr("%1 voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str; eng3 += str3;
             }
-            mLogs->updatePro(str1, ret);           
+            mLogs->updatePro(str1, ret);
             str = tr("插接箱断路器3检测成功 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
@@ -1109,7 +1109,7 @@ bool Power_DevRead::NineInsertOne_BreakerThree()
                 str = tr("%1电压 %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str3 = tr("%1 voltage %2V，").arg(temp).arg(Obj->vol.value[i]/COM_RATE_VOL);
                 str1 += str; eng3 += str3;
-            }           
+            }
             mLogs->updatePro(str1, ret); ret = false;
             str = tr("插接箱断路器3检测失败 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -1272,7 +1272,7 @@ bool Power_DevRead::SixInsertOne_CtrlTwo(Test_TransThread *trans_ctrl)
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
         }
         a = Obj->cur.status[0]; b = Obj->cur.value[1]; c = Obj->cur.status[2];
-       if((!b)&&(c)&&(a)){
+        if((!b)&&(c)&&(a)){
             ret = true;
             for(int i =0;i<loop;i++)
             {
@@ -1286,10 +1286,10 @@ bool Power_DevRead::SixInsertOne_CtrlTwo(Test_TransThread *trans_ctrl)
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
             str1.clear(); break;
         }
-       if(flag >70) {
+        if(flag >70) {
             str = tr("电流超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit StepSig(str);
-       }
+        }
         flag++;
         if(flag >90) {
             for(int i =0;i<loop;i++)
@@ -1782,7 +1782,7 @@ bool Power_DevRead::Load_SingleSixLoop(Test_TransThread *trans_ctrl)
     bool ret = true; QString str1;
     if(ret) ret = SixInsertOne_CtrlOne(trans_ctrl);
 
-//    if(ret) ret = SixInsertTwo_CtrlOne(trans_ctrl);
+    //    if(ret) ret = SixInsertTwo_CtrlOne(trans_ctrl);
 
 
     //emit CurImageSig(4);
@@ -2175,7 +2175,14 @@ bool Power_DevRead::Three_OneBreaker()
         }
         a = Obj->vol.value[0]; b = Obj->vol.status[1]; c = Obj->vol.status[2];
 
-        if((!a) &&(b == 1)&&(c == 1)) {
+        bool flag1 = false;
+        if(mBusData->box[mItem->addr - 1].iOF){
+            if(Obj->sw[0] == 1&&Obj->sw[1] == 2&&Obj->sw[2] == 2)flag1 = true;
+            //str = tr("插接箱的断路器1 iOF1触点%1 iOF2触点%2 iOF3触点%3").arg(Obj->sw[0]).arg(Obj->sw[1]).arg(Obj->sw[2]);
+            //mLogs->updatePro(str, false);
+        }
+        else flag1 = true;
+        if((!a) &&(b == 1)&&(c == 1)&&flag1) {
             ret = true;
             for(int i =0;i<loop;i++)
             {
@@ -2187,7 +2194,12 @@ bool Power_DevRead::Three_OneBreaker()
             mLogs->updatePro(str1, ret);
             str = tr("插接箱的断路器1检测成功 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
-            str1.clear(); break;
+            str1.clear();
+            if(mBusData->box[mItem->addr - 1].iOF){
+                if(Obj->sw[0] == 1&&Obj->sw[1] == 2&&Obj->sw[2] == 2){str = tr("插接箱的断路器1 iOF触点检测成功 ");mLogs->updatePro(str, true);}
+                else {str = tr("插接箱的断路器1 iOF触点检测失败 ");mLogs->updatePro(str, false);ret = false;}
+            }
+            break;
         }
         if(flag >30) {
             str = tr("电压超出误差范围，请到参数设置页面检查产线测试电压和误差是否设置合适");
@@ -2236,13 +2248,13 @@ bool Power_DevRead::Three_Two(Test_TransThread *trans_ctrl)
             ret = readData();
             Obj->cur.status[1] = mErr->checkErrRange(exValue, Obj->cur.value[1], err);
             if(Obj->cur.status[1]) {
-               ret = true; break;}
+                ret = true; break;}
         }
         flag++;
         if(flag >90) {
             ret = false;
             str = tr("输出口2 无电流");mLogs->updatePro(str, ret);
-                break;
+            break;
         }
     }
     QString str5 = tr("相位转换旋钮转到L1，检测输出口2位置的极性测试是否合格?");
@@ -2264,18 +2276,18 @@ bool Power_DevRead::Three_Two(Test_TransThread *trans_ctrl)
         a = Obj->cur.status[0]; b = Obj->cur.value[1]; c = Obj->cur.status[2];
         if((!a) &&(!b) &&(!c)) {
 
-                ret = true;
-                for(int i =0;i<loop;i++)
-                {
-                    QString temp = trans(i);
-                    str = tr("%1电流%2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
-                    str3 = tr("%1 current %2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
-                    str1 += str; eng3 += str3;
-                }
-                mLogs->updatePro(str1, ret);
-                str = tr("输出口2-B检测成功 ");mLogs->updatePro(str, ret);
-                mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
-                str1.clear(); break;
+            ret = true;
+            for(int i =0;i<loop;i++)
+            {
+                QString temp = trans(i);
+                str = tr("%1电流%2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
+                str3 = tr("%1 current %2A，").arg(temp).arg(QString::number((Obj->cur.value[i]/COM_RATE_CUR),'f',3));
+                str1 += str; eng3 += str3;
+            }
+            mLogs->updatePro(str1, ret);
+            str = tr("输出口2-B检测成功 ");mLogs->updatePro(str, ret);
+            mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
+            str1.clear(); break;
 
         }
         if(flag >50) {
@@ -2329,7 +2341,12 @@ bool Power_DevRead::Three_TwoBreaker()
         }
         a = Obj->vol.status[0]; b = Obj->vol.value[1]; c = Obj->vol.status[2];
 
-        if((a == 1)&&(!b) &&(c == 1)) {
+        bool flag1 = false;
+        if(mBusData->box[mItem->addr - 1].iOF){
+            if(Obj->sw[0] == 2&&Obj->sw[1] == 1&&Obj->sw[2] == 2)flag1 = true;
+        }
+        else flag1 = true;
+        if((a == 1)&&(!b) &&(c == 1)&&flag1) {
             ret = true;
             for(int i =0;i<loop;i++)
             {
@@ -2341,7 +2358,12 @@ bool Power_DevRead::Three_TwoBreaker()
             mLogs->updatePro(str1, ret);
             str = tr("插接箱的断路器2检测成功 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
-            str1.clear(); break;
+            str1.clear();
+
+            if(mBusData->box[mItem->addr - 1].iOF){
+                if(Obj->sw[0] == 2&&Obj->sw[1] == 1&&Obj->sw[2] == 2){str = tr("插接箱的断路器2 iOF触点检测成功 ");mLogs->updatePro(str, true);}
+                else {str = tr("插接箱的断路器2 iOF触点检测失败 ");mLogs->updatePro(str, false);ret = false;}
+            }break;
         }
         if(flag >30) {
             str = tr("电压超出误差范围，请到参数设置页面检查产线测试电压和误差是否设置合适");
@@ -2390,8 +2412,8 @@ bool Power_DevRead::Three_Three(Test_TransThread *trans_ctrl)
             ret = readData();
             Obj->cur.status[2] = mErr->checkErrRange(exValue, Obj->cur.value[2], err);
             if(Obj->cur.status[2]) {
-               ret = true; break;}
-            }
+                ret = true; break;}
+        }
         flag++;
         if(flag >90) {
             ret = false;
@@ -2481,7 +2503,11 @@ bool Power_DevRead::Three_ThreeBreaker()
         }
         a = Obj->vol.status[0]; b = Obj->vol.status[1]; c = Obj->vol.value[2];
 
-        if((a == 1) &&(b == 1)&&(!c)) {
+        bool flag1 = false;
+        if(mBusData->box[mItem->addr - 1].iOF){
+            if(Obj->sw[0] == 2&&Obj->sw[1] == 2&&Obj->sw[2] == 1)flag1 = true;
+        }else flag1 = true;
+        if((a == 1) &&(b == 1)&&(!c)&&flag1) {
             ret = true;
             for(int i =0;i<loop;i++)
             {
@@ -2493,7 +2519,11 @@ bool Power_DevRead::Three_ThreeBreaker()
             mLogs->updatePro(str1, ret);
             str = tr("插接箱断路器3检测成功 ");mLogs->updatePro(str, ret);
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
-            str1.clear(); break;
+            str1.clear();
+            if(mBusData->box[mItem->addr - 1].iOF){
+               if(Obj->sw[0] == 2&&Obj->sw[1] == 2&&Obj->sw[2] == 1){str = tr("插接箱的断路器3 iOF触点检测成功 ");mLogs->updatePro(str, true);}
+               else {str = tr("插接箱的断路器3 iOF触点检测失败 ");mLogs->updatePro(str, false);ret = false;}
+           }break;
         }
         if(flag >30) {
             str = tr("电压超出误差范围，请到参数设置页面检查产线测试电压和误差是否设置合适");
@@ -2546,7 +2576,7 @@ bool Power_DevRead::Load_ThreeLoop(Test_TransThread *trans_ctrl)
             if(flag >80) {
                 ret = false;
                 str = tr("该输出口 无电流");mLogs->updatePro(str, ret);
-                 break;
+                break;
             }
         }
         QString str5 = tr("请检测该输出口位置的极性测试是否合格?");
@@ -2590,9 +2620,9 @@ bool Power_DevRead::Load_ThreeLoop(Test_TransThread *trans_ctrl)
 
     }else if((mItem->modeId != START_BUSBAR) && (mBusData->box[mItem->addr-1].phaseFlag == 0)) {    //单相三回路三个输出位
 
-//        if(ret) ret = Three_One(trans_ctrl);
-//        if(ret) ret = Three_Two(trans_ctrl);
-//        if(ret) ret = Three_Three(trans_ctrl);
+        //        if(ret) ret = Three_One(trans_ctrl);
+        //        if(ret) ret = Three_Two(trans_ctrl);
+        //        if(ret) ret = Three_Three(trans_ctrl);
         if(mItem->si.si_testItem == 0 || mItem->si.si_testItem == 1){
             if(ret) ret = Three_One(trans_ctrl);
         }

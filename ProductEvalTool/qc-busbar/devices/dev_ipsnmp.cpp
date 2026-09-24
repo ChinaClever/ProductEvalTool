@@ -204,12 +204,11 @@ bool Dev_IpSnmp::devDataV3()
                     if(strlist.at(7) == "12"
                                            && strlist.at(8) == "1"
                                            && strlist.at(9) == "1"
-                                           && strlist.at(10) == "2"
-                                           &&((strlist.at(11).toInt()>=18&&strlist.at(11).toInt()>=20)||strlist.at(11).toInt()>=32)) continue;
+                                           &&((strlist.at(11).toInt()>=19&&strlist.at(11).toInt()<=29)||strlist.at(11).toInt()>=32)) continue;
                     //if(id == "1.3.6.1.4.1.30966.12.1.1.2.18.0" || id == "1.3.6.1.4.1.30966.12.1.1.2.19.0") continue;
                     praseMasterVal(id , id_value);
                     ret = true;
-                    // qDebug()<<id  <<"       id_value   " <<id_value;
+//                    qDebug()<<id  <<"       id_value   " <<id_value;
                 }
                 else{
                     Snmp::socket_cleanup();
@@ -449,8 +448,8 @@ void Dev_IpSnmp::startBoxEleParaInfo(QString id ,QString val)
     switch(item){
     case 1: t->reCur.svalue = (val.toFloat()*(short)COM_RATE_CUR);break;
     case 2: t->reCur.supalarm = val.toUInt(&ok);break;
-    case 3: t->zeroLineCur.svalue = (uint)(val.toFloat()*(short)COM_RATE_CUR);break;
-    case 4: t->zeroLineCur.supalarm = val.toUInt(&ok);break;
+    case 3: t->zeroLineCur.ivalue = (uint)(val.toFloat()*(short)COM_RATE_CUR);break;
+    case 4: t->zeroLineCur.ialarm = val.toUInt(&ok);break;
     case 5: t->totalApPow = (unsigned long long)(val.toFloat()*(short)COM_RATE_POW);break;
     case 6: t->totalPow.ivalue = (unsigned long long)(val.toFloat()*(short)COM_RATE_POW);break;
     case 7: t->totalPow.iupalarm = val.toUInt(&ok);break;
@@ -466,7 +465,7 @@ void Dev_IpSnmp::startBoxEleParaInfo(QString id ,QString val)
     case 11: t->volUnbalance = (uint)val.toUInt(&ok);break;
     case 12: t->curUnbalance = (uint)val.toUInt(&ok);break;
     case 13: t->reCur.smax = (val.toFloat()*(short)COM_RATE_CUR);break;
-    case 14: t->zeroLineCur.smax = (uint)(val.toFloat()*(short)COM_RATE_CUR);break;
+    case 14: t->zeroLineCur.imax = (uint)(val.toFloat()*(short)COM_RATE_CUR);break;
     case 15:
     case 16: t->totalPow.imin = (unsigned long long)(val.toFloat()*(short)COM_RATE_POW);break;
     case 17: t->totalPow.imax = (unsigned long long)(val.toFloat()*(short)COM_RATE_POW);break;

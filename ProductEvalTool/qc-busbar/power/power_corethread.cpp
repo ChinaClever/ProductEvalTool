@@ -382,6 +382,7 @@ void Power_CoreThread::StartErrRange()
         if(curValue == 1) {
             str = tr("始端箱分励脱扣测试开始");
             emit TipSig(str);
+            sleep(7);//等待操作
             for(int i=0;i<2;i++)
             {
                 Ctrl_SiRtu::bulid()->setBusbarStartShuntRelease(12);
@@ -431,6 +432,8 @@ void Power_CoreThread::StartErrRange()
         ret = curAlarmErr(i);
     }
 
+    sleep(2);//等待电压值变正常
+    ret = mRead->readData();
     ret = VolErrRange();
     if(!ret) {
         ret = mRead->readData();

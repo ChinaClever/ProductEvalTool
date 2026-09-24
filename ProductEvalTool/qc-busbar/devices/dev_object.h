@@ -103,7 +103,7 @@ struct Rtu_recv {
     RtuRecvEnv  env[RTU_TH_NUM];
     RtuUintUnit totalPow; //总有功功率
     RtuUshortUnit reCur;//剩余电流
-    RtuCurUintUnit zeroLineCur;//零线电流
+    RtuUintUnit zeroLineCur;//零线电流
     RtuUshortUnit rate;//频率
     ushort volThd[RTU_THD_NUM][40];
     ushort curThd[RTU_THD_NUM][40];
@@ -121,6 +121,7 @@ struct Rtu_recv {
     unsigned long long totalApPow;//   总视在功率
     ushort crc; // 检验码
     ushort plugBreaker; // 表示插接箱新加的断路器个数和状态
+    ushort boxId[3];
 };
 
 class Dev_Object : public QThread

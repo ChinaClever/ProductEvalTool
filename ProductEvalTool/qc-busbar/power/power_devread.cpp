@@ -57,7 +57,7 @@ bool Power_DevRead::readData()
         ret = mSiRtu->readPduData();
         if(ret) {
             //ret = checkNet();
-            if(ret) ret = mIpSnmp->readPduData();
+            //if(ret) ret = mIpSnmp->readPduData();
             }
     }else{
         ret = mSiRtu->readPduData();
@@ -251,7 +251,7 @@ bool Power_DevRead::NineInsertOne_CtrlOne()
     while(1)
     {
         int a=0, b=0, c = 0;
-        ret = readData();
+        readData();
         for(int i =0;i<3;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
         }
@@ -313,7 +313,7 @@ bool Power_DevRead::NineInsertOne_CtrlTwo()
     while(1)
     {
         int a=0, b=0, c = 0;
-        ret = readData();
+        readData();
         for(int i =0;i<3;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
         }
@@ -374,7 +374,7 @@ bool Power_DevRead::NineInsertOne_CtrlThree()
     while(1)
     {
         int a=0, b=0, c = 1;
-        ret = readData();
+        readData();
         for(int i =0;i<3;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
         }
@@ -437,7 +437,7 @@ bool Power_DevRead::NineInsertOne_BreakerOne()
     while(1)
     {
         int a=0, b=0, c=0;
-        if(ret) ret = readData();
+        if(ret) readData();
         for(int i =0;i<loop;i++)
         {
             mErr->volErr(i);
@@ -504,7 +504,7 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
     while(1){
         int a=0, b=0, c = 0;
         if(ret) {
-            ret = readData();
+            readData();
             for(int i =3;i<6;i++) {
                 Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
             }
@@ -531,7 +531,7 @@ bool Power_DevRead::NineInsertTwo_CtrlOne()
     while(1)
     {
         int a=0, b=0, c = 1;
-        ret = readData();
+        readData();
         for(int i =3;i<6;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
         }
@@ -592,7 +592,7 @@ bool Power_DevRead::NineInsertTwo_CtrlTwo()
     while(1)
     {
         int a=0, b=0, c = 1;
-        ret = readData();
+        readData();
         for(int i =3;i<6;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
         }
@@ -654,7 +654,7 @@ bool Power_DevRead::NineInsertTwo_CtrlThree()
     while(1)
     {
         int a=0, b=0, c = 1;
-        ret = readData();
+        readData();
         for(int i =3;i<6;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
         }
@@ -719,7 +719,7 @@ bool Power_DevRead::NineInsertOne_BreakerTwo()
     while(1)
     {
         int a=0, b=0, c=0;
-        ret = readData();
+        readData();
         for(int i =0;i<loop;i++)
         {
             mErr->volErr(i);
@@ -785,7 +785,7 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
     while(1){
         int a=0, b=0, c = 0;
         if(ret) {
-            ret = readData();
+            readData();
             for(int i =6;i<9;i++) {
                 Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
             }
@@ -810,7 +810,7 @@ bool Power_DevRead::NineInsertThree_CtrlOne()
 
     while(1)
     {
-        ret = readData();
+        readData();
         int a=0, b=0, c = 1;
         for(int i =6;i<9;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
@@ -871,7 +871,7 @@ bool Power_DevRead::NineInsertThree_CtrlTwo()
 
     while(1)
     {
-        ret = readData();
+        readData();
         int a=0, b=0, c = 1;
         for(int i =6;i<9;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
@@ -933,7 +933,7 @@ bool Power_DevRead::NineInsertThree_CtrlThree()
 
     while(1)
     {
-        ret = readData();
+        readData();
         int a=0, b=0, c = 1;
         for(int i =6;i<9;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
@@ -996,7 +996,7 @@ bool Power_DevRead::NineInsertOne_BreakerThree()
 
     while(1)
     {
-        ret = readData();
+        readData();
         int a=0, b=0, c=0;
         for(int i =0;i<loop;i++)
         {
@@ -1058,7 +1058,7 @@ bool Power_DevRead::Load_NineLoop()
     while(1){
         int a=0, b=0, c=0;
         if(ret) {
-            ret = readData();
+            readData();
             for(int i =0;i<3;i++) {
                 Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
             }
@@ -1123,7 +1123,7 @@ bool Power_DevRead::SixInsertOne_CtrlOne()
 
     while(1)
     {
-        ret = readData();
+        readData();
         int a=0, b=0, c = 0;
         for(int i =0;i<3;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
@@ -1185,7 +1185,7 @@ bool Power_DevRead::SixInsertOne_CtrlOne_Single()
 
     while(1)
     {
-        ret = readData();
+        readData();
         int a=0, b=0, c = 0;
         a = Obj->cur.value[0]; b = Obj->cur.value[1]; c = Obj->cur.value[2];
         if((!a) &&(!b) &&(!c)) {
@@ -1244,7 +1244,7 @@ bool Power_DevRead::SixInsertOne_CtrlTwo()
 
     while(1)
     {
-        ret = readData();
+        readData();
         int a=0, b=0, c = 1;
         for(int i =0;i<3;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
@@ -1305,7 +1305,7 @@ bool Power_DevRead::SixInsertOne_CtrlThree()
 
     while(1)
     {
-        ret = readData();
+        readData();
         int a=0, b=0, c = 1;
         for(int i =0;i<3;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
@@ -1369,7 +1369,7 @@ bool Power_DevRead::SixInsertOne_BreakerOne()
     while(1)
     {
         int a=0; int b=0;
-        ret = readData();
+        readData();
         for(int i =0;i<loop;i++)
         {
             mErr->volErr(i);
@@ -1439,7 +1439,7 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
     while(1){
         int a=0, b=0, c=0;
         if(ret) {
-            ret = readData();
+            readData();
             for(int i =3;i<6;i++) {
                 Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
             }
@@ -1464,7 +1464,7 @@ bool Power_DevRead::SixInsertTwo_CtrlOne()
 
     while(1)
     {
-        ret = readData();
+        readData();
         int a=0, b=0, c = 1;
         for(int i =3;i<6;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
@@ -1527,7 +1527,7 @@ bool Power_DevRead::SixInsertTwo_CtrlOne_Single()
     while(1){
         int a=0;
         if(ret) {
-            ret = readData();
+            readData();
             for(int i =3;i<6;i++) {
                 Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
             }
@@ -1552,7 +1552,7 @@ bool Power_DevRead::SixInsertTwo_CtrlOne_Single()
 
     while(1)
     {
-        ret = readData();
+        readData();
         int a=0;
         for(int i =3;i<6;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
@@ -1613,7 +1613,7 @@ bool Power_DevRead::SixInsertTwo_CtrlTwo()
 
     while(1)
     {
-        ret = readData();
+        readData();
         int a=0, b=0, c = 1;
         for(int i =3;i<6;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
@@ -1674,7 +1674,7 @@ bool Power_DevRead::SixInsertTwo_CtrlThree()
 
     while(1)
     {
-        ret = readData();
+        readData();
         int a=0, b=0, c = 1;
         for(int i =3;i<6;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
@@ -1738,7 +1738,7 @@ bool Power_DevRead::SixInsertOne_BreakerTwo()
     while(1)
     {
         int a=0, b=0;
-        ret = readData();
+        readData();
         for(int i =0;i<loop;i++)
         {
             mErr->volErr(i);
@@ -1798,7 +1798,7 @@ bool Power_DevRead::Load_SixLoop()
     while(1){
         int a=0, b=0, c=0;
         if(ret) {
-            ret = readData();
+            readData();
             for(int i =0;i<3;i++) {
                 Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
             }
@@ -1842,7 +1842,7 @@ bool Power_DevRead::Load_SingleSixLoop()
     while(1){
         int a=0;
         if(ret) {
-            ret = readData();
+            readData();
 //            for(int i =0;i<1;i++) {
 //                Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
 //            }
@@ -1895,14 +1895,14 @@ bool Power_DevRead::Three_CtrlOne()
 
     int timer1 = 60 , timer2 = 70;
 
-    if(mItem->modeId == START_BUSBAR){
-        timer1 = 18;
-        timer2 = 19;
-    }
+//    if(mItem->modeId == START_BUSBAR){
+//        timer1 = 18;
+//        timer2 = 19;
+//    }
 
     while(1)
     {
-        ret = readData();
+        readData();
         int a=0, b=0, c = 0;
         for(int i =0;i<3;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
@@ -1969,13 +1969,13 @@ bool Power_DevRead::Three_CtrlTwo()
 
     int timer1 = 60 , timer2 = 70;
 
-    if(mItem->modeId == START_BUSBAR){
-        timer1 = 18;
-        timer2 = 19;
-    }
+//    if(mItem->modeId == START_BUSBAR){
+//        timer1 = 18;
+//        timer2 = 19;
+//    }
     while(1)
     {
-        ret = readData();
+        readData();
         int a=0, b=0, c = 0;
         for(int i =0;i<3;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
@@ -2038,14 +2038,14 @@ bool Power_DevRead::Three_CtrlThree()
     QString eng4 = tr("Socket 1 current check");
     int timer1 = 60 , timer2 = 70;
 
-    if(mItem->modeId == START_BUSBAR){
-        timer1 = 18;
-        timer2 = 19;
-    }
+//    if(mItem->modeId == START_BUSBAR){
+//        timer1 = 18;
+//        timer2 = 19;
+//    }
 
     while(1)
     {
-        ret = readData();
+        readData();
         int a=0, b=0, c = 0;
         for(int i =0;i<3;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
@@ -2111,7 +2111,7 @@ bool Power_DevRead::Three_Breaker()
     while(1)
     {
         int a=0,b=0,c=0;
-        ret = readData();
+        readData();
 
         a = Obj->vol.value[0]; b = Obj->vol.value[1]; c = Obj->vol.value[2];
         if((!a)&&(!b) &&(!c)) {
@@ -2173,7 +2173,7 @@ bool Power_DevRead::Three_One()
     while(1)
     {
         if(ret) {
-            ret = readData();
+            readData();
             Obj->cur.status[0] = mErr->checkErrRange(exValue, Obj->cur.value[0], err);
             if(Obj->cur.status[0]){
                     ret = true;
@@ -2198,7 +2198,7 @@ bool Power_DevRead::Three_One()
     while(1)
     {
         int a=0, b=0, c = 0;
-        ret = readData();
+        readData();
         for(int i =0;i<3;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
         }
@@ -2261,7 +2261,7 @@ bool Power_DevRead::Three_OneBreaker()
     while(1)
     {
         int a=0,b=0,c=0;
-        if(ret) ret = readData();
+        if(ret) readData();
         for(int i =0;i<loop;i++)
         {
             mErr->volErr(i);
@@ -2341,7 +2341,7 @@ bool Power_DevRead::Three_Two()
     while(1)
     {
         if(ret) {
-            ret = readData();
+            readData();
             Obj->cur.status[1] = mErr->checkErrRange(exValue, Obj->cur.value[1], err);
             if(Obj->cur.status[1]) {
                ret = true; break;}
@@ -2363,7 +2363,7 @@ bool Power_DevRead::Three_Two()
     while(1)
     {
         int a=0, b=0, c = 0;
-        ret = readData();
+        readData();
         for(int i =0;i<3;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
         }
@@ -2428,7 +2428,7 @@ bool Power_DevRead::Three_TwoBreaker()
     while(1)
     {
         int a=0,b=0,c=0;
-        if(ret) ret = readData();
+        if(ret) readData();
         for(int i =0;i<loop;i++)
         {
             mErr->volErr(i);
@@ -2508,7 +2508,7 @@ bool Power_DevRead::Three_Three()
     while(1)
     {
         if(ret) {
-            ret = readData();
+            readData();
             Obj->cur.status[2] = mErr->checkErrRange(exValue, Obj->cur.value[2], err);
             if(Obj->cur.status[2]) {
                ret = true; break;}
@@ -2530,7 +2530,7 @@ bool Power_DevRead::Three_Three()
     while(1)
     {
         int a=0, b=0, c = 1;
-        ret = readData();
+        readData();
         for(int i =0;i<3;i++) {
             Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
         }
@@ -2593,7 +2593,7 @@ bool Power_DevRead::Three_ThreeBreaker()
     while(1)
     {
         int a=0,b=0,c=0;
-        if(ret) ret = readData();
+        if(ret) readData();
         for(int i =0;i<loop;i++)
         {
             mErr->volErr(i);
@@ -2663,13 +2663,13 @@ bool Power_DevRead::Load_ThreeLoop()
 
         int timer1 = 60 , timer2 = 70;
 
-        if(mItem->modeId == START_BUSBAR){
-            timer1 = 18;
-            timer2 = 18;
-        }
+//        if(mItem->modeId == START_BUSBAR){
+//            timer1 = 18;
+//            timer2 = 18;
+//        }
         while(1){
             int a=0, b=0, c=0;
-            ret = readData();
+            readData();
             for(int i =0;i<3;i++) {
                 Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
             }
@@ -2692,7 +2692,7 @@ bool Power_DevRead::Load_ThreeLoop()
             flag = 0; bool res = false;uint toTal = 0; uint sum = 0;
             while(1)
             {
-                ret = readData();
+                readData();
                 toTal = StartBox->totalPow.ivalue; sum = 0;
                 int toTalerr = toTal * (mItem->ip.ip_powErr/100.0);
 
@@ -2703,7 +2703,7 @@ bool Power_DevRead::Load_ThreeLoop()
                 if(res) break;
 
                 flag++;
-                if(flag >6) {
+                if(flag >20) {
                     res = false;
                     break;
                 }

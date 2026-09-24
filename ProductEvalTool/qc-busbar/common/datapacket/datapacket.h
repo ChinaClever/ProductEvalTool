@@ -516,7 +516,7 @@ typedef struct _sBoxData {
     int ratedCur; // 额定电流
     sRtuUshortUnit rate;//新频率
     sRtuUshortUnit reCur;//剩余电流
-    sRtuCurUintUnit zeroLineCur;//零线电流
+    sRtuULLintUnit zeroLineCur;//零线电流
     sRtuULLintUnit totalPow; //总有功功率
     char dc; // 交直流标志位
     uchar lpsState; // 防雷状态 1：工作正常   2：损坏
@@ -538,6 +538,7 @@ typedef struct _sBoxData {
 //    uchar rtuArray[SRC_DATA_LEN_MAX];
     QString mac;
     uchar phaseFlag;// 单相或者三相
+    ushort boxId[3];
 }sBoxData;
 
 

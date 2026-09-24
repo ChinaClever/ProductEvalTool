@@ -39,7 +39,7 @@ bool cm_pingNet(const QString& ip)
 bool cm_pingNet_(const QString& ip)
 {
     QProcess pingProcess;
-    QString strArg = "ping " + ip + " -n 1 -i 2";  //strPingIP 为设备IP地址
+    QString strArg = "ping " + ip + " -n 3 -i 2";  //strPingIP 为设备IP地址
 //    QString strArg = "ping " + ip;  //strPingIP 为设备IP地址
     pingProcess.start(strArg,QIODevice::ReadOnly);
     if(!pingProcess.waitForFinished(3000)){

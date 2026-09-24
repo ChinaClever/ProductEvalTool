@@ -49,6 +49,8 @@ bool Power_CoreThread::initDev()
     }
 
     ret = mRead->readSn();
+
+
     //if(ret) mItem->modeId = mDt->devType;
 
     return ret;
@@ -538,55 +540,127 @@ void Power_CoreThread::InsertErrRange()
 
     ///////
     curValue = b->shuntRelease;
-    expect = mItem->si.si_trip;
+    expect = mItem->si.si_trip == 1 ? 1 : 0;
     if(curValue == expect) ret = true;
     str = tr("插接箱分励脱扣器实际值：%1 , 期待值：%2").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
     mLogs->updatePro(str,ret);int flag = 0;
     if(ret) {
-        if(curValue == 1) {
-            str = tr("插接箱分励脱扣测试开始");
-            emit TipSig(str);
-            for(int i=0;i<2;i++)
-            {
-                Ctrl_SiRtu::bulid()->setBusbarInsertShuntRelease(12);
+        if(mItem->si.si_trip == 1){
+            if(curValue == 1) {
+                str = tr("插接箱分励脱扣测试开始");
+                emit TipSig(str);
+                for(int i=0;i<2;i++)
+                {
+                    Ctrl_SiRtu::bulid()->setBusbarInsertShuntRelease(12);
+                }
+                while(1)
+                {
+                    ret = mRead->readData();
+                    if(ret) {
+                        if(b->data.vol.value[0] == 0) break;//1：断开   2：闭合
+                    }
+                    flag++;
+                    if(flag >50){
+                        ret = false; break;
+                    }
+                }
+                str = tr("插接箱分励脱扣检查");
+                QString str1 = tr("与参数设置一致；若有分励脱扣，则发送命令断开断路器，状态显示为分闸");
+                if(ret) str += tr("成功");
+                else str += tr("失败");
+                // mLogs->writeData(str1, str, ret);
+                mLogs->updatePro(str,ret);
+                str = tr("请将插接箱的断路器闭合");
+                emit TipSig(str);
+                while(1)
+                {
+                    ret = mRead->readData();
+                    if(ret) {
+                        for(int i = 0 ; i < b->loopNum ; i++){
+                            sSiCfg *cth = &(mItem->si);
+                            int exValue = cth->si_vol *10.0;
+                            int err = cth->si_volErr *10.0;
+                            if(b->data.vol.value[i] >= exValue - err) ret = ret & true;
+                            else ret = ret & false;
+                        }if(ret)break; //1：断开   2：闭合
+                    }
+                    flag++;
+                    if(flag >40){
+                        ret = false; break;
+                    }
+                }
             }
-            while(1)
-            {
-                ret = mRead->readData();
-                if(ret) {
-                    if(b->data.vol.value[0] == 0) break;//1：断开   2：闭合
+        }//mItem->si.si_trip == 1
+        if(mItem->si.si_trip == 2){
+            //if(curValue == 1) {
+                str = tr("插接箱电操RCA测试分闸开始");
+                emit TipSig(str);
+                mLogs->updatePro(str,ret);
+                int t = 13 , temp = 0;
+
+                for(int i = 0 ; i < t ; i++){
+                    temp = Ctrl_SiRtu::bulid()->setBusbarControlRCAOff(7);
+//                    qDebug()<<temp<< "   aaaaaaaaaa         ";
+                    if(temp == 6) break;
+                    msleep(750);
                 }
-                flag++;
-                if(flag >50){
-                    ret = false; break;
+                while(1)
+                {
+                    ret = mRead->readData();
+                    bool returnret = true;
+                    if(ret) {
+                        for(int i = 0 ; i < b->loopNum ; i++){
+                            if(b->data.vol.value[i] == 0) returnret = returnret & true;
+                            else returnret = returnret & false;
+                        }
+                        if(returnret){
+                            ret = true;
+                            break; //1：断开   2：闭合
+                        }
+//                            if(b->data.vol.value[0] == 0) break;//1：断开   2：闭合
+                    }
+                    flag++;
+                    if(flag >50){
+                        ret = false; break;
+                    }
                 }
-            }
-            str = tr("插接箱分励脱扣检查");
-            QString str1 = tr("与参数设置一致；若有分励脱扣，则发送命令断开断路器，状态显示为分闸");
-            if(ret) str += tr("成功");
-            else str += tr("失败");
-            // mLogs->writeData(str1, str, ret);
-            mLogs->updatePro(str,ret);
-            str = tr("请将插接箱的断路器闭合");
-            emit TipSig(str);
-            while(1)
-            {
-                ret = mRead->readData();
-                if(ret) {
-                    for(int i = 0 ; i < b->loopNum ; i++){
-                        sSiCfg *cth = &(mItem->si);
-                        int exValue = cth->si_vol *10.0;
-                        int err = cth->si_volErr *10.0;
-                        if(b->data.vol.value[i] >= exValue - err) ret = ret & true;
-                        else ret = ret & false;
-                    }if(ret)break; //1：断开   2：闭合
+                str = tr("插接箱电操RCA检查");
+                QString str1 = tr("与参数设置一致；若有RCA，则发送命令断开断路器，状态显示为分闸");
+                if(ret) str += tr("成功");
+                else str += tr("失败");
+                // mLogs->writeData(str1, str, ret);
+                mLogs->updatePro(str,ret);
+                sleep(20);//按需延时
+                str = tr("插接箱电操RCA测试合闸开始");
+                emit TipSig(str);
+                mLogs->updatePro(str,ret);
+                temp = 0;
+                for(int i = 0 ; i < t ; i++){
+                    temp = Ctrl_SiRtu::bulid()->setBusbarControlRCAOn(8);
+//                    qDebug()<<temp<< "   bbbbbbbb         ";
+                    if(temp == 6) break;
+                    msleep(750);
                 }
-                flag++;
-                if(flag >40){
-                    ret = false; break;
+
+                while(1)
+                {
+                    ret = mRead->readData();
+                    if(ret) {
+                        for(int i = 0 ; i < b->loopNum ; i++){
+                            sSiCfg *cth = &(mItem->si);
+                            int exValue = cth->si_vol *10.0;
+                            int err = cth->si_volErr *10.0;
+                            if(b->data.vol.value[i] >= exValue - err) ret = ret & true;
+                            else ret = ret & false;
+                        }if(ret)break; //1：断开   2：闭合
+                    }
+                    flag++;
+                    if(flag >40){
+                        ret = false; break;
+                    }
                 }
-            }
-        }
+            //}
+        }//mItem->si.si_trip == 2
     }
     ret = false;
     ///////

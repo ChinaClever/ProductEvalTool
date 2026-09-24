@@ -70,6 +70,23 @@ bool Rtu_Write::write06(Rtu_Sent_Single_Ushort_V3 &pkt)
     return ret;
 }
 
+int Rtu_Write::write06_on_off(Rtu_Sent_Single_Ushort_V3 &pkt)
+{
+    uchar sendBuf[256]={0}, recvBuf[128]={0};
+    int rtn = rtu_write_packet_06(&pkt, sendBuf);
+    rtn = transmit(sendBuf, rtn, recvBuf, 2);
+//    if(rtn > 0) {
+//        ret = rtuRecvCrc(recvBuf, rtn);
+//        if(ret) {
+//            uchar fn = recvBuf[1];
+//            if(fn < 0x80) { // 设置正常
+//                ret = true;
+//            }
+//        }
+//    }
+    return rtn;
+}
+
 bool Rtu_Write::write(Rtu_Sent_Ushort_V3 &pkt)
 {
     bool ret = false;

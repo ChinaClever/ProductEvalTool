@@ -38,6 +38,10 @@ public:
     bool setBusbarInsertRestore(int val);
     bool setBusbarInsertShuntRelease(int val);
 
+    int setBusbarControlRCAOn(int val);
+    int setBusbarControlRCAOff(int val);
+    int sentRtuCmd06_on_off(ushort reg, ushort value, uchar fn=0x06);
+
     bool rtu_sent_ushortV3_buff(uchar addr, ushort reg, uint num,  uint val1, uint val2);
     bool rtu_sent_uintV3_buff(uchar addr, ushort reg, uint num,  uint val1, uint val2);
 

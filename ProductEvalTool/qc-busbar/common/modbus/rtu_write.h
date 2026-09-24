@@ -77,6 +77,7 @@ public:
     bool write06(Rtu_Sent_Single_Ushort_V3 &pkt);
     bool write(Rtu_Sent_Ushort_V3 &pkt);
     bool write(Rtu_Sent_Uint_V3 &pkt);
+    int write06_on_off(Rtu_Sent_Single_Ushort_V3 &pkt);
 
     void autoSetAddress();
 signals:

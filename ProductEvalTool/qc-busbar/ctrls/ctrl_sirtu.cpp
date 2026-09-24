@@ -141,6 +141,24 @@ bool Ctrl_SiRtu::sentRtuCmd06(ushort reg, ushort value, uchar fn)
     return ret;
 }
 
+int Ctrl_SiRtu::sentRtuCmd06_on_off(ushort reg, ushort value, uchar fn)
+{
+    int ret = 0;
+    Rtu_Sent_Single_Ushort_V3 it;
+    it.addr = mItem->addr;
+    it.fn = fn;
+    it.reg = reg;
+    it.val = value;
+    it.num = 1;
+
+    //for(int i=0; i<3; ++i) {
+    ret = mModbus->write06_on_off(it);
+    //    if(ret) break; else sDataPacket::bulid()->delay(3+i);
+    //}
+
+    return ret;
+}
+
 bool Ctrl_SiRtu::rtu_sent_ushortV3_buff(uchar addr, ushort reg, uint num,  uint val1, uint val2 )
 {
     bool ret = true;
@@ -298,6 +316,22 @@ bool Ctrl_SiRtu::setBusbarInsertCur(int index , int val1 , int val2)
 {
     bool ret = true;
     ret = rtu_sent_ushortV3_buff(mItem->addr, PlugCurrentMIN_L1+(index-1)*8, 2 , val1 , val2);
+
+    return ret;
+}
+
+int Ctrl_SiRtu::setBusbarControlRCAOn(int val)
+{
+    int ret = 0;
+    ret = sentRtuCmd06_on_off(PlugShuntReleaseLegrandRCA, val);
+
+    return ret;
+}
+
+int Ctrl_SiRtu::setBusbarControlRCAOff(int val)
+{
+    int ret = 0;
+    ret = sentRtuCmd06_on_off(PlugShuntReleaseLegrandRCA, val);
 
     return ret;
 }

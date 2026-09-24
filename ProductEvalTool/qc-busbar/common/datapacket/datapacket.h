@@ -259,6 +259,8 @@ enum  sSetPlugType{
 
     ,PlugRestoreFactory       = 604           //恢复出厂设置
     ,PlugShuntRelease         = 605           //12：断路器分闸 （连续发两条命令方可控制断路器分闸）
+    ,PlugShuntReleaseLegrandRCA         = 606           //7：断路器分闸 8：断路器合闸
+//    ,PlugIC65RCA         = 607           //7：断路器分闸 8：断路器分闸
 };
 
 /**

@@ -558,65 +558,132 @@ void Power_CoreThread::InsertErrRange()
     if(curValue == expect) ret = true;
     str = tr("插接箱电流规格实际值：%1 , 期待值：%2").arg(curValue?tr("125A(65A以上)"):tr("63A以下")).arg(expect?tr("125A(65A以上)"):tr("63A以下"));
     mLogs->updatePro(str,ret);ret = false;
-///////
+    ///////
     curValue = b->shuntRelease;
-    expect = mItem->si.si_trip;
+    expect = mItem->si.si_trip == 1 ? 1 : 0;
     if(curValue == expect) ret = true;
     str = tr("插接箱分励脱扣器实际值：%1 , 期待值：%2").arg(curValue?tr("有"):tr("无")).arg(expect?tr("有"):tr("无"));
     mLogs->updatePro(str,ret);int flag = 0;
     if(ret) {
-        if(curValue == 1) {
-            str = tr("插接箱分励脱扣测试开始");
+        if(mItem->si.si_trip == 1){
+            if(curValue == 1) {
+                str = tr("插接箱分励脱扣测试开始");
+                emit TipSig(str);
+                for(int i=0;i<2;i++)
+                {
+                    Ctrl_SiRtu::bulid()->setBusbarInsertShuntRelease(12);
+                }
+                while(1)
+                {
+                    ret = mRead->readData();
+                    if(ret) {
+                        if(b->data.vol.value[0] == 0) break;//1：断开   2：闭合
+                    }
+                    flag++;
+                    if(flag >50){
+                        ret = false; break;
+                    }
+                }
+                str = tr("插接箱分励脱扣检查");
+                QString str1 = tr("与参数设置一致；若有分励脱扣，则发送命令断开断路器，状态显示为分闸");
+                if(ret) str += tr("成功");
+                else str += tr("失败");
+                // mLogs->writeData(str1, str, ret);
+                mLogs->updatePro(str,ret);
+                str = tr("请将插接箱的断路器闭合");
+                emit TipSig(str);
+                while(1)
+                {
+                    ret = mRead->readData();
+                    if(ret) {
+                        for(int i = 0 ; i < b->loopNum ; i++){
+                            sSiCfg *cth = &(mItem->si);
+                            int exValue = cth->si_vol *10.0;
+                            int err = cth->si_volErr *10.0;
+                            if(b->data.vol.value[i] >= exValue - err) ret = ret & true;
+                            else ret = ret & false;
+                        }if(ret)break; //1：断开   2：闭合
+                    }
+                    flag++;
+                    if(flag >40){
+                        ret = false; break;
+                    }
+                }
+            }
+        }//mItem->si.si_trip == 1
+        if(mItem->si.si_trip == 2){
+            //if(curValue == 1) {
+            str = tr("插接箱电操RCA测试分闸开始");
             emit TipSig(str);
-            for(int i=0;i<2;i++)
-            {
-                Ctrl_SiRtu::bulid()->setBusbarInsertShuntRelease(12);
+            mLogs->updatePro(str,ret);
+            int t = 13 , temp = 0;
+
+            for(int i = 0 ; i < t ; i++){
+                temp = Ctrl_SiRtu::bulid()->setBusbarControlRCAOff(7);
+                //                    qDebug()<<temp<< "   aaaaaaaaaa         ";
+                if(temp == 6) break;
+                msleep(750);
             }
             while(1)
             {
                 ret = mRead->readData();
+                bool returnret = true;
                 if(ret) {
-                    for(int i = 0 ; i <b->loopNum;i++){
-                        if(b->data.vol.value[i]==0) ret &= true;
-                        else ret &= false;
+                    for(int i = 0 ; i < b->loopNum ; i++){
+                        if(b->data.vol.value[i] == 0) returnret = returnret & true;
+                        else returnret = returnret & false;
                     }
-                    if(ret) break;//1：断开   2：闭合
+                    if(returnret){
+                        ret = true;
+                        break; //1：断开   2：闭合
+                    }
+                    //                            if(b->data.vol.value[0] == 0) break;//1：断开   2：闭合
                 }
                 flag++;
-                if(flag >40){
+                if(flag >50){
                     ret = false; break;
                 }
             }
-            str = tr("插接箱分励脱扣检查");
-            str1 = tr("与参数设置一致；若有分励脱扣，则发送命令断开断路器，状态显示为分闸");
+            str = tr("插接箱电操RCA检查");
+            QString str1 = tr("与参数设置一致；若有RCA，则发送命令断开断路器，状态显示为分闸");
             if(ret) str += tr("成功");
             else str += tr("失败");
             // mLogs->writeData(str1, str, ret);
             mLogs->updatePro(str,ret);
-            str = tr("请将插接箱的断路器闭合");
+            sleep(20);//按需延时
+            str = tr("插接箱电操RCA测试合闸开始");
             emit TipSig(str);
+            mLogs->updatePro(str,ret);
+            temp = 0;
+            for(int i = 0 ; i < t ; i++){
+                temp = Ctrl_SiRtu::bulid()->setBusbarControlRCAOn(8);
+                //                    qDebug()<<temp<< "   bbbbbbbb         ";
+                if(temp == 6) break;
+                msleep(750);
+            }
+
             while(1)
             {
                 ret = mRead->readData();
                 if(ret) {
-                    for(int i = 0 ; i <b->loopNum;i++){
+                    for(int i = 0 ; i < b->loopNum ; i++){
                         sSiCfg *cth = &(mItem->si);
                         int exValue = cth->si_vol *10.0;
                         int err = cth->si_volErr *10.0;
-                        if(b->data.vol.value[i] >= exValue-err) ret &= true;
-                        else ret &= false;
-                    }
-                    if(ret)break; //1：断开   2：闭合
+                        if(b->data.vol.value[i] >= exValue - err) ret = ret & true;
+                        else ret = ret & false;
+                    }if(ret)break; //1：断开   2：闭合
                 }
                 flag++;
                 if(flag >40){
                     ret = false; break;
                 }
             }
-        }
+            //}
+        }//mItem->si.si_trip == 2
     }
     ret = false;
-///////
+    ///////
     curValue = b->backup_breaker;
     expect = 0;
     if(curValue == expect) ret = true;
@@ -734,14 +801,14 @@ bool Power_CoreThread::VolCurCtrlSigle(sObjData *obj,int id)
             double cur = obj->source_cur[id] / COM_RATE_CUR;
             str = tr("检测%1电压电流成功;").arg(name);
             str = tr("%1 电压: %2V, 电流: %3A; ")
-                       .arg(name)
-                       .arg(vol, 0, 'f', 2)
-                       .arg(cur, 0, 'f', 2);
+                    .arg(name)
+                    .arg(vol, 0, 'f', 2)
+                    .arg(cur, 0, 'f', 2);
             engStr = tr("Check %1 voltage and current Success").arg(name);
             engStr = tr("%1 voltage: %2V, current: %3A; ")
-                          .arg(name)
-                          .arg(vol, 0, 'f', 2)
-                          .arg(cur, 0, 'f', 2);
+                    .arg(name)
+                    .arg(vol, 0, 'f', 2)
+                    .arg(cur, 0, 'f', 2);
 
             mLogs->updatePro(str, true);
             mLogs->writeData(request, str, title, true);
@@ -759,14 +826,14 @@ bool Power_CoreThread::VolCurCtrlSigle(sObjData *obj,int id)
             double cur = obj->source_cur[id] / COM_RATE_CUR;
             str = tr("检测%1电压电流失败;").arg(name);
             str = tr("%1 电压: %2V, 电流: %3A; ")
-                       .arg(name)
-                       .arg(vol, 0, 'f', 2)
-                       .arg(cur, 0, 'f', 2);
+                    .arg(name)
+                    .arg(vol, 0, 'f', 2)
+                    .arg(cur, 0, 'f', 2);
             engStr = tr("Check %1 voltage and current Failed;").arg(name);
             engStr = tr("%1 voltage: %2V, current: %3A; ")
-                          .arg(name)
-                          .arg(vol, 0, 'f', 2)
-                          .arg(cur, 0, 'f', 2);
+                    .arg(name)
+                    .arg(vol, 0, 'f', 2)
+                    .arg(cur, 0, 'f', 2);
 
             mLogs->updatePro(str, false);
             mLogs->updatePro(tr("电压电流检测失败，超过最大重试次数"), false);
@@ -840,14 +907,14 @@ bool Power_CoreThread::VolCurCtrl(sObjData *obj,int id)
                 double cur = obj->source_cur[i] / COM_RATE_CUR;
                 str = tr("检测%1电压电流成功;").arg(name+QString::number(id + 1));
                 str = tr("%1 电压: %2V, 电流: %3A; ")
-                           .arg(name+QString::number(id + 1))
-                           .arg(vol, 0, 'f', 2)
-                           .arg(cur, 0, 'f', 2);
+                        .arg(name+QString::number(id + 1))
+                        .arg(vol, 0, 'f', 2)
+                        .arg(cur, 0, 'f', 2);
                 engStr = tr("Check %1 voltage and current Success;").arg(name+QString::number(id + 1));
                 engStr = tr("%1 voltage: %2V, current: %3A; ")
-                              .arg(name+QString::number(id + 1))
-                              .arg(vol, 0, 'f', 2)
-                              .arg(cur, 0, 'f', 2);
+                        .arg(name+QString::number(id + 1))
+                        .arg(vol, 0, 'f', 2)
+                        .arg(cur, 0, 'f', 2);
 
                 QString title = tr("回路%1电压电流检测").arg(name+QString::number(id + 1));
                 QString engTitle = tr("Loop %1 Voltage Current Check").arg(name+QString::number(id + 1));
@@ -875,14 +942,14 @@ bool Power_CoreThread::VolCurCtrl(sObjData *obj,int id)
                 double cur = obj->source_cur[i] / COM_RATE_CUR;
                 str = tr("检测%1电压电流失败").arg(name+QString::number(id + 1));
                 str = tr("%1 电压: %2V, 电流: %3A; ")
-                           .arg(name+QString::number(id + 1))
-                           .arg(vol, 0, 'f', 2)
-                           .arg(cur, 0, 'f', 2);
+                        .arg(name+QString::number(id + 1))
+                        .arg(vol, 0, 'f', 2)
+                        .arg(cur, 0, 'f', 2);
                 engStr = tr("Check %1 voltage and current Failed").arg(name+QString::number(id + 1));
                 engStr = tr("%1 voltage: %2V, current: %3A; ")
-                              .arg(name+QString::number(id + 1))
-                              .arg(vol, 0, 'f', 2)
-                              .arg(cur, 0, 'f', 2);
+                        .arg(name+QString::number(id + 1))
+                        .arg(vol, 0, 'f', 2)
+                        .arg(cur, 0, 'f', 2);
 
                 QString title = tr("回路%1电压电流检测").arg(name+QString::number(id + 1));
                 QString engTitle = tr("Loop %1 Voltage Current Check").arg(name+QString::number(id + 1));
@@ -1202,40 +1269,40 @@ bool Power_CoreThread::printer()
     bool ret = true;
     QString str = tr("标签打印 "); QString str1;
     // if(mPro->result != Test_Fail){
-        sBarTend it;
-        QString mPn = mItem->pn;//订单号+成品代码
-        QStringList list = mPn.split("+");
-        for(int i = 0; i < list.count(); i++)
-        {
-            if(i == 0) it.on = list.at(i);
-            if(i == 1) it.pn = list.at(i);
-        }
+    sBarTend it;
+    QString mPn = mItem->pn;//订单号+成品代码
+    QStringList list = mPn.split("+");
+    for(int i = 0; i < list.count(); i++)
+    {
+        if(i == 0) it.on = list.at(i);
+        if(i == 1) it.pn = list.at(i);
+    }
 
-        QString mSn = mDev->devType.sn;//模块序列号
-        it.sn =  mSn.remove(QRegExp("\\s"));
+    QString mSn = mDev->devType.sn;//模块序列号
+    it.sn =  mSn.remove(QRegExp("\\s"));
 
-        int ver = get_share_mem()->box[mItem->addr-1].version;//软件版本号
-        it.fw = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
-        it.hw = "V1.0";//暂时设置默认值
-        if(it.sn.isEmpty() || it.fw.isEmpty()){
-            mPro->result = Test_Fail;
-            ret  = false;
-            if(it.sn.isEmpty()) str += tr(" 读取到序列号SN为空 ");
-            if(it.fw.isEmpty()) str += tr(" 读取到软件版本FW为空 ");
-        }
+    int ver = get_share_mem()->box[mItem->addr-1].version;//软件版本号
+    it.fw = QString::number(ver/100)+"."+QString::number(ver/10%10)+"."+QString::number(ver%10);
+    it.hw = "V1.0";//暂时设置默认值
+    if(it.sn.isEmpty() || it.fw.isEmpty()){
+        mPro->result = Test_Fail;
+        ret  = false;
+        if(it.sn.isEmpty()) str += tr(" 读取到序列号SN为空 ");
+        if(it.fw.isEmpty()) str += tr(" 读取到软件版本FW为空 ");
+    }
 
-        if(ret){
+    if(ret){
+        str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it);
+        if(str1 == "Success") {
+            ret = true;
+        }else {
             str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it);
             if(str1 == "Success") {
                 ret = true;
-            }else {
-                str1 = Printer_BarTender::bulid(this)->http_post(method, ip, it);
-                if(str1 == "Success") {
-                    ret = true;
-                }else ret = false;
-            }
+            }else ret = false;
         }
-        if(ret) str += tr("正常"); else str += tr("错误");
+    }
+    if(ret) str += tr("正常"); else str += tr("错误");
     // } else str = tr("因测试未通过，标签未打印");
     return mPacket->updatePro(str, ret);
 }
@@ -1247,13 +1314,13 @@ void Power_CoreThread::workResult(bool)
     bool res = false;
     QString str = tr("测试结果 ");
     if(mPro->result != Test_Fail) {
-//        if(mItem->modeId != BASIC_TYPE){
-//            res = printer();
-//        }
-//        else{
-           // res = true;
-            res = printer();
-//        }
+        //        if(mItem->modeId != BASIC_TYPE){
+        //            res = printer();
+        //        }
+        //        else{
+        // res = true;
+        res = printer();
+        //        }
 
         if(res)
             str += tr("通过");
@@ -1301,10 +1368,10 @@ void Power_CoreThread::workResult(bool)
             mItem->moduleSn.clear();
         }
     }
-//    mPro->stepResult.clear();
-//    mPro->stepRequest.clear();
-//    mPro->itemData.clear();
-//    mPro->test_function.clear();
+    //    mPro->stepResult.clear();
+    //    mPro->stepRequest.clear();
+    //    mPro->itemData.clear();
+    //    mPro->test_function.clear();
 }
 
 QString Power_CoreThread::trans(int index)
@@ -1313,11 +1380,11 @@ QString Power_CoreThread::trans(int index)
     int value = index % 3 + 1;
     switch(value) {
     case 1: str = "A" + QString::number(index / 3+1);
-            break;
+        break;
     case 2: str = "B" + QString::number(index / 3+1);
-            break;
+        break;
     case 3: str = "C" + QString::number(index / 3+1);
-            break;
+        break;
     }
 
     return str;
@@ -1362,7 +1429,7 @@ bool Power_CoreThread::Vol_ctrlOne()
                 b += Obj->vol.value[1+i];
                 c += Obj->vol.status[2+i];
             }
-//            if((!b)&&(a == 3)&&(c == 3)) {
+            //            if((!b)&&(a == 3)&&(c == 3)) {
             if((b<2250)&&(a == 3)&&(c == 3)) {
                 ret = true;
                 for(int i =0;i<loop;i++)
@@ -1388,7 +1455,7 @@ bool Power_CoreThread::Vol_ctrlOne()
                 c += Obj->vol.status[2+i];
                 b += Obj->vol.value[1+i];
             }
-//            if((!b)&&(a == 2)&&(c == 2)) {
+            //            if((!b)&&(a == 2)&&(c == 2)) {
             if((b<1500)&&(a == 2)&&(c == 2)) {
                 ret = true;
                 for(int i =0;i<loop;i++)
@@ -1413,7 +1480,7 @@ bool Power_CoreThread::Vol_ctrlOne()
             b = Obj->vol.value[1];
             c = Obj->vol.status[2];
             if((b<750)&&(a == 1)&&(c == 1)) {
-//            if((b==0)&&(a == 1)&&(c == 1)) {
+                //            if((b==0)&&(a == 1)&&(c == 1)) {
                 ret = true;
                 for(int i =0;i<loop;i++)
                 {
@@ -1493,8 +1560,8 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     b += Obj->vol.status[1+i];
                     c += Obj->vol.value[2+i];
                 }
-//                if((!c)&&(a == 3)&&(b == 3)) {
-                  if((c<2250)&&(a == 3)&&(b== 3)) {
+                //                if((!c)&&(a == 3)&&(b == 3)) {
+                if((c<2250)&&(a == 3)&&(b== 3)) {
                     ret = true;
                     for(int i =0;i<loop;i++)
                     {
@@ -1519,7 +1586,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
                     b += Obj->vol.status[1+i];
                     c += Obj->vol.value[2+i];
                 }
-//                if((!c)&&(a == 2)&&(b == 2)) {
+                //                if((!c)&&(a == 2)&&(b == 2)) {
                 if((c<1500)&&(a == 2)&&(b== 2)) {
                     ret = true;
                     for(int i =0;i<loop;i++)
@@ -1543,7 +1610,7 @@ bool Power_CoreThread::Vol_ctrlTwo()
                 b = Obj->vol.status[1];
                 c = Obj->vol.value[2];
                 if((c<750)&&(a == 1)&&(b== 1)) {
-//                if((c==0)&&(a == 1)&&(b== 1)) {
+                    //                if((c==0)&&(a == 1)&&(b== 1)) {
                     ret = true;
                     for(int i =0;i<loop;i++)
                     {
@@ -1880,10 +1947,10 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
             engTitle = tr("Line %1%2 Check").arg(name).arg(1);
 
             request = tr("接口%1 回路%2%3电压电流为零，%2%4电压电流为零正常")
-                          .arg(face + 1)
-                          .arg(name)
-                          .arg(1)
-                          .arg(1);
+                    .arg(face + 1)
+                    .arg(name)
+                    .arg(1)
+                    .arg(1);
             engRequest = tr("Interface%1 Loop %2%3 Voltage and Current should be Zero, %2%4 Voltage and Current should be Zero")
                     .arg(face + 1)
                     .arg(name)
@@ -1895,13 +1962,13 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
             title = tr("断路器%1%2检查").arg(name).arg(1);
             engTitle = tr("Breaker %1%2 Check").arg(name).arg(1);
             request = tr("接口%1 回路%2%3电压电流为零")
-                          .arg(face + 1)
-                           .arg(name)
-                          .arg(1);
+                    .arg(face + 1)
+                    .arg(name)
+                    .arg(1);
             engRequest = tr("Interface%1 Loop %2%3 Voltage and Current should be Zero")
                     .arg(face + 1)
-                     .arg(name)
-                     .arg(1);
+                    .arg(name)
+                    .arg(1);
         }
         else if(type == 2){
             QString names[3] = { "A", "B", "C" };
@@ -1913,10 +1980,10 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
             QString nameNon2 = names[phases[id][1] - 1];  // 不为零的第二相
 
             request = tr("三相线路要求：%1%2电压电流为零，%3%4、%5%6电压电流不为零（接口%7）")
-                          .arg(nameZero).arg(face + 1)
-                          .arg(nameNon1).arg(face + 1)
-                          .arg(nameNon2).arg(face + 1)
-                          .arg(face + 1);
+                    .arg(nameZero).arg(face + 1)
+                    .arg(nameNon1).arg(face + 1)
+                    .arg(nameNon2).arg(face + 1)
+                    .arg(face + 1);
             engRequest = tr("Three-phase line requirement: %1%2 voltage and current are zero, %3%4 and %5%6 voltage and current are not zero (Interface %7)")
                     .arg(nameZero).arg(face + 1)
                     .arg(nameNon1).arg(face + 1)
@@ -1959,10 +2026,10 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
                 QString nameNon2 = names[phases[id][1] - 1];  // 不为零的第二相
 
                 str = tr("线路三相检测成功：%1%2电压电流为零，%3%4、%5%6电压电流不为零（接口%7）")
-                              .arg(nameZero).arg(face + 1)
-                              .arg(nameNon1).arg(face + 1)
-                              .arg(nameNon2).arg(face + 1)
-                              .arg(face + 1);
+                        .arg(nameZero).arg(face + 1)
+                        .arg(nameNon1).arg(face + 1)
+                        .arg(nameNon2).arg(face + 1)
+                        .arg(face + 1);
                 engStr = tr("Three-phase line check Success;  %1%2 voltage and current are zero, %3%4 and %5%6 voltage and current are not zero (Interface %7)")
                         .arg(nameZero).arg(face + 1)
                         .arg(nameNon1).arg(face + 1)
@@ -1993,14 +2060,14 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
             double cur = obj->source_cur[id] / COM_RATE_CUR;
             str = tr("检测%1电压电流失败").arg(name+QString::number(id + 1));
             str = tr("%1 电压: %2V, 电流: %3A; ")
-                       .arg(name+QString::number(id + 1))
-                       .arg(vol, 0, 'f', 2)
-                       .arg(cur, 0, 'f', 2);
+                    .arg(name+QString::number(id + 1))
+                    .arg(vol, 0, 'f', 2)
+                    .arg(cur, 0, 'f', 2);
             engStr = tr("Check %1 voltage and current Failed").arg(name+QString::number(id + 1));
             engStr = tr("%1 voltage: %2V, current: %3A; ")
-                          .arg(name+QString::number(id + 1))
-                          .arg(vol, 0, 'f', 2)
-                          .arg(cur, 0, 'f', 2);
+                    .arg(name+QString::number(id + 1))
+                    .arg(vol, 0, 'f', 2)
+                    .arg(cur, 0, 'f', 2);
 
             if(type == 0){
 
@@ -2031,16 +2098,16 @@ bool Power_CoreThread::BreakVolCurCtrl(sObjData *obj,int id,int type,const int f
                             standardPhasesEng += ", ";
                         }
                         standardPhases += QString("接口%1 %2%3 应为 %4V/%5A")
-                                              .arg(face+1)
-                                              .arg(phaseNames[i]).arg(face+1)
-                                              .arg(expectedVol[i] ? "非0" : "0")
-                                              .arg(expectedCur[i] ? "非0" : "0");
+                                .arg(face+1)
+                                .arg(phaseNames[i]).arg(face+1)
+                                .arg(expectedVol[i] ? "非0" : "0")
+                                .arg(expectedCur[i] ? "非0" : "0");
 
                         standardPhasesEng += QString("Interface%1 %2%3 should be %4V/%5A")
-                                                 .arg(face+1)
-                                                 .arg(phaseNames[i]).arg(face+1)
-                                                 .arg(expectedVol[i] ? "non-zero" : "0")
-                                                 .arg(expectedCur[i] ? "non-zero" : "0");
+                                .arg(face+1)
+                                .arg(phaseNames[i]).arg(face+1)
+                                .arg(expectedVol[i] ? "non-zero" : "0")
+                                .arg(expectedCur[i] ? "non-zero" : "0");
                     }
                 }
 
@@ -2110,23 +2177,23 @@ bool Power_CoreThread::BreakThreeVolCurCtrl(sObjData *obj,int id)
     QString loop3 = QString("C%1 ").arg(QString::number(id+1));
 
     QString title = tr("接口%1 断路器%2 %3电压电流检测")
-                        .arg(id + 1).arg(id + 1)
-                        .arg(loop1+loop2+loop3);
+            .arg(id + 1).arg(id + 1)
+            .arg(loop1+loop2+loop3);
     QString engTitle = tr("Interface%1 break%2 %3 Voltage Current Check")
-                        .arg(id + 1).arg(id + 1)
-                        .arg(loop1+loop2+loop3);
+            .arg(id + 1).arg(id + 1)
+            .arg(loop1+loop2+loop3);
 
     QString request = tr("接口%1 回路%2%3%4电压电流为零")
-                          .arg(id + 1)
-                          .arg(loop1)
-                          .arg(loop2)
-                          .arg(loop3);
+            .arg(id + 1)
+            .arg(loop1)
+            .arg(loop2)
+            .arg(loop3);
 
     QString engRequest = tr("Interface%1 Loop %2%3%4 Voltage and Current are zero")
-                             .arg(id + 1)
-                             .arg(loop1)
-                             .arg(loop2)
-                             .arg(loop3);
+            .arg(id + 1)
+            .arg(loop1)
+            .arg(loop2)
+            .arg(loop3);
 
     while (1)
     {
@@ -2150,13 +2217,13 @@ bool Power_CoreThread::BreakThreeVolCurCtrl(sObjData *obj,int id)
 
             // 成功情况
             str += tr("接口%1 %2电流电压为0，断路器%3检测成功;")
-                       .arg(id + 1)
-                       .arg(loop1+loop2+loop3)
-                       .arg(id + 1);
+                    .arg(id + 1)
+                    .arg(loop1+loop2+loop3)
+                    .arg(id + 1);
             engStr += tr("Interface%1 %2 voltage and current are zero, Breaker %3 check Success;")
-                        .arg(id + 1)
-                        .arg(loop1+loop2+loop3)
-                        .arg(id + 1);
+                    .arg(id + 1)
+                    .arg(loop1+loop2+loop3)
+                    .arg(id + 1);
 
             mLogs->updatePro(str, true);
             mLogs->writeData(request, str, title, true);
@@ -2172,25 +2239,25 @@ bool Power_CoreThread::BreakThreeVolCurCtrl(sObjData *obj,int id)
         {
             QString str, engStr;
 
-//            double vol = obj->source_vol[id] / SOURCE_RATE_VOL;
-//            double cur = obj->source_cur[id] / COM_RATE_CUR;
+            //            double vol = obj->source_vol[id] / SOURCE_RATE_VOL;
+            //            double cur = obj->source_cur[id] / COM_RATE_CUR;
 
             // 失败情况
             str += tr("接口%1 断路器%2检测失败")
-                       .arg(id + 1)
-                       .arg(id + 1);
-//            str += tr("%1 电压: %2V, 电流: %3A; ")
-//                       .arg(name + QString::number(id + 1))
-//                       .arg(vol, 0, 'f', 2)
-//                       .arg(cur, 0, 'f', 2);
+                    .arg(id + 1)
+                    .arg(id + 1);
+            //            str += tr("%1 电压: %2V, 电流: %3A; ")
+            //                       .arg(name + QString::number(id + 1))
+            //                       .arg(vol, 0, 'f', 2)
+            //                       .arg(cur, 0, 'f', 2);
 
             engStr += tr("Interface%1 Breaker %2 Check Failed")
-                          .arg(id + 1)
-                          .arg(name + QString::number(id + 1));
-//            engStr += tr("%1 voltage: %2V, current: %3A; ")
-//                          .arg(name + QString::number(id + 1))
-//                          .arg(vol, 0, 'f', 2)
-//                          .arg(cur, 0, 'f', 2);
+                    .arg(id + 1)
+                    .arg(name + QString::number(id + 1));
+            //            engStr += tr("%1 voltage: %2V, current: %3A; ")
+            //                          .arg(name + QString::number(id + 1))
+            //                          .arg(vol, 0, 'f', 2)
+            //                          .arg(cur, 0, 'f', 2);
 
             mLogs->updatePro(str, false);
 
@@ -2342,12 +2409,12 @@ bool Power_CoreThread::handleBasicTypeStart(bool flag)
                 double vol = obj->source_vol[i] / SOURCE_RATE_VOL;
                 str = tr("检测L%1电压成功;").arg(name+QString::number(i + 1));
                 str = tr("%1 电压: %2V")
-                           .arg(name+QString::number(i + 1))
-                           .arg(vol, 0, 'f', 2);
+                        .arg(name+QString::number(i + 1))
+                        .arg(vol, 0, 'f', 2);
                 engStr = tr("Check L%1 voltage Success;").arg(name+QString::number(i + 1));
                 engStr = tr("%1 voltage: %2V; ")
-                              .arg(name+QString::number(i + 1))
-                              .arg(vol, 0, 'f', 2);
+                        .arg(name+QString::number(i + 1))
+                        .arg(vol, 0, 'f', 2);
 
                 QString title = tr("L%1电压检测").arg(name+QString::number(i + 1));
                 QString engTitle = tr("L%1 Voltage Check").arg(name+QString::number(i + 1));
@@ -2380,12 +2447,12 @@ bool Power_CoreThread::handleBasicTypeStart(bool flag)
                 double vol = obj->source_vol[i] / SOURCE_RATE_VOL;
                 str = tr("检测L%1电压失败").arg(name+QString::number(i + 1));
                 str = tr("%1 电压: %2V; ")
-                           .arg(name+QString::number(i + 1))
-                           .arg(vol, 0, 'f', 2);
+                        .arg(name+QString::number(i + 1))
+                        .arg(vol, 0, 'f', 2);
                 engStr = tr("Check L%1 voltage Failed").arg(name+QString::number(i + 1));
                 engStr = tr("%1 voltage: %2V;")
-                              .arg(name+QString::number(i + 1))
-                              .arg(vol, 0, 'f', 2);
+                        .arg(name+QString::number(i + 1))
+                        .arg(vol, 0, 'f', 2);
 
                 QString title = tr("L%1电压检测").arg(name+QString::number(i+1));
                 QString engTitle = tr("L%1 Voltage Check").arg(name+QString::number(i + 1));
@@ -2428,10 +2495,10 @@ void Power_CoreThread::workDown()
     if (mItem->modeId == BASIC_TYPE) {
         mLogs->updatePro(tr("即将开始"));
         if(mPro->moduleSN.isEmpty()){
-             mSn->createSn();//设置序列号
-             QString str = mDev->devType.sn;
-             mPro->moduleSN = str.remove(QRegExp("\\s"));
-             mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
+            mSn->createSn();//设置序列号
+            QString str = mDev->devType.sn;
+            mPro->moduleSN = str.remove(QRegExp("\\s"));
+            mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
         }
 
         ret = handleBasicType();
@@ -2440,10 +2507,10 @@ void Power_CoreThread::workDown()
     }else if (mItem->modeId == BASIC_TYPE_START) {
         mLogs->updatePro(tr("即将开始"));
         if(mPro->moduleSN.isEmpty()){
-             mSn->createSn();//设置序列号
-             QString str = mDev->devType.sn;
-             mPro->moduleSN = str.remove(QRegExp("\\s"));
-             mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
+            mSn->createSn();//设置序列号
+            QString str = mDev->devType.sn;
+            mPro->moduleSN = str.remove(QRegExp("\\s"));
+            mItem->moduleSn = mPro->moduleSN; Cfg::bulid()->writeQRcode();
         }
 
         ret = handleBasicTypeStart(false);

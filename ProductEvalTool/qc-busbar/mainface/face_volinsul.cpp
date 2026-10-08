@@ -67,6 +67,8 @@ bool Face_Volinsul::printer(QString ip ,QString url, int port)
 
         QString mSn = mDev->devType.sn;//模块序列号
         it.sn =  mSn.remove(QRegExp("\\s"));
+        it.on = it.on.remove(QRegExp("\\s"));
+        it.pn = it.pn.remove(QRegExp("\\s"));
         qDebug()<<"mSn: "<<mSn;
         it.fw = "V0.0";
         it.hw = "V1.0";
@@ -76,15 +78,16 @@ bool Face_Volinsul::printer(QString ip ,QString url, int port)
         //     if(it.sn.isEmpty()) str += tr(" 读取到序列号SN为空 ");
         // }
         if(ret){
-            str1 = Printer_BarTender::bulid(this)->http_post(url, ip, it, port);
-            if(str1 == "Success") {
-                ret = true;
-            }else {
-                str1 = Printer_BarTender::bulid(this)->http_post(url, ip, it, port);
-                if(str1 == "Success") {
-                    ret = true;
-                }else ret = false;
-            }
+//            str1 = Printer_BarTender::bulid(this)->http_post(url, ip, it, port);
+//            if(str1 == "Success") {
+//                ret = true;
+//            }else {
+//                str1 = Printer_BarTender::bulid(this)->http_post(url, ip, it, port);
+//                if(str1 == "Success") {
+//                    ret = true;
+//                }else ret = false;
+//            }
+            Printer_BarTender::bulid(this)->http_post(it);
         }
         if(ret) str += tr("正常"); else str += tr("错误");
     // } else str = tr("因测试未通过，标签未打印");

@@ -388,8 +388,8 @@ void Json_Pack::step_out_https_post(const QString &method, const QString &ip,QJs
 {
     qDebug()<<"json"<<json;
     AeaQt::HttpClient http;
-    http.clearAccessCache();
-    http.clearConnectionCache();
+    //http.clearAccessCache();
+    //http.clearConnectionCache();
     QString url = "https://%1/%2";
     http.post(url.arg(ip).arg(method))
         .header("content-type", "application/json")
@@ -398,7 +398,7 @@ void Json_Pack::step_out_https_post(const QString &method, const QString &ip,QJs
         .onFailed([&](QString error) {qDebug()<<"error"<<error; mPro->flag = 0;  mPro->status << error;mPro->pass << 0;})
         .onTimeout([&](QNetworkReply *) {qDebug()<<"http_posts timeout"; mPro->flag = 0;mPro->status << "http_posts timeout";mPro->pass << 0;}) // 超时处理
         .sslConfiguration(sslConfig())
-        .timeoutMs(2000) // 1s超时
+        .timeoutMs(5000) // 1s超时
         .block()
         .body(json)
         .exec();

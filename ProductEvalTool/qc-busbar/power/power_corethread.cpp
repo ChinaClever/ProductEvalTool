@@ -593,72 +593,72 @@ void Power_CoreThread::InsertErrRange()
         }//mItem->si.si_trip == 1
         if(mItem->si.si_trip == 2){
             //if(curValue == 1) {
-                str = tr("插接箱电操RCA测试分闸开始");
-                emit TipSig(str);
-                mLogs->updatePro(str,ret);
-                int t = 13 , temp = 0;
+            str = tr("插接箱电操RCA测试分闸开始");
+            emit TipSig(str);
+            mLogs->updatePro(str,ret);
+            int t = 13 , temp = 0;
 
-                for(int i = 0 ; i < t ; i++){
-                    temp = Ctrl_SiRtu::bulid()->setBusbarControlRCAOff(7);
-//                    qDebug()<<temp<< "   aaaaaaaaaa         ";
-                    if(temp == 6) break;
-                    msleep(750);
-                }
-                while(1)
-                {
-                    ret = mRead->readData();
-                    bool returnret = true;
-                    if(ret) {
-                        for(int i = 0 ; i < b->loopNum ; i++){
-                            if(b->data.vol.value[i] == 0) returnret = returnret & true;
-                            else returnret = returnret & false;
-                        }
-                        if(returnret){
-                            ret = true;
-                            break; //1：断开   2：闭合
-                        }
-//                            if(b->data.vol.value[0] == 0) break;//1：断开   2：闭合
+            for(int i = 0 ; i < t ; i++){
+                temp = Ctrl_SiRtu::bulid()->setBusbarControlRCAOff(7);
+                //                    qDebug()<<temp<< "   aaaaaaaaaa         ";
+                if(temp == 6) break;
+                msleep(750);
+            }
+            while(1)
+            {
+                ret = mRead->readData();
+                bool returnret = true;
+                if(ret) {
+                    for(int i = 0 ; i < b->loopNum ; i++){
+                        if(b->data.vol.value[i] == 0) returnret = returnret & true;
+                        else returnret = returnret & false;
                     }
-                    flag++;
-                    if(flag >50){
-                        ret = false; break;
+                    if(returnret){
+                        ret = true;
+                        break; //1：断开   2：闭合
                     }
+                    //                            if(b->data.vol.value[0] == 0) break;//1：断开   2：闭合
                 }
-                str = tr("插接箱电操RCA检查");
-                QString str1 = tr("与参数设置一致；若有RCA，则发送命令断开断路器，状态显示为分闸");
-                if(ret) str += tr("成功");
-                else str += tr("失败");
-                // mLogs->writeData(str1, str, ret);
-                mLogs->updatePro(str,ret);
-                sleep(20);//按需延时
-                str = tr("插接箱电操RCA测试合闸开始");
-                emit TipSig(str);
-                mLogs->updatePro(str,ret);
-                temp = 0;
-                for(int i = 0 ; i < t ; i++){
-                    temp = Ctrl_SiRtu::bulid()->setBusbarControlRCAOn(8);
-//                    qDebug()<<temp<< "   bbbbbbbb         ";
-                    if(temp == 6) break;
-                    msleep(750);
+                flag++;
+                if(flag >50){
+                    ret = false; break;
                 }
+            }
+            str = tr("插接箱电操RCA检查");
+            QString str1 = tr("与参数设置一致；若有RCA，则发送命令断开断路器，状态显示为分闸");
+            if(ret) str += tr("成功");
+            else str += tr("失败");
+            // mLogs->writeData(str1, str, ret);
+            mLogs->updatePro(str,ret);
+//            sleep(20);//按需延时
+//            str = tr("插接箱电操RCA测试合闸开始");
+//            emit TipSig(str);
+//            mLogs->updatePro(str,ret);
+//            temp = 0;
+//            for(int i = 0 ; i < t ; i++){
+//                temp = Ctrl_SiRtu::bulid()->setBusbarControlRCAOn(8);
+//                //                    qDebug()<<temp<< "   bbbbbbbb         ";
+//                if(temp == 6) break;
+//                msleep(750);
+//            }
 
-                while(1)
-                {
-                    ret = mRead->readData();
-                    if(ret) {
-                        for(int i = 0 ; i < b->loopNum ; i++){
-                            sSiCfg *cth = &(mItem->si);
-                            int exValue = cth->si_vol *10.0;
-                            int err = cth->si_volErr *10.0;
-                            if(b->data.vol.value[i] >= exValue - err) ret = ret & true;
-                            else ret = ret & false;
-                        }if(ret)break; //1：断开   2：闭合
-                    }
-                    flag++;
-                    if(flag >40){
-                        ret = false; break;
-                    }
-                }
+//            while(1)
+//            {
+//                ret = mRead->readData();
+//                if(ret) {
+//                    for(int i = 0 ; i < b->loopNum ; i++){
+//                        sSiCfg *cth = &(mItem->si);
+//                        int exValue = cth->si_vol *10.0;
+//                        int err = cth->si_volErr *10.0;
+//                        if(b->data.vol.value[i] >= exValue - err) ret = ret & true;
+//                        else ret = ret & false;
+//                    }if(ret)break; //1：断开   2：闭合
+//                }
+//                flag++;
+//                if(flag >40){
+//                    ret = false; break;
+//                }
+//            }
             //}
         }//mItem->si.si_trip == 2
     }
@@ -722,20 +722,57 @@ void Power_CoreThread::InsertErrRange()
         ret = curAlarmErr(i);
     }
 
-    ret = VolErrRange();
-    if(!ret) {
-        ret = mRead->readData();
-        str = tr("第二次读取数据"); mLogs->updatePro(str,true);
-        VolErrRange();
-    }
 
+    sleep(2);
+    mRead->readData();
     ret = CurErrRange();
     if(!ret) {
         ret = mRead->readData();
         str = tr("第二次读取数据"); mLogs->updatePro(str,true);
         CurErrRange();
     }
+    if(mItem->si.si_trip == 2){
+        sleep(20);//按需延时
+        str = tr("插接箱电操RCA测试合闸开始");
+        emit TipSig(str);
+        mLogs->updatePro(str,ret);
+        int t = 13 , temp = 0;
+        for(int i = 0 ; i < t ; i++){
+            temp = Ctrl_SiRtu::bulid()->setBusbarControlRCAOn(8);
+            //                    qDebug()<<temp<< "   bbbbbbbb         ";
+            if(temp == 6) break;
+            msleep(750);
+        }
 
+        while(1)
+        {
+            ret = mRead->readData();
+            if(ret) {
+                for(int i = 0 ; i < b->loopNum ; i++){
+                    sSiCfg *cth = &(mItem->si);
+                    int exValue = cth->si_vol *10.0;
+                    int err = cth->si_volErr *10.0;
+                    if(b->data.vol.value[i] >= exValue - err) ret = ret & true;
+                    else ret = ret & false;
+                }if(ret)break; //1：断开   2：闭合
+            }
+            flag++;
+            if(flag >40){
+                ret = false; break;
+            }
+        }
+        //}
+    }//mItem->si.si_trip == 2
+
+    sleep(2);
+    mRead->readData();
+    ret = VolErrRange();
+
+    if(!ret) {
+        ret = mRead->readData();
+        str = tr("第二次读取数据"); mLogs->updatePro(str,true);
+        VolErrRange();
+    }
     ret = false;
     str1 = tr("依据产品规格书核对产品的软件烧录版本"); str3 = tr("软件版本");
     eng1 = tr("Verify the software burning version of the product according to the product specification sheet");
@@ -2242,7 +2279,7 @@ bool Power_CoreThread::ThreeBreakTest(int idx)
         }
     }
 
-//    QString name = idx == 0 ? "A" : (idx == 1 ? "B" : "C");
+    //    QString name = idx == 0 ? "A" : (idx == 1 ? "B" : "C");
     str = tr("请断开插接箱断路器 %1").arg(idx + 1);  //三相回路电流、功率
     emit TipSig(str);
     ret = BreakThreeVolCurCtrl(obj,idx);
@@ -2376,12 +2413,12 @@ bool Power_CoreThread::handleBasicTypeStart(bool flag)
                 double vol = obj->source_vol[i] / BASIC_RATE_VOL;
                 str = tr("检测L%1电压成功;").arg(name+QString::number(i + 1));
                 str = tr("%1 电压: %2V")
-                           .arg(name+QString::number(i + 1))
-                           .arg(vol, 0, 'f', 2);
+                        .arg(name+QString::number(i + 1))
+                        .arg(vol, 0, 'f', 2);
                 engStr = tr("Check L%1 voltage Success;").arg(name+QString::number(i + 1));
                 engStr = tr("%1 voltage: %2V; ")
-                              .arg(name+QString::number(i + 1))
-                              .arg(vol, 0, 'f', 2);
+                        .arg(name+QString::number(i + 1))
+                        .arg(vol, 0, 'f', 2);
 
                 QString title = tr("L%1电压检测").arg(name+QString::number(i + 1));
                 QString engTitle = tr("L%1 Voltage Check").arg(name+QString::number(i + 1));
@@ -2414,12 +2451,12 @@ bool Power_CoreThread::handleBasicTypeStart(bool flag)
                 double vol = obj->source_vol[i] / BASIC_RATE_VOL;
                 str = tr("检测L%1电压失败").arg(name+QString::number(i + 1));
                 str = tr("%1 电压: %2V; ")
-                           .arg(name+QString::number(i + 1))
-                           .arg(vol, 0, 'f', 2);
+                        .arg(name+QString::number(i + 1))
+                        .arg(vol, 0, 'f', 2);
                 engStr = tr("Check L%1 voltage Failed").arg(name+QString::number(i + 1));
                 engStr = tr("%1 voltage: %2V;")
-                              .arg(name+QString::number(i + 1))
-                              .arg(vol, 0, 'f', 2);
+                        .arg(name+QString::number(i + 1))
+                        .arg(vol, 0, 'f', 2);
 
                 QString title = tr("L%1电压检测").arg(name+QString::number(i+1));
                 QString engTitle = tr("L%1 Voltage Check").arg(name+QString::number(i + 1));

@@ -598,8 +598,8 @@ void Power_CoreThread::InsertErrRange()
                     if(ret) {
                         for(int i = 0 ; i < b->loopNum ; i++){
                             sSiCfg *cth = &(mItem->si);
-                            int exValue = cth->si_vol *10.0;
-                            int err = cth->si_volErr *10.0;
+                            int exValue = cth->si_vol[i % 3] *10.0;
+                            int err = cth->si_volErr[i % 3] *10.0;
                             if(b->data.vol.value[i] >= exValue - err) ret = ret & true;
                             else ret = ret & false;
                         }if(ret)break; //1：断开   2：闭合
@@ -668,8 +668,8 @@ void Power_CoreThread::InsertErrRange()
                 if(ret) {
                     for(int i = 0 ; i < b->loopNum ; i++){
                         sSiCfg *cth = &(mItem->si);
-                        int exValue = cth->si_vol *10.0;
-                        int err = cth->si_volErr *10.0;
+                        int exValue = cth->si_vol[i % 3] *10.0;
+                        int err = cth->si_volErr[i % 3] *10.0;
                         if(b->data.vol.value[i] >= exValue - err) ret = ret & true;
                         else ret = ret & false;
                     }if(ret)break; //1：断开   2：闭合
@@ -779,11 +779,11 @@ bool Power_CoreThread::VolCurCtrlSigle(sObjData *obj,int id)
     {
         ret = mRead->readDevBasicType(); // 读取电压电流填充 obj
         int okCount = 0;
-        int exVol = mItem->si.si_vol * 10.0;
-        int errVol = mItem->si.si_volErr * 10.0;
+        int exVol = mItem->si.si_vol[id] * 10.0;
+        int errVol = mItem->si.si_volErr[id] * 10.0;
         // 电流标准值和误差
-        int exCur = mItem->si.si_cur * 1000.0;
-        int errCur = mItem->si.si_curErr * 1000.0;
+        int exCur = mItem->si.si_cur[id] * 1000.0;
+        int errCur = mItem->si.si_curErr[id] * 1000.0;
 
         int volValue = obj->source_vol[id] / 100.0;
         int curValue = obj->source_cur[id] ;
@@ -866,20 +866,15 @@ bool Power_CoreThread::VolCurCtrl(sObjData *obj,int id)
         ret = mRead->readDevBasicType(); // 读取电压电流填充 obj
 
         int okCount = 0;
-        int exVol = mItem->si.si_vol * 10.0;
-        int errVol = mItem->si.si_volErr * 10.0;
-        // 电流标准值和误差
-        int exCur = mItem->si.si_cur * 1000.0;
-        int errCur = mItem->si.si_curErr * 1000.0;
-
-
-        qDebug()<<"start";
-        qDebug()<<exCur;
-        qDebug()<<obj->source_cur[0] / 100;
-        qDebug()<<"end";
         for(int i = 0; i < 3; ++i)
         {
             int idx = i;
+
+            // 电压/电流标准值和误差（L1,L2,L3 各自的值）
+            int exVol = mItem->si.si_vol[idx] * 10.0;
+            int errVol = mItem->si.si_volErr[idx] * 10.0;
+            int exCur = mItem->si.si_cur[idx] * 1000.0;
+            int errCur = mItem->si.si_curErr[idx] * 1000.0;
 
             int volValue = obj->source_vol[idx] / 100.0;
             int curValue = obj->source_cur[idx] ;
@@ -1507,8 +1502,8 @@ bool Power_CoreThread::Vol_ctrlOne()
             mLogs->updatePro(str1, ret);
             ret = false;
             if(mItem->modeId == START_BUSBAR)
-                str = tr("B路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->ip.ip_vol).arg(mItem->ip.ip_volErr);
-            else str = tr("B路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->si.si_vol).arg(mItem->si.si_volErr);
+                str = tr("B路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->ip.ip_vol[1]).arg(mItem->ip.ip_volErr[1]);
+            else str = tr("B路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->si.si_vol[1]).arg(mItem->si.si_volErr[1]);
             mLogs->updatePro(str, ret);
             str = tr("电压超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit TipSig(str); sleep(3);
@@ -1639,8 +1634,8 @@ bool Power_CoreThread::Vol_ctrlTwo()
             ret = false;
 
             if(mItem->modeId == START_BUSBAR)
-                str = tr("C路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->ip.ip_vol).arg(mItem->ip.ip_volErr);
-            else str = tr("C路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->si.si_vol).arg(mItem->si.si_volErr);
+                str = tr("C路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->ip.ip_vol[2]).arg(mItem->ip.ip_volErr[2]);
+            else str = tr("C路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->si.si_vol[2]).arg(mItem->si.si_volErr[2]);
             mLogs->updatePro(str, ret);
             str = tr("电压超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
             emit TipSig(str); sleep(3);
@@ -1763,8 +1758,8 @@ bool Power_CoreThread::Vol_ctrlThree()
             mLogs->updatePro(str1, ret);
             ret = false;
             if(mItem->modeId == START_BUSBAR)
-                str = tr("A路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->ip.ip_vol).arg(mItem->ip.ip_volErr);
-            else str = tr("A路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->si.si_vol).arg(mItem->si.si_volErr);
+                str = tr("A路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->ip.ip_vol[0]).arg(mItem->ip.ip_volErr[0]);
+            else str = tr("A路电压检测失败，超出误差范围，设置的电压 %1V，误差 %2V").arg(mItem->si.si_vol[0]).arg(mItem->si.si_volErr[0]);
             mLogs->updatePro(str, ret);
 
             str = tr("电压超出误差范围，请到参数设置页面检查产线测试电流和误差是否设置合适");
@@ -2380,12 +2375,14 @@ bool Power_CoreThread::handleBasicTypeStart(bool flag)
     {
         ret = mRead->readDevBasicType(); // 读取电压电流填充 obj
         int okCount = 0;
-        int exVol = mItem->si.si_vol * 10.0;
-        int errVol = mItem->si.si_volErr * 10.0;
 
         for(int i = 0; i < 3; ++i)
         {
             int idx = i;
+            // 电压标准值和误差（L1,L2,L3 各自的值）
+            int exVol = mItem->si.si_vol[idx] * 10.0;
+            int errVol = mItem->si.si_volErr[idx] * 10.0;
+
             int volValue = obj->source_vol[idx] / 100.0;
             bool volOk = false;
             if(!flag) volOk = mErr->checkErrRange(exVol, volValue, errVol);//false
@@ -2546,13 +2543,14 @@ void Power_CoreThread::workDown()
                 else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
 
                 if(ret && mItem->si.si_stdOr36Single==0) ret = BreakerTest();                            //断路器测试
-                if(ret && mItem->si.si_stdOr36Single==0) ret = stepVolTest();                            //电压测试/////3相6回路单输出时可以不用测试此项
+//                if(ret && mItem->si.si_stdOr36Single==0) ret = stepVolTest();                            //电压测试/////3相6回路单输出时可以不用测试此项
 
                 // if(ret) ret = mSource->read();
                 // else mPro->result = Test_Fail;
                 // if(ret) ret = checkLoadErrRange();
 
-                if(ret) ret = stepLoadTest();               //电流测试///3相6回路单输出时更改需要增加特别项
+//                if(ret) ret = stepLoadTest();               //电流测试///3相6回路单输出时更改需要增加特别项
+                if(ret) ret = stepVolLoadTest();
                 this->mTrans->sendCtrlGnd(1+32+64);
                 if(ret) ret = factorySet(); sleep(2);                      //清除电能
             }
@@ -2580,9 +2578,235 @@ void Power_CoreThread::workDown()
     workResult(ret);
 }
 
+bool Power_CoreThread::stepVolLoadTest()    //电压电流测试：取代原电压测试与电流测试
+{
+    bool ret = true;
+    sObjData *obj = &(mDev->line);
+    sBoxData *b = &(mBusData->box[mItem->addr - 1]);
+
+    if((mItem->modeId == START_BUSBAR) || (b->phaseFlag == 1)) {    //三相输出
+        int faces = 1;      //三相工业接头数量
+        if(mItem->modeId != START_BUSBAR) {
+            faces = b->loopNum / 3;     //三相三回路1个接头，三相六回路2个，三相九回路3个
+            if((b->loopNum == 6) && (mItem->si.si_stdOr36Single == 1)) faces = 1; //三相六回路单输出只有一个接头
+        }
+
+        for(int g = 0; ret && g < faces; ++g) {
+            if(faces > 1) {    //多个接头时逐个切换
+                QString str = tr("请将三相工业接头切换到输出位%1，准备测试").arg(g + 1);
+                emit TipSig(str); sleep(4);
+            }
+            clearObjVolCur(obj);
+            mTrans->sendCtrlGnd(1 + (2 << g) + 32 + 64); //选择接头%g+1，启动L1,L2,L3
+            ret = checkVolLoadFace(obj, g, true);
+            if(!ret) mTrans->sendCtrlGnd(0);
+
+            if(ret) {    //极性测试提示
+                QString str = tr("请检测接头%1位置的极性测试是否合格?").arg(g + 1);
+                emit TipSig(str); sleep(5);
+            }
+        }
+    } else if(b->phaseFlag == 0) {    //单相输出：一个接头一个接头切换
+        for(int i = 0; ret && i < 3; ++i) {
+            QString str = tr("请将单相工业接头切换到接头%1，准备测试").arg(i + 1);
+            emit TipSig(str); sleep(4);
+            clearObjVolCur(obj);
+            mTrans->sendCtrlGnd(1 + (2 << i) + 32 + 64); //选择接头%i+1，启动L1,L2,L3
+            ret = checkVolLoadFace(obj, i, false);
+            if(!ret) mTrans->sendCtrlGnd(0);
+
+            if(ret) {    //极性测试提示
+                str = tr("请检测接头%1位置的极性测试是否合格?").arg(i + 1);
+                emit TipSig(str); sleep(5);
+            }
+        }
+    }
+
+    return ret;
+}
+
+bool Power_CoreThread::checkVolLoadFace(sObjData *obj, int face, bool threePhase)
+{
+    int flag = 0;
+    int cnt = threePhase ? 3 : 1;   //三相接头测L1/L2/L3三相，单相接头只测本相
+    emit TipSig(tr("正在采集电压电流，请稍候..."));
+
+    QString title = tr("接头%1电压电流检测").arg(face + 1);
+    QString engTitle = tr("Socket %1 Voltage Current Check").arg(face + 1);
+
+    //记录某一相的检测结果
+    auto logPhase = [&](int idx, bool ok) {
+        double vol = obj->source_vol[idx] / SOURCE_RATE_VOL;
+        double cur = obj->source_cur[idx] / COM_RATE_CUR;
+        double exVol, exCur, errVol, errCur;
+        if(mItem->modeId == START_BUSBAR) {
+            exVol = mItem->ip.ip_vol[idx]; exCur = mItem->ip.ip_cur[idx];
+            errVol = mItem->ip.ip_volErr[idx]; errCur = mItem->ip.ip_curErr[idx];
+        } else {
+            exVol = mItem->si.si_vol[idx]; exCur = mItem->si.si_cur[idx];
+            errVol = mItem->si.si_volErr[idx]; errCur = mItem->si.si_curErr[idx];
+        }
+
+        QString str = tr("检测接头%1-L%2电压电流%3; 电压: %4V, 电流: %5A; ")
+                .arg(face + 1).arg(idx + 1).arg(ok ? tr("成功") : tr("失败"))
+                .arg(vol, 0, 'f', 2)
+                .arg(cur, 0, 'f', 2);
+        QString engStr = tr("Check socket %1-L%2 voltage and current %3; voltage: %4V, current: %5A; ")
+                .arg(face + 1).arg(idx + 1).arg(ok ? tr("Success") : tr("Failed"))
+                .arg(vol, 0, 'f', 2)
+                .arg(cur, 0, 'f', 2);
+        QString request = tr("接头%1-L%2电压%3V、电流%4A在误差范围内（电压误差%5V，电流误差%6A）")
+                .arg(face + 1).arg(idx + 1).arg(exVol).arg(exCur).arg(errVol).arg(errCur);
+        QString engRequest = tr("Socket %1-L%2 voltage %3V, current %4A within the error range (voltage error %5V, current error %6A)")
+                .arg(face + 1).arg(idx + 1).arg(exVol).arg(exCur).arg(errVol).arg(errCur);
+
+        mLogs->updatePro(str, ok);
+        mLogs->writeData(request, str, title, ok);
+        mLogs->writeDataEng(engRequest, engStr, engTitle, ok);
+    };
+
+    while (1)
+    {
+        bool ret = mRead->readDevBasicType(); // 读取电压电流填充 obj
+        if(ret)
+        {
+            int okCount = 0;
+            for(int j = 0; j < cnt; ++j)
+            {
+                int idx = threePhase ? j : face;    //相序：0-L1 1-L2 2-L3
+
+                // 电压/电流标准值和误差
+                int exVol, errVol, exCur, errCur;
+                if(mItem->modeId == START_BUSBAR) {
+                    exVol = mItem->ip.ip_vol[idx] * 10.0;
+                    errVol = mItem->ip.ip_volErr[idx] * 10.0;
+                    exCur = mItem->ip.ip_cur[idx] * 1000.0;
+                    errCur = mItem->ip.ip_curErr[idx] * 1000.0;
+                } else {
+                    exVol = mItem->si.si_vol[idx] * 10.0;
+                    errVol = mItem->si.si_volErr[idx] * 10.0;
+                    exCur = mItem->si.si_cur[idx] * 1000.0;
+                    errCur = mItem->si.si_curErr[idx] * 1000.0;
+                }
+
+                int volValue = obj->source_vol[idx] / 100.0;
+                int curValue = obj->source_cur[idx];
+                bool volOk = mErr->checkErrRange(exVol, volValue, errVol);
+                bool curOk = mErr->checkErrRange(exCur, curValue, errCur);
+                if(volOk && curOk) okCount++;
+            }
+
+            if(okCount == cnt)
+            {
+                for(int j = 0; j < cnt; ++j) {
+                    logPhase(threePhase ? j : face, true);
+                }
+
+                emit TipSig(tr("电压电流检测成功，准备切换下一步"));
+                return true;
+            }
+        }
+
+        flag++;
+        if(flag > 50)
+        {
+            for(int j = 0; j < cnt; ++j) {
+                logPhase(threePhase ? j : face, false);
+            }
+
+            mLogs->updatePro(tr("电压电流检测失败，超过最大重试次数"), false);
+            emit TipSig(tr("电压电流检测失败，请检查设备接线状态"));
+            return false;
+        }
+
+        QThread::msleep(1000);
+    }
+}
+
 void Power_CoreThread::noloadHomeSlot(int ret)
 {
-    mRet = ret;
+    if(ret != 1) {  //读取失败直接返回
+        mRet = ret;
+        return;
+    }
+
+    sBoxData *b = &(mBusData->box[mItem->addr - 1]);
+    int loop = b->loopNum;      // 三回路=3, 六回路=6, 九回路=9
+    bool ok = true;
+    int flag = 0;
+    QString title = tr("空载归位电压电流检测");
+    QString engTitle = tr("No-Load Home Voltage Current Check");
+
+    while (1) {                 // 多次读取，数据稳定后再比较
+        bool readRet = mRead->readData();
+        if(readRet) {
+            ok = true;
+
+            for(int i = 0; i < loop; ++i) {
+                int idx = i % 3;    // 映射到 L1/L2/L3 (0/1/2) 配置索引
+
+                int exVol, errVol, exCur, errCur;
+                if(mItem->modeId == START_BUSBAR) {
+                    exVol = mItem->ip.ip_vol[idx] * 10.0;
+                    errVol = mItem->ip.ip_volErr[idx] * 10.0;
+                    exCur = mItem->ip.ip_cur[idx] * 1000.0;
+                    errCur = mItem->ip.ip_curErr[idx] * 1000.0;
+                } else {
+                    exVol = mItem->si.si_vol[idx] * 10.0;
+                    errVol = mItem->si.si_volErr[idx] * 10.0;
+                    exCur = mItem->si.si_cur[idx] * 1000.0;
+                    errCur = mItem->si.si_curErr[idx] * 1000.0;
+                }
+
+                int volValue = b->data.vol.value[i];
+                int curValue = b->data.cur.value[i];
+                bool volOk = mErr->checkErrRange(exVol, volValue, errVol);
+                bool curOk = mErr->checkErrRange(exCur, curValue, errCur);
+
+                if(!volOk) {
+                    ok = false;
+                    QString str = tr("空载归位 L%1 电压异常，实际值：%2V，期望范围：[%3V, %4V]")
+                            .arg(i + 1)
+                            .arg(QString::number(volValue / COM_RATE_VOL, 'f', 1))
+                            .arg(QString::number((exVol - errVol) / COM_RATE_VOL, 'f', 1))
+                            .arg(QString::number((exVol + errVol) / COM_RATE_VOL, 'f', 1));
+                    QString engStr = tr("No-Load Home L%1 voltage abnormal, actual: %2V, expected: [%3V, %4V]")
+                            .arg(i + 1)
+                            .arg(QString::number(volValue / COM_RATE_VOL, 'f', 1))
+                            .arg(QString::number((exVol - errVol) / COM_RATE_VOL, 'f', 1))
+                            .arg(QString::number((exVol + errVol) / COM_RATE_VOL, 'f', 1));
+                    mLogs->updatePro(str, false);
+                    mLogs->writeData(str, str, title, false);
+                    mLogs->writeDataEng(engStr, engStr, engTitle, false);
+                }
+
+                if(!curOk) {
+                    ok = false;
+                    QString str = tr("空载归位 L%1 电流异常，实际值：%2A，期望范围：[%3A, %4A]")
+                            .arg(i + 1)
+                            .arg(QString::number(curValue / COM_RATE_CUR, 'f', 3))
+                            .arg(QString::number((exCur - errCur) / COM_RATE_CUR, 'f', 3))
+                            .arg(QString::number((exCur + errCur) / COM_RATE_CUR, 'f', 3));
+                    QString engStr = tr("No-Load Home L%1 current abnormal, actual: %2A, expected: [%3A, %4A]")
+                            .arg(i + 1)
+                            .arg(QString::number(curValue / COM_RATE_CUR, 'f', 3))
+                            .arg(QString::number((exCur - errCur) / COM_RATE_CUR, 'f', 3))
+                            .arg(QString::number((exCur + errCur) / COM_RATE_CUR, 'f', 3));
+                    mLogs->updatePro(str, false);
+                    mLogs->writeData(str, str, title, false);
+                    mLogs->writeDataEng(engStr, engStr, engTitle, false);
+                }
+            }
+
+            if(ok) break;       // 全部通过，退出重试
+        }
+
+        flag++;
+        if(flag > 50) break;    // 最大重试 50 次
+        QThread::msleep(1000);
+    }
+
+    mRet = ok ? 1 : 0;
 }
 
 void Power_CoreThread::run()

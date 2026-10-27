@@ -112,11 +112,11 @@ struct sIpCfg {
     uchar ip_lightning;
     uchar ip_break;
 
-    float ip_vol;
-    float ip_cur;
+    float ip_vol[3];      // L1,L2,L3 测试电压
+    float ip_cur[3];      // L1,L2,L3 测试电流
     float ip_pow;
-    float ip_volErr;
-    float ip_curErr;
+    float ip_volErr[3];   // L1,L2,L3 电压误差
+    float ip_curErr[3];   // L1,L2,L3 电流误差
     float ip_powErr;
     float ip_curMin;
     float ip_curMax;
@@ -143,10 +143,10 @@ struct sSiCfg {
     uchar tem_buzzer;
     uchar tem_filter;
     ushort version;
-    float si_vol;
-    float si_cur;
-    float si_volErr;
-    float si_curErr;
+    float si_vol[3];      // L1,L2,L3 测试电压
+    float si_cur[3];      // L1,L2,L3 测试电流
+    float si_volErr[3];   // L1,L2,L3 电压误差
+    float si_curErr[3];   // L1,L2,L3 电流误差
     float si_curMin;
     float si_curMax;
     uint rate;

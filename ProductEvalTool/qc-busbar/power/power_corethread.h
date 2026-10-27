@@ -86,6 +86,8 @@ protected:
     bool Vol_ctrlThree();
     bool stepLoadTest();
     bool BreakerTest();
+    bool stepVolLoadTest();
+    bool checkVolLoadFace(sObjData *obj, int face, bool threePhase); //接头电压电流检测:三相测L1/L2/L3,单相只测本相
 
     QString changeMode(int index);
     void autoSetAddress();

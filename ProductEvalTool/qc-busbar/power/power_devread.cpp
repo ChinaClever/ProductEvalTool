@@ -44,12 +44,12 @@ bool Power_DevRead::readData()
 {
     if(mItem->modeId == START_BUSBAR) {
         sIpCfg *cth = &(mItem->ip);
-        exValue = cth->ip_cur *1000.0;
-        err = cth->ip_curErr *1000.0;
+        exValue = cth->ip_cur[0] *1000.0;
+        err = cth->ip_curErr[0] *1000.0;
     }else {
         sSiCfg *cth = &(mItem->si);
-        exValue = cth->si_cur *1000.0;
-        err = cth->si_curErr *1000.0;
+        exValue = cth->si_cur[0] *1000.0;
+        err = cth->si_curErr[0] *1000.0;
     }
 
     bool ret = true;
@@ -284,7 +284,7 @@ bool Power_DevRead::NineInsertOne_CtrlOne(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口1-A1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口1-A1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[0]).arg(mItem->si.si_curErr[0]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret);  mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -346,7 +346,7 @@ bool Power_DevRead::NineInsertOne_CtrlTwo(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口1-B1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口1-B1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[1]).arg(mItem->si.si_curErr[1]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -470,7 +470,7 @@ bool Power_DevRead::NineInsertOne_CtrlThree(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口1-C1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口1-C1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[2]).arg(mItem->si.si_curErr[2]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -631,7 +631,7 @@ bool Power_DevRead::NineInsertTwo_CtrlOne(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口2-A2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口2-A2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[0]).arg(mItem->si.si_curErr[0]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret);  mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -695,7 +695,7 @@ bool Power_DevRead::NineInsertTwo_CtrlTwo(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口2-B2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口2-B2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[1]).arg(mItem->si.si_curErr[1]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret);  mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -759,7 +759,7 @@ bool Power_DevRead::NineInsertTwo_CtrlThree(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口2-C2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口2-C2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[2]).arg(mItem->si.si_curErr[2]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -917,7 +917,7 @@ bool Power_DevRead::NineInsertThree_CtrlOne(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str, ret); ret = false;
-            str = tr("输出口3-A3检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口3-A3检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[0]).arg(mItem->si.si_curErr[0]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -980,7 +980,7 @@ bool Power_DevRead::NineInsertThree_CtrlTwo(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口3-B3检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口3-B3检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[1]).arg(mItem->si.si_curErr[1]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -1042,7 +1042,7 @@ bool Power_DevRead::NineInsertThree_CtrlThree(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口3-C3检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口3-C3检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[2]).arg(mItem->si.si_curErr[2]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -1239,7 +1239,7 @@ bool Power_DevRead::SixInsertOne_CtrlOne(Test_TransThread *trans_ctrl)
             }
             mLogs->updatePro(str1, ret); ret = false;
 
-            str = tr("输出口1-A1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口1-A1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[0]).arg(mItem->si.si_curErr[0]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret);mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -1300,7 +1300,7 @@ bool Power_DevRead::SixInsertOne_CtrlTwo(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret);  ret = false;
-            str = tr("输出口1-B1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口1-B1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[1]).arg(mItem->si.si_curErr[1]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -1363,7 +1363,7 @@ bool Power_DevRead::SixInsertOne_CtrlThree(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口1-C1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口1-C1检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[2]).arg(mItem->si.si_curErr[2]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -1526,7 +1526,7 @@ bool Power_DevRead::SixInsertTwo_CtrlOne(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口2-A2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口2-A2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[0]).arg(mItem->si.si_curErr[0]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret);  mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -1589,7 +1589,7 @@ bool Power_DevRead::SixInsertTwo_CtrlTwo(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口2-B2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口2-B2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[1]).arg(mItem->si.si_curErr[1]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -1651,7 +1651,7 @@ bool Power_DevRead::SixInsertTwo_CtrlThree(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret);  ret = false;
-            str = tr("输出口2-C2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口2-C2检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[2]).arg(mItem->si.si_curErr[2]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret);  mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -1854,9 +1854,9 @@ bool Power_DevRead::Three_CtrlOne(Test_TransThread *trans_ctrl)
 
             if(mItem->modeId == START_BUSBAR)
             {
-                str = tr("输出口-A检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->ip.ip_cur).arg(mItem->ip.ip_curErr);
+                str = tr("输出口-A检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->ip.ip_cur[0]).arg(mItem->ip.ip_curErr[0]);
             }else {
-                str = tr("输出口-A检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+                str = tr("输出口-A检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[0]).arg(mItem->si.si_curErr[0]);
             }
             mLogs->updatePro(str, ret);
 
@@ -1921,8 +1921,8 @@ bool Power_DevRead::Three_CtrlTwo(Test_TransThread *trans_ctrl)
             mLogs->updatePro(str1, ret); ret = false;
 
             if(mItem->modeId == START_BUSBAR)
-                str = tr("输出口-B检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->ip.ip_cur).arg(mItem->ip.ip_curErr);
-            else str = tr("输出口-B检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+                str = tr("输出口-B检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->ip.ip_cur[1]).arg(mItem->ip.ip_curErr[1]);
+            else str = tr("输出口-B检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[1]).arg(mItem->si.si_curErr[1]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -1985,8 +1985,8 @@ bool Power_DevRead::Three_CtrlThree(Test_TransThread *trans_ctrl)
             }
             mLogs->updatePro(str1, ret); ret = false;
             if(mItem->modeId == START_BUSBAR)
-                str = tr("输出口-C检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->ip.ip_cur).arg(mItem->ip.ip_curErr);
-            else str = tr("输出口-C检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+                str = tr("输出口-C检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->ip.ip_cur[2]).arg(mItem->ip.ip_curErr[2]);
+            else str = tr("输出口-C检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[2]).arg(mItem->si.si_curErr[2]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -2139,7 +2139,7 @@ bool Power_DevRead::Three_One(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口1-A检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口1-A检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[0]).arg(mItem->si.si_curErr[0]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret);  mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -2305,7 +2305,7 @@ bool Power_DevRead::Three_Two(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口2-B检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口2-B检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[1]).arg(mItem->si.si_curErr[1]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret);  mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -2468,7 +2468,7 @@ bool Power_DevRead::Three_Three(Test_TransThread *trans_ctrl)
                 str1 += str; eng3 += str3;
             }
             mLogs->updatePro(str1, ret); ret = false;
-            str = tr("输出口3-C检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur).arg(mItem->si.si_curErr);
+            str = tr("输出口3-C检测失败，超出误差范围，设置的电流 %1A，误差 %2A").arg(mItem->si.si_cur[2]).arg(mItem->si.si_curErr[2]);
             mLogs->updatePro(str, ret);
 
             mLogs->writeData(str2, str1, str4, ret); mLogs->writeDataEng(eng2,eng3,eng4,ret);
@@ -2646,6 +2646,36 @@ bool Power_DevRead::Three_Break()
     if(ret) ret = Three_TwoBreaker();
     if(ret) ret = Three_ThreeBreaker();
     // emit CurImageSig(4);
+
+    return ret;
+}
+
+
+bool Power_DevRead::Load_threeVolAndthreeCur(Test_TransThread *trans_ctrl)
+{
+    bool ret = true;
+//    QString str1; int flag = 0;
+//    sObjectData *Obj = &(mBusData->box[mItem->addr - 1].data);
+//    while(1){
+//        int a=0, b=0, c=0;
+//        if(ret) {
+//            ret = readData();
+//            for(int i =0;i<3;i++) {
+//                Obj->cur.status[i] = mErr->checkErrRange(exValue, Obj->cur.value[i], err);
+//            }
+//            a = Obj->cur.status[0]; b = Obj->cur.status[1]; c = Obj->cur.status[2];
+//            if(a &&b &&c) {
+
+//                ret = true; break;
+//            }
+//        }
+//        flag++;
+//        if(flag >80) {
+//            ret = false;
+//            break;
+//        }
+//    }
+
 
     return ret;
 }

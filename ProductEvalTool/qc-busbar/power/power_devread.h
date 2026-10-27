@@ -72,6 +72,8 @@ public:
     bool Three_TwoBreaker();
     bool Three_ThreeBreaker();
 
+    bool Load_threeVolAndthreeCur(Test_TransThread *trans_ctrl);
+
     Dev_Source *mSource;
 protected:
     bool readSnmp();

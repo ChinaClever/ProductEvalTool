@@ -44,10 +44,16 @@ void Setting::initType()
     ui->shuntBox->setCurrentIndex(dt->ip_shunt);
     ui->lightningBox->setCurrentIndex(dt->ip_lightning);
     ui->residualBox->setCurrentIndex(dt->ip_residual);
-    ui->ip_volSpin->setValue(dt->ip_vol);
-    ui->ip_curSpin->setValue(dt->ip_cur);
-    ui->ip_volErrSpin->setValue(dt->ip_volErr);
-    ui->ip_curErrSpin->setValue(dt->ip_curErr);
+    QDoubleSpinBox *ipVolSpin[3] = {ui->ip_volSpin1, ui->ip_volSpin2, ui->ip_volSpin3};
+    QDoubleSpinBox *ipCurSpin[3] = {ui->ip_curSpin1, ui->ip_curSpin2, ui->ip_curSpin3};
+    QDoubleSpinBox *ipVolErrSpin[3] = {ui->ip_volErrSpin1, ui->ip_volErrSpin2, ui->ip_volErrSpin3};
+    QDoubleSpinBox *ipCurErrSpin[3] = {ui->ip_curErrSpin1, ui->ip_curErrSpin2, ui->ip_curErrSpin3};
+    for(int i = 0; i < 3; ++i) { //L1,L2,L3 三组测试电压/电流及误差
+        ipVolSpin[i]->setValue(dt->ip_vol[i]);
+        ipCurSpin[i]->setValue(dt->ip_cur[i]);
+        ipVolErrSpin[i]->setValue(dt->ip_volErr[i]);
+        ipCurErrSpin[i]->setValue(dt->ip_curErr[i]);
+    }
     dt->ip_powErr = 1;
     ui->ip_curMaxSpin->setValue(dt->ip_curMax);
     int ver = dt->version;
@@ -71,10 +77,16 @@ void Setting::initType()
         loop = 2;
 
     ui->loopNumBox->setCurrentIndex(loop);
-    ui->si_volSpin->setValue(dv->si_vol);
-    ui->si_curSpin->setValue(dv->si_cur);
-    ui->si_volErrSpin->setValue(dv->si_volErr );
-    ui->si_curErrSpin->setValue(dv->si_curErr );
+    QDoubleSpinBox *siVolSpin[3] = {ui->si_volSpin1, ui->si_volSpin2, ui->si_volSpin3};
+    QDoubleSpinBox *siCurSpin[3] = {ui->si_curSpin1, ui->si_curSpin2, ui->si_curSpin3};
+    QDoubleSpinBox *siVolErrSpin[3] = {ui->si_volErrSpin1, ui->si_volErrSpin2, ui->si_volErrSpin3};
+    QDoubleSpinBox *siCurErrSpin[3] = {ui->si_curErrSpin1, ui->si_curErrSpin2, ui->si_curErrSpin3};
+    for(int i = 0; i < 3; ++i) { //L1,L2,L3 三组测试电压/电流及误差
+        siVolSpin[i]->setValue(dv->si_vol[i]);
+        siCurSpin[i]->setValue(dv->si_cur[i]);
+        siVolErrSpin[i]->setValue(dv->si_volErr[i]);
+        siCurErrSpin[i]->setValue(dv->si_curErr[i]);
+    }
     ui->si_curMaxSpin->setValue(dv->si_curMax);
     dv->rate = transformRate(ui->si_curMaxSpin->decimals());
     int sion = dv->version;
@@ -101,10 +113,16 @@ void Setting::updateType()
     dt->ip_lightning = ui->lightningBox->currentIndex();
     dt->ip_residual = ui->residualBox->currentIndex();
 
-    dt->ip_vol = ui->ip_volSpin->value();
-    dt->ip_cur = ui->ip_curSpin->value();
-    dt->ip_volErr = ui->ip_volErrSpin->value();
-    dt->ip_curErr = ui->ip_curErrSpin->value();
+    QDoubleSpinBox *ipVolSpin[3] = {ui->ip_volSpin1, ui->ip_volSpin2, ui->ip_volSpin3};
+    QDoubleSpinBox *ipCurSpin[3] = {ui->ip_curSpin1, ui->ip_curSpin2, ui->ip_curSpin3};
+    QDoubleSpinBox *ipVolErrSpin[3] = {ui->ip_volErrSpin1, ui->ip_volErrSpin2, ui->ip_volErrSpin3};
+    QDoubleSpinBox *ipCurErrSpin[3] = {ui->ip_curErrSpin1, ui->ip_curErrSpin2, ui->ip_curErrSpin3};
+    for(int i = 0; i < 3; ++i) { //L1,L2,L3 三组测试电压/电流及误差
+        dt->ip_vol[i] = ipVolSpin[i]->value();
+        dt->ip_cur[i] = ipCurSpin[i]->value();
+        dt->ip_volErr[i] = ipVolErrSpin[i]->value();
+        dt->ip_curErr[i] = ipCurErrSpin[i]->value();
+    }
     dt->ip_powErr = 1;
     dt->ip_curMin = 0;
     dt->ip_curMax = ui->ip_curMaxSpin->value();
@@ -121,14 +139,19 @@ void Setting::updateType()
         dv->loopNum = 6;
     else if (loop == 2)
         dv->loopNum = 9;
-    dv->si_vol = ui->si_volSpin->value();
-    dv->si_cur = ui->si_curSpin->value();
-    dv->si_volErr = ui->si_volErrSpin->value();
-    dv->si_curErr = ui->si_curErrSpin->value();
+    QDoubleSpinBox *siVolSpin[3] = {ui->si_volSpin1, ui->si_volSpin2, ui->si_volSpin3};
+    QDoubleSpinBox *siCurSpin[3] = {ui->si_curSpin1, ui->si_curSpin2, ui->si_curSpin3};
+    QDoubleSpinBox *siVolErrSpin[3] = {ui->si_volErrSpin1, ui->si_volErrSpin2, ui->si_volErrSpin3};
+    QDoubleSpinBox *siCurErrSpin[3] = {ui->si_curErrSpin1, ui->si_curErrSpin2, ui->si_curErrSpin3};
+    for(int i = 0; i < 3; ++i) { //L1,L2,L3 三组测试电压/电流及误差
+        dv->si_vol[i] = siVolSpin[i]->value();
+        dv->si_cur[i] = siCurSpin[i]->value();
+        dv->si_volErr[i] = siVolErrSpin[i]->value();
+        dv->si_curErr[i] = siCurErrSpin[i]->value();
+    }
     dv->si_curMin = 0;
     dv->si_curMax = ui->si_curMaxSpin->value();
     dv->version = ui->si_versionEdit->text().remove(".").toUInt();
-    // qDebug()<<"---temp---"<<dv->si_vol<<dv->si_cur<<dv->si_volErr<<dv->si_curErr;
 
     dv->itemType = ui->itemBox->currentIndex();
     dv->si_testItem = ui->testItemBox->currentIndex();

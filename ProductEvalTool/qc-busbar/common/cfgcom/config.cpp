@@ -100,10 +100,17 @@ void Cfg::initCfgDev()
     item->si.si_phaseflag = read("si_phaseflag", 0, g).toInt();
     item->si.si_cur_spec = read("si_curspec", 0, g).toInt();
     item->si.loopNum = read("si_loopNum", 0, g).toInt();
-    item->si.si_curErr = read("si_curErr", 5, g).toFloat();
-    item->si.si_volErr = read("si_volErr", 5, g).toFloat();
-    item->si.si_vol = read("si_vol", 0, g).toFloat();
-    item->si.si_cur = read("si_cur", 0, g).toFloat();
+    {   //L1,L2,L3 三组测试电压/电流及误差
+        static const float defVol[3] = {200, 220, 240};
+        static const float defCur[3] = {1, 5, 10};
+        for(int i = 0; i < 3; ++i) {
+            QString id = QString::number(i + 1);
+            item->si.si_volErr[i] = read("si_volErr" + id, 5, g).toFloat();
+            item->si.si_curErr[i] = read("si_curErr" + id, 1, g).toFloat();
+            item->si.si_vol[i] = read("si_vol" + id, defVol[i], g).toFloat();
+            item->si.si_cur[i] = read("si_cur" + id, defCur[i], g).toFloat();
+        }
+    }
     item->si.si_curMin = read("si_curMin", 0, g).toFloat();
     item->si.si_curMax = read("si_curMax", 0, g).toFloat();
     item->si.version = read("si_version", 100, g).toInt();
@@ -121,12 +128,19 @@ void Cfg::initCfgDev()
     item->ip.ip_shunt = read("ip_shunt", 0 , q).toInt();
     item->ip.ip_lightning = read("ip_lightning", 0 , q).toInt();
     item->ip.ip_residual = read("ip_residual", 0 , q).toInt();
-    item->ip.ip_volErr = read("ip_volErr", 5, q).toFloat();
-    item->ip.ip_curErr = read("ip_curErr", 5, q).toFloat();
     item->ip.ip_powErr = read("ip_powErr", 10, q).toFloat();
-    item->ip.ip_vol = read("ip_vol", 0, q).toFloat();
-    item->ip.ip_cur = read("ip_cur", 0, q).toFloat();
     item->ip.ip_pow = read("ip_pow", 0, q).toFloat();
+    {   //L1,L2,L3 三组测试电压/电流及误差
+        static const float defVol[3] = {200, 220, 240};
+        static const float defCur[3] = {1, 5, 10};
+        for(int i = 0; i < 3; ++i) {
+            QString id = QString::number(i + 1);
+            item->ip.ip_volErr[i] = read("ip_volErr" + id, 5, q).toFloat();
+            item->ip.ip_curErr[i] = read("ip_curErr" + id, 1, q).toFloat();
+            item->ip.ip_vol[i] = read("ip_vol" + id, defVol[i], q).toFloat();
+            item->ip.ip_cur[i] = read("ip_cur" + id, defCur[i], q).toFloat();
+        }
+    }
     item->ip.ip_curMin = read("ip_curMin", 0, q).toFloat();
     item->ip.ip_curMax = read("ip_curMax", 0, q).toFloat();
     item->ip.version = read("ip_version", 200 , q).toInt();
@@ -162,12 +176,17 @@ void Cfg::writeCfgDev()
     write("ip_shunt", item->ip.ip_shunt, g);
     write("ip_lightning", item->ip.ip_lightning, g);
     write("ip_residual", item->ip.ip_residual, g);
-    write("ip_volErr", QString::number(item->ip.ip_volErr), g);
-    write("ip_curErr", QString::number(item->ip.ip_curErr), g);
     write("ip_powErr", QString::number(item->ip.ip_powErr), g);
-    write("ip_vol", QString::number(item->ip.ip_vol), g);
-    write("ip_cur", QString::number(item->ip.ip_cur), g);
     write("ip_pow", QString::number(item->ip.ip_pow), g);
+    {   //L1,L2,L3 三组测试电压/电流及误差
+        for(int i = 0; i < 3; ++i) {
+            QString id = QString::number(i + 1);
+            write("ip_volErr" + id, QString::number(item->ip.ip_volErr[i]), g);
+            write("ip_curErr" + id, QString::number(item->ip.ip_curErr[i]), g);
+            write("ip_vol" + id, QString::number(item->ip.ip_vol[i]), g);
+            write("ip_cur" + id, QString::number(item->ip.ip_cur[i]), g);
+        }
+    }
     write("ip_curMin", QString::number(item->ip.ip_curMin), g);
     write("ip_curMax", QString::number(item->ip.ip_curMax), g);
     write("ip_version", item->ip.version, g);
@@ -178,10 +197,15 @@ void Cfg::writeCfgDev()
     write("si_iOF", item->si.si_iOF, q);
     write("si_phaseflag", item->si.si_phaseflag, q);
     write("si_loopNum", item->si.loopNum, q);
-    write("si_volErr", QString::number(item->si.si_volErr), q);
-    write("si_curErr", QString::number(item->si.si_curErr), q);
-    write("si_vol", QString::number(item->si.si_vol), q);
-    write("si_cur", QString::number(item->si.si_cur), q);
+    {   //L1,L2,L3 三组测试电压/电流及误差
+        for(int i = 0; i < 3; ++i) {
+            QString id = QString::number(i + 1);
+            write("si_volErr" + id, QString::number(item->si.si_volErr[i]), q);
+            write("si_curErr" + id, QString::number(item->si.si_curErr[i]), q);
+            write("si_vol" + id, QString::number(item->si.si_vol[i]), q);
+            write("si_cur" + id, QString::number(item->si.si_cur[i]), q);
+        }
+    }
     write("si_curMin", QString::number(item->si.si_curMin), q);
     write("si_curMax", QString::number(item->si.si_curMax), q);
     write("si_version", item->si.version, q);

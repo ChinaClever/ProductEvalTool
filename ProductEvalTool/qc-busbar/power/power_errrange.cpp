@@ -30,13 +30,13 @@ bool Power_ErrRange::volErr(int id)
     if(mItem->modeId == START_BUSBAR) {
         sIpCfg *cth = &(mItem->ip);
         value = mBusData->box[mItem->addr - 1].data.vol.value[id];
-        exValue = cth->ip_vol *10.0;
-        err = cth->ip_volErr *10.0;
+        exValue = cth->ip_vol[id] *10.0;
+        err = cth->ip_volErr[id] *10.0;
     }else {
         sSiCfg *cth = &(mItem->si);
         value = mBusData->box[mItem->addr - 1].data.vol.value[id];
-        exValue = cth->si_vol *10.0;
-        err = cth->si_volErr *10.0;
+        exValue = cth->si_vol[id] *10.0;
+        err = cth->si_volErr[id] *10.0;
     }
     bool ret = checkErrRange(exValue, value, err);
     if(ret) pass = Test_Pass;
@@ -52,13 +52,13 @@ bool Power_ErrRange::curErr(int id)
     if(mItem->modeId == START_BUSBAR) {
         sIpCfg *cth = &(mItem->ip);
         value = mBusData->box[mItem->addr - 1].data.cur.value[id];
-        exValue = cth->ip_cur *1000.0;
-        err = cth->ip_curErr *1000.0;
+        exValue = cth->ip_cur[id] *1000.0;
+        err = cth->ip_curErr[id] *1000.0;
     }else {
         sSiCfg *cth = &(mItem->si);
         value = mBusData->box[mItem->addr - 1].data.cur.value[id];
-        exValue = cth->si_cur *1000.0;
-        err = cth->si_curErr *1000.0;
+        exValue = cth->si_cur[id] *1000.0;
+        err = cth->si_curErr[id] *1000.0;
     }
 
     bool ret = checkErrRange(exValue, value, err);

@@ -15,6 +15,8 @@ public:
     bool printer();
     void initTestTrans(Test_TransThread *test);
     Test_TransThread *mTrans;
+    void noloadHomeSlot(int ret, int face);
+    void noloadHomeSlotSingle(int ret, int face);
 
 public slots:
     void powerOffSlot();
@@ -32,8 +34,7 @@ signals:
 
     //void updateTableObjSig(sObjData obj, int loopNum);
 
-private slots:
-    void noloadHomeSlot(int ret);
+
 
 public slots:
 //    void clearStartEleSlot();

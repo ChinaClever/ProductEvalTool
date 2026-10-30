@@ -16,7 +16,7 @@ public:
     void initTestTrans(Test_TransThread *test);
     Test_TransThread *mTrans;
     void noloadHomeSlot(int ret, int face);
-    void noloadHomeSlotSingle(int ret, int face);
+//    void noloadHomeSlotSingle(int ret, int face);
 
 public slots:
     void powerOffSlot();

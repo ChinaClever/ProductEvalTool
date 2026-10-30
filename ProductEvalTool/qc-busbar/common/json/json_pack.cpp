@@ -393,11 +393,11 @@ void Json_Pack::FuncData(int num, const QString &strRequest, const QString &str2
         obj.insert("testCfg" ,str1);
     }
 
-    obj.insert("testItem", str3);
-    obj.insert("testStep", mPro->test_step);
-    obj.insert("testProcess" ,str2);
+    obj.insert("testItem", str3);//测试项目
+    obj.insert("testStep", mPro->test_step);//测试步骤
+    obj.insert("testProcess" ,str2);//测试过程，具体测试数据
     obj.insert("testResult" ,pass?"1":"0");
-    obj.insert("testRequest" ,strRequest);
+    obj.insert("testRequest" ,strRequest);//测试要求
     if(mItem->modeId == INSERT_BUSBAR || mItem->modeId == TEMPERATURE_BUSBAR){
         if(send == 1){
             stephttp_post("admin-api/bus/testData",mPro->Service,obj);

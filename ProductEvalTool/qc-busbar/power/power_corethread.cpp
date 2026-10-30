@@ -47,7 +47,7 @@ bool Power_CoreThread::initDev()
             str = tr("请将插接箱IN口与测试治具IN口对接，OUT口与测试治具OUT口对接");
             emit TipSig(str); //emit ImageSig(3);
 
-            mModbus->autoSetAddress(); //emit ImageSig(4);
+            //            mModbus->autoSetAddress(); //emit ImageSig(4);///////////////////////////////////////////////////////////
 
         }
     }
@@ -2542,7 +2542,10 @@ void Power_CoreThread::workDown()
                 if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(),"0");
                 else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
 
-                if(ret && mItem->si.si_stdOr36Single==0) ret = BreakerTest();                            //断路器测试
+                //                if(ret && mItem->si.si_stdOr36Single==0) ret = BreakerTest();                            //断路器测试///////////////////////////////////
+
+
+
                 //                if(ret && mItem->si.si_stdOr36Single==0) ret = stepVolTest();                            //电压测试/////3相6回路单输出时可以不用测试此项
 
                 // if(ret) ret = mSource->read();
@@ -2581,44 +2584,33 @@ void Power_CoreThread::workDown()
 bool Power_CoreThread::stepVolLoadTest()    //电压电流测试：取代原电压测试与电流测试
 {
     bool ret = true;
-    sObjData *obj = &(mDev->line);
     sBoxData *b = &(mBusData->box[mItem->addr - 1]);
+    int inputBits = 1 + 32 + 64;        // K1+K6+K7：输入端L1,L2,L3全部接通
+    int loadBits[3] = {2, 4, 8};        // K2/K3/K4：负载端接头1/2/3
 
-    if((mItem->modeId == START_BUSBAR) || (b->phaseFlag == 1)) {    //三相输出
-        int faces = 1;      //三相工业接头数量
-        if(mItem->modeId != START_BUSBAR) {
-            faces = b->loopNum / 3;     //三相三回路1个接头，三相六回路2个，三相九回路3个
-            if((b->loopNum == 6) && (mItem->si.si_stdOr36Single == 1)) faces = 1; //三相六回路单输出只有一个接头
-        }
+    if((mItem->modeId == START_BUSBAR) || (b->phaseFlag == 1)) {    // 三相输出
+        int faces = b->loopNum / 3;     // 三相三回路→1个接头，三相六回路→2个，三相九回路→3个
+        if((b->loopNum == 6) && (mItem->si.si_stdOr36Single == 1)) faces = 1; // 三相六回路单输出只有一个接头
 
-        for(int g = 0; ret && g < faces; ++g) {
-            if(faces > 1) {    //多个接头时逐个切换
-                QString str = tr("请将三相工业接头切换到输出位%1，准备测试").arg(g + 1);
-                emit TipSig(str); sleep(4);
-            }
-            clearObjVolCur(obj);
-            mTrans->sendCtrlGnd(1 + (2 << g) + 32 + 64); //选择接头%g+1，启动L1,L2,L3
-            ret = checkVolLoadFace(obj, g, true);
-            if(!ret) mTrans->sendCtrlGnd(0);
+        for(int g = 0; g < faces; ++g) {
+            // 输入端全通 + 只通当前负载接头
+            mTrans->sendCtrlGnd(inputBits + loadBits[g]);
 
-            if(ret) {    //极性测试提示
-                QString str = tr("请检测接头%1位置的极性测试是否合格?").arg(g + 1);
-                emit TipSig(str); sleep(5);
+            noloadHomeSlot(1, g);       // face=g 对应 value[g*3, g*3+2]
+            if(mRet != 1) {
+                ret = false;
+                mTrans->sendCtrlGnd(0);
+                break;
             }
         }
-    } else if(b->phaseFlag == 0) {    //单相输出：一个接头一个接头切换
-        for(int i = 0; ret && i < 3; ++i) {
-            QString str = tr("请将单相工业接头切换到接头%1，准备测试").arg(i + 1);
-            emit TipSig(str); sleep(4);
-            clearObjVolCur(obj);
-            mTrans->sendCtrlGnd(1 + (2 << i) + 32 + 64); //选择接头%i+1，启动L1,L2,L3
-            ret = checkVolLoadFace(obj, i, false);
-            if(!ret) mTrans->sendCtrlGnd(0);
+    } else if(b->phaseFlag == 0) {      // 单相输出：三个单相接头同时测试
+        // 输入端全通 + 三个负载接头同时接通
+        mTrans->sendCtrlGnd(inputBits + 2 + 4 + 8);
 
-            if(ret) {    //极性测试提示
-                str = tr("请检测接头%1位置的极性测试是否合格?").arg(i + 1);
-                emit TipSig(str); sleep(5);
-            }
+        noloadHomeSlot(1, 0);           // face=0 同时检测三个单相接头 L1/L2/L3
+        if(mRet != 1) {
+            ret = false;
+            mTrans->sendCtrlGnd(0);
         }
     }
 
@@ -2731,160 +2723,276 @@ void Power_CoreThread::noloadHomeSlot(int ret, int face)
     }
 
     sBoxData *b = &(mBusData->box[mItem->addr - 1]);
+    int singleOrTripe = b->phaseFlag;
     int start = face * 3;       // face=0→[0,2], face=1→[3,5], face=2→[6,8]
-    bool ok = true;
+    bool volOk[3] = {0,0,0};
+    bool curOk[3] = {0,0,0};
+    int vol[3] = {0,0,0};
+    int cur[3] = {0,0,0};
+    int exVol[3] = {0,0,0};
+    int exCur[3] = {0,0,0};
+    int exVolErr[3] = {0,0,0};
+    int exCurErr[3] = {0,0,0};
+    bool ok = false;
     int flag = 0;
-    QString title = tr("电压电流检测 接头%1").arg(face + 1);
-    QString engTitle = tr("Voltage Current Check Socket %1").arg(face + 1);
+    QString title = tr("电压电流检测 接头%1").arg(singleOrTripe?QString::number(face + 1):"123");
+    QString engTitle = tr("Voltage Current Check Socket %1").arg(singleOrTripe?QString::number(face + 1):"123");
 
     while (1) {                 // 多次读取，数据稳定后再比较
-        bool readRet = mRead->readData();
-        if(readRet) {
-            ok = true;
+        mRead->readData();
+        //if(readRet) {
 
-            for(int i = 0; i < 3; ++i) {    // 每个接头固定 3 相 L1/L2/L3
-                int idx = i;                 // 0=L1, 1=L2, 2=L3
+        for(int i = 0; i < 3; ++i) {    // 每个接头固定 3 相 L1/L2/L3
+            int idx = i;                 // 0=L1, 1=L2, 2=L3
 
-                int exVol, errVol, exCur, errCur;
-                if(mItem->modeId == START_BUSBAR) {
-                    exVol = mItem->ip.ip_vol[idx] * 10.0;
-                    errVol = mItem->ip.ip_volErr[idx] * 10.0;
-                    exCur = mItem->ip.ip_cur[idx] * 1000.0;
-                    errCur = mItem->ip.ip_curErr[idx] * 1000.0;
-                } else {
-                    exVol = mItem->si.si_vol[idx] * 10.0;
-                    errVol = mItem->si.si_volErr[idx] * 10.0;
-                    exCur = mItem->si.si_cur[idx] * 1000.0;
-                    errCur = mItem->si.si_curErr[idx] * 1000.0;
-                }
+            int exVolVa, errVolVa, exCurVa, errCurVa;
+            if(mItem->modeId == START_BUSBAR) {
+                exVol[i] = exVolVa = mItem->ip.ip_vol[idx] * COM_RATE_VOL;
+                exVolErr[i] = errVolVa = mItem->ip.ip_volErr[idx] * COM_RATE_VOL;
+                exCur[i] = exCurVa = mItem->ip.ip_cur[idx] * COM_RATE_CUR;
+                exCurErr[i] = errCurVa = mItem->ip.ip_curErr[idx] * COM_RATE_CUR;
+            } else {
+                exVol[i] = exVolVa = mItem->si.si_vol[idx] * COM_RATE_VOL;
+                exVolErr[i] = errVolVa = mItem->si.si_volErr[idx] * COM_RATE_VOL;
+                exCur[i] = exCurVa = mItem->si.si_cur[idx] * COM_RATE_CUR;
+                exCurErr[i] = errCurVa = mItem->si.si_curErr[idx] * COM_RATE_CUR;
+            }
 
-                int vi = start + i;          // 实际 value 下标：0/1/2 或 3/4/5 或 6/7/8
-                int volValue = b->data.vol.value[vi];
-                int curValue = b->data.cur.value[vi];
-                bool volOk = mErr->checkErrRange(exVol, volValue, errVol);
-                bool curOk = mErr->checkErrRange(exCur, curValue, errCur);
+            int vi = start + i;          // 实际 value 下标：0/1/2 或 3/4/5 或 6/7/8
+            int volValue = b->data.vol.value[vi];
+            int curValue = b->data.cur.value[vi];
+            volOk[i] = mErr->checkErrRange(exVolVa, volValue, errVolVa);
+            curOk[i] = mErr->checkErrRange(exCurVa, curValue, errCurVa);
 
-                if(!volOk) {
-                    ok = false;
-                    QString str = tr("L%1 电压异常，实际值：%2V，期望范围：[%3V, %4V]")
-                            .arg(vi + 1)
-                            .arg(QString::number(volValue / COM_RATE_VOL, 'f', 1))
-                            .arg(QString::number((exVol - errVol) / COM_RATE_VOL, 'f', 1))
-                            .arg(QString::number((exVol + errVol) / COM_RATE_VOL, 'f', 1));
-                    QString engStr = tr("L%1 voltage abnormal, actual: %2V, expected: [%3V, %4V]")
-                            .arg(vi + 1)
-                            .arg(QString::number(volValue / COM_RATE_VOL, 'f', 1))
-                            .arg(QString::number((exVol - errVol) / COM_RATE_VOL, 'f', 1))
-                            .arg(QString::number((exVol + errVol) / COM_RATE_VOL, 'f', 1));
-                    mLogs->updatePro(str, false);
-                    mLogs->writeData(str, str, title, false);
-                    mLogs->writeDataEng(engStr, engStr, engTitle, false);
-                }
-
-                if(!curOk) {
-                    ok = false;
-                    QString str = tr("L%1 电流异常，实际值：%2A，期望范围：[%3A, %4A]")
-                            .arg(vi + 1)
-                            .arg(QString::number(curValue / COM_RATE_CUR, 'f', 3))
-                            .arg(QString::number((exCur - errCur) / COM_RATE_CUR, 'f', 3))
-                            .arg(QString::number((exCur + errCur) / COM_RATE_CUR, 'f', 3));
-                    QString engStr = tr("L%1 current abnormal, actual: %2A, expected: [%3A, %4A]")
-                            .arg(vi + 1)
-                            .arg(QString::number(curValue / COM_RATE_CUR, 'f', 3))
-                            .arg(QString::number((exCur - errCur) / COM_RATE_CUR, 'f', 3))
-                            .arg(QString::number((exCur + errCur) / COM_RATE_CUR, 'f', 3));
-                    mLogs->updatePro(str, false);
-                    mLogs->writeData(str, str, title, false);
-                    mLogs->writeDataEng(engStr, engStr, engTitle, false);
+            // 单相三回路时，根据 si_testItem 决定电流检测逻辑
+            // si_testItem: 0=检测L1/L2/L3全部, 1=只测L1, 2=只测L2, 3=只测L3
+            // 指定相电流在期望范围才算正常，非指定相电流必须为0，不为0则异常
+            // 电压逻辑不变，始终检测三相
+            if(singleOrTripe == 0 && mItem->si.si_testItem != 0) {
+                int targetIdx = mItem->si.si_testItem - 1;    // 0=L1, 1=L2, 2=L3
+                if(idx != targetIdx) {
+                    // 非指定相：电流必须为 0A
+                    exCurVa = 0;
+                    errCurVa = 0;
+                    exCur[i] = 0;
+                    exCurErr[i] = 0;
+                    curOk[i] = (curValue == 0);
                 }
             }
 
-            if(ok) break;       // 全部通过，退出重试
+            if(volOk[i]) {
+                vol[i] = volValue;
+            }
+
+            if(curOk[i]) {
+                cur[i] = curValue;
+            }
+
+            if(flag >= 19 && !volOk[i]) {
+                QString exstr = tr("第%4个工业接头 L%1 电压实际值在期望范围：[%2V, %3V]内")
+                        .arg(i + 1)
+                        .arg(QString::number((exVolVa - errVolVa) / COM_RATE_VOL, 'f', 1))
+                        .arg(QString::number((exVolVa + errVolVa) / COM_RATE_VOL, 'f', 1))
+                        .arg(singleOrTripe?QString::number(face + 1):QString::number(i + 1));
+                QString str = tr("第%5个工业接头 L%1 电压异常，实际值：%2V，期望范围：[%3V, %4V]")
+                        .arg(i + 1)
+                        .arg(QString::number(volValue / COM_RATE_VOL, 'f', 1))
+                        .arg(QString::number((exVolVa - errVolVa) / COM_RATE_VOL, 'f', 1))
+                        .arg(QString::number((exVolVa + errVolVa) / COM_RATE_VOL, 'f', 1))
+                        .arg(singleOrTripe?QString::number(face + 1):QString::number(i + 1));
+                QString exengStr = tr("Socket %4 L%1 voltage actual in expected: [%2V, %3V]")
+                        .arg(i + 1)
+                        .arg(QString::number((exVolVa - errVolVa) / COM_RATE_VOL, 'f', 1))
+                        .arg(QString::number((exVolVa + errVolVa) / COM_RATE_VOL, 'f', 1))
+                        .arg(singleOrTripe?QString::number(face + 1):QString::number(i + 1));
+                QString engStr = tr("Socket %5 L%1 voltage abnormal, actual: %2V, expected: [%3V, %4V]")
+                        .arg(i + 1)
+                        .arg(QString::number(volValue / COM_RATE_VOL, 'f', 1))
+                        .arg(QString::number((exVolVa - errVolVa) / COM_RATE_VOL, 'f', 1))
+                        .arg(QString::number((exVolVa + errVolVa) / COM_RATE_VOL, 'f', 1))
+                        .arg(singleOrTripe?QString::number(face + 1):QString::number(i + 1));
+                mLogs->updatePro(str, false);
+                mLogs->writeData(exstr, str, title, false);
+                mLogs->writeDataEng(exengStr, engStr, engTitle, false);
+                qDebug()<<"vol abnormal "<< str << "  "<< exstr<< "  "<< title
+                        << engStr << "  "<< exengStr<< "  "<< engTitle;
+            }
+
+            if(flag >= 19 && !curOk[i]) {
+                QString exstr = tr("第%4个工业接头 L%1 电流实际值在期望范围：[%2A, %3A]内")
+                        .arg(i + 1)
+                        .arg(QString::number((exCurVa - errCurVa) / COM_RATE_CUR, 'f', 3))
+                        .arg(QString::number((exCurVa + errCurVa) / COM_RATE_CUR, 'f', 3))
+                        .arg(singleOrTripe?QString::number(face + 1):QString::number(i + 1));
+                QString str = tr("第%5个工业接头 L%1 电流异常，实际值：%2A，期望范围：[%3A, %4A]")
+                        .arg(i + 1)
+                        .arg(QString::number(curValue / COM_RATE_CUR, 'f', 3))
+                        .arg(QString::number((exCurVa - errCurVa) / COM_RATE_CUR, 'f', 3))
+                        .arg(QString::number((exCurVa + errCurVa) / COM_RATE_CUR, 'f', 3))
+                        .arg(singleOrTripe?QString::number(face + 1):QString::number(i + 1));
+                QString exengStr = tr("Socket %4 L%1 current in expected: [%2A, %3A]")
+                        .arg(i + 1)
+                        .arg(QString::number((exCurVa - errCurVa) / COM_RATE_CUR, 'f', 3))
+                        .arg(QString::number((exCurVa + errCurVa) / COM_RATE_CUR, 'f', 3))
+                        .arg(singleOrTripe?QString::number(face + 1):QString::number(i + 1));
+                QString engStr = tr("Socket %5 L%1 current abnormal, actual: %2A, expected: [%3A, %4A]")
+                        .arg(i + 1)
+                        .arg(QString::number(curValue / COM_RATE_CUR, 'f', 3))
+                        .arg(QString::number((exCurVa - errCurVa) / COM_RATE_CUR, 'f', 3))
+                        .arg(QString::number((exCurVa + errCurVa) / COM_RATE_CUR, 'f', 3))
+                        .arg(singleOrTripe?QString::number(face + 1):QString::number(i + 1));
+                mLogs->updatePro(str, false);
+                mLogs->writeData(exstr, str, title, false);
+                mLogs->writeDataEng(exengStr, engStr, engTitle, false);
+                qDebug()<<"cur abnormal "<< str << "  "<< exstr<< "  "<< title
+                        << engStr << "  "<< exengStr<< "  "<< engTitle;
+            }
         }
 
+        if(volOk[0]&&volOk[1]&&volOk[2]&&curOk[0]&&curOk[1]&&curOk[2]){
+            QString volStr = QString("第%1个工业接头").arg(face+1), enVolStr = QString("Socket %1").arg(face+1);
+            QString curStr = volStr , enCurStr = enVolStr;
+            QString exVolStr = volStr , exEnVolStr = enVolStr;
+            QString exCurStr = volStr , exEnCurStr = enVolStr;
+
+            for(int i = 0 ; i < 3 ; i++){
+                exVolStr += tr("L%1 电压实际值在期望范围：[%2V, %3V]内;")
+                        .arg(i + 1)
+                        .arg(QString::number((exVol[i] - exVolErr[i]) / COM_RATE_VOL, 'f', 1))
+                        .arg(QString::number((exVol[i] + exVolErr[i]) / COM_RATE_VOL, 'f', 1));
+                volStr += tr("L%1 电压正常，实际值：%2V，期望范围：[%3V, %4V];")
+                        .arg(i + 1)
+                        .arg(QString::number(vol[i] / COM_RATE_VOL, 'f', 1))
+                        .arg(QString::number((exVol[i] - exVolErr[i]) / COM_RATE_VOL, 'f', 1))
+                        .arg(QString::number((exVol[i] + exVolErr[i]) / COM_RATE_VOL, 'f', 1));
+                exEnVolStr += tr("L%1 voltage actual in expected: [%2V, %3V];")
+                        .arg(i + 1)
+                        .arg(QString::number((exVol[i] - exVolErr[i]) / COM_RATE_VOL, 'f', 1))
+                        .arg(QString::number((exVol[i] + exVolErr[i]) / COM_RATE_VOL, 'f', 1));
+                enVolStr += tr("L%1 voltage normal, actual: %2V, expected: [%3V, %4V];")
+                        .arg(i + 1)
+                        .arg(QString::number(vol[i] / COM_RATE_VOL, 'f', 1))
+                        .arg(QString::number((exVol[i] - exVolErr[i]) / COM_RATE_VOL, 'f', 1))
+                        .arg(QString::number((exVol[i] + exVolErr[i]) / COM_RATE_VOL, 'f', 1));
+
+                exCurStr += tr("L%1 电流实际值在期望范围：[%2A, %3A]内;")
+                        .arg(i + 1)
+                        .arg(QString::number((exCur[i] - exCurErr[i]) / COM_RATE_CUR, 'f', 3))
+                        .arg(QString::number((exCur[i] + exCurErr[i]) / COM_RATE_CUR, 'f', 3));
+                curStr += tr("L%1 电流正常，实际值：%2A，期望范围：[%3A, %4A];")
+                        .arg(i + 1)
+                        .arg(QString::number(cur[i] / COM_RATE_CUR, 'f', 3))
+                        .arg(QString::number((exCur[i] - exCurErr[i]) / COM_RATE_CUR, 'f', 3))
+                        .arg(QString::number((exCur[i] + exCurErr[i]) / COM_RATE_CUR, 'f', 3));
+                exEnCurStr += tr("L%1 current abnormal, actual: %2A, expected: [%3A, %4A];")
+                        .arg(i + 1)
+                        .arg(QString::number(cur[i] / COM_RATE_CUR, 'f', 3))
+                        .arg(QString::number((exCur[i] - exCurErr[i]) / COM_RATE_CUR, 'f', 3))
+                        .arg(QString::number((exCur[i] + exCurErr[i]) / COM_RATE_CUR, 'f', 3));
+                enCurStr += tr("L%1 current abnormal, actual: %2A, expected: [%3A, %4A];")
+                        .arg(i + 1)
+                        .arg(QString::number(cur[i] / COM_RATE_CUR, 'f', 3))
+                        .arg(QString::number((exCur[i] - exCurErr[i]) / COM_RATE_CUR, 'f', 3))
+                        .arg(QString::number((exCur[i] + exCurErr[i]) / COM_RATE_CUR, 'f', 3));
+            }
+            mLogs->updatePro(volStr, true);
+            mLogs->writeData(exVolStr, volStr, title, true);
+            mLogs->writeDataEng(exEnVolStr, enVolStr, engTitle, true);
+            mLogs->updatePro(curStr, true);
+            mLogs->writeData(exCurStr, curStr, title, true);
+            mLogs->writeDataEng(exEnCurStr, enCurStr, engTitle, true);
+
+            qDebug()<<"normal "<< volStr << "  "<< exVolStr
+                    << exEnVolStr << "  "<< enVolStr
+                    << exCurStr << "  "<< curStr
+                    << exEnCurStr << "  "<< enCurStr;
+            ok = true;
+            break;       // 全部通过，退出重试
+        }
+        // }
+
         flag++;
-        if(flag > 50) break;    // 最大重试 50 次
-        QThread::msleep(1000);
+        if(flag >= 20) break;    // 最大重试 20 次
     }
 
     mRet = ok ? 1 : 0;
 }
 
-void Power_CoreThread::noloadHomeSlotSingle(int ret, int face)
-{
-    if(ret != 1) {  //读取失败直接返回
-        mRet = ret;
-        return;
-    }
+//void Power_CoreThread::noloadHomeSlotSingle(int ret, int face)
+//{
+//    if(ret != 1) {  //读取失败直接返回
+//        mRet = ret;
+//        return;
+//    }
 
-    sBoxData *b = &(mBusData->box[mItem->addr - 1]);
-    int idx = face;                 // face=0→L1, face=1→L2, face=2→L3
-    bool ok = true;
-    int flag = 0;
-    QString title = tr("单相电压电流检测 接头%1 L%2").arg(face + 1).arg(idx + 1);
-    QString engTitle = tr("Single Phase Voltage Current Check Socket %1 L%2").arg(face + 1).arg(idx + 1);
+//    sBoxData *b = &(mBusData->box[mItem->addr - 1]);
+//    int idx = face;                 // face=0→L1, face=1→L2, face=2→L3
+//    bool ok = true;
+//    int flag = 0;
+//    QString title = tr("单相电压电流检测 接头%1 L%2").arg(face + 1).arg(idx + 1);
+//    QString engTitle = tr("Single Phase Voltage Current Check Socket %1 L%2").arg(face + 1).arg(idx + 1);
 
-    while (1) {                     // 多次读取，数据稳定后再比较
-        bool readRet = mRead->readData();
-        if(readRet) {
-            ok = true;
+//    while (1) {                     // 多次读取，数据稳定后再比较
+//        bool readRet = mRead->readData();
+//        if(readRet) {
+//            ok = true;
 
-            int exVol, errVol, exCur, errCur;
+//            int exVol, errVol, exCur, errCur;
 
-            exVol = mItem->si.si_vol[idx] * 10.0;
-            errVol = mItem->si.si_volErr[idx] * 10.0;
-            exCur = mItem->si.si_cur[idx] * 1000.0;
-            errCur = mItem->si.si_curErr[idx] * 1000.0;
+//            exVol = mItem->si.si_vol[idx] * 10.0;
+//            errVol = mItem->si.si_volErr[idx] * 10.0;
+//            exCur = mItem->si.si_cur[idx] * 1000.0;
+//            errCur = mItem->si.si_curErr[idx] * 1000.0;
 
-            int volValue = b->data.vol.value[idx];
-            int curValue = b->data.cur.value[idx];
-            bool volOk = mErr->checkErrRange(exVol, volValue, errVol);
-            bool curOk = mErr->checkErrRange(exCur, curValue, errCur);
+//            int volValue = b->data.vol.value[idx];
+//            int curValue = b->data.cur.value[idx];
+//            bool volOk = mErr->checkErrRange(exVol, volValue, errVol);
+//            bool curOk = mErr->checkErrRange(exCur, curValue, errCur);
 
-            if(!volOk) {
-                ok = false;
-                QString str = tr("L%1 电压异常，实际值：%2V，期望范围：[%3V, %4V]")
-                        .arg(idx + 1)
-                        .arg(QString::number(volValue / COM_RATE_VOL, 'f', 1))
-                        .arg(QString::number((exVol - errVol) / COM_RATE_VOL, 'f', 1))
-                        .arg(QString::number((exVol + errVol) / COM_RATE_VOL, 'f', 1));
-                QString engStr = tr("L%1 voltage abnormal, actual: %2V, expected: [%3V, %4V]")
-                        .arg(idx + 1)
-                        .arg(QString::number(volValue / COM_RATE_VOL, 'f', 1))
-                        .arg(QString::number((exVol - errVol) / COM_RATE_VOL, 'f', 1))
-                        .arg(QString::number((exVol + errVol) / COM_RATE_VOL, 'f', 1));
-                mLogs->updatePro(str, false);
-                mLogs->writeData(str, str, title, false);
-                mLogs->writeDataEng(engStr, engStr, engTitle, false);
-            }
+//            if(!volOk) {
+//                ok = false;
+//                QString str = tr("L%1 电压异常，实际值：%2V，期望范围：[%3V, %4V]")
+//                        .arg(idx + 1)
+//                        .arg(QString::number(volValue / COM_RATE_VOL, 'f', 1))
+//                        .arg(QString::number((exVol - errVol) / COM_RATE_VOL, 'f', 1))
+//                        .arg(QString::number((exVol + errVol) / COM_RATE_VOL, 'f', 1));
+//                QString engStr = tr("L%1 voltage abnormal, actual: %2V, expected: [%3V, %4V]")
+//                        .arg(idx + 1)
+//                        .arg(QString::number(volValue / COM_RATE_VOL, 'f', 1))
+//                        .arg(QString::number((exVol - errVol) / COM_RATE_VOL, 'f', 1))
+//                        .arg(QString::number((exVol + errVol) / COM_RATE_VOL, 'f', 1));
+//                mLogs->updatePro(str, false);
+//                mLogs->writeData(str, str, title, false);
+//                mLogs->writeDataEng(engStr, engStr, engTitle, false);
+//            }
 
-            if(!curOk) {
-                ok = false;
-                QString str = tr("L%1 电流异常，实际值：%2A，期望范围：[%3A, %4A]")
-                        .arg(idx + 1)
-                        .arg(QString::number(curValue / COM_RATE_CUR, 'f', 3))
-                        .arg(QString::number((exCur - errCur) / COM_RATE_CUR, 'f', 3))
-                        .arg(QString::number((exCur + errCur) / COM_RATE_CUR, 'f', 3));
-                QString engStr = tr("L%1 current abnormal, actual: %2A, expected: [%3A, %4A]")
-                        .arg(idx + 1)
-                        .arg(QString::number(curValue / COM_RATE_CUR, 'f', 3))
-                        .arg(QString::number((exCur - errCur) / COM_RATE_CUR, 'f', 3))
-                        .arg(QString::number((exCur + errCur) / COM_RATE_CUR, 'f', 3));
-                mLogs->updatePro(str, false);
-                mLogs->writeData(str, str, title, false);
-                mLogs->writeDataEng(engStr, engStr, engTitle, false);
-            }
+//            if(!curOk) {
+//                ok = false;
+//                QString str = tr("L%1 电流异常，实际值：%2A，期望范围：[%3A, %4A]")
+//                        .arg(idx + 1)
+//                        .arg(QString::number(curValue / COM_RATE_CUR, 'f', 3))
+//                        .arg(QString::number((exCur - errCur) / COM_RATE_CUR, 'f', 3))
+//                        .arg(QString::number((exCur + errCur) / COM_RATE_CUR, 'f', 3));
+//                QString engStr = tr("L%1 current abnormal, actual: %2A, expected: [%3A, %4A]")
+//                        .arg(idx + 1)
+//                        .arg(QString::number(curValue / COM_RATE_CUR, 'f', 3))
+//                        .arg(QString::number((exCur - errCur) / COM_RATE_CUR, 'f', 3))
+//                        .arg(QString::number((exCur + errCur) / COM_RATE_CUR, 'f', 3));
+//                mLogs->updatePro(str, false);
+//                mLogs->writeData(str, str, title, false);
+//                mLogs->writeDataEng(engStr, engStr, engTitle, false);
+//            }
 
-            if(ok) break;           // 通过，退出重试
-        }
+//            if(ok) break;           // 通过，退出重试
+//        }
 
-        flag++;
-        if(flag > 50) break;        // 最大重试 50 次
-        QThread::msleep(1000);
-    }
+//        flag++;
+//        if(flag > 50) break;        // 最大重试 50 次
+//        QThread::msleep(1000);
+//    }
 
-    mRet = ok ? 1 : 0;
-}
+//    mRet = ok ? 1 : 0;
+//}
 
 void Power_CoreThread::run()
 {

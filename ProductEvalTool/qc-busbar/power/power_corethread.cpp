@@ -778,12 +778,11 @@ bool Power_CoreThread::VolCurCtrlSigle(sObjData *obj,int id)
     while (1)
     {
         ret = mRead->readDevBasicType(); // 读取电压电流填充 obj
-        int okCount = 0;
-        int exVol = mItem->si.si_vol[id] * 10.0;
-        int errVol = mItem->si.si_volErr[id] * 10.0;
+        int exVol = mItem->si.si_vol[id] * COM_RATE_VOL;
+        int errVol = mItem->si.si_volErr[id] * COM_RATE_VOL;
         // 电流标准值和误差
-        int exCur = mItem->si.si_cur[id] * 1000.0;
-        int errCur = mItem->si.si_curErr[id] * 1000.0;
+        int exCur = mItem->si.si_cur[id] * COM_RATE_CUR;
+        int errCur = mItem->si.si_curErr[id] * COM_RATE_CUR;
 
         int volValue = obj->source_vol[id] / 100.0;
         int curValue = obj->source_cur[id] ;
@@ -871,10 +870,10 @@ bool Power_CoreThread::VolCurCtrl(sObjData *obj,int id)
             int idx = i;
 
             // 电压/电流标准值和误差（L1,L2,L3 各自的值）
-            int exVol = mItem->si.si_vol[idx] * 10.0;
-            int errVol = mItem->si.si_volErr[idx] * 10.0;
-            int exCur = mItem->si.si_cur[idx] * 1000.0;
-            int errCur = mItem->si.si_curErr[idx] * 1000.0;
+            int exVol = mItem->si.si_vol[idx] * COM_RATE_VOL;
+            int errVol = mItem->si.si_volErr[idx] * COM_RATE_VOL;
+            int exCur = mItem->si.si_cur[idx] * COM_RATE_CUR;
+            int errCur = mItem->si.si_curErr[idx] * COM_RATE_CUR;
 
             int volValue = obj->source_vol[idx] / 100.0;
             int curValue = obj->source_cur[idx] ;
@@ -2309,47 +2308,29 @@ bool Power_CoreThread::handleBasicType()
 
     // 三相模式检测 Lambda：读取电压电流并校验
     auto checkThree = [&](int idx) ->bool {
-
-        //qDebug()<<ret<<"????";
         // 读取第 idx 路三相电压电流，对比期望范围
         if(ret) ret = tryReadVolCur(obj,idx);
-
         if(!ret) this->mTrans->sendCtrlGnd(0);
-
-        qDebug().noquote() << QString("第%1路 电压电流合格: %2").arg(idx + 1).arg(ret ? "是" : "否");
-        return ret;
-    };
-    // 单相模式检测 Lambda：读取电压电流 + 断路器检测
-    auto checkSigle = [&](int idx) ->bool {
-
-        // 读取第 idx 路单相电压电流，对比期望范围
-        if(ret) ret = tryReadVolCurSig(obj,idx);
-
-        // 单相断路器检测：逐相断开负载输入端，验证该相电流归零
-        if(ret) ret = breakTest(idx);
-        if(!ret) this->mTrans->sendCtrlGnd(0);
-
         qDebug().noquote() << QString("第%1路 电压电流合格: %2").arg(idx + 1).arg(ret ? "是" : "否");
         return ret;
     };
 
     if (isSinglePhase) {
-        // 单相模式：逐路（L1/L2/L3）检测
-        for (int i = 0; i < 3; ++i) {
-            // 清零目标对象电压电流缓存，避免上次数据干扰
-            clearObjVolCur(obj);
-            // 控制治具：接通输入端 L1+L2+L3（K1+K6+K7），先建立输入回路
-            this->mTrans->sendCtrlGnd(1+32+64);//启动L1,L2,L3
+        // 单相模式：三个接头同时通电，一次性检测三相电压电流（与 stepVolLoadTest 一致）
+        // 先清零电压电流缓存
+        clearObjVolCur(obj);
+        // 控制治具：输入端 L1+L2+L3 全通 + 三个负载接头 K2/K3/K4 全通
+        this->mTrans->sendCtrlGnd(1 + 2 + 4 + 8 + 32 + 64);
 
-            int f = 2 << i; // 2 4 8
+        // 三个电压和三个电流一起判断（L1/L2/L3 全部在期望范围内才算通过）
+        ret = tryReadVolCur(obj, 0);
+        if(!ret) {
+            this->mTrans->sendCtrlGnd(0);
+        }
 
-            // 控制治具：输入端全通 + 接通当前负载接头（K1+K6+K7+K2/K3/K4）
-            this->mTrans->sendCtrlGnd(1+f+32+64);
-            // 单相电压电流校验 + 断路器检测
-            ret = checkSigle(i);
-
-            if(!ret)break;
-            ret = true;
+        // 电压电流通过后，逐相做断路器检测
+        for (int i = 0; i < 3 && ret; ++i) {
+            ret = breakTest(i);
         }
     } else {
         // 三相模式：按回路数分组（3回路→1组，6回路→2组，9回路→3组）

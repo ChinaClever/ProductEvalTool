@@ -111,6 +111,18 @@ protected:
     bool breakTest(int );
     bool ThreeBreakTest(int);
 
+    // noloadHomeSlot 辅助：电压/电流错误日志（一次调用 = 一相一类型）
+    void logHomeErr(int i, int actual, int ex, int err,
+        double rate, int prec, const QString &unit,
+        const QString &cnLabel, const QString &enLabel,
+        int flag, bool singlePhase, int face,
+        const QString &title, const QString &engTitle);
+    // noloadHomeSlot 辅助：电压/电流成功日志（一次调用 = 三相一类型）
+    void logHomeOk(int *exVals, int *exErrs, int *actVals,
+        double rate, int prec, const QString &unit,
+        const QString &cnLabel, const QString &enLabel,
+        int face, const QString &title, const QString &engTitle);
+
 private:
     Power_Logs *mLogs;
     Power_DevRead *mRead;

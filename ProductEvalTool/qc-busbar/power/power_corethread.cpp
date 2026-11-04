@@ -2294,20 +2294,24 @@ bool Power_CoreThread::ThreeBreakTest(int idx)
     str = tr("请断开插接箱断路器%1").arg(name);  //三相回路电流、功率
     emit TipSig(str);
     ret = BreakThreeVolCurCtrl(obj,idx);
+    return ret;
 }
 
 bool Power_CoreThread::handleBasicType()
 {
     bool ret = true;
+    // 读取设备基本类型数据（RS485从机读取电压/电流/功率等寄存器）
     ret = mRead->readDevBasicType();
     sSiCfg *dv = &(mItem->si);
     auto obj = &(mDev->line);
     const bool isSinglePhase = (dv->si_phaseflag == 0);
     qDebug()<<isSinglePhase;
 
+    // 三相模式检测 Lambda：读取电压电流并校验
     auto checkThree = [&](int idx) ->bool {
 
         //qDebug()<<ret<<"????";
+        // 读取第 idx 路三相电压电流，对比期望范围
         if(ret) ret = tryReadVolCur(obj,idx);
 
         if(!ret) this->mTrans->sendCtrlGnd(0);
@@ -2315,10 +2319,13 @@ bool Power_CoreThread::handleBasicType()
         qDebug().noquote() << QString("第%1路 电压电流合格: %2").arg(idx + 1).arg(ret ? "是" : "否");
         return ret;
     };
+    // 单相模式检测 Lambda：读取电压电流 + 断路器检测
     auto checkSigle = [&](int idx) ->bool {
 
+        // 读取第 idx 路单相电压电流，对比期望范围
         if(ret) ret = tryReadVolCurSig(obj,idx);
 
+        // 单相断路器检测：逐相断开负载输入端，验证该相电流归零
         if(ret) ret = breakTest(idx);
         if(!ret) this->mTrans->sendCtrlGnd(0);
 
@@ -2327,28 +2334,38 @@ bool Power_CoreThread::handleBasicType()
     };
 
     if (isSinglePhase) {
+        // 单相模式：逐路（L1/L2/L3）检测
         for (int i = 0; i < 3; ++i) {
+            // 清零目标对象电压电流缓存，避免上次数据干扰
             clearObjVolCur(obj);
+            // 控制治具：接通输入端 L1+L2+L3（K1+K6+K7），先建立输入回路
             this->mTrans->sendCtrlGnd(1+32+64);//启动L1,L2,L3
 
             int f = 2 << i; // 2 4 8
 
+            // 控制治具：输入端全通 + 接通当前负载接头（K1+K6+K7+K2/K3/K4）
             this->mTrans->sendCtrlGnd(1+f+32+64);
+            // 单相电压电流校验 + 断路器检测
             ret = checkSigle(i);
 
             if(!ret)break;
             ret = true;
         }
     } else {
+        // 三相模式：按回路数分组（3回路→1组，6回路→2组，9回路→3组）
         int groupCount = (dv->loopNum == 3) ? 1 : (dv->loopNum == 6) ? 2 : 3;
         for (int g = 0; g < groupCount; ++g) {
             qDebug()<<"Three "<<groupCount;
+            // 清零目标对象电压电流缓存
             clearObjVolCur(obj);
 
             int f = 2 << g; //2 4 8
+            // 控制治具：输入端全通 + 接通当前接头（K1+K6+K7+K2/K3/K4）
             this->mTrans->sendCtrlGnd(1+f+32+64);
 
+            // 三相电压电流校验
             ret = checkThree(g);
+            // 三相断路器检测：逐相断开输入端，验证对应相电流归零
             if(ret)ret = ThreeBreakTest(g); //断路器检测
             if(!ret) break;
 

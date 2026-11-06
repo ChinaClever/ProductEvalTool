@@ -2359,11 +2359,14 @@ bool Power_CoreThread::handleBasicType()
 
 bool Power_CoreThread::handleBasicTypeStart(bool flag)
 {
+    // flag=false: 断路器闭合 → 验证三相电压在期望范围内（电压不为零）
+    // flag=true:  断路器断开 → 验证三相电压归零（电压应为零）
     bool ret = true;
+    // 读取设备基本类型数据，填充 obj 的 source_vol/source_cur
     ret = mRead->readDevBasicType();
     auto obj = &(mDev->line);
     int count = 0;
-    uchar loop = 3;
+    uchar loop = 3;     // 固定检测 L1/L2/L3 三相
     QString strtips = tr("断路器闭合时，电压不为0...");//false 闭合
     if(flag) strtips = tr("断路器断开时，电压为0...");//true 断开
 
@@ -2371,6 +2374,7 @@ bool Power_CoreThread::handleBasicTypeStart(bool flag)
 
     while (1)
     {
+        // 每次循环重新读取设备数据，获取最新电压值
         ret = mRead->readDevBasicType(); // 读取电压电流填充 obj
         int okCount = 0;
 
@@ -2381,16 +2385,18 @@ bool Power_CoreThread::handleBasicTypeStart(bool flag)
             int exVol = mItem->si.si_vol[idx] * 10.0;
             int errVol = mItem->si.si_volErr[idx] * 10.0;
 
+            // volValue 为换算后的电压值（除以100转为V）
             int volValue = obj->source_vol[idx] / 100.0;
             bool volOk = false;
-            if(!flag) volOk = mErr->checkErrRange(exVol, volValue, errVol);//false
-            else volOk = mErr->checkVol0Range(0, obj->source_vol[idx]);//true 断开
+            if(!flag) volOk = mErr->checkErrRange(exVol, volValue, errVol);//false：断路器闭合，电压应在期望范围内
+            else volOk = mErr->checkVol0Range(0, obj->source_vol[idx]);//true：断路器断开，电压应为0
 
             if(volOk) {
                 okCount++;
             }
         }
 
+        // 三相电压全部通过才算合格
         if (okCount == loop)
         {
             QString str, engStr;
@@ -2414,10 +2420,10 @@ bool Power_CoreThread::handleBasicTypeStart(bool flag)
                 QString title = tr("L%1电压检测").arg(name+QString::number(i + 1));
                 QString engTitle = tr("L%1 Voltage Check").arg(name+QString::number(i + 1));
                 QString request = "",engRequest = "";
-                if(!flag){//true 断开
+                if(!flag){//false: 断路器闭合，期望电压大于零
                     request = tr("L%1电压大于零").arg(name+QString::number(i + 1));
                     engRequest = tr("L %1 Voltage greater than zero").arg(name+QString::number(i + 1));
-                }else{
+                }else{//true: 断路器断开，期望电压等于零
                     request = tr("L%1电压等于零").arg(name+QString::number(i + 1));
                     engRequest = tr("L %1 Voltage equals zero").arg(name+QString::number(i + 1));
                 }
@@ -2453,10 +2459,10 @@ bool Power_CoreThread::handleBasicTypeStart(bool flag)
                 QString engTitle = tr("L%1 Voltage Check").arg(name+QString::number(i + 1));
 
                 QString request = "",engRequest = "";
-                if(!flag){//true 断开
+                if(!flag){//false: 断路器闭合，期望电压大于零
                     request = tr("L%1电压大于零").arg(name+QString::number(i + 1));
                     engRequest = tr("L %1 Voltage greater than zero").arg(name+QString::number(i + 1));
-                }else{
+                }else{//true: 断路器断开，期望电压等于零
                     request = tr("L%1电压等于零").arg(name+QString::number(i + 1));
                     engRequest = tr("L %1 Voltage equals zero").arg(name+QString::number(i + 1));
                 }
@@ -2472,6 +2478,7 @@ bool Power_CoreThread::handleBasicTypeStart(bool flag)
         }
         QThread::msleep(1000);
     }
+    // 检测完成后提示操作人员操作断路器（为下一次调用做准备）
     strtips = tr("断开断路器");//false 闭合
     if(flag) strtips = tr("恢复断路器");//true 断开
     emit TipSig(strtips);

@@ -47,7 +47,7 @@ bool Power_CoreThread::initDev()
             str = tr("请将插接箱IN口与测试治具IN口对接，OUT口与测试治具OUT口对接");
             emit TipSig(str); //emit ImageSig(3);
 
-            //            mModbus->autoSetAddress(); //emit ImageSig(4);///////////////////////////////////////////////////////////
+            mModbus->autoSetAddress(); //emit ImageSig(4);///////////////////////////////////////////////////////////
 
         }
     }
@@ -2547,7 +2547,7 @@ void Power_CoreThread::workDown()
                 if(mItem->modeId == START_BUSBAR) mRead->SetInfo(mRead->getFilterOid(),"0");
                 else Ctrl_SiRtu::bulid()->setBusbarInsertFilter(0); //设置滤波=0
 
-                //                if(ret && mItem->si.si_stdOr36Single==0) ret = BreakerTest();                            //断路器测试///////////////////////////////////
+                if(ret && mItem->si.si_stdOr36Single==0) ret = BreakerTest();                            //断路器测试///////////////////////////////////
 
 
 
@@ -2720,15 +2720,15 @@ bool Power_CoreThread::checkVolLoadFace(sObjData *obj, int face, bool threePhase
     }
 }
 
-// noloadHomeSlot 辅助：单相电压/电流异常日志
+// noloadHomeSlot 辅助：单相电压/电流日志，ok 为 true 输出成功，false 输出失败
 // rate/prec/unit/cnLabel/enLabel 区分电压(COM_RATE_VOL,1,"V","电压","voltage")和电流(COM_RATE_CUR,3,"A","电流","current")
-void Power_CoreThread::logHomeErr(int i, int actual, int ex, int err,
+void Power_CoreThread::logHomeErr(int i, int actual, int ex, int err, bool ok,
     double rate, int prec, const QString &unit,
     const QString &cnLabel, const QString &enLabel,
     int flag, bool singlePhase, int face,
     const QString &title, const QString &engTitle)
-{
-    if(flag < 19) return;
+{//99
+    if(flag < 99-1) return;
 
     QString socketId = singlePhase ? QString::number(face + 1) : QString::number(i + 1);
     QString minStr = QString::number((ex - err) / rate, 'f', prec);
@@ -2737,17 +2737,26 @@ void Power_CoreThread::logHomeErr(int i, int actual, int ex, int err,
 
     QString exstr = tr("第%4个工业接头 L%1 %5实际值在期望范围：[%2%6, %3%6]内")
             .arg(i + 1).arg(minStr).arg(maxStr).arg(socketId).arg(cnLabel).arg(unit);
-    QString str = tr("第%5个工业接头 L%1 %6异常，实际值：%2%7，期望范围：[%3%7, %4%7]")
-            .arg(i + 1).arg(actStr).arg(minStr).arg(maxStr).arg(socketId).arg(cnLabel).arg(unit);
     QString exengStr = tr("Socket %4 L%1 %5 actual in expected: [%2%6, %3%6]")
             .arg(i + 1).arg(minStr).arg(maxStr).arg(socketId).arg(enLabel).arg(unit);
-    QString engStr = tr("Socket %5 L%1 %6 abnormal, actual: %2%7, expected: [%3%7, %4%7]")
-            .arg(i + 1).arg(actStr).arg(minStr).arg(maxStr).arg(socketId).arg(enLabel).arg(unit);
 
-    mLogs->updatePro(str, false);
-    mLogs->writeData(exstr, str, title, false);
-    mLogs->writeDataEng(exengStr, engStr, engTitle, false);
-    qDebug() << "abnormal" << str << "  " << exstr << "  " << title
+    QString str, engStr;
+    if(ok) {
+        str = tr("第%5个工业接头 L%1 %6检测成功，实际值：%2%7，期望范围：[%3%7, %4%7]")
+                .arg(i + 1).arg(actStr).arg(minStr).arg(maxStr).arg(socketId).arg(cnLabel).arg(unit);
+        engStr = tr("Socket %5 L%1 %6 check Success, actual: %2%7, expected: [%3%7, %4%7]")
+                .arg(i + 1).arg(actStr).arg(minStr).arg(maxStr).arg(socketId).arg(enLabel).arg(unit);
+    } else {
+        str = tr("第%5个工业接头 L%1 %6检测失败，实际值：%2%7，期望范围：[%3%7, %4%7]")
+                .arg(i + 1).arg(actStr).arg(minStr).arg(maxStr).arg(socketId).arg(cnLabel).arg(unit);
+        engStr = tr("Socket %5 L%1 %6 check Failed, actual: %2%7, expected: [%3%7, %4%7]")
+                .arg(i + 1).arg(actStr).arg(minStr).arg(maxStr).arg(socketId).arg(enLabel).arg(unit);
+    }
+
+    mLogs->updatePro(str, ok);
+    mLogs->writeData(exstr, str, title, ok);
+    mLogs->writeDataEng(exengStr, engStr, engTitle, ok);
+    qDebug() << (ok ? "normal" : "abnormal") << str << "  " << exstr << "  " << title
              << engStr << "  " << exengStr << "  " << engTitle;
 }
 
@@ -2858,9 +2867,11 @@ void Power_CoreThread::noloadHomeSlot(int ret, int face)
             if(volOk[i]) vol[i] = volValue;
             if(curOk[i]) cur[i] = curValue;
 
-            logHomeErr(i, volValue, exVolVa, errVolVa, COM_RATE_VOL, 1, "V", "电压", "voltage",
+            logHomeErr(i, volValue, exVolVa, errVolVa, volOk[i],
+                COM_RATE_VOL, 1, "V", "电压", "voltage",
                 flag, singlePhase, face, title, engTitle);
-            logHomeErr(i, curValue, exCurVa, errCurVa, COM_RATE_CUR, 3, "A", "电流", "current",
+            logHomeErr(i, curValue, exCurVa, errCurVa, curOk[i],
+                COM_RATE_CUR, 3, "A", "电流", "current",
                 flag, singlePhase, face, title, engTitle);
         }
 
@@ -2875,7 +2886,7 @@ void Power_CoreThread::noloadHomeSlot(int ret, int face)
         }
 
         flag++;
-        if(flag >= 20) break;    // 最大重试 20 次
+        if(flag >= 100) break;    // 最大重试 20 次
     }
 
     mRet = ok ? 1 : 0;

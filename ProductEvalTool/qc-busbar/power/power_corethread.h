@@ -110,8 +110,8 @@ protected:
     bool breakTest(int );
     bool ThreeBreakTest(int);
 
-    // noloadHomeSlot 辅助：电压/电流错误日志（一次调用 = 一相一类型）
-    void logHomeErr(int i, int actual, int ex, int err,
+    // noloadHomeSlot 辅助：电压/电流日志（一次调用 = 一相一类型），ok 决定检测成功/失败
+    void logHomeErr(int i, int actual, int ex, int err, bool ok,
         double rate, int prec, const QString &unit,
         const QString &cnLabel, const QString &enLabel,
         int flag, bool singlePhase, int face,

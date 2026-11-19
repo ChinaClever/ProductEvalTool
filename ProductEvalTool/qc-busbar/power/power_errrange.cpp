@@ -30,13 +30,13 @@ bool Power_ErrRange::volErr(int id)
     if(mItem->modeId == START_BUSBAR) {
         sIpCfg *cth = &(mItem->ip);
         value = mBusData->box[mItem->addr - 1].data.vol.value[id];
-        exValue = cth->ip_vol[id] *10.0;
-        err = cth->ip_volErr[id] *10.0;
+        exValue = cth->ip_vol[id%3] *10.0;
+        err = cth->ip_volErr[id%3] *10.0;
     }else {
         sSiCfg *cth = &(mItem->si);
         value = mBusData->box[mItem->addr - 1].data.vol.value[id];
-        exValue = cth->si_vol[id] *10.0;
-        err = cth->si_volErr[id] *10.0;
+        exValue = cth->si_vol[id%3] *10.0;
+        err = cth->si_volErr[id%3] *10.0;
     }
     bool ret = checkErrRange(exValue, value, err);
     if(ret) pass = Test_Pass;

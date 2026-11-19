@@ -2782,7 +2782,7 @@ void Power_CoreThread::logHomeOk(int *exVals, int *exErrs, int *actVals,
                 .arg(QString::number(minVal, 'f', prec))
                 .arg(QString::number(maxVal, 'f', prec))
                 .arg(cnLabel).arg(unit);
-        str += tr("L%1 %4正常，实际值：%2%5，期望范围：[%3%5, %4%5];")
+        str += tr("L%1 %5正常，实际值：%2%6，期望范围：[%3%6, %4%6];")
                 .arg(i + 1)
                 .arg(QString::number(actVal, 'f', prec))
                 .arg(QString::number(minVal, 'f', prec))
@@ -2793,7 +2793,7 @@ void Power_CoreThread::logHomeOk(int *exVals, int *exErrs, int *actVals,
                 .arg(QString::number(minVal, 'f', prec))
                 .arg(QString::number(maxVal, 'f', prec))
                 .arg(enLabel).arg(unit);
-        enStr += tr("L%1 %4 normal, actual: %2%5, expected: [%3%5, %4%5];")
+        enStr += tr("L%1 %5 normal, actual: %2%6, expected: [%3%6, %4%6];")
                 .arg(i + 1)
                 .arg(QString::number(actVal, 'f', prec))
                 .arg(QString::number(minVal, 'f', prec))
